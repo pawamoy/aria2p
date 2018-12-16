@@ -4,7 +4,7 @@ Command-line tool and Python library to interact with an `aria2c` daemon process
 ## Installation
 No packaging yet.
 Clone the repo and install `requests` with `[sudo] pip install requests`,
-or create a dedicated Python virtualenv.
+or create a dedicated Python virtualenv with **Python 3.6**.
 
 ## Usage (as a library)
 **This library is still a work in progress. Some things listed here might not be implemented yet.**
@@ -116,7 +116,7 @@ $ ./aria2p.py -m pause -p b686cad55029d4df
 Add a download using magnet URIs.
 *This example uses `jq -r` to remove the quotation marks around the result.*
 ```console
-$ ./aria2p.py -m adduri -j '["magnet:?xt=urn:..."]' | jq -r
+$ ./aria2p.py -m adduri -j '[["magnet:?xt=urn:..."]]' | jq -r
 4b39a1ad8fd94e26f
 ```
 
