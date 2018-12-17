@@ -1,3 +1,35 @@
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry]
+name = "aria2p"
+version = "0.1.2"
+description = "Command-line tool and library to interact with an aria2c daemon process with JSON-RPC."
+license = "ISC"
+authors = ["Timothée Mazzucotelli <pawamoy@pm.me>"]
+readme = 'README.md'
+repository = "https://github.com/pawamoy/aria2p"
+homepage = "https://github.com/pawamoy/aria2p"
+keywords = ['aria2', 'aria2c', 'aria2-cli']
+packages = [ { include = "aria2p", from = "src" } ]
+include = [
+    "README.md",
+    "pyproject.toml"
+]
+
+[tool.poetry.dependencies]
+python = "~3.6"
+requests = { version = "*" }
+
+[tool.poetry.dev-dependencies]
+pytest = "*"
+pytest-cov = "*"
+pytest-sugar = "*"
+
+[tool.poetry.scripts]
+aria2p = 'aria2p.cli:main'
+
 [tool.black]
 line-length = 120
 

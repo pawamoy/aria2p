@@ -1,10 +1,36 @@
 # Aria2p
 Command-line tool and Python library to interact with an `aria2c` daemon process through JSON-RPC.
 
+# Requirements
+`aria2p` requires Python 3.6. To install Python 3.6, I recommend [`pyenv`](https://github.com/pyenv/pyenv):
+```bash
+# install pyenv
+git clone https://github.com/pyenv/pyenv ~/.pyenv
+
+# setup pyenv (you should also put these two lines in .bashrc or similar)
+export PATH="${HOME}/.pyenv/bin:${PATH}"
+eval "$(pyenv init -)"
+
+# install Python 3.6
+pyenv install 3.6.7
+
+# make it available globally
+pyenv global system 3.6.7
+```
+
 ## Installation
-No packaging yet.
-Clone the repo and install `requests` with `[sudo] pip install requests`,
-or create a dedicated Python virtualenv with **Python 3.6**.
+With `pip`:
+```bash
+python3.6 -m pip install aria2p
+```
+
+With [`pipx`](https://github.com/cs01/pipx):
+```bash
+# install pipx with the recommended method
+curl https://raw.githubusercontent.com/cs01/pipx/master/get-pipx.py | python3
+
+pipx install --python python3.6 aria2p
+```
 
 ## Usage (as a library)
 **This library is still a work in progress. Some things listed here might not be implemented yet.**
@@ -38,7 +64,7 @@ For now, the command-line tool can only call methods using the client.
 More options directly using the API will come later.
 
 ```bash
-./aria2p.py -m,--method METHOD_NAME [-p,--params PARAMS... | -j,--json-params JSON_STRING]
+aria2p -m,--method METHOD_NAME [-p,--params PARAMS... | -j,--json-params JSON_STRING]
 ```
 
 The `METHOD_NAME` can be the exact method name, or just the name without the prefix.
@@ -58,7 +84,7 @@ The following are all equivalent:
 List all available methods.
 *This example uses [`jq`](https://github.com/stedolan/jq).*
 ```console
-$ ./aria2p.py -m listmethods | jq
+$ aria2p -m listmethods | jq
 [
   "aria2.addUri",
   "aria2.addTorrent",
@@ -102,26 +128,26 @@ $ ./aria2p.py -m listmethods | jq
 List the GIDs (identifiers) of all active downloads.
 *Note that we must give the parameters as a JSON string.*
 ```console
-$ ./aria2p.py -m tellactive -j '[["gid"]]'
+$ aria2p -m tellactive -j '[["gid"]]'
 [{"gid": "b686cad55029d4df"}, {"gid": "4b39a1ad8fd94e26"}, {"gid": "9d331cc4b287e5df"}, {"gid": "8c9de0df753a5195"}]
 ```
 
 Pause a download using its GID.
 *Note that when a single string argument is required, it can be passed directly with `-p`.*
 ```console
-$ ./aria2p.py -m pause -p b686cad55029d4df
+$ aria2p -m pause -p b686cad55029d4df
 "b686cad55029d4df"
 ```
 
 Add a download using magnet URIs.
 *This example uses `jq -r` to remove the quotation marks around the result.*
 ```console
-$ ./aria2p.py -m adduri -j '[["magnet:?xt=urn:..."]]' | jq -r
+$ aria2p -m adduri -j '[["magnet:?xt=urn:..."]]' | jq -r
 4b39a1ad8fd94e26f
 ```
 
 Purge download results (remove completed downloads from the list).
 ```console
-$ ./aria2p.py -m purge_download_result
+$ aria2p -m purge_download_result
 "OK"
 ```
