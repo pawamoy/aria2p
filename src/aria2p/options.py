@@ -1,14 +1,32 @@
 class Options:
-    def __init__(self, api, struct):
+    def __init__(self, api, struct, gid=None):
         self.api = api
+        self._gids = [gid] if gid else []
+        self._struct = struct
 
-        # Basic Options
-        self.dir = struct.get("dir")
+    # Basic Options
+    @property
+    def dir(self):
+        return self._struct.get("dir")
+
+    @dir.setter
+    def dir(self, value):
+        if self.api.change_option({"dir": value}, self.gid):
+            self._struct["dir"] = value
+
         # =<DIR>
         #
         # The directory to store the downloaded file.
 
-        self.input_file = struct.get("input-file")
+    @property
+    def input_file(self):
+        return self._struct.get("input-file")
+
+    @input_file.setter
+    def input_file(self, value):
+        if self.api.change_option({"input-file": value}, self.gid):
+            self._struct["input-file"] = value
+
         # =<FILE>
         #
         # Downloads the URIs listed in FILE. You can specify multiple sources for a single entity by putting
@@ -18,18 +36,42 @@ class Options:
         # aria2 will read the input from stdin. See the Input File subsection for details. See also the
         # --deferred-input option. See also the --save-session option.
 
-        self.log = struct.get("log")
+    @property
+    def log(self):
+        return self._struct.get("log")
+
+    @log.setter
+    def log(self, value):
+        if self.api.change_option({"log": value}, self.gid):
+            self._struct["log"] = value
+
         # =<LOG>
         #
         # The file name of the log file. If - is specified, log is written to stdout. If empty string("") is
         # specified, or this option is omitted, no log is written to disk at all.
 
-        self.max_concurrent_downloads = struct.get("max-concurrent-downloads")
+    @property
+    def max_concurrent_downloads(self):
+        return self._struct.get("max-concurrent-downloads")
+
+    @max_concurrent_downloads.setter
+    def max_concurrent_downloads(self, value):
+        if self.api.change_option({"max-concurrent-downloads": value}, self.gid):
+            self._struct["max-concurrent-downloads"] = value
+
         # =<N>
         #
         # Set the maximum number of parallel downloads for every queue item. See also the --split option. Default: 5
 
-        self.check_integrity = struct.get("check-integrity")
+    @property
+    def check_integrity(self):
+        return self._struct.get("check-integrity")
+
+    @check_integrity.setter
+    def check_integrity(self, value):
+        if self.api.change_option({"check-integrity": value}, self.gid):
+            self._struct["check-integrity"] = value
+
         # [=true|false]
         #
         # Check file integrity by validating piece hashes or a hash of entire file. This option has effect only in
@@ -39,14 +81,30 @@ class Options:
         # file length. If hash check fails, file is re-downloaded from scratch. If both piece hashes and a hash of
         # entire file are provided, only piece hashes are used. Default: false
 
-        self.continue_ = struct.get("continue")
+    @property
+    def continue_(self):
+        return self._struct.get("continue")
+
+    @continue_.setter
+    def continue_(self, value):
+        if self.api.change_option({"continue": value}, self.gid):
+            self._struct["continue"] = value
+
         # [=true|false]
         #
         # Continue downloading a partially downloaded file. Use this option to resume a download started by a web
         # browser or another program which downloads files sequentially from the beginning. Currently this option is
         # only applicable to HTTP(S)/FTP downloads.
 
-        self.help = struct.get("help")
+    @property
+    def help(self):
+        return self._struct.get("help")
+
+    @help.setter
+    def help(self, value):
+        if self.api.change_option({"help": value}, self.gid):
+            self._struct["help"] = value
+
         # [=<TAG>|<KEYWORD>]
         #
         # The help messages are classified with tags. A tag starts with #. For example, type --help=#http to get the
@@ -56,7 +114,15 @@ class Options:
 
         # HTTP/FTP/SFTP Options
 
-        self.all_proxy = struct.get("all-proxy")
+    @property
+    def all_proxy(self):
+        return self._struct.get("all-proxy")
+
+    @all_proxy.setter
+    def all_proxy(self, value):
+        if self.api.change_option({"all-proxy": value}, self.gid):
+            self._struct["all-proxy"] = value
+
         # =<PROXY>
         #
         # Use a proxy server for all protocols. To override a previously defined proxy, use "". You also can override
@@ -79,49 +145,113 @@ class Options:
         #     --http-proxy-passwd="mypass" --http-proxy="http://user:pass@proxy", then you'd get HTTP proxy http://proxy
         #     with user user and password pass.
 
-        self.all_proxy_passwd = struct.get("all-proxy-passwd")
+    @property
+    def all_proxy_passwd(self):
+        return self._struct.get("all-proxy-passwd")
+
+    @all_proxy_passwd.setter
+    def all_proxy_passwd(self, value):
+        if self.api.change_option({"all-proxy-passwd": value}, self.gid):
+            self._struct["all-proxy-passwd"] = value
+
         # =<PASSWD>
         #
         # Set password for --all-proxy option.
 
-        self.all_proxy_user = struct.get("all-proxy-user")
+    @property
+    def all_proxy_user(self):
+        return self._struct.get("all-proxy-user")
+
+    @all_proxy_user.setter
+    def all_proxy_user(self, value):
+        if self.api.change_option({"all-proxy-user": value}, self.gid):
+            self._struct["all-proxy-user"] = value
+
         # =<USER>
         #
         # Set user for --all-proxy option.
 
-        self.checksum = struct.get("checksum")
+    @property
+    def checksum(self):
+        return self._struct.get("checksum")
+
+    @checksum.setter
+    def checksum(self, value):
+        if self.api.change_option({"checksum": value}, self.gid):
+            self._struct["checksum"] = value
+
         # =<TYPE>=<DIGEST>
         #
         # Set checksum. TYPE is hash type. The supported hash type is listed in Hash Algorithms in aria2c -v. DIGEST
         # is hex digest. For example, setting sha-1 digest looks like this:
         # sha-1=0192ba11326fe2298c8cb4de616f4d4140213838 This option applies only to HTTP(S)/FTP downloads.
 
-        self.connect_timeout = struct.get("connect-timeout")
+    @property
+    def connect_timeout(self):
+        return self._struct.get("connect-timeout")
+
+    @connect_timeout.setter
+    def connect_timeout(self, value):
+        if self.api.change_option({"connect-timeout": value}, self.gid):
+            self._struct["connect-timeout"] = value
+
         # =<SEC>
         #
         # Set the connect timeout in seconds to establish connection to HTTP/FTP/proxy server. After the connection
         # is established, this option makes no effect and --timeout option is used instead. Default: 60
 
-        self.dry_run = struct.get("dry-run")
+    @property
+    def dry_run(self):
+        return self._struct.get("dry-run")
+
+    @dry_run.setter
+    def dry_run(self, value):
+        if self.api.change_option({"dry-run": value}, self.gid):
+            self._struct["dry-run"] = value
+
         # [=true|false]
         #
         # If true is given, aria2 just checks whether the remote file is available and doesn't download data. This
         # option has effect on HTTP/FTP download. BitTorrent downloads are canceled if true is specified. Default:
         # false
 
-        self.lowest_speed_limit = struct.get("lowest-speed-limit")
+    @property
+    def lowest_speed_limit(self):
+        return self._struct.get("lowest-speed-limit")
+
+    @lowest_speed_limit.setter
+    def lowest_speed_limit(self, value):
+        if self.api.change_option({"lowest-speed-limit": value}, self.gid):
+            self._struct["lowest-speed-limit"] = value
+
         # =<SPEED>
         #
         # Close connection if download speed is lower than or equal to this value(bytes per sec). 0 means aria2
         # does not have a lowest speed limit. You can append K or M (1K = 1024, 1M = 1024K). This option does not
         # affect BitTorrent downloads. Default: 0
 
-        self.max_connection_per_server = struct.get("max-connection-per-server")
+    @property
+    def max_connection_per_server(self):
+        return self._struct.get("max-connection-per-server")
+
+    @max_connection_per_server.setter
+    def max_connection_per_server(self, value):
+        if self.api.change_option({"max-connection-per-server": value}, self.gid):
+            self._struct["max-connection-per-server"] = value
+
         # =<NUM>
         #
         # The maximum number of connections to one server for each download. Default: 1
 
-        self.max_file_not_found = struct.get("max-file-not-found")
+    @property
+    def max_file_not_found(self):
+        return self._struct.get("max-file-not-found")
+
+    @max_file_not_found.setter
+    def max_file_not_found(self, value):
+        if self.api.change_option({"max-file-not-found": value}, self.gid):
+            self._struct["max-file-not-found"] = value
+
         # =<NUM>
         #
         # If aria2 receives "file not found" status from the remote HTTP/FTP servers NUM times without getting a
@@ -131,12 +261,28 @@ class Options:
         #
         # Default: 0
 
-        self.max_tries = struct.get("max-tries")
+    @property
+    def max_tries(self):
+        return self._struct.get("max-tries")
+
+    @max_tries.setter
+    def max_tries(self, value):
+        if self.api.change_option({"max-tries": value}, self.gid):
+            self._struct["max-tries"] = value
+
         # =<N>
         #
         # Set number of tries. 0 means unlimited. See also --retry-wait. Default: 5
 
-        self.min_split_size = struct.get("min-split-size")
+    @property
+    def min_split_size(self):
+        return self._struct.get("min-split-size")
+
+    @min_split_size.setter
+    def min_split_size(self, value):
+        if self.api.change_option({"min-split-size": value}, self.gid):
+            self._struct["min-split-size"] = value
+
         # =<SIZE>
         #
         # aria2 does not split less than 2*SIZE byte range. For example, let's consider downloading 20MiB file. If
@@ -145,7 +291,15 @@ class Options:
         # download it using 1 source. You can append K or M (1K = 1024, 1M = 1024K). Possible Values: 1M -1024M
         # Default: 20M
 
-        self.netrc_path = struct.get("netrc-path")
+    @property
+    def netrc_path(self):
+        return self._struct.get("netrc-path")
+
+    @netrc_path.setter
+    def netrc_path(self, value):
+        if self.api.change_option({"netrc-path": value}, self.gid):
+            self._struct["netrc-path"] = value
+
         # =<FILE>
         #
         # Specify the path to the netrc file. Default: $(HOME)/.netrc
@@ -153,7 +307,15 @@ class Options:
         # NOTE:
         #    Permission of the .netrc file must be 600. Otherwise, the file will be ignored.
 
-        self.no_netrc = struct.get("no-netrc")
+    @property
+    def no_netrc(self):
+        return self._struct.get("no-netrc")
+
+    @no_netrc.setter
+    def no_netrc(self, value):
+        if self.api.change_option({"no-netrc": value}, self.gid):
+            self._struct["no-netrc"] = value
+
         # [=true|false]
         #
         # Disables netrc support. netrc support is enabled by default.
@@ -163,7 +325,15 @@ class Options:
         #     no netrc is available throughout the session. You cannot get netrc enabled even if you send
         #     --no-netrc=false using aria2.changeGlobalOption().
 
-        self.no_proxy = struct.get("no-proxy")
+    @property
+    def no_proxy(self):
+        return self._struct.get("no-proxy")
+
+    @no_proxy.setter
+    def no_proxy(self, value):
+        if self.api.change_option({"no-proxy": value}, self.gid):
+            self._struct["no-proxy"] = value
+
         # =<DOMAINS>
         #
         # Specify a comma separated list of host names, domains and network addresses with or without a subnet mask
@@ -174,7 +344,15 @@ class Options:
         #     implementation does not resolve the host name in an URI to compare network addresses specified in
         #     --no-proxy. So it is only effective if URI has numeric IP addresses.
 
-        self.out = struct.get("out")
+    @property
+    def out(self):
+        return self._struct.get("out")
+
+    @out.setter
+    def out(self, value):
+        if self.api.change_option({"out": value}, self.gid):
+            self._struct["out"] = value
+
         # =<FILE>
         #
         # The file name of the downloaded file. It is always relative to the directory given in --dir option. When
@@ -190,49 +368,113 @@ class Options:
         #
         #        $ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"
 
-        self.proxy_method = struct.get("proxy-method")
+    @property
+    def proxy_method(self):
+        return self._struct.get("proxy-method")
+
+    @proxy_method.setter
+    def proxy_method(self, value):
+        if self.api.change_option({"proxy-method": value}, self.gid):
+            self._struct["proxy-method"] = value
+
         # =<METHOD>
         #
         # Set the method to use in proxy request. METHOD is either get or tunnel. HTTPS downloads always use tunnel
         # regardless of this option. Default: get
 
-        self.remote_time = struct.get("remote-time")
+    @property
+    def remote_time(self):
+        return self._struct.get("remote-time")
+
+    @remote_time.setter
+    def remote_time(self, value):
+        if self.api.change_option({"remote-time": value}, self.gid):
+            self._struct["remote-time"] = value
+
         # [=true|false]
         #
         # Retrieve timestamp of the remote file from the remote HTTP/FTP server and if it is available, apply it to
         # the local file. Default: false
 
-        self.reuse_uri = struct.get("reuse-uri")
+    @property
+    def reuse_uri(self):
+        return self._struct.get("reuse-uri")
+
+    @reuse_uri.setter
+    def reuse_uri(self, value):
+        if self.api.change_option({"reuse-uri": value}, self.gid):
+            self._struct["reuse-uri"] = value
+
         # [=true|false]
         #
         # Reuse already used URIs if no unused URIs are left. Default: true
 
-        self.retry_wait = struct.get("retry-wait")
+    @property
+    def retry_wait(self):
+        return self._struct.get("retry-wait")
+
+    @retry_wait.setter
+    def retry_wait(self, value):
+        if self.api.change_option({"retry-wait": value}, self.gid):
+            self._struct["retry-wait"] = value
+
         # =<SEC>
         #
         # Set the seconds to wait between retries. When SEC > 0, aria2 will retry downloads when the HTTP server
         # returns a 503 response. Default: 0
 
-        self.server_stat_of = struct.get("server-stat-of")
+    @property
+    def server_stat_of(self):
+        return self._struct.get("server-stat-of")
+
+    @server_stat_of.setter
+    def server_stat_of(self, value):
+        if self.api.change_option({"server-stat-of": value}, self.gid):
+            self._struct["server-stat-of"] = value
+
         # =<FILE>
         #
         # Specify the file name to which performance profile of the servers is saved. You can load saved data using
         # --server-stat-if option. See Server Performance Profile subsection below for file format.
 
-        self.server_stat_if = struct.get("server-stat-if")
+    @property
+    def server_stat_if(self):
+        return self._struct.get("server-stat-if")
+
+    @server_stat_if.setter
+    def server_stat_if(self, value):
+        if self.api.change_option({"server-stat-if": value}, self.gid):
+            self._struct["server-stat-if"] = value
+
         # =<FILE>
         #
         # Specify the file name to load performance profile of the servers. The loaded data will be used in
         # some URI selector such as feedback. See also --uri-selector option. See Server Performance Profile
         # subsection below for file format.
 
-        self.server_stat_timeout = struct.get("server-stat-timeout")
+    @property
+    def server_stat_timeout(self):
+        return self._struct.get("server-stat-timeout")
+
+    @server_stat_timeout.setter
+    def server_stat_timeout(self, value):
+        if self.api.change_option({"server-stat-timeout": value}, self.gid):
+            self._struct["server-stat-timeout"] = value
+
         # =<SEC>
         #
         # Specifies timeout in seconds to invalidate performance profile of the servers since the last contact to
         # them. Default: 86400 (24hours)
 
-        self.split = struct.get("split")
+    @property
+    def split(self):
+        return self._struct.get("split")
+
+    @split.setter
+    def split(self, value):
+        if self.api.change_option({"split": value}, self.gid):
+            self._struct["split"] = value
+
         # =<N>
         #
         # Download a file using N connections. If more than N URIs are given, first N URIs are used and remaining
@@ -245,7 +487,15 @@ class Options:
         #     Metalink defines the maxconnections attribute lower than N, then aria2 uses the value of this lower
         #     value instead of N.
 
-        self.stream_piece_selector = struct.get("stream-piece-selector")
+    @property
+    def stream_piece_selector(self):
+        return self._struct.get("stream-piece-selector")
+
+    @stream_piece_selector.setter
+    def stream_piece_selector(self, value):
+        if self.api.change_option({"stream-piece-selector": value}, self.gid):
+            self._struct["stream-piece-selector"] = value
+
         # =<SELECTOR>
         #
         # Specify piece selection algorithm used in HTTP/FTP download. Piece means fixed length segment which is
@@ -261,12 +511,28 @@ class Options:
         # the number of establishing connection and at the same time it will download the beginning part of the file
         # first. This will be useful to view movie while downloading it. Default: default
 
-        self.timeout = struct.get("timeout")
+    @property
+    def timeout(self):
+        return self._struct.get("timeout")
+
+    @timeout.setter
+    def timeout(self, value):
+        if self.api.change_option({"timeout": value}, self.gid):
+            self._struct["timeout"] = value
+
         # =<SEC>
         #
         # Set timeout in seconds. Default: 60
 
-        self.uri_selector = struct.get("uri-selector")
+    @property
+    def uri_selector(self):
+        return self._struct.get("uri-selector")
+
+    @uri_selector.setter
+    def uri_selector(self, value):
+        if self.api.change_option({"uri-selector": value}, self.gid):
+            self._struct["uri-selector"] = value
+
         # =<SELECTOR>
         #
         # Specify URI selection algorithm. The possible values are inorder, feedback and adaptive. If inorder is
@@ -281,7 +547,15 @@ class Options:
 
         # HTTP Specific Options
 
-        self.ca_certificate = struct.get("ca-certificate")
+    @property
+    def ca_certificate(self):
+        return self._struct.get("ca-certificate")
+
+    @ca_certificate.setter
+    def ca_certificate(self, value):
+        if self.api.change_option({"ca-certificate": value}, self.gid):
+            self._struct["ca-certificate"] = value
+
         # =<FILE>
         #
         # Use the certificate authorities in FILE to verify the peers. The certificate file must be in PEM format and
@@ -296,7 +570,15 @@ class Options:
         #     WinTLS and AppleTLS do not support this option. Instead you will have to import the certificate into the
         #     OS trust store.
 
-        self.certificate = struct.get("certificate")
+    @property
+    def certificate(self):
+        return self._struct.get("certificate")
+
+    @certificate.setter
+    def certificate(self, value):
+        if self.api.change_option({"certificate": value}, self.gid):
+            self._struct["certificate"] = value
+
         # =<FILE>
         #
         # Use the client certificate in FILE. The certificate must be either in PKCS12 (.p12, .pfx) or in PEM format.
@@ -315,12 +597,28 @@ class Options:
         #     --certificate=<SHA-1>. Alternatively PKCS12 files are also supported. PEM files, however, are not
         #     supported.
 
-        self.check_certificate = struct.get("check-certificate")
+    @property
+    def check_certificate(self):
+        return self._struct.get("check-certificate")
+
+    @check_certificate.setter
+    def check_certificate(self, value):
+        if self.api.change_option({"check-certificate": value}, self.gid):
+            self._struct["check-certificate"] = value
+
         # [=true|false]
         #
         # Verify the peer using certificates specified in --ca-certificate option. Default: true
 
-        self.http_accept_gzip = struct.get("http-accept-gzip")
+    @property
+    def http_accept_gzip(self):
+        return self._struct.get("http-accept-gzip")
+
+    @http_accept_gzip.setter
+    def http_accept_gzip(self, value):
+        if self.api.change_option({"http-accept-gzip": value}, self.gid):
+            self._struct["http-accept-gzip"] = value
+
         # [=true|false]
         #
         # Send Accept: deflate, gzip request header and inflate response if remote server responds with
@@ -330,80 +628,192 @@ class Options:
         #     Some server responds with Content-Encoding: gzip for files which itself is gzipped file. aria2 inflates
         #     them anyway because of the response header.
 
-        self.http_auth_challenge = struct.get("http-auth-challenge")
+    @property
+    def http_auth_challenge(self):
+        return self._struct.get("http-auth-challenge")
+
+    @http_auth_challenge.setter
+    def http_auth_challenge(self, value):
+        if self.api.change_option({"http-auth-challenge": value}, self.gid):
+            self._struct["http-auth-challenge"] = value
+
         # [=true|false]
         #
         # Send HTTP authorization header only when it is requested by the server. If false is set, then authorization
         # header is always sent to the server. There is an exception: if user name and password are embedded in URI,
         # authorization header is always sent to the server regardless of this option. Default: false
 
-        self.http_no_cache = struct.get("http-no-cache")
+    @property
+    def http_no_cache(self):
+        return self._struct.get("http-no-cache")
+
+    @http_no_cache.setter
+    def http_no_cache(self, value):
+        if self.api.change_option({"http-no-cache": value}, self.gid):
+            self._struct["http-no-cache"] = value
+
         # [=true|false]
         #
         # Send Cache-Control:  no-cache and Pragma:  no-cache header to avoid cached content. If false is given,
         # these headers are not sent and you can add Cache-Control header with a directive you like using --header
         # option. Default: false
 
-        self.http_user = struct.get("http-user")
+    @property
+    def http_user(self):
+        return self._struct.get("http-user")
+
+    @http_user.setter
+    def http_user(self, value):
+        if self.api.change_option({"http-user": value}, self.gid):
+            self._struct["http-user"] = value
+
         # =<USER>
         #
         # Set HTTP user. This affects all URIs.
 
-        self.http_passwd = struct.get("http-passwd")
+    @property
+    def http_passwd(self):
+        return self._struct.get("http-passwd")
+
+    @http_passwd.setter
+    def http_passwd(self, value):
+        if self.api.change_option({"http-passwd": value}, self.gid):
+            self._struct["http-passwd"] = value
+
         # =<PASSWD>
         #
         # Set HTTP password. This affects all URIs.
 
-        self.http_proxy = struct.get("http-proxy")
+    @property
+    def http_proxy(self):
+        return self._struct.get("http-proxy")
+
+    @http_proxy.setter
+    def http_proxy(self, value):
+        if self.api.change_option({"http-proxy": value}, self.gid):
+            self._struct["http-proxy"] = value
+
         # =<PROXY>
         #
         # Use a proxy server for HTTP. To override a previously defined proxy, use "". See also the --all-proxy
         # option. This affects all http downloads. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 
-        self.http_proxy_passwd = struct.get("http-proxy-passwd")
+    @property
+    def http_proxy_passwd(self):
+        return self._struct.get("http-proxy-passwd")
+
+    @http_proxy_passwd.setter
+    def http_proxy_passwd(self, value):
+        if self.api.change_option({"http-proxy-passwd": value}, self.gid):
+            self._struct["http-proxy-passwd"] = value
+
         # =<PASSWD>
         #
         # Set password for --http-proxy.
 
-        self.http_proxy_user = struct.get("http-proxy-user")
+    @property
+    def http_proxy_user(self):
+        return self._struct.get("http-proxy-user")
+
+    @http_proxy_user.setter
+    def http_proxy_user(self, value):
+        if self.api.change_option({"http-proxy-user": value}, self.gid):
+            self._struct["http-proxy-user"] = value
+
         # =<USER>
         #
         # Set user for --http-proxy.
 
-        self.https_proxy = struct.get("https-proxy")
+    @property
+    def https_proxy(self):
+        return self._struct.get("https-proxy")
+
+    @https_proxy.setter
+    def https_proxy(self, value):
+        if self.api.change_option({"https-proxy": value}, self.gid):
+            self._struct["https-proxy"] = value
+
         # =<PROXY>
         #
         # Use a proxy server for HTTPS. To override a previously defined proxy, use "". See also the --all-proxy
         # option. This affects all https download. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 
-        self.https_proxy_passwd = struct.get("https-proxy-passwd")
+    @property
+    def https_proxy_passwd(self):
+        return self._struct.get("https-proxy-passwd")
+
+    @https_proxy_passwd.setter
+    def https_proxy_passwd(self, value):
+        if self.api.change_option({"https-proxy-passwd": value}, self.gid):
+            self._struct["https-proxy-passwd"] = value
+
         # =<PASSWD>
         #
         # Set password for --https-proxy.
 
-        self.https_proxy_user = struct.get("https-proxy-user")
+    @property
+    def https_proxy_user(self):
+        return self._struct.get("https-proxy-user")
+
+    @https_proxy_user.setter
+    def https_proxy_user(self, value):
+        if self.api.change_option({"https-proxy-user": value}, self.gid):
+            self._struct["https-proxy-user"] = value
+
         # =<USER>
         #
         # Set user for --https-proxy.
 
-        self.private_key = struct.get("private-key")
+    @property
+    def private_key(self):
+        return self._struct.get("private-key")
+
+    @private_key.setter
+    def private_key(self, value):
+        if self.api.change_option({"private-key": value}, self.gid):
+            self._struct["private-key"] = value
+
         # =<FILE>
         #
         # Use the private key in FILE. The private key must be decrypted and in PEM format. The behavior when
         # encrypted one is given is undefined. See also --certificate option.
 
-        self.referer = struct.get("referer")
+    @property
+    def referer(self):
+        return self._struct.get("referer")
+
+    @referer.setter
+    def referer(self, value):
+        if self.api.change_option({"referer": value}, self.gid):
+            self._struct["referer"] = value
+
         # =<REFERER>
         #
         # Set an http referrer (Referer). This affects all http/https downloads. If * is given, the download URI is
         # also used as the referrer. This may be useful when used together with the --parameterized-uri option.
 
-        self.enable_http_keep_alive = struct.get("enable-http-keep-alive")
+    @property
+    def enable_http_keep_alive(self):
+        return self._struct.get("enable-http-keep-alive")
+
+    @enable_http_keep_alive.setter
+    def enable_http_keep_alive(self, value):
+        if self.api.change_option({"enable-http-keep-alive": value}, self.gid):
+            self._struct["enable-http-keep-alive"] = value
+
         # [=true|false]
         #
         # Enable HTTP/1.1 persistent connection. Default: true
 
-        self.enable_http_pipelining = struct.get("enable-http-pipelining")
+    @property
+    def enable_http_pipelining(self):
+        return self._struct.get("enable-http-pipelining")
+
+    @enable_http_pipelining.setter
+    def enable_http_pipelining(self, value):
+        if self.api.change_option({"enable-http-pipelining": value}, self.gid):
+            self._struct["enable-http-pipelining"] = value
+
         # [=true|false]
         #
         # Enable HTTP/1.1 pipelining. Default: false
@@ -411,14 +821,30 @@ class Options:
         # NOTE:
         #    In performance perspective, there is usually no advantage to enable this option.
 
-        self.header = struct.get("header")
+    @property
+    def header(self):
+        return self._struct.get("header")
+
+    @header.setter
+    def header(self, value):
+        if self.api.change_option({"header": value}, self.gid):
+            self._struct["header"] = value
+
         # =<HEADER>
         #
         # Append HEADER to HTTP request header. You can use this option repeatedly to specify more than one header:
         #
         #    $ aria2c --header="X-A: b78" --header="X-B: 9J1" "http://host/file"
 
-        self.load_cookies = struct.get("load-cookies")
+    @property
+    def load_cookies(self):
+        return self._struct.get("load-cookies")
+
+    @load_cookies.setter
+    def load_cookies(self, value):
+        if self.api.change_option({"load-cookies": value}, self.gid):
+            self._struct["load-cookies"] = value
+
         # =<FILE>
         #
         # Load Cookies from FILE using the Firefox3 format (SQLite3), Chromium/Google Chrome (SQLite3) and the
@@ -428,38 +854,86 @@ class Options:
         #     If aria2 is built without libsqlite3, then it doesn't support Firefox3 and Chromium/Google Chrome cookie
         #     format.
 
-        self.save_cookies = struct.get("save-cookies")
+    @property
+    def save_cookies(self):
+        return self._struct.get("save-cookies")
+
+    @save_cookies.setter
+    def save_cookies(self, value):
+        if self.api.change_option({"save-cookies": value}, self.gid):
+            self._struct["save-cookies"] = value
+
         # =<FILE>
         #
         # Save Cookies to FILE in Mozilla/Firefox(1.x/2.x)/ Netscape format. If FILE already exists,
         # it is overwritten. Session Cookies are also saved and their expiry values are treated as 0. Possible
         # Values: /path/to/file
 
-        self.use_head = struct.get("use-head")
+    @property
+    def use_head(self):
+        return self._struct.get("use-head")
+
+    @use_head.setter
+    def use_head(self, value):
+        if self.api.change_option({"use-head": value}, self.gid):
+            self._struct["use-head"] = value
+
         # [=true|false]
         #
         # Use HEAD method for the first request to the HTTP server. Default: false
 
-        self.user_agent = struct.get("user-agent")
+    @property
+    def user_agent(self):
+        return self._struct.get("user-agent")
+
+    @user_agent.setter
+    def user_agent(self, value):
+        if self.api.change_option({"user-agent": value}, self.gid):
+            self._struct["user-agent"] = value
+
         # =<USER_AGENT>
         #
         # Set user agent for HTTP(S) downloads. Default: aria2/$VERSION, $VERSION is replaced by package version.
 
         # FTP/SFTP Specific Options
 
-        self.ftp_user = struct.get("ftp-user")
+    @property
+    def ftp_user(self):
+        return self._struct.get("ftp-user")
+
+    @ftp_user.setter
+    def ftp_user(self, value):
+        if self.api.change_option({"ftp-user": value}, self.gid):
+            self._struct["ftp-user"] = value
+
         # =<USER>
         #
         # Set FTP user. This affects all URIs. Default: anonymous
 
-        self.ftp_passwd = struct.get("ftp-passwd")
+    @property
+    def ftp_passwd(self):
+        return self._struct.get("ftp-passwd")
+
+    @ftp_passwd.setter
+    def ftp_passwd(self, value):
+        if self.api.change_option({"ftp-passwd": value}, self.gid):
+            self._struct["ftp-passwd"] = value
+
         # =<PASSWD>
         #
         # Set FTP password. This affects all URIs. If user name is embedded but password is missing in URI,
         # aria2 tries to resolve password using .netrc. If password is found in .netrc, then use it as password. If
         # not, use the password specified in this option. Default: ARIA2USER@
 
-        self.ftp_pasv = struct.get("ftp-pasv")
+    @property
+    def ftp_pasv(self):
+        return self._struct.get("ftp-pasv")
+
+    @ftp_pasv.setter
+    def ftp_pasv(self, value):
+        if self.api.change_option({"ftp-pasv": value}, self.gid):
+            self._struct["ftp-pasv"] = value
+
         # [=true|false]
         #
         # Use the passive mode in FTP. If false is given, the active mode will be used. Default: true
@@ -467,23 +941,55 @@ class Options:
         # NOTE:
         #    This option is ignored for SFTP transfer.
 
-        self.ftp_proxy = struct.get("ftp-proxy")
+    @property
+    def ftp_proxy(self):
+        return self._struct.get("ftp-proxy")
+
+    @ftp_proxy.setter
+    def ftp_proxy(self, value):
+        if self.api.change_option({"ftp-proxy": value}, self.gid):
+            self._struct["ftp-proxy"] = value
+
         # =<PROXY>
         #
         # Use a proxy server for FTP. To override a previously defined proxy, use "". See also the --all-proxy
         # option. This affects all ftp downloads. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 
-        self.ftp_proxy_passwd = struct.get("ftp-proxy-passwd")
+    @property
+    def ftp_proxy_passwd(self):
+        return self._struct.get("ftp-proxy-passwd")
+
+    @ftp_proxy_passwd.setter
+    def ftp_proxy_passwd(self, value):
+        if self.api.change_option({"ftp-proxy-passwd": value}, self.gid):
+            self._struct["ftp-proxy-passwd"] = value
+
         # =<PASSWD>
         #
         # Set password for --ftp-proxy option.
 
-        self.ftp_proxy_user = struct.get("ftp-proxy-user")
+    @property
+    def ftp_proxy_user(self):
+        return self._struct.get("ftp-proxy-user")
+
+    @ftp_proxy_user.setter
+    def ftp_proxy_user(self, value):
+        if self.api.change_option({"ftp-proxy-user": value}, self.gid):
+            self._struct["ftp-proxy-user"] = value
+
         # =<USER>
         #
         # Set user for --ftp-proxy option.
 
-        self.ftp_type = struct.get("ftp-type")
+    @property
+    def ftp_type(self):
+        return self._struct.get("ftp-type")
+
+    @ftp_type.setter
+    def ftp_type(self, value):
+        if self.api.change_option({"ftp-type": value}, self.gid):
+            self._struct["ftp-type"] = value
+
         # =<TYPE>
         #
         # Set FTP transfer type. TYPE is either binary or ascii. Default: binary
@@ -491,12 +997,28 @@ class Options:
         # NOTE:
         #    This option is ignored for SFTP transfer.
 
-        self.ftp_reuse_connection = struct.get("ftp-reuse-connection")
+    @property
+    def ftp_reuse_connection(self):
+        return self._struct.get("ftp-reuse-connection")
+
+    @ftp_reuse_connection.setter
+    def ftp_reuse_connection(self, value):
+        if self.api.change_option({"ftp-reuse-connection": value}, self.gid):
+            self._struct["ftp-reuse-connection"] = value
+
         # [=true|false]
         #
         # Reuse connection in FTP. Default: true
 
-        self.ssh_host_key_md = struct.get("ssh-host-key-md")
+    @property
+    def ssh_host_key_md(self):
+        return self._struct.get("ssh-host-key-md")
+
+    @ssh_host_key_md.setter
+    def ssh_host_key_md(self, value):
+        if self.api.change_option({"ssh-host-key-md": value}, self.gid):
+            self._struct["ssh-host-key-md"] = value
+
         # =<TYPE>=<DIGEST>
         #
         # Set checksum for SSH host public key. TYPE is hash type. The supported hash type is sha-1 or
@@ -506,7 +1028,15 @@ class Options:
 
         # BitTorrent/Metalink Options
 
-        self.select_file = struct.get("select-file")
+    @property
+    def select_file(self):
+        return self._struct.get("select-file")
+
+    @select_file.setter
+    def select_file(self, value):
+        if self.api.change_option({"select-file": value}, self.gid):
+            self._struct["select-file"] = value
+
         # =<INDEX>...
         #
         # Set file to download by specifying its index. You can find the file index using the --show-files option.
@@ -519,7 +1049,15 @@ class Options:
         #     design, not a bug. A single piece may include several files or part of files, and aria2 writes the piece
         #     to the appropriate files.
 
-        self.show_files = struct.get("show-files")
+    @property
+    def show_files(self):
+        return self._struct.get("show-files")
+
+    @show_files.setter
+    def show_files(self, value):
+        if self.api.change_option({"show-files": value}, self.gid):
+            self._struct["show-files"] = value
+
         # [=true|false]
         #
         # Print file listing of ".torrent", ".meta4" and ".metalink" file and exit. In case of ".torrent" file,
@@ -527,7 +1065,15 @@ class Options:
 
         # BitTorrent Specific Options
 
-        self.bt_detach_seed_only = struct.get("bt-detach-seed-only")
+    @property
+    def bt_detach_seed_only(self):
+        return self._struct.get("bt-detach-seed-only")
+
+    @bt_detach_seed_only.setter
+    def bt_detach_seed_only(self, value):
+        if self.api.change_option({"bt-detach-seed-only": value}, self.gid):
+            self._struct["bt-detach-seed-only"] = value
+
         # [=true|false]
         #
         # Exclude seed only downloads when counting concurrent active downloads (See -j option). This means that
@@ -536,27 +1082,59 @@ class Options:
         # gets started. But be aware that seeding item is still recognized as active download in RPC method. Default:
         # false
 
-        self.bt_enable_hook_after_hash_check = struct.get("bt_enable_hook_after_hash_check")
+    @property
+    def bt_enable_hook_after_hash_check(self):
+        return self._struct.get("bt_enable_hook_after_hash_check")
+
+    @bt_enable_hook_after_hash_check.setter
+    def bt_enable_hook_after_hash_check(self, value):
+        if self.api.change_option({"bt_enable_hook_after_hash_check": value}, self.gid):
+            self._struct["bt_enable_hook_after_hash_check"] = value
+
         # [=true|false]
         #
         # Allow hook command invocation after hash check (see -V option) in BitTorrent download. By default,
         # when hash check succeeds, the command given by --on-bt-download-complete is executed. To disable this
         # action, give false to this option. Default: true
 
-        self.bt_enable_lpd = struct.get("bt-enable-lpd")
+    @property
+    def bt_enable_lpd(self):
+        return self._struct.get("bt-enable-lpd")
+
+    @bt_enable_lpd.setter
+    def bt_enable_lpd(self, value):
+        if self.api.change_option({"bt-enable-lpd": value}, self.gid):
+            self._struct["bt-enable-lpd"] = value
+
         # [=true|false]
         #
         # Enable Local Peer Discovery. If a private flag is set in a torrent, aria2 doesn't use this feature for that
         # download even if true is given. Default: false
 
-        self.bt_exclude_tracker = struct.get("bt-exclude-tracker")
+    @property
+    def bt_exclude_tracker(self):
+        return self._struct.get("bt-exclude-tracker")
+
+    @bt_exclude_tracker.setter
+    def bt_exclude_tracker(self, value):
+        if self.api.change_option({"bt-exclude-tracker": value}, self.gid):
+            self._struct["bt-exclude-tracker"] = value
+
         # =<URI>[,...]
         #
         # Comma separated list of BitTorrent tracker's announce URI to remove. You can use special value * which
         # matches all URIs, thus removes all announce URIs. When specifying * in shell command-line, don't forget to
         # escape or quote it. See also --bt-tracker option.
 
-        self.bt_external_ip = struct.get("bt-external-ip")
+    @property
+    def bt_external_ip(self):
+        return self._struct.get("bt-external-ip")
+
+    @bt_external_ip.setter
+    def bt_external_ip(self, value):
+        if self.api.change_option({"bt-external-ip": value}, self.gid):
+            self._struct["bt-external-ip"] = value
+
         # =<IPADDRESS>
         #
         # Specify the external IP address to use in BitTorrent download and DHT. It may be sent to BitTorrent
@@ -564,7 +1142,15 @@ class Options:
         # torrent. This is critical to use DHT in a private network. Although this function is named external,
         # it can accept any kind of IP addresses.
 
-        self.bt_force_encryption = struct.get("bt-force-encryption")
+    @property
+    def bt_force_encryption(self):
+        return self._struct.get("bt-force-encryption")
+
+    @bt_force_encryption.setter
+    def bt_force_encryption(self, value):
+        if self.api.change_option({"bt-force-encryption": value}, self.gid):
+            self._struct["bt-force-encryption"] = value
+
         # [=true|false]
         #
         # Requires BitTorrent message payload encryption with arc4. This is a shorthand of --bt-require-crypto
@@ -572,43 +1158,99 @@ class Options:
         # given, deny legacy BitTorrent handshake and only use Obfuscation handshake and always encrypt message
         # payload. Default: false
 
-        self.bt_hash_check_seed = struct.get("bt-hash-check-seed")
+    @property
+    def bt_hash_check_seed(self):
+        return self._struct.get("bt-hash-check-seed")
+
+    @bt_hash_check_seed.setter
+    def bt_hash_check_seed(self, value):
+        if self.api.change_option({"bt-hash-check-seed": value}, self.gid):
+            self._struct["bt-hash-check-seed"] = value
+
         # [=true|false]
         #
         # If true is given, after hash check using --check-integrity option and file is complete, continue to seed
         # file. If you want to check file and download it only when it is damaged or incomplete, set this option to
         # false. This option has effect only on BitTorrent download. Default: true
 
-        self.bt_lpd_interface = struct.get("bt-lpd-interface")
+    @property
+    def bt_lpd_interface(self):
+        return self._struct.get("bt-lpd-interface")
+
+    @bt_lpd_interface.setter
+    def bt_lpd_interface(self, value):
+        if self.api.change_option({"bt-lpd-interface": value}, self.gid):
+            self._struct["bt-lpd-interface"] = value
+
         # =<INTERFACE>
         #
         # Use given interface for Local Peer Discovery. If this option is not specified, the default interface is
         # chosen. You can specify interface name and IP address. Possible Values: interface, IP address
 
-        self.bt_max_open_files = struct.get("bt-max-open-files")
+    @property
+    def bt_max_open_files(self):
+        return self._struct.get("bt-max-open-files")
+
+    @bt_max_open_files.setter
+    def bt_max_open_files(self, value):
+        if self.api.change_option({"bt-max-open-files": value}, self.gid):
+            self._struct["bt-max-open-files"] = value
+
         # =<NUM>
         #
         # Specify maximum number of files to open in multi-file BitTorrent/Metalink download globally. Default: 100
 
-        self.bt_max_peers = struct.get("bt-max-peers")
+    @property
+    def bt_max_peers(self):
+        return self._struct.get("bt-max-peers")
+
+    @bt_max_peers.setter
+    def bt_max_peers(self, value):
+        if self.api.change_option({"bt-max-peers": value}, self.gid):
+            self._struct["bt-max-peers"] = value
+
         # =<NUM>
         #
         # Specify the maximum number of peers per torrent. 0 means unlimited. See also --bt-request-peer-speed-limit
         # option. Default: 55
 
-        self.bt_metadata_only = struct.get("bt-metadata-only")
+    @property
+    def bt_metadata_only(self):
+        return self._struct.get("bt-metadata-only")
+
+    @bt_metadata_only.setter
+    def bt_metadata_only(self, value):
+        if self.api.change_option({"bt-metadata-only": value}, self.gid):
+            self._struct["bt-metadata-only"] = value
+
         # [=true|false]
         #
         # Download meta data only. The file(s) described in meta data will not be downloaded. This option has effect
         # only when BitTorrent Magnet URI is used. See also --bt-save-metadata option. Default: false
 
-        self.bt_min_crypto_level = struct.get("bt-min-crypto-level")
+    @property
+    def bt_min_crypto_level(self):
+        return self._struct.get("bt-min-crypto-level")
+
+    @bt_min_crypto_level.setter
+    def bt_min_crypto_level(self, value):
+        if self.api.change_option({"bt-min-crypto-level": value}, self.gid):
+            self._struct["bt-min-crypto-level"] = value
+
         # =plain|arc4
         #
         # Set minimum level of encryption method. If several encryption methods are provided by a peer,
         # aria2 chooses the lowest one which satisfies the given level. Default: plain
 
-        self.bt_prioritize_piece = struct.get("bt-prioritize-piece")
+    @property
+    def bt_prioritize_piece(self):
+        return self._struct.get("bt-prioritize-piece")
+
+    @bt_prioritize_piece.setter
+    def bt_prioritize_piece(self, value):
+        if self.api.change_option({"bt-prioritize-piece": value}, self.gid):
+            self._struct["bt-prioritize-piece"] = value
+
         # =head[=<SIZE>],tail[=<SIZE>]
         #
         # Try to download first and last pieces of each file first. This is useful for previewing files. The argument
@@ -617,27 +1259,59 @@ class Options:
         # first SIZE bytes of each file get higher priority. tail=<SIZE> means the range of last SIZE bytes of each
         # file. SIZE can include K or M (1K = 1024, 1M = 1024K). If SIZE is omitted, SIZE=1M is used.
 
-        self.bt_remove_unselected_file = struct.get("bt-remove-unselected-file")
+    @property
+    def bt_remove_unselected_file(self):
+        return self._struct.get("bt-remove-unselected-file")
+
+    @bt_remove_unselected_file.setter
+    def bt_remove_unselected_file(self, value):
+        if self.api.change_option({"bt-remove-unselected-file": value}, self.gid):
+            self._struct["bt-remove-unselected-file"] = value
+
         # [=true|false]
         #
         # Removes the unselected files when download is completed in BitTorrent. To select files,
         # use --select-file option. If it is not used, all files are assumed to be selected. Please use this option
         # with care because it will actually remove files from your disk. Default: false
 
-        self.bt_require_crypto = struct.get("bt-require-crypto")
+    @property
+    def bt_require_crypto(self):
+        return self._struct.get("bt-require-crypto")
+
+    @bt_require_crypto.setter
+    def bt_require_crypto(self, value):
+        if self.api.change_option({"bt-require-crypto": value}, self.gid):
+            self._struct["bt-require-crypto"] = value
+
         # [=true|false]
         #
         # If true is given, aria2 doesn't accept and establish connection with legacy BitTorrent handshake(
         # \19BitTorrent protocol). Thus aria2 always uses Obfuscation handshake. Default: false
 
-        self.bt_request_peer_speed_limit = struct.get("bt-request-peer-speed-limit")
+    @property
+    def bt_request_peer_speed_limit(self):
+        return self._struct.get("bt-request-peer-speed-limit")
+
+    @bt_request_peer_speed_limit.setter
+    def bt_request_peer_speed_limit(self, value):
+        if self.api.change_option({"bt-request-peer-speed-limit": value}, self.gid):
+            self._struct["bt-request-peer-speed-limit"] = value
+
         # =<SPEED>
         #
         # If the whole download speed of every torrent is lower than SPEED, aria2 temporarily increases the number
         # of peers to try for more download speed. Configuring this option with your preferred download speed can
         # increase your download speed in some cases. You can append K or M (1K = 1024, 1M = 1024K). Default: 50K
 
-        self.bt_save_metadata = struct.get("bt-save-metadata")
+    @property
+    def bt_save_metadata(self):
+        return self._struct.get("bt-save-metadata")
+
+    @bt_save_metadata.setter
+    def bt_save_metadata(self, value):
+        if self.api.change_option({"bt-save-metadata": value}, self.gid):
+            self._struct["bt-save-metadata"] = value
+
         # [=true|false]
         #
         # Save meta data as ".torrent" file. This option has effect only when BitTorrent Magnet URI is used. The
@@ -645,30 +1319,70 @@ class Options:
         # where download file is saved. If the same file already exists, meta data is not saved. See also
         # --bt-metadata-only option. Default: false
 
-        self.bt_seed_unverified = struct.get("bt-seed-unverified")
+    @property
+    def bt_seed_unverified(self):
+        return self._struct.get("bt-seed-unverified")
+
+    @bt_seed_unverified.setter
+    def bt_seed_unverified(self, value):
+        if self.api.change_option({"bt-seed-unverified": value}, self.gid):
+            self._struct["bt-seed-unverified"] = value
+
         # [=true|false]
         #
         # Seed previously downloaded files without verifying piece hashes. Default: false
 
-        self.bt_stop_timeout = struct.get("bt-stop-timeout")
+    @property
+    def bt_stop_timeout(self):
+        return self._struct.get("bt-stop-timeout")
+
+    @bt_stop_timeout.setter
+    def bt_stop_timeout(self, value):
+        if self.api.change_option({"bt-stop-timeout": value}, self.gid):
+            self._struct["bt-stop-timeout"] = value
+
         # =<SEC>
         #
         # Stop BitTorrent download if download speed is 0 in consecutive SEC seconds. If 0 is given, this feature is
         # disabled. Default: 0
 
-        self.bt_tracker = struct.get("bt-tracker")
+    @property
+    def bt_tracker(self):
+        return self._struct.get("bt-tracker")
+
+    @bt_tracker.setter
+    def bt_tracker(self, value):
+        if self.api.change_option({"bt-tracker": value}, self.gid):
+            self._struct["bt-tracker"] = value
+
         # =<URI>[,...]
         #
         # Comma separated list of additional BitTorrent tracker's announce URI. These URIs are not affected by
         # --bt-exclude-tracker option because they are added after URIs in --bt-exclude-tracker option are removed.
 
-        self.bt_tracker_connect_timeout = struct.get("bt-tracker-connect-timeout")
+    @property
+    def bt_tracker_connect_timeout(self):
+        return self._struct.get("bt-tracker-connect-timeout")
+
+    @bt_tracker_connect_timeout.setter
+    def bt_tracker_connect_timeout(self, value):
+        if self.api.change_option({"bt-tracker-connect-timeout": value}, self.gid):
+            self._struct["bt-tracker-connect-timeout"] = value
+
         # =<SEC>
         #
         # Set the connect timeout in seconds to establish connection to tracker. After the connection is
         # established, this option makes no effect and --bt-tracker-timeout option is used instead. Default: 60
 
-        self.bt_tracker_interval = struct.get("bt-tracker-interval")
+    @property
+    def bt_tracker_interval(self):
+        return self._struct.get("bt-tracker-interval")
+
+    @bt_tracker_interval.setter
+    def bt_tracker_interval(self, value):
+        if self.api.change_option({"bt-tracker-interval": value}, self.gid):
+            self._struct["bt-tracker-interval"] = value
+
         # =<SEC>
         #
         # Set the interval in seconds between tracker requests. This completely overrides interval value and
@@ -676,39 +1390,95 @@ class Options:
         # is set, aria2 determines interval based on the response of tracker and the download progress.
         # Default: 0
 
-        self.bt_tracker_timeout = struct.get("bt-tracker-timeout")
+    @property
+    def bt_tracker_timeout(self):
+        return self._struct.get("bt-tracker-timeout")
+
+    @bt_tracker_timeout.setter
+    def bt_tracker_timeout(self, value):
+        if self.api.change_option({"bt-tracker-timeout": value}, self.gid):
+            self._struct["bt-tracker-timeout"] = value
+
         # =<SEC>
         #
         # Set timeout in seconds. Default: 60
 
-        self.dht_entry_point = struct.get("dht-entry-point")
+    @property
+    def dht_entry_point(self):
+        return self._struct.get("dht-entry-point")
+
+    @dht_entry_point.setter
+    def dht_entry_point(self, value):
+        if self.api.change_option({"dht-entry-point": value}, self.gid):
+            self._struct["dht-entry-point"] = value
+
         # =<HOST>:<PORT>
         #
         # Set host and port as an entry point to IPv4 DHT network.
 
-        self.dht_entry_point6 = struct.get("dht-entry-point6")
+    @property
+    def dht_entry_point6(self):
+        return self._struct.get("dht-entry-point6")
+
+    @dht_entry_point6.setter
+    def dht_entry_point6(self, value):
+        if self.api.change_option({"dht-entry-point6": value}, self.gid):
+            self._struct["dht-entry-point6"] = value
+
         # =<HOST>:<PORT>
         #
         # Set host and port as an entry point to IPv6 DHT network.
 
-        self.dht_file_path = struct.get("dht-file-path")
+    @property
+    def dht_file_path(self):
+        return self._struct.get("dht-file-path")
+
+    @dht_file_path.setter
+    def dht_file_path(self, value):
+        if self.api.change_option({"dht-file-path": value}, self.gid):
+            self._struct["dht-file-path"] = value
+
         # =<PATH>
         #
         # Change the IPv4 DHT routing table file to PATH. Default: $HOME/.aria2/dht.dat if present, otherwise
         # $XDG_CACHE_HOME/aria2/dht.dat.
 
-        self.dht_file_path6 = struct.get("dht-file-path6")
+    @property
+    def dht_file_path6(self):
+        return self._struct.get("dht-file-path6")
+
+    @dht_file_path6.setter
+    def dht_file_path6(self, value):
+        if self.api.change_option({"dht-file-path6": value}, self.gid):
+            self._struct["dht-file-path6"] = value
+
         # =<PATH>
         #
         # Change the IPv6 DHT routing table file to PATH. Default: $HOME/.aria2/dht6.dat if present, otherwise
         # $XDG_CACHE_HOME/aria2/dht6.dat.
 
-        self.dht_listen_addr6 = struct.get("dht-listen-addr6")
+    @property
+    def dht_listen_addr6(self):
+        return self._struct.get("dht-listen-addr6")
+
+    @dht_listen_addr6.setter
+    def dht_listen_addr6(self, value):
+        if self.api.change_option({"dht-listen-addr6": value}, self.gid):
+            self._struct["dht-listen-addr6"] = value
+
         # =<ADDR>
         #
         # Specify address to bind socket for IPv6 DHT. It should be a global unicast IPv6 address of the host.
 
-        self.dht_listen_port = struct.get("dht-listen-port")
+    @property
+    def dht_listen_port(self):
+        return self._struct.get("dht-listen-port")
+
+    @dht_listen_port.setter
+    def dht_listen_port(self, value):
+        if self.api.change_option({"dht-listen-port": value}, self.gid):
+            self._struct["dht-listen-port"] = value
+
         # =<PORT>...
         #
         # Set UDP listening port used by DHT(IPv4, IPv6) and UDP tracker. Multiple ports can be specified by using ,
@@ -718,31 +1488,71 @@ class Options:
         # NOTE:
         #    Make sure that the specified ports are open for incoming UDP traffic.
 
-        self.dht_message_timeout = struct.get("dht-message-timeout")
+    @property
+    def dht_message_timeout(self):
+        return self._struct.get("dht-message-timeout")
+
+    @dht_message_timeout.setter
+    def dht_message_timeout(self, value):
+        if self.api.change_option({"dht-message-timeout": value}, self.gid):
+            self._struct["dht-message-timeout"] = value
+
         # =<SEC>
         #
         # Set timeout in seconds. Default: 10
 
-        self.enable_dht = struct.get("enable-dht")
+    @property
+    def enable_dht(self):
+        return self._struct.get("enable-dht")
+
+    @enable_dht.setter
+    def enable_dht(self, value):
+        if self.api.change_option({"enable-dht": value}, self.gid):
+            self._struct["enable-dht"] = value
+
         # [=true|false]
         #
         # Enable IPv4 DHT functionality. It also enables UDP tracker support. If a private flag is set in a torrent,
         # aria2 doesn't use DHT for that download even if true is given. Default: true
 
-        self.enable_dht6 = struct.get("enable-dht6")
+    @property
+    def enable_dht6(self):
+        return self._struct.get("enable-dht6")
+
+    @enable_dht6.setter
+    def enable_dht6(self, value):
+        if self.api.change_option({"enable-dht6": value}, self.gid):
+            self._struct["enable-dht6"] = value
+
         # [=true|false]
         #
         # Enable IPv6 DHT functionality. If a private flag is set in a torrent, aria2 doesn't use DHT
         # for that download even if true is given. Use --dht-listen-port option to specify port number to listen on.
         # See also --dht-listen-addr6 option.
 
-        self.enable_peer_exchange = struct.get("enable-peer-exchange")
+    @property
+    def enable_peer_exchange(self):
+        return self._struct.get("enable-peer-exchange")
+
+    @enable_peer_exchange.setter
+    def enable_peer_exchange(self, value):
+        if self.api.change_option({"enable-peer-exchange": value}, self.gid):
+            self._struct["enable-peer-exchange"] = value
+
         # [=true|false]
         #
         # Enable Peer Exchange extension. If a private flag is set in a torrent, this feature is disabled for that
         # download even if true is given. Default: true
 
-        self.follow_torrent = struct.get("follow-torrent")
+    @property
+    def follow_torrent(self):
+        return self._struct.get("follow-torrent")
+
+    @follow_torrent.setter
+    def follow_torrent(self, value):
+        if self.api.change_option({"follow-torrent": value}, self.gid):
+            self._struct["follow-torrent"] = value
+
         # =true|false|mem
         #
         # If true or mem is specified, when a file whose suffix is .torrent or content type is
@@ -751,14 +1561,30 @@ class Options:
         # memory. If false is specified, the .torrent file is downloaded to the disk, but is not parsed as a torrent
         # and its contents are not downloaded. Default: true
 
-        self.index_out = struct.get("index-out")
+    @property
+    def index_out(self):
+        return self._struct.get("index-out")
+
+    @index_out.setter
+    def index_out(self, value):
+        if self.api.change_option({"index-out": value}, self.gid):
+            self._struct["index-out"] = value
+
         # =<INDEX>=<PATH>
         #
         # Set file path for file with index=INDEX. You can find the file index using the --show-files option. PATH is
         # a relative path to the path specified in --dir option. You can use this option multiple times. Using this
         # option, you can specify the output file names of BitTorrent downloads.
 
-        self.listen_port = struct.get("listen-port")
+    @property
+    def listen_port(self):
+        return self._struct.get("listen-port")
+
+    @listen_port.setter
+    def listen_port(self, value):
+        if self.api.change_option({"listen-port": value}, self.gid):
+            self._struct["listen-port"] = value
+
         # =<PORT>...
         #
         # Set TCP port number for BitTorrent downloads. Multiple ports can be specified by using, for example:
@@ -768,19 +1594,43 @@ class Options:
         # NOTE:
         #    Make sure that the specified ports are open for incoming TCP traffic.
 
-        self.max_overall_upload_limit = struct.get("max-overall-upload-limit")
+    @property
+    def max_overall_upload_limit(self):
+        return self._struct.get("max-overall-upload-limit")
+
+    @max_overall_upload_limit.setter
+    def max_overall_upload_limit(self, value):
+        if self.api.change_option({"max-overall-upload-limit": value}, self.gid):
+            self._struct["max-overall-upload-limit"] = value
+
         # =<SPEED>
         #
         # Set max overall upload speed in bytes/sec. 0 means unrestricted. You can append K or M (1K = 1024,
         # 1M = 1024K). To limit the upload speed per torrent, use --max-upload-limit option. Default: 0
 
-        self.max_upload_limit = struct.get("max-upload-limit")
+    @property
+    def max_upload_limit(self):
+        return self._struct.get("max-upload-limit")
+
+    @max_upload_limit.setter
+    def max_upload_limit(self, value):
+        if self.api.change_option({"max-upload-limit": value}, self.gid):
+            self._struct["max-upload-limit"] = value
+
         # =<SPEED>
         #
         # Set max upload speed per each torrent in bytes/sec. 0 means unrestricted. You can append K or M (1K = 1024,
         # 1M = 1024K). To limit the overall upload speed, use --max-overall-upload-limit option. Default: 0
 
-        self.peer_id_prefix = struct.get("peer-id-prefix")
+    @property
+    def peer_id_prefix(self):
+        return self._struct.get("peer-id-prefix")
+
+    @peer_id_prefix.setter
+    def peer_id_prefix(self, value):
+        if self.api.change_option({"peer-id-prefix": value}, self.gid):
+            self._struct["peer-id-prefix"] = value
+
         # =<PEER_ID_PREFIX>
         #
         # Specify the prefix of peer ID. The peer ID in BitTorrent is 20 byte length. If more than 20 bytes are
@@ -790,7 +1640,15 @@ class Options:
         # Default:  A2-$MAJOR-$MINOR-$PATCH-, $MAJOR, $MINOR and $PATCH are replaced by major, minor and patch
         # version number respectively. For instance, aria2 version 1.18.8 has prefix ID A2-1-18-8-.
 
-        self.seed_ratio = struct.get("seed-ratio")
+    @property
+    def seed_ratio(self):
+        return self._struct.get("seed-ratio")
+
+    @seed_ratio.setter
+    def seed_ratio(self, value):
+        if self.api.change_option({"seed-ratio": value}, self.gid):
+            self._struct["seed-ratio"] = value
+
         # =<RATIO>
         #
         # Specify share ratio. Seed completed torrents until share ratio reaches RATIO. You are strongly encouraged
@@ -798,7 +1656,15 @@ class Options:
         # share ratio. If --seed-time option is specified along with this option, seeding ends when at least one of
         # the conditions is satisfied. Default: 1.0
 
-        self.seed_time = struct.get("seed-time")
+    @property
+    def seed_time(self):
+        return self._struct.get("seed-time")
+
+    @seed_time.setter
+    def seed_time(self, value):
+        if self.api.change_option({"seed-time": value}, self.gid):
+            self._struct["seed-time"] = value
+
         # =<MINUTES>
         #
         # Specify seeding time in (fractional) minutes. Also see the --seed-ratio option.
@@ -806,7 +1672,15 @@ class Options:
         # NOTE:
         #    Specifying --seed-time=0 disables seeding after download completed.
 
-        self.torrent_file = struct.get("torrent-file")
+    @property
+    def torrent_file(self):
+        return self._struct.get("torrent-file")
+
+    @torrent_file.setter
+    def torrent_file(self, value):
+        if self.api.change_option({"torrent-file": value}, self.gid):
+            self._struct["torrent-file"] = value
+
         # =<TORRENT_FILE>
         #
         # The path to the ".torrent" file. You are not required to use this option because you can specify ".torrent"
@@ -814,7 +1688,15 @@ class Options:
 
         # Metalink Specific Options
 
-        self.follow_metalink = struct.get("follow-metalink")
+    @property
+    def follow_metalink(self):
+        return self._struct.get("follow-metalink")
+
+    @follow_metalink.setter
+    def follow_metalink(self, value):
+        if self.api.change_option({"follow-metalink": value}, self.gid):
+            self._struct["follow-metalink"] = value
+
         # =true|false|mem
         #
         # If true or mem is specified, when a file whose suffix is .meta4 or .metalink or content type of
@@ -823,45 +1705,109 @@ class Options:
         # but is just kept in memory. If false is specified, the .metalink file is downloaded to the disk,
         # but is not parsed as a metalink file and its contents are not downloaded. Default: true
 
-        self.metalink_base_uri = struct.get("metalink-base-uri")
+    @property
+    def metalink_base_uri(self):
+        return self._struct.get("metalink-base-uri")
+
+    @metalink_base_uri.setter
+    def metalink_base_uri(self, value):
+        if self.api.change_option({"metalink-base-uri": value}, self.gid):
+            self._struct["metalink-base-uri"] = value
+
         # =<URI>
         #
         # Specify base URI to resolve relative URI in metalink:url and metalink:metaurl element in a metalink
         # file stored in local disk. If URI points to a directory, URI must end with /.
 
-        self.metalink_file = struct.get("metalink-file")
+    @property
+    def metalink_file(self):
+        return self._struct.get("metalink-file")
+
+    @metalink_file.setter
+    def metalink_file(self, value):
+        if self.api.change_option({"metalink-file": value}, self.gid):
+            self._struct["metalink-file"] = value
+
         # =<METALINK_FILE>
         #
         # The file path to ".meta4" and ".metalink" file. Reads input from stdin when - is specified. You are not
         # required to use this option because you can specify ".metalink" files without --metalink-file.
 
-        self.metalink_language = struct.get("metalink-language")
+    @property
+    def metalink_language(self):
+        return self._struct.get("metalink-language")
+
+    @metalink_language.setter
+    def metalink_language(self, value):
+        if self.api.change_option({"metalink-language": value}, self.gid):
+            self._struct["metalink-language"] = value
+
         # =<LANGUAGE>
         #
         # The language of the file to download.
 
-        self.metalink_location = struct.get("metalink-location")
+    @property
+    def metalink_location(self):
+        return self._struct.get("metalink-location")
+
+    @metalink_location.setter
+    def metalink_location(self, value):
+        if self.api.change_option({"metalink-location": value}, self.gid):
+            self._struct["metalink-location"] = value
+
         # =<LOCATION>[,...]
         #
         # The location of the preferred server. A comma-delimited list of locations is acceptable, for example, jp,us.
 
-        self.metalink_os = struct.get("metalink-os")
+    @property
+    def metalink_os(self):
+        return self._struct.get("metalink-os")
+
+    @metalink_os.setter
+    def metalink_os(self, value):
+        if self.api.change_option({"metalink-os": value}, self.gid):
+            self._struct["metalink-os"] = value
+
         # =<OS>
         #
         # The operating system of the file to download.
 
-        self.metalink_version = struct.get("metalink-version")
+    @property
+    def metalink_version(self):
+        return self._struct.get("metalink-version")
+
+    @metalink_version.setter
+    def metalink_version(self, value):
+        if self.api.change_option({"metalink-version": value}, self.gid):
+            self._struct["metalink-version"] = value
+
         # =<VERSION>
         #
         # The version of the file to download.
 
-        self.metalink_preferred_protocol = struct.get("metalink-preferred-protocol")
+    @property
+    def metalink_preferred_protocol(self):
+        return self._struct.get("metalink-preferred-protocol")
+
+    @metalink_preferred_protocol.setter
+    def metalink_preferred_protocol(self, value):
+        if self.api.change_option({"metalink-preferred-protocol": value}, self.gid):
+            self._struct["metalink-preferred-protocol"] = value
+
         # =<PROTO>
         #
         # Specify preferred protocol. The possible values are http, https, ftp and none. Specify none to disable this
         # feature. Default: none
 
-        self.metalink_enable_unique_protocol = struct.get("metalink_enable_unique_protocol")
+    @property
+    def metalink_enable_unique_protocol(self):
+        return self._struct.get("metalink_enable_unique_protocol")
+
+    @metalink_enable_unique_protocol.setter
+    def metalink_enable_unique_protocol(self, value):
+        if self.api.change_option({"metalink_enable_unique_protocol": value}, self.gid):
+            self._struct["metalink_enable_unique_protocol"] = value
+
         # [=true|false]
         #
         # If true is given and several protocols are available for a mirror in a metalink file, aria2 uses one of
@@ -869,18 +1815,42 @@ class Options:
 
         # RPC Options
 
-        self.enable_rpc = struct.get("enable-rpc")
+    @property
+    def enable_rpc(self):
+        return self._struct.get("enable-rpc")
+
+    @enable_rpc.setter
+    def enable_rpc(self, value):
+        if self.api.change_option({"enable-rpc": value}, self.gid):
+            self._struct["enable-rpc"] = value
+
         # [=true|false]
         #
         # Enable JSON-RPC/XML-RPC server. It is strongly recommended to set secret authorization token using
         # --rpc-secret option. See also --rpc-listen-port option. Default: false
 
-        self.pause = struct.get("pause")
+    @property
+    def pause(self):
+        return self._struct.get("pause")
+
+    @pause.setter
+    def pause(self, value):
+        if self.api.change_option({"pause": value}, self.gid):
+            self._struct["pause"] = value
+
         # [=true|false]
         #
         # Pause download after added. This option is effective only when --enable-rpc=true is given. Default: false
 
-        self.pause_metadata = struct.get("pause-metadata")
+    @property
+    def pause_metadata(self):
+        return self._struct.get("pause-metadata")
+
+    @pause_metadata.setter
+    def pause_metadata(self, value):
+        if self.api.change_option({"pause-metadata": value}, self.gid):
+            self._struct["pause-metadata"] = value
+
         # [=true|false]
         #
         # Pause downloads created as a result of metadata download. There are 3 types of metadata downloads in
@@ -888,12 +1858,28 @@ class Options:
         # metalink file. These metadata downloads will generate downloads using their metadata. This option pauses
         # these subsequent downloads. This option is effective only when --enable-rpc=true is given. Default: false
 
-        self.rpc_allow_origin_all = struct.get("rpc-allow-origin-all")
+    @property
+    def rpc_allow_origin_all(self):
+        return self._struct.get("rpc-allow-origin-all")
+
+    @rpc_allow_origin_all.setter
+    def rpc_allow_origin_all(self, value):
+        if self.api.change_option({"rpc-allow-origin-all": value}, self.gid):
+            self._struct["rpc-allow-origin-all"] = value
+
         # [=true|false]
         #
         # Add Access-Control-Allow-Origin header field with value * to the RPC response. Default: false
 
-        self.rpc_certificate = struct.get("rpc-certificate")
+    @property
+    def rpc_certificate(self):
+        return self._struct.get("rpc-certificate")
+
+    @rpc_certificate.setter
+    def rpc_certificate(self, value):
+        if self.api.change_option({"rpc-certificate": value}, self.gid):
+            self._struct["rpc-certificate"] = value
+
         # =<FILE>
         #
         # Use the certificate in FILE for RPC server. The certificate must be either in PKCS12 (.p12, .pfx) or in PEM
@@ -915,24 +1901,56 @@ class Options:
         #     corresponding to that new certificate. To start aria2c with --rpc-secure use --rpc-certifi‐
         #     cate=<SHA-1>. Alternatively PKCS12 files are also supported. PEM files, however, are not supported.
 
-        self.rpc_listen_all = struct.get("rpc-listen-all")
+    @property
+    def rpc_listen_all(self):
+        return self._struct.get("rpc-listen-all")
+
+    @rpc_listen_all.setter
+    def rpc_listen_all(self, value):
+        if self.api.change_option({"rpc-listen-all": value}, self.gid):
+            self._struct["rpc-listen-all"] = value
+
         # [=true|false]
         #
         # Listen incoming JSON-RPC/XML-RPC requests on all network interfaces. If false is given, listen only on
         # local loopback interface. Default: false
 
-        self.rpc_listen_port = struct.get("rpc-listen-port")
+    @property
+    def rpc_listen_port(self):
+        return self._struct.get("rpc-listen-port")
+
+    @rpc_listen_port.setter
+    def rpc_listen_port(self, value):
+        if self.api.change_option({"rpc-listen-port": value}, self.gid):
+            self._struct["rpc-listen-port"] = value
+
         # =<PORT>
         #
         # Specify a port number for JSON-RPC/XML-RPC server to listen to. Possible Values: 1024 -65535 Default: 6800
 
-        self.rpc_max_request_size = struct.get("rpc-max-request-size")
+    @property
+    def rpc_max_request_size(self):
+        return self._struct.get("rpc-max-request-size")
+
+    @rpc_max_request_size.setter
+    def rpc_max_request_size(self, value):
+        if self.api.change_option({"rpc-max-request-size": value}, self.gid):
+            self._struct["rpc-max-request-size"] = value
+
         # =<SIZE>
         #
         # Set max size of JSON-RPC/XML-RPC request. If aria2 detects the request is more than SIZE bytes,
         # it drops connection. Default: 2M
 
-        self.rpc_passwd = struct.get("rpc-passwd")
+    @property
+    def rpc_passwd(self):
+        return self._struct.get("rpc-passwd")
+
+    @rpc_passwd.setter
+    def rpc_passwd(self, value):
+        if self.api.change_option({"rpc-passwd": value}, self.gid):
+            self._struct["rpc-passwd"] = value
+
         # =<PASSWD>
         #
         # Set JSON-RPC/XML-RPC password.
@@ -941,13 +1959,29 @@ class Options:
         #     --rpc-passwd option will be deprecated in the future release. Migrate to --rpc-secret option as soon as
         #     possible.
 
-        self.rpc_private_key = struct.get("rpc-private-key")
+    @property
+    def rpc_private_key(self):
+        return self._struct.get("rpc-private-key")
+
+    @rpc_private_key.setter
+    def rpc_private_key(self, value):
+        if self.api.change_option({"rpc-private-key": value}, self.gid):
+            self._struct["rpc-private-key"] = value
+
         # =<FILE>
         #
         # Use the private key in FILE for RPC server. The private key must be decrypted and in PEM format. Use
         # --rpc-secure option to enable encryption. See also --rpc-certificate option.
 
-        self.rpc_save_upload_metadata = struct.get("rpc-save-upload-metadata")
+    @property
+    def rpc_save_upload_metadata(self):
+        return self._struct.get("rpc-save-upload-metadata")
+
+    @rpc_save_upload_metadata.setter
+    def rpc_save_upload_metadata(self, value):
+        if self.api.change_option({"rpc-save-upload-metadata": value}, self.gid):
+            self._struct["rpc-save-upload-metadata"] = value
+
         # [=true|false]
         #
         # Save the uploaded torrent or metalink meta data in the directory specified by --dir option. The file
@@ -955,19 +1989,43 @@ class Options:
         # '.torrent'. For metalink, it is '.meta4'. If false is given to this option, the downloads added by
         # aria2.addTorrent() or aria2.addMetalink() will not be saved by --save-session option. Default: true
 
-        self.rpc_secret = struct.get("rpc-secret")
+    @property
+    def rpc_secret(self):
+        return self._struct.get("rpc-secret")
+
+    @rpc_secret.setter
+    def rpc_secret(self, value):
+        if self.api.change_option({"rpc-secret": value}, self.gid):
+            self._struct["rpc-secret"] = value
+
         # =<TOKEN>
         #
         # Set RPC secret authorization token. Read RPC authorization secret token to know how this option value is used.
 
-        self.rpc_secure = struct.get("rpc-secure")
+    @property
+    def rpc_secure(self):
+        return self._struct.get("rpc-secure")
+
+    @rpc_secure.setter
+    def rpc_secure(self, value):
+        if self.api.change_option({"rpc-secure": value}, self.gid):
+            self._struct["rpc-secure"] = value
+
         # [=true|false]
         #
         # RPC transport will be encrypted by SSL/TLS. The RPC clients must use https scheme to access the
         # server. For WebSocket client, use wss scheme. Use --rpc-certificate and --rpc-private-key options to
         # specify the server certificate and private key.
 
-        self.rpc_user = struct.get("rpc-user")
+    @property
+    def rpc_user(self):
+        return self._struct.get("rpc-user")
+
+    @rpc_user.setter
+    def rpc_user(self, value):
+        if self.api.change_option({"rpc-user": value}, self.gid):
+            self._struct["rpc-user"] = value
+
         # =<USER>
         #
         # Set JSON-RPC/XML-RPC user.
@@ -978,19 +2036,43 @@ class Options:
 
         # Advanced Options
 
-        self.allow_overwrite = struct.get("allow-overwrite")
+    @property
+    def allow_overwrite(self):
+        return self._struct.get("allow-overwrite")
+
+    @allow_overwrite.setter
+    def allow_overwrite(self, value):
+        if self.api.change_option({"allow-overwrite": value}, self.gid):
+            self._struct["allow-overwrite"] = value
+
         # [=true|false]
         #
         # Restart download from scratch if the corresponding control file doesn't exist. See also
         # --auto-file-renaming option. Default: false
 
-        self.allow_piece_length_change = struct.get("allow-piece-length-change")
+    @property
+    def allow_piece_length_change(self):
+        return self._struct.get("allow-piece-length-change")
+
+    @allow_piece_length_change.setter
+    def allow_piece_length_change(self, value):
+        if self.api.change_option({"allow-piece-length-change": value}, self.gid):
+            self._struct["allow-piece-length-change"] = value
+
         # [=true|false]
         #
         # If false is given, aria2 aborts download when a piece length is different from one in a control file. If
         # true is given, you can proceed but some download progress will be lost. Default: false
 
-        self.always_resume = struct.get("always-resume")
+    @property
+    def always_resume(self):
+        return self._struct.get("always-resume")
+
+    @always_resume.setter
+    def always_resume(self, value):
+        if self.api.change_option({"always-resume": value}, self.gid):
+            self._struct["always-resume"] = value
+
         # [=true|false]
         #
         # Always resume download. If true is given, aria2 always tries to resume download and if resume is not
@@ -999,12 +2081,28 @@ class Options:
         # --max-resume-failure-tries option), aria2 downloads file from scratch. See --max-resume-failure-tries
         # option. Default: true
 
-        self.async_dns = struct.get("async-dns")
+    @property
+    def async_dns(self):
+        return self._struct.get("async-dns")
+
+    @async_dns.setter
+    def async_dns(self, value):
+        if self.api.change_option({"async-dns": value}, self.gid):
+            self._struct["async-dns"] = value
+
         # [=true|false]
         #
         # Enable asynchronous DNS. Default: true
 
-        self.async_dns_server = struct.get("async-dns-server")
+    @property
+    def async_dns_server(self):
+        return self._struct.get("async-dns-server")
+
+    @async_dns_server.setter
+    def async_dns_server(self, value):
+        if self.api.change_option({"async-dns-server": value}, self.gid):
+            self._struct["async-dns-server"] = value
+
         # =<IPADDRESS>[,...]
         #
         # Comma separated list of DNS server address used in asynchronous DNS resolver. Usually asynchronous
@@ -1013,21 +2111,45 @@ class Options:
         # address. This option is useful when the system does not have /etc/resolv.conf and user does not have the
         # permission to create it.
 
-        self.auto_file_renaming = struct.get("auto-file-renaming")
+    @property
+    def auto_file_renaming(self):
+        return self._struct.get("auto-file-renaming")
+
+    @auto_file_renaming.setter
+    def auto_file_renaming(self, value):
+        if self.api.change_option({"auto-file-renaming": value}, self.gid):
+            self._struct["auto-file-renaming"] = value
+
         # [=true|false]
         #
         # Rename file name if the same file already exists. This option works only in HTTP(S)/FTP download. The new
         # file name has a dot and a number(1..9999) appended after the name, but before the file extension,
         # if any. Default: true
 
-        self.auto_save_interval = struct.get("auto-save-interval")
+    @property
+    def auto_save_interval(self):
+        return self._struct.get("auto-save-interval")
+
+    @auto_save_interval.setter
+    def auto_save_interval(self, value):
+        if self.api.change_option({"auto-save-interval": value}, self.gid):
+            self._struct["auto-save-interval"] = value
+
         # =<SEC>
         #
         # Save a control file(*.aria2) every SEC seconds. If 0 is given, a control file is not saved during download.
         # aria2 saves a control file when it stops regardless of the value. The possible values are between 0 to
         # 600. Default: 60
 
-        self.conditional_get = struct.get("conditional-get")
+    @property
+    def conditional_get(self):
+        return self._struct.get("conditional-get")
+
+    @conditional_get.setter
+    def conditional_get(self, value):
+        if self.api.change_option({"conditional-get": value}, self.gid):
+            self._struct["conditional-get"] = value
+
         # [=true|false]
         #
         # Download file only when the local file is older than remote file. This function only works with HTTP(S)
@@ -1037,24 +2159,56 @@ class Options:
         # supplied file name (see --out option) or file name part in URI if --out is not specified. To overwrite
         # existing file, --allow-overwrite is required. Default: false
 
-        self.conf_path = struct.get("conf-path")
+    @property
+    def conf_path(self):
+        return self._struct.get("conf-path")
+
+    @conf_path.setter
+    def conf_path(self, value):
+        if self.api.change_option({"conf-path": value}, self.gid):
+            self._struct["conf-path"] = value
+
         # =<PATH>
         #
         # Change the configuration file path to PATH. Default: $HOME/.aria2/aria2.conf if present, otherwise
         # $XDG_CONFIG_HOME/aria2/aria2.conf.
 
-        self.console_log_level = struct.get("console-log-level")
+    @property
+    def console_log_level(self):
+        return self._struct.get("console-log-level")
+
+    @console_log_level.setter
+    def console_log_level(self, value):
+        if self.api.change_option({"console-log-level": value}, self.gid):
+            self._struct["console-log-level"] = value
+
         # =<LEVEL>
         #
         # Set log level to output to console. LEVEL is either debug, info, notice, warn or error. Default: notice
 
-        self.daemon = struct.get("daemon")
+    @property
+    def daemon(self):
+        return self._struct.get("daemon")
+
+    @daemon.setter
+    def daemon(self, value):
+        if self.api.change_option({"daemon": value}, self.gid):
+            self._struct["daemon"] = value
+
         # [=true|false]
         #
         # Run as daemon. The current working directory will be changed to / and standard input, standard output
         # and standard error will be redirected to /dev/null. Default: false
 
-        self.deferred_input = struct.get("deferred-input")
+    @property
+    def deferred_input(self):
+        return self._struct.get("deferred-input")
+
+    @deferred_input.setter
+    def deferred_input(self, value):
+        if self.api.change_option({"deferred-input": value}, self.gid):
+            self._struct["deferred-input"] = value
+
         # [=true|false]
         #
         # If true is given, aria2 does not read all URIs and options from file specified by --input-file option at
@@ -1064,13 +2218,29 @@ class Options:
         # WARNING:
         #    --deferred-input option will be disabled when --save-session is used together.
 
-        self.disable_ipv6 = struct.get("disable-ipv6")
+    @property
+    def disable_ipv6(self):
+        return self._struct.get("disable-ipv6")
+
+    @disable_ipv6.setter
+    def disable_ipv6(self, value):
+        if self.api.change_option({"disable-ipv6": value}, self.gid):
+            self._struct["disable-ipv6"] = value
+
         # [=true|false]
         #
         # Disable IPv6. This is useful if you have to use broken DNS and want to avoid terribly slow AAAA record
         # lookup. Default: false
 
-        self.disk_cache = struct.get("disk-cache")
+    @property
+    def disk_cache(self):
+        return self._struct.get("disk-cache")
+
+    @disk_cache.setter
+    def disk_cache(self, value):
+        if self.api.change_option({"disk-cache": value}, self.gid):
+            self._struct["disk-cache"] = value
+
         # =<SIZE>
         #
         # Enable disk cache. If SIZE is 0, the disk cache is disabled. This feature caches the downloaded data in
@@ -1080,7 +2250,15 @@ class Options:
         # are cached in memory, we don't need to read them from the disk. SIZE can include K or M (1K = 1024,
         # 1M = 1024K). Default: 16M
 
-        self.download_result = struct.get("download-result")
+    @property
+    def download_result(self):
+        return self._struct.get("download-result")
+
+    @download_result.setter
+    def download_result(self, value):
+        if self.api.change_option({"download-result": value}, self.gid):
+            self._struct["download-result"] = value
+
         # =<OPT>
         #
         # This option changes the way Download Results is formatted. If OPT is default, print GID, status,
@@ -1089,7 +2267,15 @@ class Options:
         # percentage of progress and path/URI. The percentage of progress and path/URI are printed for each requested
         # file in each row. If OPT is hide, Download Results is hidden. Default: default
 
-        self.dscp = struct.get("dscp")
+    @property
+    def dscp(self):
+        return self._struct.get("dscp")
+
+    @dscp.setter
+    def dscp(self, value):
+        if self.api.change_option({"dscp": value}, self.gid):
+            self._struct["dscp"] = value
+
         # =<DSCP>
         #
         # Set DSCP value in outgoing IP packets of BitTorrent traffic for QoS. This parameter sets only DSCP
@@ -1098,7 +2284,15 @@ class Options:
         # take commonly used values from RFC, network vendors' documentation, Wikipedia or any other source,
         # use them as they are.
 
-        self.rlimit_nofile = struct.get("rlimit-nofile")
+    @property
+    def rlimit_nofile(self):
+        return self._struct.get("rlimit-nofile")
+
+    @rlimit_nofile.setter
+    def rlimit_nofile(self, value):
+        if self.api.change_option({"rlimit-nofile": value}, self.gid):
+            self._struct["rlimit-nofile"] = value
+
         # =<NUM>
         #
         # Set the soft limit of open file descriptors. This open will only have effect when:
@@ -1113,19 +2307,43 @@ class Options:
         #
         # This option is only available on systems supporting the rlimit API.
 
-        self.enable_color = struct.get("enable-color")
+    @property
+    def enable_color(self):
+        return self._struct.get("enable-color")
+
+    @enable_color.setter
+    def enable_color(self, value):
+        if self.api.change_option({"enable-color": value}, self.gid):
+            self._struct["enable-color"] = value
+
         # [=true|false]
         #
         # Enable color output for a terminal. Default: true
 
-        self.enable_mmap = struct.get("enable-mmap")
+    @property
+    def enable_mmap(self):
+        return self._struct.get("enable-mmap")
+
+    @enable_mmap.setter
+    def enable_mmap(self, value):
+        if self.api.change_option({"enable-mmap": value}, self.gid):
+            self._struct["enable-mmap"] = value
+
         # [=true|false]
         #
         # Map files into memory. This option may not work if the file space is not pre-allocated. See --file-allocation.
         #
         # Default: false
 
-        self.event_poll = struct.get("event-poll")
+    @property
+    def event_poll(self):
+        return self._struct.get("event-poll")
+
+    @event_poll.setter
+    def event_poll(self, value):
+        if self.api.change_option({"event-poll": value}, self.gid):
+            self._struct["event-poll"] = value
+
         # =<POLL>
         #
         # Specify the method for polling events. The possible values are epoll, kqueue, port, poll and select.
@@ -1133,7 +2351,15 @@ class Options:
         # Linux. kqueue is available on various *BSD systems including Mac OS X. port is available on Open Solaris.
         # The default value may vary depending on the system you use.
 
-        self.file_allocation = struct.get("file-allocation")
+    @property
+    def file_allocation(self):
+        return self._struct.get("file-allocation")
+
+    @file_allocation.setter
+    def file_allocation(self, value):
+        if self.api.change_option({"file-allocation": value}, self.gid):
+            self._struct["file-allocation"] = value
+
         # =<METHOD>
         #
         # Specify file allocation method. none doesn't pre-allocate file space. prealloc pre-allocates file space
@@ -1156,20 +2382,44 @@ class Options:
         #     In multi file torrent downloads, the files adjacent forward to the specified files are also allocated if
         #     they share the same piece.
 
-        self.force_save = struct.get("force-save")
+    @property
+    def force_save(self):
+        return self._struct.get("force-save")
+
+    @force_save.setter
+    def force_save(self, value):
+        if self.api.change_option({"force-save": value}, self.gid):
+            self._struct["force-save"] = value
+
         # [=true|false]
         #
         # Save download with --save-session option even if the download is completed or removed. This option also
         # saves control file in that situations. This may be useful to save BitTorrent seeding which is recognized as
         # completed state. Default: false
 
-        self.save_not_found = struct.get("save-not-found")
+    @property
+    def save_not_found(self):
+        return self._struct.get("save-not-found")
+
+    @save_not_found.setter
+    def save_not_found(self, value):
+        if self.api.change_option({"save-not-found": value}, self.gid):
+            self._struct["save-not-found"] = value
+
         # [=true|false]
         #
         # Save download with --save-session option even if the file was not found on the server. This option also
         # saves control file in that situations. Default: true
 
-        self.gid = struct.get("gid")
+    @property
+    def gid(self):
+        return self._struct.get("gid")
+
+    @gid.setter
+    def gid(self, value):
+        if self.api.change_option({"gid": value}, self.gid):
+            self._struct["gid"] = value
+
         # =<GID>
         #
         # Set GID manually. aria2 identifies each download by the ID called GID. The GID must be hex string of 16
@@ -1178,18 +2428,42 @@ class Options:
         # added. This option is useful when restoring the sessions saved using --save-session option. If this option
         # is not used, new GID is generated by aria2.
 
-        self.hash_check_only = struct.get("hash-check-only")
+    @property
+    def hash_check_only(self):
+        return self._struct.get("hash-check-only")
+
+    @hash_check_only.setter
+    def hash_check_only(self, value):
+        if self.api.change_option({"hash-check-only": value}, self.gid):
+            self._struct["hash-check-only"] = value
+
         # [=true|false]
         #
         # If true is given, after hash check using --check-integrity option, abort download whether or not download
         # is complete. Default: false
 
-        self.human_readable = struct.get("human-readable")
+    @property
+    def human_readable(self):
+        return self._struct.get("human-readable")
+
+    @human_readable.setter
+    def human_readable(self, value):
+        if self.api.change_option({"human-readable": value}, self.gid):
+            self._struct["human-readable"] = value
+
         # [=true|false]
         #
         # Print sizes and speed in human readable format (e.g., 1.2Ki, 3.4Mi) in the console readout. Default: true
 
-        self.interface = struct.get("interface")
+    @property
+    def interface(self):
+        return self._struct.get("interface")
+
+    @interface.setter
+    def interface(self, value):
+        if self.api.change_option({"interface": value}, self.gid):
+            self._struct["interface"] = value
+
         # =<INTERFACE>
         #
         # Bind sockets to given interface. You can specify interface name, IP address and host name. Possible Values:
@@ -1200,7 +2474,15 @@ class Options:
         #     also --disable-ipv6. If your system doesn't have getifaddrs(3), this option doesn't accept interface
         #     name.
 
-        self.keep_unfinished_download_result = struct.get("keep_unfinished_download_result")
+    @property
+    def keep_unfinished_download_result(self):
+        return self._struct.get("keep_unfinished_download_result")
+
+    @keep_unfinished_download_result.setter
+    def keep_unfinished_download_result(self, value):
+        if self.api.change_option({"keep_unfinished_download_result": value}, self.gid):
+            self._struct["keep_unfinished_download_result"] = value
+
         # [=true|false]
         #
         # Keep unfinished download results even if doing so exceeds --max-download-result. This is useful if all
@@ -1208,7 +2490,15 @@ class Options:
         # there is no upper bound to the number of unfinished download result to keep. If that is undesirable,
         # turn this option off. Default: true
 
-        self.max_download_result = struct.get("max-download-result")
+    @property
+    def max_download_result(self):
+        return self._struct.get("max-download-result")
+
+    @max_download_result.setter
+    def max_download_result(self, value):
+        if self.api.change_option({"max-download-result": value}, self.gid):
+            self._struct["max-download-result"] = value
+
         # =<NUM>
         #
         # Set maximum number of download result kept in memory. The download results are completed/error/removed
@@ -1219,7 +2509,15 @@ class Options:
         # unfinished downloads are kept in memory regardless of this option value. See
         # --keep-unfinished-download-result option. Default: 1000
 
-        self.max_mmap_limit = struct.get("max-mmap-limit")
+    @property
+    def max_mmap_limit(self):
+        return self._struct.get("max-mmap-limit")
+
+    @max_mmap_limit.setter
+    def max_mmap_limit(self, value):
+        if self.api.change_option({"max-mmap-limit": value}, self.gid):
+            self._struct["max-mmap-limit"] = value
+
         # =<SIZE>
         #
         # Set the maximum file size to enable mmap (see --enable-mmap option). The file size is determined by the sum
@@ -1227,62 +2525,142 @@ class Options:
         # total size of those files. If file size is strictly greater than the size specified in this option,
         # mmap will be disabled. Default: 9223372036854775807
 
-        self.max_resume_failure_tries = struct.get("max-resume-failure-tries")
+    @property
+    def max_resume_failure_tries(self):
+        return self._struct.get("max-resume-failure-tries")
+
+    @max_resume_failure_tries.setter
+    def max_resume_failure_tries(self, value):
+        if self.api.change_option({"max-resume-failure-tries": value}, self.gid):
+            self._struct["max-resume-failure-tries"] = value
+
         # =<N>
         #
         # When used with --always-resume=false, aria2 downloads file from scratch when aria2 detects N number of
         # URIs that does not support resume. If N is 0, aria2 downloads file from scratch when all given URIs do not
         # support resume. See --always-resume option. Default: 0
 
-        self.min_tls_version = struct.get("min-tls-version")
+    @property
+    def min_tls_version(self):
+        return self._struct.get("min-tls-version")
+
+    @min_tls_version.setter
+    def min_tls_version(self, value):
+        if self.api.change_option({"min-tls-version": value}, self.gid):
+            self._struct["min-tls-version"] = value
+
         # =<VERSION>
         #
         # Specify minimum SSL/TLS version to enable. Possible Values: SSLv3, TLSv1, TLSv1.1, TLSv1.2 Default: TLSv1
 
-        self.multiple_interface = struct.get("multiple-interface")
+    @property
+    def multiple_interface(self):
+        return self._struct.get("multiple-interface")
+
+    @multiple_interface.setter
+    def multiple_interface(self, value):
+        if self.api.change_option({"multiple-interface": value}, self.gid):
+            self._struct["multiple-interface"] = value
+
         # =<INTERFACES>
         #
         # Comma separated list of interfaces to bind sockets to. Requests will be splited among the interfaces to
         # achieve link aggregation. You can specify interface name, IP address and hostname. If --interface is
         # used, this option will be ignored. Possible Values: interface, IP address, hostname
 
-        self.log_level = struct.get("log-level")
+    @property
+    def log_level(self):
+        return self._struct.get("log-level")
+
+    @log_level.setter
+    def log_level(self, value):
+        if self.api.change_option({"log-level": value}, self.gid):
+            self._struct["log-level"] = value
+
         # =<LEVEL>
         #
         # Set log level to output. LEVEL is either debug, info, notice, warn or error. Default: debug
 
-        self.on_bt_download_complete = struct.get("on-bt-download-complete")
+    @property
+    def on_bt_download_complete(self):
+        return self._struct.get("on-bt-download-complete")
+
+    @on_bt_download_complete.setter
+    def on_bt_download_complete(self, value):
+        if self.api.change_option({"on-bt-download-complete": value}, self.gid):
+            self._struct["on-bt-download-complete"] = value
+
         # =<COMMAND>
         #
         # For BitTorrent, a command specified in --on-download-complete is called after download completed and
         # seeding is over. On the other hand, this option set the command to be executed after download completed but
         # before seeding. See Event Hook for more details about COMMAND. Possible Values: /path/to/command
 
-        self.on_download_complete = struct.get("on-download-complete")
+    @property
+    def on_download_complete(self):
+        return self._struct.get("on-download-complete")
+
+    @on_download_complete.setter
+    def on_download_complete(self, value):
+        if self.api.change_option({"on-download-complete": value}, self.gid):
+            self._struct["on-download-complete"] = value
+
         # =<COMMAND>
         #
         # Set the command to be executed after download completed. See See Event Hook for more details about COMMAND.
         # See also --on-download-stop option. Possible Values: /path/to/command
 
-        self.on_download_error = struct.get("on-download-error")
+    @property
+    def on_download_error(self):
+        return self._struct.get("on-download-error")
+
+    @on_download_error.setter
+    def on_download_error(self, value):
+        if self.api.change_option({"on-download-error": value}, self.gid):
+            self._struct["on-download-error"] = value
+
         # =<COMMAND>
         #
         # Set the command to be executed after download aborted due to error. See Event Hook for more details
         # about COMMAND. See also --on-download-stop option. Possible Values: /path/to/command
 
-        self.on_download_pause = struct.get("on-download-pause")
+    @property
+    def on_download_pause(self):
+        return self._struct.get("on-download-pause")
+
+    @on_download_pause.setter
+    def on_download_pause(self, value):
+        if self.api.change_option({"on-download-pause": value}, self.gid):
+            self._struct["on-download-pause"] = value
+
         # =<COMMAND>
         #
         # Set the command to be executed after download was paused. See Event Hook for more details about COMMAND.
         # Possible Values: /path/to/command
 
-        self.on_download_start = struct.get("on-download-start")
+    @property
+    def on_download_start(self):
+        return self._struct.get("on-download-start")
+
+    @on_download_start.setter
+    def on_download_start(self, value):
+        if self.api.change_option({"on-download-start": value}, self.gid):
+            self._struct["on-download-start"] = value
+
         # =<COMMAND>
         #
         # Set the command to be executed after download got started. See Event Hook for more details about COMMAND.
         # Possible Values: /path/to/command
 
-        self.on_download_stop = struct.get("on-download-stop")
+    @property
+    def on_download_stop(self):
+        return self._struct.get("on-download-stop")
+
+    @on_download_stop.setter
+    def on_download_stop(self, value):
+        if self.api.change_option({"on-download-stop": value}, self.gid):
+            self._struct["on-download-stop"] = value
+
         # =<COMMAND>
         #
         # Set the command to be executed after download stopped. You can override the command to be
@@ -1290,7 +2668,15 @@ class Options:
         # specified, command specified in this option is not executed. See Event Hook for more details about
         # COMMAND. Possible Values: /path/to/command
 
-        self.optimize_concurrent_downloads = struct.get("optimize-concurrent-downloads")
+    @property
+    def optimize_concurrent_downloads(self):
+        return self._struct.get("optimize-concurrent-downloads")
+
+    @optimize_concurrent_downloads.setter
+    def optimize_concurrent_downloads(self, value):
+        if self.api.change_option({"optimize-concurrent-downloads": value}, self.gid):
+            self._struct["optimize-concurrent-downloads"] = value
+
         # [=true|false|<A>:<B>]
         #
         # Optimizes the number of concurrent downloads according to the bandwidth available. aria2 uses the download
@@ -1301,7 +2687,15 @@ class Options:
         # remains constrained under the maximum defined by the --max-concurrent-downloads parameter. Default:
         # false
 
-        self.piece_length = struct.get("piece-length")
+    @property
+    def piece_length(self):
+        return self._struct.get("piece-length")
+
+    @piece_length.setter
+    def piece_length(self, value):
+        if self.api.change_option({"piece-length": value}, self.gid):
+            self._struct["piece-length"] = value
+
         # =<LENGTH>
         #
         # Set a piece length for HTTP/FTP downloads. This is the boundary when aria2 splits a file. All splits occur
@@ -1312,51 +2706,123 @@ class Options:
         #     The possible use case of --piece-length option is change the request range in one HTTP pipelined
         #     request. To enable HTTP pipelining use --enable-http-pipelining.
 
-        self.show_console_readout = struct.get("show-console-readout")
+    @property
+    def show_console_readout(self):
+        return self._struct.get("show-console-readout")
+
+    @show_console_readout.setter
+    def show_console_readout(self, value):
+        if self.api.change_option({"show-console-readout": value}, self.gid):
+            self._struct["show-console-readout"] = value
+
         # [=true|false]
         #
         # Show console readout. Default: true
 
-        self.stderr = struct.get("stderr")
+    @property
+    def stderr(self):
+        return self._struct.get("stderr")
+
+    @stderr.setter
+    def stderr(self, value):
+        if self.api.change_option({"stderr": value}, self.gid):
+            self._struct["stderr"] = value
+
         # [=true|false]
         #
         # Redirect all console output that would be otherwise printed in stdout to stderr. Default: false
 
-        self.summary_interval = struct.get("summary-interval")
+    @property
+    def summary_interval(self):
+        return self._struct.get("summary-interval")
+
+    @summary_interval.setter
+    def summary_interval(self, value):
+        if self.api.change_option({"summary-interval": value}, self.gid):
+            self._struct["summary-interval"] = value
+
         # =<SEC>
         #
         # Set interval in seconds to output download progress summary. Setting 0 suppresses the output. Default: 60
 
-        self.force_sequential = struct.get("force-sequential")
+    @property
+    def force_sequential(self):
+        return self._struct.get("force-sequential")
+
+    @force_sequential.setter
+    def force_sequential(self, value):
+        if self.api.change_option({"force-sequential": value}, self.gid):
+            self._struct["force-sequential"] = value
+
         # [=true|false]
         #
         # Fetch URIs in the command-line sequentially and download each URI in a separate session,
         # like the usual command-line download utilities. Default: false
 
-        self.max_overall_download_limit = struct.get("max-overall-download-limit")
+    @property
+    def max_overall_download_limit(self):
+        return self._struct.get("max-overall-download-limit")
+
+    @max_overall_download_limit.setter
+    def max_overall_download_limit(self, value):
+        if self.api.change_option({"max-overall-download-limit": value}, self.gid):
+            self._struct["max-overall-download-limit"] = value
+
         # =<SPEED>
         #
         # Set max overall download speed in bytes/sec. 0 means unrestricted. You can append K or M (1K = 1024,
         # 1M = 1024K). To limit the download speed per download, use --max-download-limit option. Default: 0
 
-        self.max_download_limit = struct.get("max-download-limit")
+    @property
+    def max_download_limit(self):
+        return self._struct.get("max-download-limit")
+
+    @max_download_limit.setter
+    def max_download_limit(self, value):
+        if self.api.change_option({"max-download-limit": value}, self.gid):
+            self._struct["max-download-limit"] = value
+
         # =<SPEED>
         #
         # Set max download speed per each download in bytes/sec. 0 means unrestricted. You can append K or M (1K
         # = 1024, 1M = 1024K). To limit the overall download speed, use --max-overall-download-limit option. Default: 0
 
-        self.no_conf = struct.get("no-conf")
+    @property
+    def no_conf(self):
+        return self._struct.get("no-conf")
+
+    @no_conf.setter
+    def no_conf(self, value):
+        if self.api.change_option({"no-conf": value}, self.gid):
+            self._struct["no-conf"] = value
+
         # [=true|false]
         #
         # Disable loading aria2.conf file.
 
-        self.no_file_allocation_limit = struct.get("no-file-allocation-limit")
+    @property
+    def no_file_allocation_limit(self):
+        return self._struct.get("no-file-allocation-limit")
+
+    @no_file_allocation_limit.setter
+    def no_file_allocation_limit(self, value):
+        if self.api.change_option({"no-file-allocation-limit": value}, self.gid):
+            self._struct["no-file-allocation-limit"] = value
+
         # =<SIZE>
         #
         # No file allocation is made for files whose size is smaller than SIZE. You can append K or M (1K = 1024,
         # 1M = 1024K). Default: 5M
 
-        self.parameterized_uri = struct.get("parameterized-uri")
+    @property
+    def parameterized_uri(self):
+        return self._struct.get("parameterized-uri")
+
+    @parameterized_uri.setter
+    def parameterized_uri(self, value):
+        if self.api.change_option({"parameterized-uri": value}, self.gid):
+            self._struct["parameterized-uri"] = value
+
         # [=true|false]
         #
         # Enable parameterized URI support. You can specify set of parts: http://{sv1,sv2,sv3}/foo.iso. Also you
@@ -1364,24 +2830,56 @@ class Options:
         # can be omitted. If all URIs do not point to the same file, such as the second example above, -Z option is
         # required. Default: false
 
-        self.quiet = struct.get("quiet")
+    @property
+    def quiet(self):
+        return self._struct.get("quiet")
+
+    @quiet.setter
+    def quiet(self, value):
+        if self.api.change_option({"quiet": value}, self.gid):
+            self._struct["quiet"] = value
+
         # [=true|false]
         #
         # Make aria2 quiet (no console output). Default: false
 
-        self.realtime_chunk_checksum = struct.get("realtime-chunk-checksum")
+    @property
+    def realtime_chunk_checksum(self):
+        return self._struct.get("realtime-chunk-checksum")
+
+    @realtime_chunk_checksum.setter
+    def realtime_chunk_checksum(self, value):
+        if self.api.change_option({"realtime-chunk-checksum": value}, self.gid):
+            self._struct["realtime-chunk-checksum"] = value
+
         # [=true|false]
         #
         # Validate chunk of data by calculating checksum while downloading a file if chunk checksums are provided.
         # Default: true
 
-        self.remove_control_file = struct.get("remove-control-file")
+    @property
+    def remove_control_file(self):
+        return self._struct.get("remove-control-file")
+
+    @remove_control_file.setter
+    def remove_control_file(self, value):
+        if self.api.change_option({"remove-control-file": value}, self.gid):
+            self._struct["remove-control-file"] = value
+
         # [=true|false]
         #
         # Remove control file before download. Using with --allow-overwrite=true, download always starts from
         # scratch. This will be useful for users behind proxy server which disables resume.
 
-        self.save_session = struct.get("save-session")
+    @property
+    def save_session(self):
+        return self._struct.get("save-session")
+
+    @save_session.setter
+    def save_session(self, value):
+        if self.api.change_option({"save-session": value}, self.gid):
+            self._struct["save-session"] = value
+
         # =<FILE>
         #
         # Save error/unfinished downloads to FILE on exit. You can pass this output file to aria2c with
@@ -1410,31 +2908,71 @@ class Options:
         #    local metalink file
         #           Any meaningful GID is not saved.
 
-        self.save_session_interval = struct.get("save-session-interval")
+    @property
+    def save_session_interval(self):
+        return self._struct.get("save-session-interval")
+
+    @save_session_interval.setter
+    def save_session_interval(self, value):
+        if self.api.change_option({"save-session-interval": value}, self.gid):
+            self._struct["save-session-interval"] = value
+
         # =<SEC>
         #
         # Save error/unfinished downloads to a file specified by --save-session option every SEC seconds. If 0
         # is given, file will be saved only when aria2 exits. Default: 0
 
-        self.socket_recv_buffer_size = struct.get("socket-recv-buffer-size")
+    @property
+    def socket_recv_buffer_size(self):
+        return self._struct.get("socket-recv-buffer-size")
+
+    @socket_recv_buffer_size.setter
+    def socket_recv_buffer_size(self, value):
+        if self.api.change_option({"socket-recv-buffer-size": value}, self.gid):
+            self._struct["socket-recv-buffer-size"] = value
+
         # =<SIZE>
         #
         # Set the maximum socket receive buffer in bytes. Specifying 0 will disable this option. This value will
         # be set to socket file descriptor using SO_RCVBUF socket option with setsockopt() call. Default: 0
 
-        self.stop = struct.get("stop")
+    @property
+    def stop(self):
+        return self._struct.get("stop")
+
+    @stop.setter
+    def stop(self, value):
+        if self.api.change_option({"stop": value}, self.gid):
+            self._struct["stop"] = value
+
         # =<SEC>
         #
         # Stop application after SEC seconds has passed. If 0 is given, this feature is disabled. Default: 0
 
-        self.stop_with_process = struct.get("stop-with-process")
+    @property
+    def stop_with_process(self):
+        return self._struct.get("stop-with-process")
+
+    @stop_with_process.setter
+    def stop_with_process(self, value):
+        if self.api.change_option({"stop-with-process": value}, self.gid):
+            self._struct["stop-with-process"] = value
+
         # =<PID>
         #
         # Stop application when process PID is not running. This is useful if aria2 process is forked from a parent
         # process. The parent process can fork aria2 with its own pid and when parent process exits for some reason,
         # aria2 can detect it and shutdown itself.
 
-        self.truncate_console_readout = struct.get("truncate-console-readout")
+    @property
+    def truncate_console_readout(self):
+        return self._struct.get("truncate-console-readout")
+
+    @truncate_console_readout.setter
+    def truncate_console_readout(self, value):
+        if self.api.change_option({"truncate-console-readout": value}, self.gid):
+            self._struct["truncate-console-readout"] = value
+
         # [=true|false]
         #
         # Truncate console readout to fit in a single line. Default: true

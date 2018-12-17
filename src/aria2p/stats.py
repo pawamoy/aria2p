@@ -1,23 +1,36 @@
 class Stats:
     def __init__(self, api, struct):
         self.api = api
+        self._struct = struct
 
-        self.download_speed = struct.get("downloadSpeed")
+    @property
+    def download_speed(self):
         # Overall download speed (byte/sec).
+        return self._struct.get("downloadSpeed")
 
-        self.upload_speed = struct.get("uploadSpeed")
+    @property
+    def upload_speed(self):
         # Overall upload speed(byte/sec).
+        return self._struct.get("uploadSpeed")
 
-        self.num_active = struct.get("numActive")
+    @property
+    def num_active(self):
         # The number of active downloads.
+        return self._struct.get("numActive")
 
-        self.num_waiting = struct.get("numWaiting")
+    @property
+    def num_waiting(self):
         # The number of waiting downloads.
+        return self._struct.get("numWaiting")
 
-        self.num_stopped = struct.get("numStopped")
+    @property
+    def num_stopped(self):
         # The number of stopped downloads in the current session. This value is capped by the
         # --max-download-result option.
+        return self._struct.get("numStopped")
 
-        self.num_stopped_total = struct.get("numStoppedTotal")
+    @property
+    def num_stopped_total(self):
         # The number of stopped downloads in the current session and not capped by the
         # --max-download-result option.
+        return self._struct.get("numStoppedTotal")

@@ -1,7 +1,7 @@
 # Aria2p
 Command-line tool and Python library to interact with an `aria2c` daemon process through JSON-RPC.
 
-# Requirements
+## Requirements
 `aria2p` requires Python 3.6. To install Python 3.6, I recommend [`pyenv`](https://github.com/pyenv/pyenv):
 ```bash
 # install pyenv

@@ -7,7 +7,7 @@ class API:
     def __init__(self, json_rpc_client):
         self.client = json_rpc_client
         self.downloads = {}
-        self.options = {}
+        self.options = None
         self.stats = None
 
     def fetch(self):
@@ -101,3 +101,21 @@ class API:
         if not downloads:
             return self.client.unpause_all()
         return [self.client.unpause(d.gid) for d in downloads]
+
+    def get_options(self, gids=None):
+        if not gids:
+            return Options(self, self.client.get_global_option())
+
+        options = {}
+        for gid in gids:
+            options[gid] = Options(self, self.client.get_option(gid), gid)
+        return options
+
+    def set_options(self, options, gids=None):
+        if not gids:
+            return self.client.change_global_option(options)
+
+        results = {}
+        for gid in gids:
+            results[gid] = self.client.change_option(gid, options)
+        return results

@@ -26,6 +26,7 @@ requests = { version = "*" }
 pytest = "*"
 pytest-cov = "*"
 pytest-sugar = "*"
+ipython = "^7.2"
 
 [tool.poetry.scripts]
 aria2p = 'aria2p.cli:main'
