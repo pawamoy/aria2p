@@ -80,6 +80,12 @@ The following are all equivalent:
 - `A---R---I---A---2.a__d__d__u__r__i` (I think you got it)
 - and even more ugly forms...
 
+Calling `aria2p` without any arguments will simply display the list of current downloads:
+
+```
+GID   STATUS  PROGRESS  NAME
+```
+
 ### Examples
 List all available methods.
 *This example uses [`jq`](https://github.com/stedolan/jq).*
