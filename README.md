@@ -81,9 +81,13 @@ The following are all equivalent:
 - and even more ugly forms...
 
 Calling `aria2p` without any arguments will simply display the list of current downloads:
-
 ```
 GID   STATUS  PROGRESS  NAME
+```
+
+There is no interactive mode yet, but you can use `watch` to see how the downloads progress:
+```bash
+watch -d -t -n1 aria2p
 ```
 
 ### Examples
