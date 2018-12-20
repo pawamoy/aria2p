@@ -18,9 +18,10 @@ Why does this file exist, and why not put this in __main__?
 import argparse
 import json
 import sys
+from datetime import timedelta
 
 from .api import API
-from .client import JSONRPCClient
+from .client import JSONRPCClient, JSONRPCError
 
 
 def get_method(name, default=None):
@@ -69,17 +70,36 @@ def main(args=None):
         if method is None:
             print(f"Unknown method {args.method}. Run '{sys.argv[0]} -m listmethods' to list the available methods.")
             sys.exit(1)
-        print(json.dumps(client.call(method, params)))
+        try:
+            response = client.call(method, params)
+        except JSONRPCError as e:
+            print(e.message)
+            sys.exit(e.code)
+        else:
+            print(json.dumps(response))
         return 0
 
     api = API(client)
     downloads = api.get_downloads()
 
     for download in downloads:
-        if float(download.total_length) == 0.0:
+        total = int(download.total_length)
+        completed = int(download.completed_length)
+        download_speed = int(download.download_speed)
+        if total == 0:
             progress = "?"
         else:
-            progress = "%.2f%%" % (float(download.completed_length) / float(download.total_length) * 100)
-        print(f"{download.gid} {download.status:<8} {progress:<8} {download.name}")
+            progress = "%.2f%%" % (completed / total * 100)
+        if download_speed > 0:
+            eta = str(timedelta(seconds=int((total - completed) / download_speed)))
+        else:
+            eta = "-"
+        unit = 'B/s'
+        for u in ('kB/s', 'MB/s'):
+            if download_speed > 1000:
+                download_speed /= 1024
+                unit = u
+        download_speed = "%.2f " % download_speed + unit
+        print(f"{download.gid} {download.status:<8} {progress:<8} {download_speed:<12} {eta:<12} {download.name}")
 
     return 0
