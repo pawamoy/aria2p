@@ -145,7 +145,7 @@ class JSONRPCClient:
         response = requests.post(self.server, data=payload).json()
         if "result" in response:
             return response["result"]
-        raise JSONRPCError(response["code"], response["message"])
+        raise JSONRPCError(response["error"]["code"], response["error"]["message"])
 
     @staticmethod
     def get_payload(method, params=None, msg_id=None, as_json=True):
