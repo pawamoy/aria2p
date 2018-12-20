@@ -91,7 +91,7 @@ class Download:
     @property
     def name(self):
         if not self._name:
-            self._name = self.files[0].path.replace(self.dir, "").lstrip("/")
+            self._name = self.files[0].path.replace(self.dir, "").lstrip("/").split("/")[0]
         return self._name
 
     @property

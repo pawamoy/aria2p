@@ -82,12 +82,13 @@ def main(args=None):
     api = API(client)
     downloads = api.get_downloads()
 
+    print(f"{'GID':<17} {'STATUS':<9} {'PROGRESS':<8} {'DOWN_SPEED':<12} {'ETA':<8} NAME")
     for download in downloads:
         total = int(download.total_length)
         completed = int(download.completed_length)
         download_speed = int(download.download_speed)
         if total == 0:
-            progress = "?"
+            progress = "0%"
         else:
             progress = "%.2f%%" % (completed / total * 100)
         if download_speed > 0:
@@ -100,6 +101,6 @@ def main(args=None):
                 download_speed /= 1024
                 unit = u
         download_speed = "%.2f " % download_speed + unit
-        print(f"{download.gid} {download.status:<8} {progress:<8} {download_speed:<12} {eta:<12} {download.name}")
+        print(f"{download.gid:<17} {download.status:<9} {progress:<8} {download_speed:<12} {eta:<8} {download.name}")
 
     return 0
