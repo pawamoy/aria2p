@@ -3,3 +3,4 @@ __pycache__/
 *.py[cod]
 poetry.lock
 dist/
+*.egg-info/
