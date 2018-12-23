@@ -69,18 +69,23 @@ def main(args=None):
             params = json.loads(args.json_params)
         if method is None:
             print(f"Unknown method {args.method}. Run '{sys.argv[0]} -m listmethods' to list the available methods.")
-            sys.exit(1)
+            return 1
         try:
             response = client.call(method, params)
         except JSONRPCError as e:
             print(e.message)
-            sys.exit(e.code)
+            return e.code
         else:
             print(json.dumps(response))
         return 0
 
     api = API(client)
-    downloads = api.get_downloads()
+
+    try:
+        downloads = api.get_downloads()
+    except Exception as e:
+        print(e)
+        return 1
 
     print(f"{'GID':<17} {'STATUS':<9} {'PROGRESS':<8} {'DOWN_SPEED':<12} {'ETA':<8} NAME")
     for download in downloads:
