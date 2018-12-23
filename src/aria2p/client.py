@@ -2,11 +2,30 @@ import json
 import requests
 
 
-DEFAULT_MSG_ID = -1
+DEFAULT_ID = -1
+DEFAULT_HOST = "http://localhost"
+DEFAULT_PORT = 6800
+
+JSONRPC_PARSER_ERROR = -32700
+JSONRPC_INVALID_REQUEST = -32600
+JSONRPC_METHOD_NOT_FOUND = -32601
+JSONRPC_INVALID_PARAMS = -32602
+JSONRPC_INTERNAL_ERROR = -32603
+
+JSONRPC_CODES = {
+    JSONRPC_PARSER_ERROR: "Invalid JSON was received by the server.",
+    JSONRPC_INVALID_REQUEST: "The JSON sent is not a valid Request object.",
+    JSONRPC_METHOD_NOT_FOUND: "The method does not exist / is not available.",
+    JSONRPC_INVALID_PARAMS: "Invalid method parameter(s).",
+    JSONRPC_INTERNAL_ERROR: "Internal JSON-RPC error.",
+}
 
 
 class JSONRPCError(Exception):
     def __init__(self, code, message):
+        if code in JSONRPC_CODES:
+            message = f"{JSONRPC_CODES[code]}\n{message}"
+
         self.code = code
         self.message = message
 
@@ -154,7 +173,7 @@ class JSONRPCClient:
         if msg_id is not None:
             payload["id"] = msg_id
         else:
-            payload["id"] = DEFAULT_MSG_ID
+            payload["id"] = DEFAULT_ID
 
         if params:
             payload["params"] = params
