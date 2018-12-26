@@ -2,6 +2,7 @@
 This module defines the BitTorrent, File and Download classes, which respectively hold structured information about
 torrent files, files and downloads in aria2c.
 """
+from datetime import timedelta
 
 
 class BitTorrent:
@@ -148,6 +149,29 @@ class Download:
     def __str__(self):
         return self.name
 
+    @staticmethod
+    def _human_readable_bytes(value, digits=2, delim="", postfix=""):
+        unit = 'B'
+        for u in ('kiB', 'MiB', "GiB", "TiB", "PiB", "EiB"):
+            if value > 1000:
+                value /= 1024
+                unit = u
+            else:
+                break
+        return f"{value:.{digits}f}" + delim + unit + postfix
+
+    def _human_readable_seconds(self):
+        pass
+
+    def update(self, struct):
+        """
+        Method to update the internal values of the download with more recent values.
+
+        Args:
+            struct (dict): a dictionary Python object returned by the JSON-RPC client.
+        """
+        self._struct.update(struct)
+
     @property
     def name(self):
         """
@@ -183,17 +207,32 @@ class Download:
     @property
     def total_length(self):
         """Total length of the download in bytes."""
-        return self._struct.get("totalLength")
+        return int(self._struct.get("totalLength"))
+
+    def total_length_string(self, human_readable=True):
+        if human_readable:
+            return self._human_readable_bytes(self.total_length, delim=" ")
+        return str(self.total_length) + " B"
 
     @property
     def completed_length(self):
         """Completed length of the download in bytes."""
-        return self._struct.get("completedLength")
+        return int(self._struct.get("completedLength"))
+
+    def completed_length_string(self, human_readable=True):
+        if human_readable:
+            return self._human_readable_bytes(self.completed_length, delim=" ")
+        return str(self.completed_length) + " B"
 
     @property
     def upload_length(self):
         """Uploaded length of the download in bytes."""
-        return self._struct.get("uploadLength")
+        return int(self._struct.get("uploadLength"))
+
+    def upload_length_string(self, human_readable=True):
+        if human_readable:
+            return self._human_readable_bytes(self.upload_length, delim=" ")
+        return str(self.upload_length) + " B"
 
     @property
     def bitfield(self):
@@ -209,12 +248,22 @@ class Download:
     @property
     def download_speed(self):
         """Download speed of this download measured in bytes/sec."""
-        return self._struct.get("downloadSpeed")
+        return int(self._struct.get("downloadSpeed"))
+
+    def download_speed_string(self, human_readable=True):
+        if human_readable:
+            return self._human_readable_bytes(self.download_speed, delim=" ", postfix="/s")
+        return str(self.download_speed) + " B/s"
 
     @property
     def upload_speed(self):
         """Upload speed of this download measured in bytes/sec."""
-        return self._struct.get("uploadSpeed")
+        return int(self._struct.get("uploadSpeed"))
+
+    def upload_speed_string(self, human_readable=True):
+        if human_readable:
+            return self._human_readable_bytes(self.upload_speed, delim=" ", postfix="/s")
+        return str(self.upload_speed) + " B/s"
 
     @property
     def info_hash(self):
@@ -232,7 +281,7 @@ class Download:
 
         BitTorrent only.
         """
-        return self._struct.get("numSeeders")
+        return int(self._struct.get("numSeeders"))
 
     @property
     def seeder(self):
@@ -246,17 +295,22 @@ class Download:
     @property
     def piece_length(self):
         """Piece length in bytes."""
-        return self._struct.get("pieceLength")
+        return int(self._struct.get("pieceLength"))
+
+    def piece_length_string(self, human_readable=True):
+        if human_readable:
+            return self._human_readable_bytes(self.piece_length, delim=" ")
+        return str(self.piece_length) + " B"
 
     @property
     def num_pieces(self):
         """The number of pieces."""
-        return self._struct.get("numPieces")
+        return int(self._struct.get("numPieces"))
 
     @property
     def connections(self):
         """The number of peers/servers aria2 has connected to."""
-        return self._struct.get("connections")
+        return int(self._struct.get("connections"))
 
     @property
     def error_code(self):
@@ -365,7 +419,12 @@ class Download:
 
         This key exists only when this download is being hash checked.
         """
-        return self._struct.get("verifiedLength")
+        return int(self._struct.get("verifiedLength"))
+
+    def verified_length_string(self, human_readable=True):
+        if human_readable:
+            return self._human_readable_bytes(self.verified_length, delim=" ")
+        return str(self.verified_length) + " B"
 
     @property
     def verify_integrity_pending(self):
@@ -376,11 +435,48 @@ class Download:
         """
         return self._struct.get("verifyIntegrityPending")
 
-    def update(self, struct):
-        """
-        Method to update the internal values of the download with more recent values.
+    @property
+    def progress(self):
+        """Return the progress of the download as float."""
+        try:
+            return self.completed_length / self.total_length * 100
+        except ZeroDivisionError:
+            return 0.0
 
-        Args:
-            struct (dict): a dictionary Python object returned by the JSON-RPC client.
-        """
-        self._struct.update(struct)
+    def progress_string(self, digits=2):
+        return f"{self.progress:.{digits}f}%"
+
+    @property
+    def eta(self):
+        try:
+            return timedelta(seconds=int((self.total_length - self.completed_length) / self.download_speed))
+        except ZeroDivisionError:
+            return float('Inf')
+
+    def eta_string(self):
+        eta = self.eta
+
+        if eta == float("Inf"):
+            return "-"
+
+        pieces = []
+
+        if eta.days:
+            pieces.append(f"{eta.days}d")
+
+        seconds = eta.seconds
+
+        if seconds >= 3600:
+            hours = int(seconds / 3600)
+            pieces.append(f"{hours}h")
+            seconds -= hours * 3600
+
+        if seconds >= 60:
+            minutes = int(seconds / 60)
+            pieces.append(f"{minutes}m")
+            seconds -= minutes * 60
+
+        if seconds > 0:
+            pieces.append(f"{seconds}s")
+
+        return "".join(pieces)
