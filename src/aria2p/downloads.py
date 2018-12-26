@@ -172,6 +172,9 @@ class Download:
         """
         self._struct.update(struct)
 
+    def refetch(self):
+        self.update(self.api.get_download(self.gid))
+
     @property
     def name(self):
         """
