@@ -2,7 +2,11 @@
 Command-line tool and Python library to interact with an `aria2c` daemon process through JSON-RPC.
 
 ## Requirements
-`aria2p` requires Python 3.6. To install Python 3.6, I recommend [`pyenv`](https://github.com/pyenv/pyenv):
+`aria2p` requires Python 3.6 or above.
+
+<details>
+<summary>To install Python 3.6, I recommend using <a href="https://github.com/pyenv/pyenv"><code>pyenv</code></a>.</summary>
+
 ```bash
 # install pyenv
 git clone https://github.com/pyenv/pyenv ~/.pyenv
@@ -17,6 +21,7 @@ pyenv install 3.6.7
 # make it available globally
 pyenv global system 3.6.7
 ```
+</details>
 
 ## Installation
 With `pip`:
@@ -82,7 +87,7 @@ The following are all equivalent:
 
 Calling `aria2p` without any arguments will simply display the list of current downloads:
 ```
-GID   STATUS  PROGRESS  NAME
+GID  STATUS  PROGRESS  DOWN_SPEED  UP_SPEED  ETA  NAME
 ```
 
 There is no interactive mode yet, but you can use `watch` to see how the downloads progress:

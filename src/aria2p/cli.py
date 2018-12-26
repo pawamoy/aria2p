@@ -90,12 +90,20 @@ def main(args=None):
         print(e)
         return 1
 
-    print(f"{'GID':<17} {'STATUS':<9} {'PROGRESS':>8} {'DOWN_SPEED':>12} {'ETA':>8}  NAME")
+    print(f"{'GID':<17} "
+          f"{'STATUS':<9} "
+          f"{'PROGRESS':>8} "
+          f"{'DOWN_SPEED':>12} "
+          f"{'UP_SPEED':>12} "
+          f"{'ETA':>8}  "
+          f"NAME")
+
     for download in downloads:
         print(f"{download.gid:<17} "
               f"{download.status:<9} "
               f"{download.progress_string():>8} "
               f"{download.download_speed_string():>12} "
+              f"{download.upload_speed_string():>12} "
               f"{download.eta_string():>8}  "
               f"{download.name}")
 
