@@ -1,9 +1,25 @@
+"""
+This module defines the API class, which makes use of a JSON-RPC client to provide higher-level methods to
+interact easily with a remote aria2c process.
+"""
+
+
 from .downloads import Download
 from .options import Options
 from .stats import Stats
 
 
 class API:
+    """
+    A class providing high-level methods to interact with a remote aria2c process.
+
+    This class is instantiated with a reference to a :class:`client.JSONRPCClient` instance. It then uses this client
+    to call remote procedures, or remote methods. The client methods reflect exactly what aria2c is providing
+    through JSON-RPC, while this class's methods allow for easier / faster control of the remote process. It also
+    wraps the information the client retrieves in Python object, like  :class:`downloads.Download`, allowing for
+    even more Pythonic interactions, without worrying about payloads, responses, JSON, etc..
+    """
+
     def __init__(self, json_rpc_client):
         self.client = json_rpc_client
         self.downloads = {}
@@ -22,7 +38,7 @@ class API:
         self.options = Options(self, self.client.get_global_option)
 
     def fetch_stats(self):
-        self.stats = Stats(self, self.client.get_global_stat())
+        self.stats = Stats(self.client.get_global_stat())
 
     def add_magnet(self, magnet_uri):
         pass

@@ -1,5 +1,5 @@
 """
-Entrypoint module, in case you use `python -maria2p`.
+Entry-point module, in case you use `python -maria2p`.
 
 Why does this file exist, and why __main__? For more info, read:
 

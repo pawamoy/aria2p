@@ -25,6 +25,7 @@ from .client import JSONRPCClient, JSONRPCError
 
 
 def get_method(name, default=None):
+    """Return the actual method name from a differently formatted name."""
     methods = {}
     for method in JSONRPCClient.METHODS:
         methods[method.lower()] = method
@@ -36,6 +37,7 @@ def get_method(name, default=None):
 
 
 def get_parser():
+    """Return a parser for the command-line options and arguments."""
     parser = argparse.ArgumentParser()
 
     mutually_exclusive = parser.add_mutually_exclusive_group()
@@ -55,6 +57,7 @@ def get_parser():
 
 
 def main(args=None):
+    """The main function, which is executed when you type ``aria2p`` or ``python -m aria2p``."""
     client = JSONRPCClient()
 
     parser = get_parser()

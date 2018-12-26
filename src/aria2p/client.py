@@ -1,3 +1,9 @@
+"""
+This module defines the JSONRPCError and JSONRPCClient classes, which are used to communicate with a remote aria2c
+process through the JSON-RPC protocol.
+"""
+
+
 import json
 import requests
 
@@ -22,6 +28,8 @@ JSONRPC_CODES = {
 
 
 class JSONRPCError(Exception):
+    """An exception specific to JSON-RPC errors."""
+
     def __init__(self, code, message):
         if code in JSONRPC_CODES:
             message = f"{JSONRPC_CODES[code]}\n{message}"
@@ -31,6 +39,31 @@ class JSONRPCError(Exception):
 
 
 class JSONRPCClient:
+    """
+    The JSON-RPC client class.
+
+    In this documentation, all the following terms refer to the same entity, the remote aria2c process:
+    remote process, remote server, server, daemon process, background process, remote.
+
+    This class implements method to communicate with a daemon aria2c process through the JSON-RPC protocol.
+    Each method offered by the aria2c process is implemented in this class, in snake_case instead of camelCase
+    (example: add_uri instead of addUri).
+
+    The class defines a ``METHODS`` variable which contains the names of the available methods.
+
+    The class is instantiated using an address and port, and optionally a secret token. The token is never passed
+    as a method argument.
+
+    The class provides utility methods:
+
+        - call, which performs a JSON-RPC call for a single method;
+        - batch_call, which performs a JSON-RPC call for a list of methods;
+        - multicall2, which is an equivalent of multicall, but easier to use;
+        - post, which is responsible for actually sending a payload to the remote process using a POST request;
+        - get_payload, which is used to build payloads;
+        - get_params, which is used to build list of parameters.
+    """
+
     ADD_URI = "aria2.addUri"
     ADD_TORRENT = "aria2.addTorrent"
     ADD_METALINK = "aria2.addMetalink"
@@ -107,7 +140,15 @@ class JSONRPCClient:
         LIST_NOTIFICATIONS,
     ]
 
-    def __init__(self, host="http://localhost", port=6800, secret=None):
+    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT, secret=""):
+        """
+        Initialization method.
+
+        Args:
+            host (str): the remote process address.
+            port (int): the remote process port.
+            secret (str): the secret token.
+        """
         host = host.rstrip("/")
 
         self.host = host
@@ -119,10 +160,23 @@ class JSONRPCClient:
 
     @property
     def server(self):
+        """Property to return the full remote process / server address."""
         return f"{self.host}:{self.port}/jsonrpc"
 
     # utils
     def call(self, method, params=None, msg_id=None, insert_secret=True):
+        """
+        Call a single JSON-RPC method.
+
+        Args:
+            method (str): the method name. You can use the constant defined in :class:`client.JSONRPCClient`.
+            params (list of str): a list of parameters, as strings.
+            msg_id (int/str): the ID of the call, sent back with the server's answer.
+            insert_secret (bool): whether to insert the secret token in the parameters or not.
+
+        Returns:
+            The answer from the server, as a Python object (dict / list / str / int).
+        """
         params = self.get_params(*(params or []))
 
         if insert_secret and self.secret:
@@ -135,6 +189,24 @@ class JSONRPCClient:
         return self.post(self.get_payload(method, params, msg_id=msg_id))
 
     def batch_call(self, calls, insert_secret=True):
+        """
+        Call multiple methods in one request.
+
+        A batch call is simply a list of full payloads, sent at once to the remote process. The differences with a
+        multicall are:
+
+            - multicall is defined in the JSON-RPC protocol specification, whereas batch_call is not
+            - multicall is a special "system" method, whereas batch_call is simply the concatenation of several methods
+            - multicall payloads define the "jsonrpc" and "id" keys only once, whereas these keys are repeated in
+                each part of the batch_call method
+
+        Args:
+            calls (list): a list of tuples composed of method name, parameters and ID.
+            insert_secret (bool): whether to insert the secret token in the parameters or not.
+
+        Returns:
+            The answer from the server, as a Python object (dict / list / str / int).
+        """
         payloads = []
 
         for method, params, msg_id in calls:
@@ -148,6 +220,37 @@ class JSONRPCClient:
         return self.post(payload)
 
     def multicall2(self, calls, insert_secret=True):
+        """
+        An method equivalent to multicall, but with a simplified usage.
+
+        Instead of providing dictionaries with "methodName" and "params" keys and values, this method allows you
+        to provide the values only, in tuples of length 2.
+
+        With a classic multicall, you would write your params like:
+
+            [
+                {"methodName": client.REMOVE, "params": ["2089b05ecca3d829"]},
+                {"methodName": client.REMOVE, "params": ["2fa07b6e85c40205"]},
+            ]
+
+        With multicall2, you can reduce the verbosity:
+
+            [
+                (client.REMOVE, ["2089b05ecca3d829"]),
+                (client.REMOVE, ["2fa07b6e85c40205"]),
+            ]
+
+        Note:
+            multicall2 is not part of the JSON-RPC protocol specification.
+            It is implemented here as a simple convenience method.
+
+        Args:
+            calls (list): list of tuples composed of method name and parameters.
+            insert_secret (bool): whether to insert the secret token in the parameters or not.
+
+        Returns:
+            The answer from the server, as a Python object (dict / list / str / int).
+        """
         multicall_params = []
 
         for method, params in calls:
@@ -161,6 +264,22 @@ class JSONRPCClient:
         return self.post(payload)
 
     def post(self, payload):
+        """
+        Send a POST request to the server.
+
+        The response is a JSON string, which we then load as a Python object.
+
+        Args:
+            payload (dict): the payload / data to send to the remote process. It contains the following key-value pairs:
+                "jsonrpc": "2.0", "method": method, "id": id, "params": params (optional).
+
+        Returns:
+            The answer from the server, as a Python object (dict / list / str / int).
+
+        Raises:
+            JSONRPCError: when the server returns an error (client/server error).
+                See the :class:`client.JSONRPCError` class.
+        """
         response = requests.post(self.server, data=payload).json()
         if "result" in response:
             return response["result"]
@@ -168,6 +287,18 @@ class JSONRPCClient:
 
     @staticmethod
     def get_payload(method, params=None, msg_id=None, as_json=True):
+        """
+        Build a payload.
+
+        Args:
+            method (str): the method name. You can use the constant defined in :class:`client.JSONRPCClient`.
+            params (list): the list of parameters.
+            msg_id (int/str): the ID of the call, sent back with the server's answer.
+            as_json (bool): whether to return the payload as a JSON-string or Python dictionary.
+
+        Returns:
+
+        """
         payload = {"jsonrpc": "2.0", "method": method}
 
         if msg_id is not None:
@@ -182,6 +313,16 @@ class JSONRPCClient:
 
     @staticmethod
     def get_params(*args):
+        """
+        Build the list of parameters.
+
+        This method simply removes the ``None`̀` values from the given arguments.
+        Args:
+            *args: list of parameters.
+
+        Returns:
+            A new list, with ``None``s filtered out.
+        """
         return [p for p in args if p is not None]
 
     # aria2
