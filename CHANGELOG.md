@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.1.7](https://gitlab.com/pawamoy/aria2p/tags/v0.1.7) ([compare](https://gitlab.com/pawamoy/aria2p/compare/v0.1.6...v0.1.7))
+
+### Fixed
+- Fix specifier for Python version (allow 3.6+) ([f451df9](https://gitlab.com/pawamoy/aria2p/commit/f451df91ac76430543a990816019324acfbc67bb)).
+  See issue [GH-1](https://github.com/pawamoy/aria2p/issues/1).
+
+
 ## [v0.1.6](https://gitlab.com/pawamoy/aria2p/tags/v0.1.6) ([compare](https://gitlab.com/pawamoy/aria2p/compare/v0.1.5...v0.1.6)) - 2018-12-26
 
 ### Added
