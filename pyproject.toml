@@ -19,8 +19,8 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = "~3.6"
-requests = { version = "*" }
+python = "^3.6"
+requests = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
