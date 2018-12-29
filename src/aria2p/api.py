@@ -2,7 +2,7 @@
 This module defines the API class, which makes use of a JSON-RPC client to provide higher-level methods to
 interact easily with a remote aria2c process.
 """
-
+from base64 import b64encode
 
 from .downloads import Download
 from .options import Options
@@ -22,55 +22,105 @@ class API:
 
     def __init__(self, json_rpc_client):
         self.client = json_rpc_client
-        self.downloads = {}
-        self.options = None
-        self.stats = None
 
-    def fetch(self):
-        self.fetch_downloads()
-        self.fetch_stats()
+    def add_magnet(self, magnet_uri, options=None, position=None):
+        if options is None:
+            options = {}
 
-    def fetch_downloads(self):
-        self.downloads.clear()
-        self.downloads = {d.gid: d for d in self.get_downloads()}
+        if isinstance(options, Options):
+            client_options = options.get_struct()
+        else:
+            client_options = options
 
-    def fetch_options(self):
-        self.options = Options(self, self.client.get_global_option)
+        gid = self.client.add_uri([magnet_uri], client_options, position)
 
-    def fetch_stats(self):
-        self.stats = Stats(self.client.get_global_stat())
+        return self.get_download(gid)
 
-    def add_magnet(self, magnet_uri):
-        pass
+    def add_torrent(self, torrent_file_path, uris=None, options=None, position=None):
+        if uris is None:
+            uris = []
 
-    def add_torrent(self, torrent_file):
-        pass
+        if options is None:
+            options = {}
 
-    def add_metalink(self, metalink):
-        pass
+        if isinstance(options, Options):
+            client_options = options.get_struct()
+        else:
+            client_options = options
 
-    def add_url(self, url):
-        pass
+        with open(torrent_file_path) as stream:
+            torrent_contents = stream.read()
+        encoded_contents = b64encode(torrent_contents)
 
-    def add_download(self, download):
-        pass
+        gid = self.client.add_torrent(encoded_contents, uris, client_options, position)
 
-    def find(self, patterns):
-        pass
+        return self.get_download(gid)
 
-    def get_gid(self, filter):
-        pass
+    def add_metalink(self, metalink_file_path, options=None, position=None):
+        if options is None:
+            options = {}
 
-    def get_gids(self, filters=None):
-        gids = []
-        gids.extend(self.client.tell_active(keys=["gid"]))
-        gids.extend(self.client.tell_waiting(0, 1000, keys=["gid"]))
-        gids.extend(self.client.tell_stopped(0, 1000, keys=["gid"]))
-        return gids
+        if isinstance(options, Options):
+            client_options = options.get_struct()
+        else:
+            client_options = options
+
+        with open(metalink_file_path) as stream:
+            metalink_contents = stream.read()
+        encoded_contents = b64encode(metalink_contents)
+
+        gids = self.client.add_metalink(encoded_contents, client_options, position)
+
+        return self.get_downloads(gids)
+
+    def add_url(self, urls, options=None, position=None):
+        if options is None:
+            options = {}
+
+        if isinstance(options, Options):
+            client_options = options.get_struct()
+        else:
+            client_options = options
+
+        gid = self.client.add_uri(urls, client_options, position)
+
+        return self.get_download(gid)
+
+    def search(self, patterns):
+        """
+        gid
+        status
+        totalLength
+        completedLength
+        uploadLength
+        bitfield
+        downloadSpeed
+        uploadSpeed
+        infoHash
+        numSeeders
+        seeder
+        pieceLength
+        numPieces
+        connections
+        errorCode
+        errorMessage
+        followedBy
+        following
+        belongsTo
+        dir
+        files
+        bittorrent
+               announceList
+               comment
+               creationDate
+               mode
+               info
+                      name
+        verifiedLength
+        verifyIntegrityPending
+        """
 
     def get_download(self, gid):
-        if gid in self.downloads:
-            return self.downloads[gid]
         return Download(self, self.client.tell_status(gid))
 
     def get_downloads(self, gids=None):
@@ -78,10 +128,7 @@ class API:
 
         if gids:
             for gid in gids:
-                if gid in self.downloads:
-                    downloads.append(self.downloads[gid])
-                else:
-                    downloads.append(Download(self, self.client.tell_status(gid)))
+                downloads.append(Download(self, self.client.tell_status(gid)))
         else:
             downloads.extend(self.client.tell_active())
             downloads.extend(self.client.tell_waiting(0, 1000))
@@ -91,6 +138,9 @@ class API:
         return downloads
 
     def move(self, download, pos):
+        return self.client.change_position(download.gid, pos, "POS_CUR")
+
+    def move_to(self, download, pos):
         return self.client.change_position(download.gid, pos, "POS_SET")
 
     def move_up(self, download, pos=1):
@@ -118,6 +168,9 @@ class API:
             return self.client.unpause_all()
         return [self.client.unpause(d.gid) for d in downloads]
 
+    def purge(self):
+        return self.client.purge_download_result()
+
     def get_options(self, gids=None):
         if not gids:
             return Options(self, self.client.get_global_option())
@@ -128,10 +181,18 @@ class API:
         return options
 
     def set_options(self, options, gids=None):
+        if isinstance(options, Options):
+            client_options = options.get_struct()
+        else:
+            client_options = options
+
         if not gids:
-            return self.client.change_global_option(options)
+            return self.client.change_global_option(client_options)
 
         results = {}
         for gid in gids:
-            results[gid] = self.client.change_option(gid, options)
+            results[gid] = self.client.change_option(gid, client_options)
         return results
+
+    def get_stats(self):
+        return Stats(self.client.get_global_stat())

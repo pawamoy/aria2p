@@ -2,7 +2,23 @@
 This module defines the BitTorrent, File and Download classes, which respectively hold structured information about
 torrent files, files and downloads in aria2c.
 """
-from datetime import timedelta
+from datetime import timedelta, datetime
+from pathlib import Path
+
+
+def human_readable_seconds(self):
+    pass
+
+
+def human_readable_bytes(value, digits=2, delim="", postfix=""):
+        unit = 'B'
+        for u in ('kiB', 'MiB', "GiB", "TiB", "PiB", "EiB"):
+            if value > 1000:
+                value /= 1024
+                unit = u
+            else:
+                break
+        return f"{value:.{digits}f}" + delim + unit + postfix
 
 
 class BitTorrent:
@@ -45,7 +61,7 @@ class BitTorrent:
 
         The value is an integer since the epoch, measured in seconds.
         """
-        return self._struct.get("creationDate")
+        return datetime.fromtimestamp(self._struct.get("creationDate"))
 
     @property
     def mode(self):
@@ -82,6 +98,9 @@ class File:
     def __str__(self):
         return self.path
 
+    def __eq__(self, other):
+        return self.path == other.path
+
     @property
     def index(self):
         """Index of the file, starting at 1, in the same order as files appear in the multi-file torrent."""
@@ -90,12 +109,17 @@ class File:
     @property
     def path(self):
         """File path."""
-        return self._struct.get("path")
+        return Path(self._struct.get("path"))
 
     @property
     def length(self):
         """File size in bytes."""
-        return self._struct.get("length")
+        return int(self._struct.get("length"))
+
+    def length_string(self, human_readable=True):
+        if human_readable:
+            return human_readable_bytes(self.length, delim=" ")
+        return str(self.length) + " B"
 
     @property
     def completed_length(self):
@@ -106,7 +130,12 @@ class File:
         aria2.tellStatus() method. This is because completedLength in aria2.getFiles() only includes completed
         pieces. On the other hand, completedLength in aria2.tellStatus() also includes partially completed pieces.
         """
-        return self._struct.get("completedLength")
+        return int(self._struct.get("completedLength"))
+
+    def completed_length_string(self, human_readable=True):
+        if human_readable:
+            return human_readable_bytes(self.completed_length, delim=" ")
+        return str(self.completed_length) + " B"
 
     @property
     def selected(self):
@@ -145,35 +174,31 @@ class Download:
         self._bittorrent = None
         self._name = ""
         self._options = None
+        self._followed_by = []
+        self._following = None
+        self._belongs_to = None
 
     def __str__(self):
         return self.name
 
-    @staticmethod
-    def _human_readable_bytes(value, digits=2, delim="", postfix=""):
-        unit = 'B'
-        for u in ('kiB', 'MiB', "GiB", "TiB", "PiB", "EiB"):
-            if value > 1000:
-                value /= 1024
-                unit = u
-            else:
-                break
-        return f"{value:.{digits}f}" + delim + unit + postfix
+    def __eq__(self, other):
+        return self.gid == other.gid
 
-    def _human_readable_seconds(self):
-        pass
-
-    def update(self, struct):
+    def update(self):
         """
         Method to update the internal values of the download with more recent values.
 
         Args:
             struct (dict): a dictionary Python object returned by the JSON-RPC client.
         """
-        self._struct.update(struct)
+        self._struct = self.api.client.tell_status(self.gid)
 
-    def refetch(self):
-        self.update(self.api.get_download(self.gid))
+        self._files = []
+        self._name = None
+        self._bittorrent = None
+        self._followed_by = []
+        self._following = None
+        self._belongs_to = None
 
     @property
     def name(self):
@@ -183,7 +208,7 @@ class Download:
         Name is the name of the file if single-file, first file's directory name if multi-file.
         """
         if not self._name:
-            self._name = self.files[0].path.replace(self.dir, "").lstrip("/").split("/")[0]
+            self._name = str(self.files[0].path).replace(self.dir, "").lstrip("/").split("/")[0]
         return self._name
 
     @property
@@ -194,8 +219,15 @@ class Download:
         The returned object is an instance of :class:`options.Options`.
         """
         if not self._options:
-            self._options = self.api.get_options(gids=[self.gid]).get(self.gid)
+            self.update_options()
         return self._options
+
+    @options.setter
+    def options(self, value):
+        self._options = value
+
+    def update_options(self):
+        self._options = self.api.get_options(gids=[self.gid]).get(self.gid)
 
     @property
     def gid(self):
@@ -208,13 +240,37 @@ class Download:
         return self._struct.get("status")
 
     @property
+    def is_active(self):
+        return self.status == "active"
+
+    @property
+    def is_waiting(self):
+        return self.status == "waiting"
+
+    @property
+    def is_paused(self):
+        return self.status == "paused"
+
+    @property
+    def has_failed(self):
+        return self.status == "error"
+
+    @property
+    def is_complete(self):
+        return self.status == "complete"
+
+    @property
+    def is_removed(self):
+        return self.status == "removed"
+
+    @property
     def total_length(self):
         """Total length of the download in bytes."""
         return int(self._struct.get("totalLength"))
 
     def total_length_string(self, human_readable=True):
         if human_readable:
-            return self._human_readable_bytes(self.total_length, delim=" ")
+            return human_readable_bytes(self.total_length, delim=" ")
         return str(self.total_length) + " B"
 
     @property
@@ -224,7 +280,7 @@ class Download:
 
     def completed_length_string(self, human_readable=True):
         if human_readable:
-            return self._human_readable_bytes(self.completed_length, delim=" ")
+            return human_readable_bytes(self.completed_length, delim=" ")
         return str(self.completed_length) + " B"
 
     @property
@@ -234,7 +290,7 @@ class Download:
 
     def upload_length_string(self, human_readable=True):
         if human_readable:
-            return self._human_readable_bytes(self.upload_length, delim=" ")
+            return human_readable_bytes(self.upload_length, delim=" ")
         return str(self.upload_length) + " B"
 
     @property
@@ -255,7 +311,7 @@ class Download:
 
     def download_speed_string(self, human_readable=True):
         if human_readable:
-            return self._human_readable_bytes(self.download_speed, delim=" ", postfix="/s")
+            return human_readable_bytes(self.download_speed, delim=" ", postfix="/s")
         return str(self.download_speed) + " B/s"
 
     @property
@@ -265,7 +321,7 @@ class Download:
 
     def upload_speed_string(self, human_readable=True):
         if human_readable:
-            return self._human_readable_bytes(self.upload_speed, delim=" ", postfix="/s")
+            return human_readable_bytes(self.upload_speed, delim=" ", postfix="/s")
         return str(self.upload_speed) + " B/s"
 
     @property
@@ -302,7 +358,7 @@ class Download:
 
     def piece_length_string(self, human_readable=True):
         if human_readable:
-            return self._human_readable_bytes(self.piece_length, delim=" ")
+            return human_readable_bytes(self.piece_length, delim=" ")
         return str(self.piece_length) + " B"
 
     @property
@@ -348,7 +404,9 @@ class Download:
 
         Returns a list of instances of :class:`downloads.Download`.
         """
-        return [self.api.get_download(gid) for gid in self.followed_by_ids]
+        if not self._followed_by:
+            self._followed_by = [self.api.get_download(gid) for gid in self.followed_by_ids]
+        return self._followed_by
 
     @property
     def following_id(self):
@@ -366,7 +424,9 @@ class Download:
 
         Returns an instance of :class:`downloads.Download`.
         """
-        return self.api.get_download(self.following_id)
+        if not self._following:
+            self._following = self.api.get_download(self.following_id)
+        return self._following
 
     @property
     def belongs_to_id(self):
@@ -386,7 +446,9 @@ class Download:
 
         Returns an instance of :class:`downloads.Download`.
         """
-        return self.api.get_download(self.belongs_to_id)
+        if not self._belongs_to:
+            self._belongs_to = self.api.get_download(self.belongs_to_id)
+        return self._belongs_to
 
     @property
     def dir(self):
@@ -426,7 +488,7 @@ class Download:
 
     def verified_length_string(self, human_readable=True):
         if human_readable:
-            return self._human_readable_bytes(self.verified_length, delim=" ")
+            return human_readable_bytes(self.verified_length, delim=" ")
         return str(self.verified_length) + " B"
 
     @property
@@ -483,3 +545,30 @@ class Download:
             pieces.append(f"{seconds}s")
 
         return "".join(pieces)
+
+    def move(self, pos):
+        return self.api.move(self, pos)
+
+    def move_to(self, pos):
+        return self.api.move_to(self, pos)
+
+    def move_up(self, pos=1):
+        return self.api.move_up(self, -pos)
+
+    def move_down(self, pos=1):
+        return self.api.move_down(self, pos)
+
+    def move_to_top(self):
+        return self.api.move_to_top(self)
+
+    def move_to_bottom(self):
+        return self.api.move_to_bottom(self)
+
+    def remove(self):
+        return self.api.remove([self])
+
+    def pause(self):
+        return self.api.pause([self])
+
+    def resume(self):
+        return self.api.resume([self])

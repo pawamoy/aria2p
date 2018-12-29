@@ -3,6 +3,8 @@ This module defines the Options class, which holds information retrieved with th
 ``get_global_option`` methods of the client.
 """
 
+from copy import deepcopy
+
 
 class Options:
     """
@@ -28,6 +30,17 @@ class Options:
         __setattr("api", api)
         __setattr("_gids", [gid] if gid else [])
         __setattr("_struct", struct)
+
+    def set_gid(self, gid=None):
+        super().__setattr__("_gids", [gid] if gid else [])
+
+    def get_gid(self):
+        if self._gids:
+            return self._gids[0]
+        return None
+
+    def get_struct(self):
+        return deepcopy(self._struct)
 
     def __getattr__(self, item):
         return self._struct.get(item.replace("_", "-"))
