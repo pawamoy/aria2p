@@ -2,7 +2,7 @@
 This module defines the BitTorrent, File and Download classes, which respectively hold structured information about
 torrent files, files and downloads in aria2c.
 """
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 
@@ -11,14 +11,14 @@ def human_readable_seconds(self):
 
 
 def human_readable_bytes(value, digits=2, delim="", postfix=""):
-        unit = 'B'
-        for u in ('kiB', 'MiB', "GiB", "TiB", "PiB", "EiB"):
-            if value > 1000:
-                value /= 1024
-                unit = u
-            else:
-                break
-        return f"{value:.{digits}f}" + delim + unit + postfix
+    unit = "B"
+    for u in ("kiB", "MiB", "GiB", "TiB", "PiB", "EiB"):
+        if value > 1000:
+            value /= 1024
+            unit = u
+        else:
+            break
+    return f"{value:.{digits}f}" + delim + unit + postfix
 
 
 class BitTorrent:
@@ -516,7 +516,7 @@ class Download:
         try:
             return timedelta(seconds=int((self.total_length - self.completed_length) / self.download_speed))
         except ZeroDivisionError:
-            return float('Inf')
+            return float("Inf")
 
     def eta_string(self):
         eta = self.eta

@@ -5,8 +5,8 @@ process through the JSON-RPC protocol.
 
 
 import json
-import requests
 
+import requests
 
 DEFAULT_ID = -1
 DEFAULT_HOST = "http://localhost"
