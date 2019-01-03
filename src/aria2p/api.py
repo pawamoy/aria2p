@@ -48,9 +48,9 @@ class API:
         else:
             client_options = options
 
-        with open(torrent_file_path) as stream:
+        with open(torrent_file_path, "rb") as stream:
             torrent_contents = stream.read()
-        encoded_contents = b64encode(torrent_contents)
+        encoded_contents = b64encode(torrent_contents).decode("utf8")
 
         gid = self.client.add_torrent(encoded_contents, uris, client_options, position)
 
