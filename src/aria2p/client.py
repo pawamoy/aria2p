@@ -198,7 +198,7 @@ class JSONRPCClient:
             - multicall is defined in the JSON-RPC protocol specification, whereas batch_call is not
             - multicall is a special "system" method, whereas batch_call is simply the concatenation of several methods
             - multicall payloads define the "jsonrpc" and "id" keys only once, whereas these keys are repeated in
-                each part of the batch_call method
+              each part of the batch_call method
 
         Args:
             calls (list): a list of tuples composed of method name, parameters and ID.
