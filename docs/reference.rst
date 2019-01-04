@@ -10,8 +10,14 @@ API class
 JSON-RPC client classes
 -----------------------
 
+JSONRPCError
+^^^^^^^^^^^^
+
 .. autoclass:: aria2p.JSONRPCError
     :members:
+
+JSONRPCClient
+^^^^^^^^^^^^^
 
 .. autoclass:: aria2p.JSONRPCClient
     :members:
@@ -19,11 +25,20 @@ JSON-RPC client classes
 Download-related classes
 ------------------------
 
+Download
+^^^^^^^^
+
 .. autoclass:: aria2p.Download
     :members:
 
+BitTorrent
+^^^^^^^^^^
+
 .. autoclass:: aria2p.BitTorrent
     :members:
+
+File
+^^^^
 
 .. autoclass:: aria2p.File
     :members:
