@@ -348,27 +348,27 @@ class API:
         """
         return self.client.purge_download_result()
 
-    def get_options(self, gids=None):
-        if not gids:
+    def get_options(self, downloads=None):
+        if not downloads:
             return Options(self, self.client.get_global_option())
 
         options = {}
-        for gid in gids:
-            options[gid] = Options(self, self.client.get_option(gid), gid)
+        for download in downloads:
+            options[download.gid] = Options(self, self.client.get_option(download.gid), download.gid)
         return options
 
-    def set_options(self, options, gids=None):
+    def set_options(self, options, downloads=None):
         if isinstance(options, Options):
             client_options = options.get_struct()
         else:
             client_options = options
 
-        if not gids:
+        if not downloads:
             return self.client.change_global_option(client_options)
 
         results = {}
-        for gid in gids:
-            results[gid] = self.client.change_option(gid, client_options)
+        for download in downloads:
+            results[download.gid] = self.client.change_option(download.gid, client_options)
         return results
 
     def get_stats(self):
