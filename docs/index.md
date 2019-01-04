@@ -1,7 +1,8 @@
-# Index
+# Welcome to Aria2p's documentation!
 
-- [Readme](readme.md)
+- [Overview](readme.md)
 - [Usage](usage.md)
 - [Reference](reference.rst)
 - [Contributing](contributing.md)
+- [Code Of Conduct](code_of_conduct.md)
 - [Changelog](changelog.md)

@@ -69,7 +69,10 @@ github_doc_root = "https://github.com/pawamoy/aria2p/tree/master/doc/"
 def setup(app):
     app.add_config_value(
         "recommonmark_config",
-        {"url_resolver": lambda url: github_doc_root + url, "auto_toc_tree_section": "Index"},
+        {
+            "url_resolver": lambda url: github_doc_root + url,
+            "auto_toc_tree_section": "Welcome to Aria2p's documentation!",
+        },
         True,
     )
     app.add_transform(AutoStructify)
