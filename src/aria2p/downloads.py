@@ -165,7 +165,7 @@ class Download:
         Initialization method.
 
         Args:
-            api (:class:`api.API`): the reference to an :class:`api.API` instance.
+            api (:class:`aria2p.API`): the reference to an :class:`aria2p.API` instance.
             struct (dict): a dictionary Python object returned by the JSON-RPC client.
         """
         self.api = api
@@ -185,12 +185,7 @@ class Download:
         return self.gid == other.gid
 
     def update(self):
-        """
-        Method to update the internal values of the download with more recent values.
-
-        Args:
-            struct (dict): a dictionary Python object returned by the JSON-RPC client.
-        """
+        """Method to update the internal values of the download with more recent values."""
         self._struct = self.api.client.tell_status(self.gid)
 
         self._files = []
@@ -216,7 +211,7 @@ class Download:
         """
         Options specific to this download.
 
-        The returned object is an instance of :class:`options.Options`.
+        The returned object is an instance of :class:`aria2p.Options`.
         """
         if not self._options:
             self.update_options()
@@ -227,7 +222,7 @@ class Download:
         self._options = value
 
     def update_options(self):
-        self._options = self.api.get_options(gids=[self.gid]).get(self.gid)
+        self._options = self.api.get_options(downloads=[self]).get(self.gid)
 
     @property
     def gid(self):
@@ -402,7 +397,7 @@ class Download:
         """
         List of downloads generated as the result of this download.
 
-        Returns a list of instances of :class:`downloads.Download`.
+        Returns a list of instances of :class:`aria2p.Download`.
         """
         if not self._followed_by:
             self._followed_by = [self.api.get_download(gid) for gid in self.followed_by_ids]
@@ -422,7 +417,7 @@ class Download:
         """
         The download this download is following.
 
-        Returns an instance of :class:`downloads.Download`.
+        Returns an instance of :class:`aria2p.Download`.
         """
         if not self._following:
             self._following = self.api.get_download(self.following_id)
@@ -444,7 +439,7 @@ class Download:
         """
         Parent download.
 
-        Returns an instance of :class:`downloads.Download`.
+        Returns an instance of :class:`aria2p.Download`.
         """
         if not self._belongs_to:
             self._belongs_to = self.api.get_download(self.belongs_to_id)
