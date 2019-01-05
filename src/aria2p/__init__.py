@@ -16,3 +16,7 @@ from .options import Options
 from .stats import Stats
 
 __all__ = ["API", "JSONRPCError", "JSONRPCClient", "Download", "BitTorrent", "File", "Options", "Stats"]
+
+# TODO: write aria2, aria2c, Aria2, Aria2c consistently
+# TODO: write all docstrings
+# TODO: write tests
