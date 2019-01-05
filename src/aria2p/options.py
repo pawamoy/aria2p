@@ -28,11 +28,15 @@ class Options:
         """
         __setattr = super().__setattr__
         __setattr("api", api)
-        __setattr("_downloads", [download] if download else [])
+        __setattr("download", download)
         __setattr("_struct", struct)
 
+    @property
+    def are_global(self):
+        return self.download is None
+
     def set_owner(self, download=None):
-        super().__setattr__("_downloads", [download] if download else [])
+        super().__setattr__("download", download)
 
     def get_download(self):
         if self._downloads:
@@ -49,18 +53,19 @@ class Options:
         if not isinstance(value, str):
             value = str(value)
         key = key.replace("_", "-")
-        if self.api.set_options({key: value}, self._downloads):
+        if self.download:
+            success = self.api.set_options({key: value}, [self.download])[0]
+        else:
+            success = self.api.set_global_options({key: value})
+        if success:
             self._struct[key] = value
 
     # Append _ to continue because it is a reserved keyword
     @property
     def continue_(self):
         """Because ``continue`` is a reserved keyword in Python."""
-        return self._struct.get("continue")
+        return self.__getattr__("continue")
 
     @continue_.setter
     def continue_(self, value):
-        if not isinstance(value, str):
-            value = str(value)
-        if self.api.set_options({"continue": value}, self._downloads):
-            self._struct["continue"] = value
+        self.__setattr__("continue", value)
