@@ -185,6 +185,7 @@ class API:
         #               name
         # verifiedLength
         # verifyIntegrityPending
+        raise NotImplementedError
 
     def get_download(self, gid):
         """
@@ -297,7 +298,42 @@ class API:
         """
         return self.client.change_position(download.gid, -1, "POS_SET")
 
-    def remove(self, downloads):
+    def remove(self, downloads, force=False):
+        """
+        Remove the given downloads from the list.
+
+        Args:
+            downloads (list of :class:`aria2p.Download`): the list of downloads to remove.
+            force (bool): whether to force the removal or not.
+
+        Returns:
+            list of bool: Success or failure of the operation for each given download.
+        """
+        # TODO: batch/multicall candidate
+        if force:
+            remove_func = self.client.force_remove
+        else:
+            remove_func = self.client.remove
+        return [remove_func(d.gid) for d in downloads]
+
+    def remove_all(self, force=False):
+        """
+        Remove all downloads from the list.
+
+        Args:
+            force (bool): whether to force the removal or not.
+
+        Returns:
+            bool: Success or failure of the operation to remove all downloads.
+        """
+        # TODO: batch/multicall candidate
+        if force:
+            remove_func = self.client.force_remove
+        else:
+            remove_func = self.client.remove
+        return [remove_func(d.gid) for d in self.get_downloads()]
+
+    def pause(self, downloads):
         """
         Remove the given downloads from the list.
 
@@ -307,37 +343,39 @@ class API:
         Returns:
             list of bool: Success or failure of the operation for each given download.
         """
-        return [self.client.remove(d.gid) for d in downloads]
+        # TODO: batch/multicall candidate
+        return [self.client.pause(d.gid) for d in downloads]
 
-    def pause(self, downloads=None):
+    def pause_all(self):
         """
         Remove the given downloads from the list.
 
-        Args:
-            downloads (list of :class:`aria2p.Download`): the list of downloads to remove. If None, pause all downloads.
-
         Returns:
-            bool or list of bool: Success or failure of the operation, respectively
-              for all downloads or for each given download.
+            bool: Success or failure of the operation to pause all downloads.
         """
-        if not downloads:
-            return self.client.pause_all()
-        return [self.client.pause(d.gid) for d in downloads]
+        return self.client.pause_all()
 
-    def resume(self, downloads=None):
+    def resume(self, downloads):
         """
         Resume (unpause) the given downloads.
 
         Args:
-            downloads (list of :class:`aria2p.Download`): the list of downloads to resume. If None, resume all downloads.
+            downloads (list of :class:`aria2p.Download`): the list of downloads to resume.
 
         Returns:
-            bool or list of bool: Success or failure of the operation, respectively
-              for all downloads or for each given download.
+            list of bool: Success or failure of the operation for each given download.
         """
-        if not downloads:
-            return self.client.unpause_all()
+        # TODO: batch/multicall candidate
         return [self.client.unpause(d.gid) for d in downloads]
+
+    def resume_all(self):
+        """
+        Resume (unpause) all downloads.
+
+        Returns:
+            bool: Success or failure of the operation to resume all downloads.
+        """
+        return self.client.unpause_all()
 
     def purge(self):
         """
@@ -348,28 +386,77 @@ class API:
         """
         return self.client.purge_download_result()
 
-    def get_options(self, downloads=None):
-        if not downloads:
-            return Options(self, self.client.get_global_option())
+    def get_options(self, downloads):
+        """
+        Get options for each of the given downloads.
 
-        options = {}
+        Args:
+            downloads (list of :class:`aria2p.Download`): the list of downloads to get the options of.
+
+        Returns:
+            list of :class:`aria2p.Options`: options object for each given download.
+        """
+        # TODO: batch/multicall candidate
+        options = []
         for download in downloads:
-            options[download.gid] = Options(self, self.client.get_option(download.gid), download.gid)
+            options.append(Options(self, self.client.get_option(download.gid), download))
         return options
 
-    def set_options(self, options, downloads=None):
+    def get_global_options(self):
+        """
+        Get the global options.
+
+        Returns:
+            :class:`aria2p.Options` instance: the global Aria2c options.
+        """
+        return Options(self, self.client.get_global_option())
+
+    def set_options(self, options, downloads):
+        """
+        Set options for specific downloads.
+
+        Args:
+            options (:class:`aria2p.Options` or dict): an instance of the ``Options`` class or a dictionary
+              containing Aria2c options to create the download with.
+            downloads (list of :class:`aria2p.Download`): the list of downloads to set the options for.
+
+        Returns:
+            list of bool: Success or failure of the operation for changing options for each given download.
+        """
         if isinstance(options, Options):
             client_options = options.get_struct()
         else:
             client_options = options
 
-        if not downloads:
-            return self.client.change_global_option(client_options)
-
-        results = {}
+        # TODO: batch/multicall candidate
+        results = []
         for download in downloads:
-            results[download.gid] = self.client.change_option(download.gid, client_options)
+            results.append(self.client.change_option(download.gid, client_options) == "OK")
         return results
 
+    def set_global_options(self, options):
+        """
+        Set global options.
+
+        Args:
+            options (:class:`aria2p.Options` or dict): an instance of the ``Options`` class or a dictionary
+              containing Aria2c options to create the download with.
+
+        Returns:
+            bool: Success or failure of the operation for changing global options.
+        """
+        if isinstance(options, Options):
+            client_options = options.get_struct()
+        else:
+            client_options = options
+
+        return self.client.change_global_option(client_options) == "OK"
+
     def get_stats(self):
+        """
+        Get the stats of the remote Aria2c process.
+
+        Returns:
+            :class:`aria2p.Stats` instance: the global stats returned by the remote process.
+        """
         return Stats(self.client.get_global_stat())

@@ -222,7 +222,7 @@ class Download:
         self._options = value
 
     def update_options(self):
-        self._options = self.api.get_options(downloads=[self]).get(self.gid)
+        self._options = self.api.get_options(downloads=[self])[0]
 
     @property
     def gid(self):
