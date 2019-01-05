@@ -1,3 +1,4 @@
-sphinx==1.7.1
-sphinx-rtd-theme==0.2.4
--e .
+sphinx==1.8.3
+sphinx-rtd-theme==0.4.2
+sphinxcontrib-spelling==4.2.0
+aria2p

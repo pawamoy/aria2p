@@ -26,9 +26,8 @@ spelling_lang = "en_US"
 
 autodoc_default_flags = ["members", "special-members", "show-inheritance"]
 
-source_suffix = {".rst": "restructuredtext", ".md": "markdown"}
 source_parsers = {".md": "recommonmark.parser.CommonMarkParser"}
-
+source_suffix = ['.rst', '.md']
 master_doc = "index"
 project = "Aria2p"
 year = "2018"
