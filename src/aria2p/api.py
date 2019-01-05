@@ -16,7 +16,7 @@ class API:
     This class is instantiated with a reference to a :class:`aria2p.JSONRPCClient` instance. It then uses this client
     to call remote procedures, or remote methods. The client methods reflect exactly what aria2c is providing
     through JSON-RPC, while this class's methods allow for easier / faster control of the remote process. It also
-    wraps the information the client retrieves in Python object, like  :class:`downloads.Download`, allowing for
+    wraps the information the client retrieves in Python object, like  :class:`aria2p.Download`, allowing for
     even more Pythonic interactions, without worrying about payloads, responses, JSON, etc..
     """
 

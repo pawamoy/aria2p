@@ -169,7 +169,7 @@ class JSONRPCClient:
         Call a single JSON-RPC method.
 
         Args:
-            method (str): the method name. You can use the constant defined in :class:`client.JSONRPCClient`.
+            method (str): the method name. You can use the constant defined in :class:`aria2p.JSONRPCClient`.
             params (list of str): a list of parameters, as strings.
             msg_id (int/str): the ID of the call, sent back with the server's answer.
             insert_secret (bool): whether to insert the secret token in the parameters or not.
@@ -278,7 +278,7 @@ class JSONRPCClient:
 
         Raises:
             JSONRPCError: when the server returns an error (client/server error).
-                See the :class:`client.JSONRPCError` class.
+                See the :class:`aria2p.JSONRPCError` class.
         """
         response = requests.post(self.server, data=payload).json()
         if "result" in response:
@@ -291,7 +291,7 @@ class JSONRPCClient:
         Build a payload.
 
         Args:
-            method (str): the method name. You can use the constant defined in :class:`client.JSONRPCClient`.
+            method (str): the method name. You can use the constant defined in :aria2p:`client.JSONRPCClient`.
             params (list): the list of parameters.
             msg_id (int/str): the ID of the call, sent back with the server's answer.
             as_json (bool): whether to return the payload as a JSON-string or Python dictionary.
