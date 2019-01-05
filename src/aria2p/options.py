@@ -13,7 +13,9 @@ class Options:
     Instances are given a reference to an :class:`aria2p.API` instance to be able to change their values both locally
     and remotely, by using the API client and calling remote methods to change options.
 
-    Please refer to aria2c documentation or man pages to see all the available options.
+    The options are available with the same names, using underscores instead of dashes, except for "continue"
+    (which is a Python reserved keyword) which is here called "continue_downloads". For example,
+    "max-concurrent-downloads" is used like ``options.max_concurrent_downloads = 5``.
     """
 
     def __init__(self, api, struct, download=None):
@@ -53,943 +55,1152 @@ class Options:
     # Basic Options
     @property
     def dir(self):
+        """
+        The directory to store the downloaded file.
+
+        Returns:
+            str
+        """
         return self.get("dir")
 
     @dir.setter
     def dir(self, value):
         self.set("dir", value)
 
-        # =<DIR>
-        #
-        # The directory to store the downloaded file.
-
     @property
     def input_file(self):
+        """
+        Downloads the URIs listed in FILE.
+
+        You can specify multiple sources for a single entity by putting multiple URIs on a single line separated by
+        the TAB character. Additionally, options can be specified after each URI line. Option lines must start with
+        one or more white space characters (SPACE or TAB) and must only contain one option per line. Input files can
+        use gzip compression. When FILE is specified as -, aria2 will read the input from stdin. See the Input File
+        subsection for details. See also the --deferred-input option. See also the --save-session option.
+
+        Returns:
+            str
+        """
         return self.get("input-file")
 
     @input_file.setter
     def input_file(self, value):
         self.set("input-file", value)
 
-        # =<FILE>
-        #
-        # Downloads the URIs listed in FILE. You can specify multiple sources for a single entity by putting
-        # multiple URIs on a single line separated by the TAB character. Additionally, options can be specified
-        # after each URI line. Option lines must start with one or more white space characters (SPACE or TAB) and
-        # must only contain one option per line. Input files can use gzip compression. When FILE is specified as -,
-        # aria2 will read the input from stdin. See the Input File subsection for details. See also the
-        # --deferred-input option. See also the --save-session option.
-
     @property
     def log(self):
+        """
+        The file name of the log file.
+
+        If - is specified, log is written to stdout. If empty string("") is
+        specified, or this option is omitted, no log is written to disk at all.
+
+        Returns:
+            str
+        """
         return self.get("log")
 
     @log.setter
     def log(self, value):
         self.set("log", value)
 
-        # =<LOG>
-        #
-        # The file name of the log file. If - is specified, log is written to stdout. If empty string("") is
-        # specified, or this option is omitted, no log is written to disk at all.
-
     @property
     def max_concurrent_downloads(self):
+        """
+        Set the maximum number of parallel downloads for every queue item.
+
+        See also the --split option. Default: 5.
+
+        Returns:
+            int
+        """
         return self.get("max-concurrent-downloads")
 
     @max_concurrent_downloads.setter
     def max_concurrent_downloads(self, value):
         self.set("max-concurrent-downloads", value)
 
-        # =<N>
-        #
-        # Set the maximum number of parallel downloads for every queue item. See also the --split option. Default: 5
-
     @property
     def check_integrity(self):
+        """
+        Check file integrity by validating piece hashes or a hash of entire file.
+
+        This option has effect only in BitTorrent, Metalink downloads with checksums or HTTP(S)/FTP downloads with
+        --checksum option. If piece hashes are provided, this option can detect damaged portions of a file and
+        re-download them. If a hash of entire file is provided, hash check is only done when file has been already
+        downloaded. This is determined by file length. If hash check fails, file is re-downloaded from scratch. If both
+        piece hashes and a hash of entire file are provided, only piece hashes are used. Default: false.
+
+        Returns:
+            bool
+        """
         return self.get("check-integrity")
 
     @check_integrity.setter
     def check_integrity(self, value):
         self.set("check-integrity", value)
 
-        # [=true|false]
-        #
-        # Check file integrity by validating piece hashes or a hash of entire file. This option has effect only in
-        # BitTorrent, Metalink downloads with checksums or HTTP(S)/FTP downloads with --checksum option. If piece
-        # hashes are provided, this option can detect damaged portions of a file and re-download them. If a hash of
-        # entire file is provided, hash check is only done when file has been already download. This is determined by
-        # file length. If hash check fails, file is re-downloaded from scratch. If both piece hashes and a hash of
-        # entire file are provided, only piece hashes are used. Default: false
-
     @property
     def continue_downloads(self):
+        """
+        Continue downloading a partially downloaded file.
+
+        Use this option to resume a download started by a web browser or another program which downloads files
+        sequentially from the beginning. Currently this option is only applicable to HTTP(S)/FTP downloads.
+
+        Returns:
+            bool
+        """
         return self.get("continue")
 
     @continue_downloads.setter
     def continue_downloads(self, value):
         self.set("continue", value)
 
-        # [=true|false]
-        #
-        # Continue downloading a partially downloaded file. Use this option to resume a download started by a web
-        # browser or another program which downloads files sequentially from the beginning. Currently this option is
-        # only applicable to HTTP(S)/FTP downloads.
-
+    # FIXME: might not be an option (only command-line argument)
     @property
     def help(self):
+        """
+        The help messages are classified with tags.
+
+        A tag starts with #. For example, type --help=#http to get the usage for the options tagged with #http. If
+        non-tag word is given, print the usage for the options whose name includes that word. Available Values:
+        #basic, #advanced, #http, #https, #ftp, #metalink, #bittorrent, #cookie, #hook, #file, #rpc, #checksum,
+        #experimental, #deprecated, #help, #all Default: #basic
+        """
         return self.get("help")
 
     @help.setter
     def help(self, value):
         self.set("help", value)
 
-        # [=<TAG>|<KEYWORD>]
-        #
-        # The help messages are classified with tags. A tag starts with #. For example, type --help=#http to get the
-        # usage for the options tagged with #http. If non-tag word is given, print the usage for the options whose
-        # name includes that word. Available Values: #basic, #advanced, #http, #https, #ftp, #metalink,
-        # #bittorrent, #cookie, #hook, #file, #rpc, #checksum, #experimental, #deprecated, #help, #all Default: #basic
-
     # HTTP/FTP/SFTP Options
     @property
     def all_proxy(self):
+        """
+        Use a proxy server for all protocols.
+
+        To override a previously defined proxy, use "". You also can override this setting and specify a proxy server
+        for a particular protocol using --http-proxy, --https-proxy and --ftp-proxy options. This affects all
+        downloads. The format of PROXY is [http://][ USER:PASSWORD@]HOST[:PORT]. See also ENVIRONMENT section.
+
+        NOTE:
+            If user and password are embedded in proxy URI and they are also specified by --{http,https,ftp,
+            all}-proxy-{user,passwd}  options, those specified later override prior options. For example,
+            if you specified http-proxy-user=myname, http-proxy-passwd=mypass in aria2.conf and you specified
+            --http-proxy="http://proxy" on the command-line, then you'd get HTTP proxy http://proxy with user myname
+            and password mypass.
+
+            Another example: if you specified on the command-line --http-proxy="http://user:pass@proxy"
+            --http-proxy-user="myname" --http-proxy-passwd="mypass", then you'd get HTTP proxy http://proxy with user
+            myname and password mypass.
+
+            One more example:  if you specified in command-line --http-proxy-user="myname"
+            --http-proxy-passwd="mypass" --http-proxy="http://user:pass@proxy", then you'd get HTTP proxy
+            http://proxy with user user and password pass.
+
+        Returns:
+            str
+        """
         return self.get("all-proxy")
 
     @all_proxy.setter
     def all_proxy(self, value):
         self.set("all-proxy", value)
 
-        # =<PROXY>
-        #
-        # Use a proxy server for all protocols. To override a previously defined proxy, use "". You also can override
-        # this setting and specify a proxy server for a particular protocol using --http-proxy, --https-proxy
-        # and --ftp-proxy options. This affects all downloads. The format of PROXY is [http://][
-        # USER:PASSWORD@]HOST[:PORT]. See also ENVIRONMENT section.
-        #
-        # NOTE:
-        #     If user and password are embedded in proxy URI and they are also specified by --{http,https,ftp,
-        #     all}-proxy-{user,passwd}  options, those specified later override prior options. For example,
-        #     if you specified http-proxy-user=myname, http-proxy-passwd=mypass in aria2.conf and you specified
-        #     --http-proxy="http://proxy" on the command-line, then you'd get HTTP proxy http://proxy with user myname
-        #     and password mypass.
-        #
-        #     Another example: if you specified on the command-line --http-proxy="http://user:pass@proxy"
-        #     --http-proxy-user="myname" --http-proxy-passwd="mypass", then you'd get HTTP proxy http://proxy with user
-        #     myname and password mypass.
-        #
-        #     One more example:  if you specified in command-line --http-proxy-user="myname"
-        #     --http-proxy-passwd="mypass" --http-proxy="http://user:pass@proxy", then you'd get HTTP proxy http://proxy
-        #     with user user and password pass.
-
     @property
     def all_proxy_passwd(self):
+        """
+        Set password for --all-proxy option.
+
+        Returns:
+            str
+        """
         return self.get("all-proxy-passwd")
 
     @all_proxy_passwd.setter
     def all_proxy_passwd(self, value):
         self.set("all-proxy-passwd", value)
 
-        # =<PASSWD>
-        #
-        # Set password for --all-proxy option.
-
     @property
     def all_proxy_user(self):
+        """
+        Set user for --all-proxy option.
+
+        Returns:
+            str
+        """
         return self.get("all-proxy-user")
 
     @all_proxy_user.setter
     def all_proxy_user(self, value):
         self.set("all-proxy-user", value)
 
-        # =<USER>
-        #
-        # Set user for --all-proxy option.
-
     @property
     def checksum(self):
+        """
+        Set checksum (<TYPE>=<DIGEST>).
+
+        TYPE is hash type. The supported hash type is listed in Hash Algorithms in aria2c -v. DIGEST is hex digest.
+        For example, setting sha-1 digest looks like this: sha-1=0192ba11326fe2298c8cb4de616f4d4140213838 This option
+        applies only to HTTP(S)/FTP downloads.
+
+        Returns:
+            str
+        """
         return self.get("checksum")
 
     @checksum.setter
     def checksum(self, value):
         self.set("checksum", value)
 
-        # =<TYPE>=<DIGEST>
-        #
-        # Set checksum. TYPE is hash type. The supported hash type is listed in Hash Algorithms in aria2c -v. DIGEST
-        # is hex digest. For example, setting sha-1 digest looks like this:
-        # sha-1=0192ba11326fe2298c8cb4de616f4d4140213838 This option applies only to HTTP(S)/FTP downloads.
-
     @property
     def connect_timeout(self):
+        """
+        Set the connect timeout in seconds to establish connection to HTTP/FTP/proxy server.
+
+        After the connection is established, this option makes no effect and --timeout option is used instead.
+        Default: 60.
+
+        Returns:
+            int
+        """
         return self.get("connect-timeout")
 
     @connect_timeout.setter
     def connect_timeout(self, value):
         self.set("connect-timeout", value)
 
-        # =<SEC>
-        #
-        # Set the connect timeout in seconds to establish connection to HTTP/FTP/proxy server. After the connection
-        # is established, this option makes no effect and --timeout option is used instead. Default: 60
-
     @property
     def dry_run(self):
+        """
+        If true is given, aria2 just checks whether the remote file is available and doesn't download data.
+
+        This option has effect on HTTP/FTP download. BitTorrent downloads are canceled if true is specified. Default:
+        false.
+
+        Returns:
+            bool
+        """
         return self.get("dry-run")
 
     @dry_run.setter
     def dry_run(self, value):
         self.set("dry-run", value)
 
-        # [=true|false]
-        #
-        # If true is given, aria2 just checks whether the remote file is available and doesn't download data. This
-        # option has effect on HTTP/FTP download. BitTorrent downloads are canceled if true is specified. Default:
-        # false
-
     @property
     def lowest_speed_limit(self):
+        """
+        Close connection if download speed is lower than or equal to this value(bytes per sec).
+
+        0 means aria2 does not have a lowest speed limit. You can append K or M (1K = 1024, 1M = 1024K). This option
+        does not affect BitTorrent downloads. Default: 0.
+
+        Returns:
+            int
+        """
         return self.get("lowest-speed-limit")
 
     @lowest_speed_limit.setter
     def lowest_speed_limit(self, value):
         self.set("lowest-speed-limit", value)
 
-        # =<SPEED>
-        #
-        # Close connection if download speed is lower than or equal to this value(bytes per sec). 0 means aria2
-        # does not have a lowest speed limit. You can append K or M (1K = 1024, 1M = 1024K). This option does not
-        # affect BitTorrent downloads. Default: 0
-
     @property
     def max_connection_per_server(self):
+        """
+        The maximum number of connections to one server for each download.
+
+        Default: 1.
+
+        Returns:
+            int
+        """
         return self.get("max-connection-per-server")
 
     @max_connection_per_server.setter
     def max_connection_per_server(self, value):
         self.set("max-connection-per-server", value)
 
-        # =<NUM>
-        #
-        # The maximum number of connections to one server for each download. Default: 1
-
     @property
     def max_file_not_found(self):
+        """
+        If aria2 receives "file not found" status from the remote HTTP/FTP servers NUM times without getting a single
+        byte, then force the download to fail.
+
+        Specify 0 to disable this option. This options is effective only when using HTTP/FTP servers. The number of
+        retry attempt is counted toward --max-tries, so it should be configured too.
+
+        Default: 0.
+
+        Returns:
+            int
+        """
         return self.get("max-file-not-found")
 
     @max_file_not_found.setter
     def max_file_not_found(self, value):
         self.set("max-file-not-found", value)
 
-        # =<NUM>
-        #
-        # If aria2 receives "file not found" status from the remote HTTP/FTP servers NUM times without getting a
-        # single byte, then force the download to fail. Specify 0 to disable this option. This options is
-        # effective only when using HTTP/FTP servers. The number of retry attempt is counted toward --max-tries,
-        # so it should be configured too.
-        #
-        # Default: 0
-
     @property
     def max_tries(self):
+        """
+        Set number of tries.
+
+        0 means unlimited. See also --retry-wait. Default: 5.
+
+        Returns:
+            int
+        """
         return self.get("max-tries")
 
     @max_tries.setter
     def max_tries(self, value):
         self.set("max-tries", value)
 
-        # =<N>
-        #
-        # Set number of tries. 0 means unlimited. See also --retry-wait. Default: 5
-
     @property
     def min_split_size(self):
+        """
+        aria2 does not split less than 2*SIZE byte range.
+
+        For example, let's consider downloading 20MiB file. If SIZE is 10M, aria2 can split file into 2 range [
+        0-10MiB)  and [10MiB-20MiB)  and download it using 2 sources(if --split >= 2, of course). If SIZE is 15M,
+        since 2*15M > 20MiB, aria2 does not split file and download it using 1 source. You can append K or M (1K =
+        1024, 1M = 1024K). Possible Values: 1M -1024M Default: 20M
+
+        Returns:
+            str
+        """
         return self.get("min-split-size")
 
     @min_split_size.setter
     def min_split_size(self, value):
         self.set("min-split-size", value)
 
-        # =<SIZE>
-        #
-        # aria2 does not split less than 2*SIZE byte range. For example, let's consider downloading 20MiB file. If
-        # SIZE is 10M, aria2 can split file into 2 range [0-10MiB)  and [10MiB-20MiB)  and download it using 2
-        # sources(if --split >= 2, of course). If SIZE is 15M, since 2*15M > 20MiB, aria2 does not split file and
-        # download it using 1 source. You can append K or M (1K = 1024, 1M = 1024K). Possible Values: 1M -1024M
-        # Default: 20M
-
     @property
     def netrc_path(self):
+        """
+        Specify the path to the netrc file.
+
+        Default: $(HOME)/.netrc.
+
+        NOTE:
+           Permission of the .netrc file must be 600. Otherwise, the file will be ignored.
+
+        Returns:
+            str
+        """
         return self.get("netrc-path")
 
     @netrc_path.setter
     def netrc_path(self, value):
         self.set("netrc-path", value)
 
-        # =<FILE>
-        #
-        # Specify the path to the netrc file. Default: $(HOME)/.netrc
-        #
-        # NOTE:
-        #    Permission of the .netrc file must be 600. Otherwise, the file will be ignored.
-
     @property
     def no_netrc(self):
+        """
+        Disable netrc support.
+
+        netrc support is enabled by default.
+
+        NOTE:
+            netrc file is only read at the startup if --no-netrc is false. So if --no-netrc is true at the startup,
+            no netrc is available throughout the session. You cannot get netrc enabled even if you send
+            --no-netrc=false using aria2.changeGlobalOption().
+
+        Returns:
+            bool
+        """
         return self.get("no-netrc")
 
     @no_netrc.setter
     def no_netrc(self, value):
         self.set("no-netrc", value)
 
-        # [=true|false]
-        #
-        # Disables netrc support. netrc support is enabled by default.
-        #
-        # NOTE:
-        #     netrc file is only read at the startup if --no-netrc is false. So if --no-netrc is true at the startup,
-        #     no netrc is available throughout the session. You cannot get netrc enabled even if you send
-        #     --no-netrc=false using aria2.changeGlobalOption().
-
     @property
     def no_proxy(self):
+        """
+        Specify a comma separated list of host names, domains and network addresses with or without a subnet mask
+        where no proxy should be used.
+
+        NOTE:
+            For network addresses with a subnet mask, both IPv4 and IPv6 addresses work. The current implementation
+            does not resolve the host name in an URI to compare network addresses specified in --no-proxy. So it is
+            only effective if URI has numeric IP addresses.
+
+        Returns:
+            str
+        """
         return self.get("no-proxy")
 
     @no_proxy.setter
     def no_proxy(self, value):
         self.set("no-proxy", value)
 
-        # =<DOMAINS>
-        #
-        # Specify a comma separated list of host names, domains and network addresses with or without a subnet mask
-        # where no proxy should be used.
-        #
-        # NOTE:
-        #     For network addresses with a subnet mask, both IPv4 and IPv6 addresses work. The current
-        #     implementation does not resolve the host name in an URI to compare network addresses specified in
-        #     --no-proxy. So it is only effective if URI has numeric IP addresses.
-
     @property
     def out(self):
+        """
+        The file name of the downloaded file.
+
+        It is always relative to the directory given in --dir option. When the --force-sequential option is used,
+        this option is ignored.
+
+        NOTE:
+            You cannot specify a file name for Metalink or BitTorrent downloads. The file name specified here is only
+            used when the URIs fed to aria2 are given on the command line directly, but not when using --input-file,
+            --force-sequential option.
+
+            Example:
+
+                $ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"
+
+        Returns:
+            str
+        """
         return self.get("out")
 
     @out.setter
     def out(self, value):
         self.set("out", value)
 
-        # =<FILE>
-        #
-        # The file name of the downloaded file. It is always relative to the directory given in --dir option. When
-        # the --force-sequential option is used, this option is ignored.
-        #
-        # NOTE:
-        #
-        # You cannot specify a file name for Metalink or BitTorrent downloads. The file name specified here is only
-        # used when the URIs fed to aria2 are given on the command line directly, but not when using --input-file,
-        # --force-sequential option.
-        #
-        #    Example:
-        #
-        #        $ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"
-
     @property
     def proxy_method(self):
+        """
+        Set the method to use in proxy request.
+
+        METHOD is either get or tunnel. HTTPS downloads always use tunnel regardless of this option. Default: get
+
+        Returns:
+            str
+        """
         return self.get("proxy-method")
 
     @proxy_method.setter
     def proxy_method(self, value):
         self.set("proxy-method", value)
 
-        # =<METHOD>
-        #
-        # Set the method to use in proxy request. METHOD is either get or tunnel. HTTPS downloads always use tunnel
-        # regardless of this option. Default: get
-
     @property
     def remote_time(self):
+        """
+        Retrieve timestamp of the remote file from the remote HTTP/FTP server and if it is available, apply it to the
+        local file.
+
+        Default: false.
+
+        Returns:
+            bool
+        """
         return self.get("remote-time")
 
     @remote_time.setter
     def remote_time(self, value):
         self.set("remote-time", value)
 
-        # [=true|false]
-        #
-        # Retrieve timestamp of the remote file from the remote HTTP/FTP server and if it is available, apply it to
-        # the local file. Default: false
-
     @property
     def reuse_uri(self):
+        """
+        Reuse already used URIs if no unused URIs are left.
+
+        Default: true.
+
+        Returns:
+            bool
+        """
         return self.get("reuse-uri")
 
     @reuse_uri.setter
     def reuse_uri(self, value):
         self.set("reuse-uri", value)
 
-        # [=true|false]
-        #
-        # Reuse already used URIs if no unused URIs are left. Default: true
-
     @property
     def retry_wait(self):
+        """
+        Set the seconds to wait between retries.
+
+        When SEC > 0, aria2 will retry downloads when the HTTP server returns a 503 response. Default: 0.
+
+        Returns:
+            int
+        """
         return self.get("retry-wait")
 
     @retry_wait.setter
     def retry_wait(self, value):
         self.set("retry-wait", value)
 
-        # =<SEC>
-        #
-        # Set the seconds to wait between retries. When SEC > 0, aria2 will retry downloads when the HTTP server
-        # returns a 503 response. Default: 0
-
     @property
     def server_stat_of(self):
+        """
+        Specify the file name to which performance profile of the servers is saved.
+
+        You can load saved data using --server-stat-if option. See Server Performance Profile subsection below for
+        file format.
+
+        Returns:
+            str
+        """
         return self.get("server-stat-of")
 
     @server_stat_of.setter
     def server_stat_of(self, value):
         self.set("server-stat-of", value)
 
-        # =<FILE>
-        #
-        # Specify the file name to which performance profile of the servers is saved. You can load saved data using
-        # --server-stat-if option. See Server Performance Profile subsection below for file format.
-
     @property
     def server_stat_if(self):
+        """
+        Specify the file name to load performance profile of the servers.
+
+        The loaded data will be used in some URI selector such as feedback. See also --uri-selector option. See
+        Server Performance Profile subsection below for file format.
+
+        Returns:
+            str
+        """
         return self.get("server-stat-if")
 
     @server_stat_if.setter
     def server_stat_if(self, value):
         self.set("server-stat-if", value)
 
-        # =<FILE>
-        #
-        # Specify the file name to load performance profile of the servers. The loaded data will be used in
-        # some URI selector such as feedback. See also --uri-selector option. See Server Performance Profile
-        # subsection below for file format.
-
     @property
     def server_stat_timeout(self):
+        """
+        Specifies timeout in seconds to invalidate performance profile of the servers since the last contact to
+        them.
+
+        Default: 86400 (24hours).
+
+        Returns:
+            int
+        """
         return self.get("server-stat-timeout")
 
     @server_stat_timeout.setter
     def server_stat_timeout(self, value):
         self.set("server-stat-timeout", value)
 
-        # =<SEC>
-        #
-        # Specifies timeout in seconds to invalidate performance profile of the servers since the last contact to
-        # them. Default: 86400 (24hours)
-
     @property
     def split(self):
+        """
+        Download a file using N connections.
+
+        If more than N URIs are given, first N URIs are used and remaining URIs are used for backup. If less than N
+        URIs are given, those URIs are used more than once so that N connections total are made simultaneously. The
+        number of connections to the same host is restricted by the --max-connection-per-server option. See also the
+        --min-split-size option. Default: 5
+
+        NOTE:
+            Some Metalinks regulate the number of servers to connect. aria2 strictly respects them. This means that
+            if Metalink defines the maxconnections attribute lower than N, then aria2 uses the value of this lower
+            value instead of N.
+
+        Returns:
+            int
+        """
         return self.get("split")
 
     @split.setter
     def split(self, value):
         self.set("split", value)
 
-        # =<N>
-        #
-        # Download a file using N connections. If more than N URIs are given, first N URIs are used and remaining
-        # URIs are used for backup. If less than N URIs are given, those URIs are used more than once so that N
-        # connections total are made simultaneously. The number of connections to the same host is restricted by the
-        # --max-connection-per-server option. See also the --min-split-size option. Default: 5
-        #
-        # NOTE:
-        #     Some Metalinks regulate the number of servers to connect. aria2 strictly respects them. This means that if
-        #     Metalink defines the maxconnections attribute lower than N, then aria2 uses the value of this lower
-        #     value instead of N.
-
     @property
     def stream_piece_selector(self):
+        """
+        Specify piece selection algorithm used in HTTP/FTP download.
+
+        Piece means fixed length segment which is downloaded in parallel in segmented download. If default is given,
+        aria2 selects piece so that it reduces the number of establishing connection. This is reasonable default
+        behavior because establishing connection is an expensive operation. If inorder is given, aria2 selects piece
+        which has minimum index. Index=0 means first of the file. This will be useful to view movie while downloading
+        it. --enable-http-pipelining option may be useful to reduce re-connection overhead. Please note that aria2
+        honors --min-split-size option, so it will be necessary to specify a reasonable value to --min-split-size
+        option. If random is given, aria2 selects piece randomly. Like inorder, --min-split-size option is honored.
+        If geom is given, at the beginning aria2 selects piece which has minimum index like inorder,
+        but it exponentially increasingly keeps space from previously selected piece. This will reduce the number of
+        establishing connection and at the same time it will download the beginning part of the file first. This will
+        be useful to view movie while downloading it. Default: default.
+
+        Returns:
+            str
+        """
         return self.get("stream-piece-selector")
 
     @stream_piece_selector.setter
     def stream_piece_selector(self, value):
         self.set("stream-piece-selector", value)
 
-        # =<SELECTOR>
-        #
-        # Specify piece selection algorithm used in HTTP/FTP download. Piece means fixed length segment which is
-        # downloaded in parallel in segmented download. If default is given, aria2 selects piece so that it reduces
-        # the number of establishing connection. This is reasonable default behavior because establishing
-        # connection is an expensive operation. If inorder is given, aria2 selects piece which has minimum index.
-        # Index=0 means first of the file. This will be useful to view movie while downloading it.
-        # --enable-http-pipelining option may be useful to reduce re-connection overhead. Please note that aria2
-        # honors --min-split-size option, so it will be necessary to specify a reasonable value to
-        # --min-split-size option. If random is given, aria2 selects piece randomly. Like inorder, --min-split-size
-        # option is honored. If geom is given, at the beginning aria2 selects piece which has minimum index like
-        # inorder, but it exponentially increasingly keeps space from previously selected piece. This will reduce
-        # the number of establishing connection and at the same time it will download the beginning part of the file
-        # first. This will be useful to view movie while downloading it. Default: default
-
     @property
     def timeout(self):
+        """
+        Set timeout in seconds.
+
+        Default: 60.
+
+        Returns:
+            int
+        """
         return self.get("timeout")
 
     @timeout.setter
     def timeout(self, value):
         self.set("timeout", value)
 
-        # =<SEC>
-        #
-        # Set timeout in seconds. Default: 60
-
     @property
     def uri_selector(self):
+        """
+        Specify URI selection algorithm.
+
+        The possible values are inorder, feedback and adaptive. If inorder is given, URI is tried in the order
+        appeared in the URI list. If feedback is given, aria2 uses download speed observed in the previous downloads
+        and choose fastest server in the URI list. This also effectively skips dead mirrors. The observed download
+        speed is a part of performance profile of servers mentioned in --server-stat-of and --server-stat-if options.
+        If adaptive is given, selects one of the best mirrors for the first and reserved connections. For
+        supplementary ones, it returns mirrors which has not been tested yet, and if each of them has already been
+        tested, returns mirrors which has to be tested again. Otherwise, it doesn't select anymore mirrors. Like
+        feedback, it uses a performance profile of servers. Default: feedback.
+
+        Returns:
+            str
+        """
         return self.get("uri-selector")
 
     @uri_selector.setter
     def uri_selector(self, value):
         self.set("uri-selector", value)
 
-        # =<SELECTOR>
-        #
-        # Specify URI selection algorithm. The possible values are inorder, feedback and adaptive. If inorder is
-        # given, URI is tried in the order appeared in the URI list. If feedback is given, aria2 uses download
-        # speed observed in the previous downloads and choose fastest server in the URI list. This also effectively
-        # skips dead mirrors. The observed download speed is a part of performance profile of servers
-        # mentioned in --server-stat-of and --server-stat-if options. If adaptive is given, selects one of the
-        # best mirrors for the first and reserved connections. For supplementary ones, it returns mirrors which has
-        # not been tested yet, and if each of them has already been tested, returns mirrors which has to be tested
-        # again. Otherwise, it doesn't select anymore mirrors. Like feedback, it uses a performance profile of
-        # servers. Default: feedback
-
-        # HTTP Specific Options
-
+    # HTTP Specific Options
     @property
     def ca_certificate(self):
+        """
+        Use the certificate authorities in FILE to verify the peers.
+
+        The certificate file must be in PEM format and can contain multiple CA certificates. Use --check-certificate
+        option to enable verification.
+
+        NOTE:
+            If you build with OpenSSL or the recent version of GnuTLS which has
+            gnutls_certificate_set_x509_system_trust() function and the library is properly configured to locate the
+            system-wide CA certificates store, aria2 will automatically load those certificates at the startup.
+
+        NOTE:
+            WinTLS and AppleTLS do not support this option. Instead you will have to import the certificate into the
+            OS trust store.
+
+        Returns:
+            str
+        """
         return self.get("ca-certificate")
 
     @ca_certificate.setter
     def ca_certificate(self, value):
         self.set("ca-certificate", value)
 
-        # =<FILE>
-        #
-        # Use the certificate authorities in FILE to verify the peers. The certificate file must be in PEM format and
-        # can contain multiple CA certificates. Use --check-certificate option to enable verification.
-        #
-        # NOTE:
-        #     If you build with OpenSSL or the recent version of GnuTLS which has
-        #     gnutls_certificate_set_x509_system_trust() function and the library is properly configured to locate the
-        #     system-wide CA certificates store, aria2 will automatically load those certificates at the startup.
-        #
-        # NOTE:
-        #     WinTLS and AppleTLS do not support this option. Instead you will have to import the certificate into the
-        #     OS trust store.
-
     @property
     def certificate(self):
+        """
+        Use the client certificate in FILE.
+
+        The certificate must be either in PKCS12 (.p12, .pfx) or in PEM format.
+
+        PKCS12 files must contain the certificate, a key and optionally a chain of additional certificates. Only
+        PKCS12 files with a blank import password can be opened!
+
+        When using PEM, you have to specify the private key via --private-key as well.
+
+        NOTE:
+           WinTLS does not support PEM files at the moment. Users have to use PKCS12 files.
+
+        NOTE:
+            AppleTLS users should use the KeyChain Access utility to import the client certificate and get the SHA-1
+            fingerprint from the Information dialog corresponding to that certificate. To start aria2c use
+            --certificate=<SHA-1>. Alternatively PKCS12 files are also supported. PEM files, however, are not supported.
+
+        Returns:
+            str
+        """
         return self.get("certificate")
 
     @certificate.setter
     def certificate(self, value):
         self.set("certificate", value)
 
-        # =<FILE>
-        #
-        # Use the client certificate in FILE. The certificate must be either in PKCS12 (.p12, .pfx) or in PEM format.
-        #
-        # PKCS12 files must contain the certificate, a key and optionally a chain of additional certificates. Only
-        # PKCS12 files with a blank import password can be opened!
-        #
-        # When using PEM, you have to specify the private key via --private-key as well.
-        #
-        # NOTE:
-        #    WinTLS does not support PEM files at the moment. Users have to use PKCS12 files.
-        #
-        # NOTE:
-        #     AppleTLS users should use the KeyChain Access utility to import the client certificate and get the SHA-1
-        #     fingerprint from the Information dialog corresponding to that certificate. To start aria2c use
-        #     --certificate=<SHA-1>. Alternatively PKCS12 files are also supported. PEM files, however, are not
-        #     supported.
-
     @property
     def check_certificate(self):
+        """
+        Verify the peer using certificates specified in --ca-certificate option.
+
+        Default: true.
+
+        Returns:
+            bool
+        """
         return self.get("check-certificate")
 
     @check_certificate.setter
     def check_certificate(self, value):
         self.set("check-certificate", value)
 
-        # [=true|false]
-        #
-        # Verify the peer using certificates specified in --ca-certificate option. Default: true
-
     @property
     def http_accept_gzip(self):
+        """
+        Send Accept: deflate, gzip request header and inflate response if remote server responds with
+        Content-Encoding:  gzip or Content-Encoding:  deflate.
+
+        Default: false.
+
+        NOTE:
+            Some server responds with Content-Encoding: gzip for files which itself is gzipped file. aria2 inflates
+            them anyway because of the response header.
+
+        Returns:
+            bool
+        """
         return self.get("http-accept-gzip")
 
     @http_accept_gzip.setter
     def http_accept_gzip(self, value):
         self.set("http-accept-gzip", value)
 
-        # [=true|false]
-        #
-        # Send Accept: deflate, gzip request header and inflate response if remote server responds with
-        # Content-Encoding:  gzip or Content-Encoding:  deflate. Default: false
-        #
-        # NOTE:
-        #     Some server responds with Content-Encoding: gzip for files which itself is gzipped file. aria2 inflates
-        #     them anyway because of the response header.
-
     @property
     def http_auth_challenge(self):
+        """
+        Send HTTP authorization header only when it is requested by the server.
+
+        If false is set, then authorization header is always sent to the server. There is an exception: if user name
+        and password are embedded in URI, authorization header is always sent to the server regardless of this
+        option. Default: false.
+
+        Returns:
+            bool
+        """
         return self.get("http-auth-challenge")
 
     @http_auth_challenge.setter
     def http_auth_challenge(self, value):
         self.set("http-auth-challenge", value)
 
-        # [=true|false]
-        #
-        # Send HTTP authorization header only when it is requested by the server. If false is set, then authorization
-        # header is always sent to the server. There is an exception: if user name and password are embedded in URI,
-        # authorization header is always sent to the server regardless of this option. Default: false
-
     @property
     def http_no_cache(self):
+        """
+        Send Cache-Control:  no-cache and Pragma:  no-cache header to avoid cached content.
+
+        If false is given, these headers are not sent and you can add Cache-Control header with a directive you like
+        using --header option. Default: false.
+
+        Returns:
+            bool
+        """
         return self.get("http-no-cache")
 
     @http_no_cache.setter
     def http_no_cache(self, value):
         self.set("http-no-cache", value)
 
-        # [=true|false]
-        #
-        # Send Cache-Control:  no-cache and Pragma:  no-cache header to avoid cached content. If false is given,
-        # these headers are not sent and you can add Cache-Control header with a directive you like using --header
-        # option. Default: false
-
     @property
     def http_user(self):
+        """
+        Set HTTP user. This affects all URIs.
+
+        Returns:
+            str
+        """
         return self.get("http-user")
 
     @http_user.setter
     def http_user(self, value):
         self.set("http-user", value)
 
-        # =<USER>
-        #
-        # Set HTTP user. This affects all URIs.
-
     @property
     def http_passwd(self):
+        """
+        Set HTTP password. This affects all URIs.
+
+        Returns:
+            str
+        """
         return self.get("http-passwd")
 
     @http_passwd.setter
     def http_passwd(self, value):
         self.set("http-passwd", value)
 
-        # =<PASSWD>
-        #
-        # Set HTTP password. This affects all URIs.
-
     @property
     def http_proxy(self):
+        """
+        Use a proxy server for HTTP.
+
+        To override a previously defined proxy, use "". See also the --all-proxy option. This affects all http
+        downloads. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
+
+        Returns:
+            str
+        """
         return self.get("http-proxy")
 
     @http_proxy.setter
     def http_proxy(self, value):
         self.set("http-proxy", value)
 
-        # =<PROXY>
-        #
-        # Use a proxy server for HTTP. To override a previously defined proxy, use "". See also the --all-proxy
-        # option. This affects all http downloads. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
-
     @property
     def http_proxy_passwd(self):
+        """
+        Set password for --http-proxy.
+
+        Returns:
+            str
+        """
         return self.get("http-proxy-passwd")
 
     @http_proxy_passwd.setter
     def http_proxy_passwd(self, value):
         self.set("http-proxy-passwd", value)
 
-        # =<PASSWD>
-        #
-        # Set password for --http-proxy.
-
     @property
     def http_proxy_user(self):
+        """
+        Set user for --http-proxy.
+
+        Returns:
+            str
+        """
         return self.get("http-proxy-user")
 
     @http_proxy_user.setter
     def http_proxy_user(self, value):
         self.set("http-proxy-user", value)
 
-        # =<USER>
-        #
-        # Set user for --http-proxy.
-
     @property
     def https_proxy(self):
+        """
+        Use a proxy server for HTTPS.
+
+        To override a previously defined proxy, use "". See also the --all-proxy option. This affects all https
+        download. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT].
+
+        Returns:
+            str
+        """
         return self.get("https-proxy")
 
     @https_proxy.setter
     def https_proxy(self, value):
         self.set("https-proxy", value)
 
-        # =<PROXY>
-        #
-        # Use a proxy server for HTTPS. To override a previously defined proxy, use "". See also the --all-proxy
-        # option. This affects all https download. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
-
     @property
     def https_proxy_passwd(self):
+        """
+        Set password for --https-proxy.
+
+        Returns:
+            str
+        """
         return self.get("https-proxy-passwd")
 
     @https_proxy_passwd.setter
     def https_proxy_passwd(self, value):
         self.set("https-proxy-passwd", value)
 
-        # =<PASSWD>
-        #
-        # Set password for --https-proxy.
-
     @property
     def https_proxy_user(self):
+        """
+        Set user for --https-proxy.
+
+        Returns:
+            str
+        """
         return self.get("https-proxy-user")
 
     @https_proxy_user.setter
     def https_proxy_user(self, value):
         self.set("https-proxy-user", value)
 
-        # =<USER>
-        #
-        # Set user for --https-proxy.
-
     @property
     def private_key(self):
+        """
+        Use the private key in FILE.
+
+        The private key must be decrypted and in PEM format. The behavior when encrypted one is given is undefined.
+        See also --certificate option.
+
+        Returns:
+            str
+        """
         return self.get("private-key")
 
     @private_key.setter
     def private_key(self, value):
         self.set("private-key", value)
 
-        # =<FILE>
-        #
-        # Use the private key in FILE. The private key must be decrypted and in PEM format. The behavior when
-        # encrypted one is given is undefined. See also --certificate option.
-
     @property
     def referer(self):
+        """
+        Set an http referrer (Referer).
+
+        This affects all http/https downloads. If * is given, the download URI is also used as the referrer. This may
+        be useful when used together with the --parameterized-uri option.
+
+        Returns:
+            str
+        """
         return self.get("referer")
 
     @referer.setter
     def referer(self, value):
         self.set("referer", value)
 
-        # =<REFERER>
-        #
-        # Set an http referrer (Referer). This affects all http/https downloads. If * is given, the download URI is
-        # also used as the referrer. This may be useful when used together with the --parameterized-uri option.
-
     @property
     def enable_http_keep_alive(self):
+        """
+        Enable HTTP/1.1 persistent connection.
+
+        Default: true.
+
+        Returns:
+            bool
+        """
         return self.get("enable-http-keep-alive")
 
     @enable_http_keep_alive.setter
     def enable_http_keep_alive(self, value):
         self.set("enable-http-keep-alive", value)
 
-        # [=true|false]
-        #
-        # Enable HTTP/1.1 persistent connection. Default: true
-
     @property
     def enable_http_pipelining(self):
+        """
+        Enable HTTP/1.1 pipelining.
+
+        Default: false.
+
+        NOTE:
+           In performance perspective, there is usually no advantage to enable this option.
+
+        Returns:
+            bool
+        """
         return self.get("enable-http-pipelining")
 
     @enable_http_pipelining.setter
     def enable_http_pipelining(self, value):
         self.set("enable-http-pipelining", value)
 
-        # [=true|false]
-        #
-        # Enable HTTP/1.1 pipelining. Default: false
-        #
-        # NOTE:
-        #    In performance perspective, there is usually no advantage to enable this option.
-
     @property
     def header(self):
+        """
+        Append HEADER to HTTP request header.
+
+        You can use this option repeatedly to specify more than one header:
+
+            $ aria2c --header="X-A: b78" --header="X-B: 9J1" "http://host/file"
+
+        Returns:
+            str
+        """
         return self.get("header")
 
     @header.setter
     def header(self, value):
         self.set("header", value)
 
-        # =<HEADER>
-        #
-        # Append HEADER to HTTP request header. You can use this option repeatedly to specify more than one header:
-        #
-        #    $ aria2c --header="X-A: b78" --header="X-B: 9J1" "http://host/file"
-
     @property
     def load_cookies(self):
+        """
+        Load Cookies from FILE using the Firefox3 format (SQLite3), Chromium/Google Chrome (SQLite3) and the
+        Mozilla/Firefox(1.x/2.x)/Netscape format.
+
+        NOTE:
+            If aria2 is built without libsqlite3, then it doesn't support Firefox3 and Chromium/Google Chrome cookie
+            format.
+
+        Returns:
+            str
+        """
         return self.get("load-cookies")
 
     @load_cookies.setter
     def load_cookies(self, value):
         self.set("load-cookies", value)
 
-        # =<FILE>
-        #
-        # Load Cookies from FILE using the Firefox3 format (SQLite3), Chromium/Google Chrome (SQLite3) and the
-        # Mozilla/Firefox(1.x/2.x)/Netscape format.
-        #
-        # NOTE:
-        #     If aria2 is built without libsqlite3, then it doesn't support Firefox3 and Chromium/Google Chrome cookie
-        #     format.
-
     @property
     def save_cookies(self):
+        """
+        Save Cookies to FILE in Mozilla/Firefox(1.x/2.x)/ Netscape format.
+
+        If FILE already exists, it is overwritten. Session Cookies are also saved and their expiry values are treated
+        as 0. Possible Values: /path/to/file.
+
+        Returns:
+            str
+        """
         return self.get("save-cookies")
 
     @save_cookies.setter
     def save_cookies(self, value):
         self.set("save-cookies", value)
 
-        # =<FILE>
-        #
-        # Save Cookies to FILE in Mozilla/Firefox(1.x/2.x)/ Netscape format. If FILE already exists,
-        # it is overwritten. Session Cookies are also saved and their expiry values are treated as 0. Possible
-        # Values: /path/to/file
-
     @property
     def use_head(self):
+        """
+        Use HEAD method for the first request to the HTTP server.
+
+        Default: false.
+
+        Returns:
+            bool
+        """
         return self.get("use-head")
 
     @use_head.setter
     def use_head(self, value):
         self.set("use-head", value)
 
-        # [=true|false]
-        #
-        # Use HEAD method for the first request to the HTTP server. Default: false
-
     @property
     def user_agent(self):
+        """
+        Set user agent for HTTP(S) downloads.
+
+        Default: aria2/$VERSION, $VERSION is replaced by package version.
+
+        Returns:
+            str
+        """
         return self.get("user-agent")
 
     @user_agent.setter
     def user_agent(self, value):
         self.set("user-agent", value)
 
-        # =<USER_AGENT>
-        #
-        # Set user agent for HTTP(S) downloads. Default: aria2/$VERSION, $VERSION is replaced by package version.
-
-        # FTP/SFTP Specific Options
-
+    # FTP/SFTP Specific Options
     @property
     def ftp_user(self):
+        """
+        Set FTP user. This affects all URIs.
+
+        Default: anonymous.
+
+        Returns:
+            str
+        """
         return self.get("ftp-user")
 
     @ftp_user.setter
     def ftp_user(self, value):
         self.set("ftp-user", value)
 
-        # =<USER>
-        #
-        # Set FTP user. This affects all URIs. Default: anonymous
-
     @property
     def ftp_passwd(self):
+        """
+        Set FTP password. This affects all URIs.
+
+        If user name is embedded but password is missing in URI, aria2 tries to resolve password using .netrc. If
+        password is found in .netrc, then use it as password. If not, use the password specified in this option.
+        Default: ARIA2USER@.
+
+        Returns:
+            str
+        """
         return self.get("ftp-passwd")
 
     @ftp_passwd.setter
     def ftp_passwd(self, value):
         self.set("ftp-passwd", value)
 
-        # =<PASSWD>
-        #
-        # Set FTP password. This affects all URIs. If user name is embedded but password is missing in URI,
-        # aria2 tries to resolve password using .netrc. If password is found in .netrc, then use it as password. If
-        # not, use the password specified in this option. Default: ARIA2USER@
-
     @property
     def ftp_pasv(self):
+        """
+        Use the passive mode in FTP.
+
+        If false is given, the active mode will be used. Default: true.
+
+        NOTE:
+           This option is ignored for SFTP transfer.
+
+        Returns:
+            bool
+        """
         return self.get("ftp-pasv")
 
     @ftp_pasv.setter
     def ftp_pasv(self, value):
         self.set("ftp-pasv", value)
 
-        # [=true|false]
-        #
-        # Use the passive mode in FTP. If false is given, the active mode will be used. Default: true
-        #
-        # NOTE:
-        #    This option is ignored for SFTP transfer.
-
     @property
     def ftp_proxy(self):
+        """
+        Use a proxy server for FTP.
+
+        To override a previously defined proxy, use "". See also the --all-proxy option. This affects all ftp
+        downloads. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
+
+        Returns:
+            str
+        """
         return self.get("ftp-proxy")
 
     @ftp_proxy.setter
     def ftp_proxy(self, value):
         self.set("ftp-proxy", value)
 
-        # =<PROXY>
-        #
-        # Use a proxy server for FTP. To override a previously defined proxy, use "". See also the --all-proxy
-        # option. This affects all ftp downloads. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
-
     @property
     def ftp_proxy_passwd(self):
+        """
+        Set password for --ftp-proxy option.
+
+        Returns:
+            str
+        """
         return self.get("ftp-proxy-passwd")
 
     @ftp_proxy_passwd.setter
     def ftp_proxy_passwd(self, value):
         self.set("ftp-proxy-passwd", value)
 
-        # =<PASSWD>
-        #
-        # Set password for --ftp-proxy option.
-
     @property
     def ftp_proxy_user(self):
+        """
+        Set user for --ftp-proxy option.
+
+        Returns:
+            str
+        """
         return self.get("ftp-proxy-user")
 
     @ftp_proxy_user.setter
     def ftp_proxy_user(self, value):
         self.set("ftp-proxy-user", value)
 
-        # =<USER>
-        #
-        # Set user for --ftp-proxy option.
-
     @property
     def ftp_type(self):
+        """
+        Set FTP transfer type.
+
+        TYPE is either binary or ascii. Default: binary.
+
+        NOTE:
+           This option is ignored for SFTP transfer.
+
+        Returns:
+            str
+        """
         return self.get("ftp-type")
 
     @ftp_type.setter
     def ftp_type(self, value):
         self.set("ftp-type", value)
 
-        # =<TYPE>
-        #
-        # Set FTP transfer type. TYPE is either binary or ascii. Default: binary
-        #
-        # NOTE:
-        #    This option is ignored for SFTP transfer.
-
     @property
     def ftp_reuse_connection(self):
+        """
+        Reuse connection in FTP.
+
+        Default: true.
+
+        Returns:
+            bool
+        """
         return self.get("ftp-reuse-connection")
 
     @ftp_reuse_connection.setter
     def ftp_reuse_connection(self, value):
         self.set("ftp-reuse-connection", value)
-
-        # [=true|false]
-        #
-        # Reuse connection in FTP. Default: true
 
     @property
     def ssh_host_key_md(self):
