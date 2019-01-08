@@ -37,6 +37,9 @@ class JSONRPCError(Exception):
         self.code = code
         self.message = message
 
+    def __str__(self):
+        return self.message
+
 
 class JSONRPCClient:
     """
@@ -170,7 +173,7 @@ class JSONRPCClient:
 
         Args:
             method (str): the method name. You can use the constant defined in :class:`aria2p.JSONRPCClient`.
-            params (list of str): a list of parameters, as strings.
+            params (list): a list of parameters.
             msg_id (int/str): the ID of the call, sent back with the server's answer.
             insert_secret (bool): whether to insert the secret token in the parameters or not.
 
@@ -186,7 +189,7 @@ class JSONRPCClient:
                 for param in params[0]:
                     param["params"].insert(0, self.secret)
 
-        return self.post(self.get_payload(method, params, msg_id=msg_id))
+        return self.res_or_raise(self.post(self.get_payload(method, params, msg_id=msg_id)))
 
     def batch_call(self, calls, insert_secret=True):
         """
@@ -195,17 +198,18 @@ class JSONRPCClient:
         A batch call is simply a list of full payloads, sent at once to the remote process. The differences with a
         multicall are:
 
-            - multicall is defined in the JSON-RPC protocol specification, whereas batch_call is not
             - multicall is a special "system" method, whereas batch_call is simply the concatenation of several methods
             - multicall payloads define the "jsonrpc" and "id" keys only once, whereas these keys are repeated in
-              each part of the batch_call method
+              each part of the batch_call payload
+            - as a result of the previous line, you must pass different IDs to the batch_call methods, whereas the
+              ID in multicall is optional
 
         Args:
             calls (list): a list of tuples composed of method name, parameters and ID.
             insert_secret (bool): whether to insert the secret token in the parameters or not.
 
         Returns:
-            The answer from the server, as a Python object (dict / list / str / int).
+            list: the results for each call in the batch.
         """
         payloads = []
 
@@ -217,7 +221,9 @@ class JSONRPCClient:
 
         payload = json.dumps(payloads)
 
-        return self.post(payload)
+        responses = self.post(payload)
+
+        return [self.res_or_raise(resp) for resp in responses]
 
     def multicall2(self, calls, insert_secret=True):
         """
@@ -259,9 +265,9 @@ class JSONRPCClient:
                 params.insert(0, self.secret)
             multicall_params.append({"methodName": method, "params": params})
 
-        payload = self.get_payload(self.MULTICALL, multicall_params)
+        payload = self.get_payload(self.MULTICALL, [multicall_params])
 
-        return self.post(payload)
+        return self.res_or_raise(self.post(payload))
 
     def post(self, payload):
         """
@@ -274,13 +280,25 @@ class JSONRPCClient:
                 "jsonrpc": "2.0", "method": method, "id": id, "params": params (optional).
 
         Returns:
-            The answer from the server, as a Python object (dict / list / str / int).
+            The answer from the server, as a Python dictionary.
+        """
+        return requests.post(self.server, data=payload).json()
+
+    @staticmethod
+    def res_or_raise(response):
+        """
+        Return the result of the response, or raise an error with code and message.
+
+        Args:
+            response (dict): a response sent by the server.
+
+        Returns:
+            The "result" value of the response.
 
         Raises:
-            JSONRPCError: when the server returns an error (client/server error).
+            JSONRPCError: when the response contains an error (client/server error).
                 See the :class:`aria2p.JSONRPCError` class.
         """
-        response = requests.post(self.server, data=payload).json()
         if "result" in response:
             return response["result"]
         raise JSONRPCError(response["error"]["code"], response["error"]["message"])
