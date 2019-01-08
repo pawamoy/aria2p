@@ -31,6 +31,8 @@ recommonmark = "^0.4.0"
 sphinx = "^1.8"
 sphinx-rtd-theme = "^0.4.2"
 sphinxcontrib-spelling = "^4.2"
+responses = "^0.10.5"
+pytest-coverage = "^0.0.0"
 
 [tool.poetry.scripts]
 aria2p = 'aria2p.cli:main'
