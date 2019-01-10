@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metalink version="3.0" xmlns="http://www.metalinker.org/"
+  origin="http://download.packages.ro/metalink"
+  type="static" pubdate="Mon Mar 19 11:02:13 2007"
+  generator="Metalink Gen - http://metalink.packages.ro"
+  refreshdate="Mon Mar 19 11:02:13 2007">
+
+  <publisher>
+    <name>package resources</name>
+    <url>http://www.packages.ro</url>
+  </publisher>
+
+
+
+  <description></description>
+  <tags>linux,debian</tags>
+  <identity>debian</identity>
+  <version>31r5</version>
+
+  <files>
+   <file name="debian-31r5-i386-binary-1.iso">
+
+    <os>Linux-x86</os>
+
+    <size>4682901504</size>
+
+    <verification>
+     <hash type="md5">ec58b59b4585cd16b921ddcbff818941</hash>
+     <hash type="sha1">ae0e0870bb7d5802a13899315a51e6b50453ec6e</hash>
+     <hash type="ed2k">c54534fc9dd188034240fd56dbd6e060</hash>
+
+
+     <pieces length="33554432" type="sha1">
+      <hash piece="0">531c5920e02b64a16dc1d64bca1b849f35aecd20</hash>
+      <hash piece="1">74d221f69761a90b2a900b51dffd351eba056bd5</hash>
+      <hash piece="2">fdfa79d59a88095a611b47909fa3c0f60610a8a9</hash>
+      <hash piece="3">5c9eb4dfc67c7679be68c4330c1139e3c4d9d991</hash>
+      <hash piece="4">5010fc252e13f820a088ffe29463ae4f3543729e</hash>
+      <hash piece="5">6040aa737eff530c49cdb5dfc585fd223ca8fc58</hash>
+      <hash piece="6">c4146f950fbf2773baa6f8aae52a652e0050ec95</hash>
+      <hash piece="7">6e626fdc1962a6509e07ab96b3f52f32e4e05288</hash>
+      <hash piece="8">366bcb5937c04b18dc126a00fea535ca3164f2bc</hash>
+      <hash piece="9">a58ab7ce8b171f98b2dcb94ee1d2c56f854ac760</hash>
+      <hash piece="10">29f192e5fe77e8a01e13d9ef858673b05a14958b</hash>
+      <hash piece="11">d1736ba8a039e01939af8fad44a408c5115d45fa</hash>
+      <hash piece="12">a712d3679db8658645bce8a5eed11d7a01469320</hash>
+      <hash piece="13">969d19294e6537cb826953a643bda5791e52790f</hash>
+      <hash piece="14">8082dd22eec7e5bc7a27161159dab0246df311c9</hash>
+      <hash piece="15">a05a71bff9e859a825188923c2f58caf0e7cec71</hash>
+      <hash piece="16">4e7f76a0604cca460520d5ce6a2c7a8546497a8d</hash>
+      <hash piece="17">cb5c2fc918b3adcb15d77c67e053dd71fc3c85d3</hash>
+      <hash piece="18">fb35f2dc140da4f4b0a78135bdca0216b205b370</hash>
+      <hash piece="19">b441f6cb7bd998daaf9ee4bffa10e1882b7908f8</hash>
+      <hash piece="20">3c612b611d3284b2a99df7c3722078176493d6ae</hash>
+      <hash piece="21">a71b16bd0e3f70296819b88de9ad5a0fc5f53257</hash>
+      <hash piece="22">6ed5e44fef73596088c8a6fd608a4b5fac021fca</hash>
+      <hash piece="23">527cdeefe8bc1d03c046e42a822f246d5713db60</hash>
+      <hash piece="24">8447d7edf505fb4dbd6f300b1cd1f40ed12524b4</hash>
+      <hash piece="25">ca43bb6a64fb4b700e0a25a52e23bfcba6e70ffb</hash>
+      <hash piece="26">ba68e8c55a3229440f3bd02243655726a25c0047</hash>
+      <hash piece="27">cee69e345f5ee7bf03dff878eb985bedf65e9753</hash>
+      <hash piece="28">878c63c76a4c92a6cafa7b9016d6f2601a6f65b7</hash>
+      <hash piece="29">b9acf08c319b8ceac0403cbeceefe9a4247081d5</hash>
+      <hash piece="30">cb74b67ec69e3c1c510f1163197197640ae54e23</hash>
+      <hash piece="31">72d9c4fa2f9d85a55bc021a694c37565a0f4fe6a</hash>
+      <hash piece="32">288a26c7c2d37a19fb73b6405f38234351a56c44</hash>
+      <hash piece="33">a92f70afa4a7e579439850c7f22e2106bd2c878e</hash>
+      <hash piece="34">39319777bceb1d49b084ff3bb3d697019bff517c</hash>
+      <hash piece="35">606d24008afbfa4e929ae634e312345bfa69ff99</hash>
+      <hash piece="36">07e30637015834c0de8837e90f29ec4f5b425a1f</hash>
+      <hash piece="37">43d6cbf1557d3165e6ffb2620752893d0b67019a</hash>
+      <hash piece="38">4e9b7b34dde00161d2ffa00fb33fd03411e51c6f</hash>
+      <hash piece="39">764c1b88596fd46daebb82cc0794ba5f7dfc03f6</hash>
+      <hash piece="40">dc50baad56f93df550f084f1746074ae5d6e1f54</hash>
+      <hash piece="41">3557bef65a216aa7093568f046daf573ad4413d8</hash>
+      <hash piece="42">98aa205cb547d681037ed2d54427693a718e2938</hash>
+      <hash piece="43">89199f0137540ee8b5c9941cc44920a8a688fc7b</hash>
+      <hash piece="44">690d1dc7956ac2fc5e882d5248d999e7383927bf</hash>
+      <hash piece="45">5d036a7cd2ceddf1ccb4efec524f16c8c72a2ffa</hash>
+      <hash piece="46">c4996226cffdde0d10e494976cc29cbd796d575c</hash>
+      <hash piece="47">ca335d1d4ae5ba105ca0c8cb3301b99cf62d2b06</hash>
+      <hash piece="48">55b111c3b958d1d27cd308e01a5b80015a5136cc</hash>
+      <hash piece="49">451eb308ba131b714ae46978a58200245b2d6930</hash>
+      <hash piece="50">e44dafdc0ffec5eef428e3e7e6950f294cc7787c</hash>
+      <hash piece="51">a3588157422244a49f22833b8f4db3f92e335b74</hash>
+      <hash piece="52">d1bb9ac1c58150a63265f1151047eb6330f4f05f</hash>
+      <hash piece="53">edc5ce38a152f385a5b8e5b6c81f0456bd66663a</hash>
+      <hash piece="54">3e7a5aee8bffcc111dba78425dd83e4d7a80bf30</hash>
+      <hash piece="55">af1c3287603ffdc48133207dc1898a77651bc758</hash>
+      <hash piece="56">060945b8c9d08925dc69685ea93b24e573349fcb</hash>
+      <hash piece="57">a1059f9bef62f4ce6aa43ecda75ca68046cd44de</hash>
+      <hash piece="58">375fa4b83ce6e2f0e8003f2aa11ec3ee9afd6f65</hash>
+      <hash piece="59">35835c97e5e1e785618ee314c32ce61537f5bd62</hash>
+      <hash piece="60">53ed99203aa1dd97de60c09b3987270d1c616329</hash>
+      <hash piece="61">70c881a59df53de833a0c1359e2dec93d8290270</hash>
+      <hash piece="62">e10231de7ecca530d921e3b40c7a73a9a687c34d</hash>
+      <hash piece="63">38434d8804ce9138cfc583a389e3a5ff835f3a4c</hash>
+      <hash piece="64">89c53b6383f751e8113a8bac0ef35c26280c8388</hash>
+      <hash piece="65">5c0a382580741e1fb51050e52b7ab51b77dce91e</hash>
+      <hash piece="66">03ed8d3e849e273ff0310eaf61492d72ec09f4d1</hash>
+      <hash piece="67">fb009e90fda311dd12856c425c797507c7b4ab6b</hash>
+      <hash piece="68">c4acff2939e1aceb81fc8e016f2973ff0c54a3fa</hash>
+      <hash piece="69">47344ac0ec86378c549389cc9310dfcb7b1e6a5f</hash>
+      <hash piece="70">e5a33d7ec8df83afe853588c5b2fb7f9571d6f75</hash>
+      <hash piece="71">fa744a632f065b71dac6873825689079620ea8ff</hash>
+      <hash piece="72">e374c3984107aade2ead7cbf594b60ba36d2039a</hash>
+      <hash piece="73">a4f58b2ca1350fd51b15e6ed86d0ecb27992cf88</hash>
+      <hash piece="74">25da4fb40af71372625b28572ee9423650ffd1aa</hash>
+      <hash piece="75">4589eda69618b9ce0cbd9ed9eb755b48458ca0ed</hash>
+      <hash piece="76">403e760cba349aee0d8860cb059da7363a2f78e3</hash>
+      <hash piece="77">cc07b07b7de90d23de371d56329c67e4f6f2d3c9</hash>
+      <hash piece="78">4e97e02af43b9651910253045b7319fbd188146f</hash>
+      <hash piece="79">8c6330d8e847e04478cb5f30ab5032643fe73cc5</hash>
+      <hash piece="80">7ea65f2e8c77795c4733943792985358ab8a7d1b</hash>
+      <hash piece="81">497884533d63077cc19bf1a6d49e0c1ed3d2e85f</hash>
+      <hash piece="82">5a7c567ef32136a231b75d93e709b7c5d24e0c72</hash>
+      <hash piece="83">e13af5e8e831445e3cc9b7f0018d0c0085720e36</hash>
+      <hash piece="84">57b212ad4fa804cd01acf0d1518af6d926333c1e</hash>
+      <hash piece="85">a226972302a5dd52941e4b22b9011b0c5ab8b9a7</hash>
+      <hash piece="86">4d707b58c15fbe67ec1297945b044ce72353b113</hash>
+      <hash piece="87">270181063392a92b0f30ae2ae9491d4caf298aea</hash>
+      <hash piece="88">702da8a5a4015c8d4f8a29ebe87c38d2f1b9ac0f</hash>
+      <hash piece="89">e58cbdb9424b9d441f935ea4da30c22aaf49b756</hash>
+      <hash piece="90">7687339cc51c67ef3d1dabe2207f671cb8e6b652</hash>
+      <hash piece="91">46395523ed91e13d44739ce7eb7e332acf25a506</hash>
+      <hash piece="92">ad4b2ac9b7326109e8adf3035ea6ec6a049bd80b</hash>
+      <hash piece="93">ad374429f3ded4ff1a4671ffd2b041ba5b1f576b</hash>
+      <hash piece="94">0232739688530e844341546dd592313fe7375f10</hash>
+      <hash piece="95">1d5710fa6c21165d218cab91d237683af360dcc4</hash>
+      <hash piece="96">f79f1e981736f0f83537eae62d0cb0090f6aab26</hash>
+      <hash piece="97">c75fb87b572c0bc2f4e7febd65176178a09dbb35</hash>
+      <hash piece="98">1c7c6c29e3d6f1e90339dd10ea26a010a4b80f8b</hash>
+      <hash piece="99">8dc2b68dfe841b58ace79872ee6a7754d07c50f1</hash>
+      <hash piece="100">1b950a3819e2a7037d5197b1a10c8deece666f0b</hash>
+      <hash piece="101">bd16604592d7c27b0b21fa8b9cdb9c0718fe0675</hash>
+      <hash piece="102">aec0a4a4be722d07e79c47dd56e6d63041acf6a5</hash>
+      <hash piece="103">24362545e730426d36715df1d64b9ab1c652fdcd</hash>
+      <hash piece="104">e2e29d9e2b3d7a5f9b2c170158d187b37b886402</hash>
+      <hash piece="105">3ee082103a7e6ec024bc7e8dcf510befbd06ba3e</hash>
+      <hash piece="106">a4511de07907f12d4b1c972296e51ad363f7dcd7</hash>
+      <hash piece="107">6cb016a36f768cd089ee098f17914a9f55158748</hash>
+      <hash piece="108">ee777ba6fd4ffbb0c4854588cfaa5240fcea928b</hash>
+      <hash piece="109">e36f053acd1df26a67e08c052a05ed8ce1e1131e</hash>
+      <hash piece="110">3a66a319aaf8fd99815c5b5d84bca056f4cc031c</hash>
+      <hash piece="111">43e24808ded3d6f76e70f4fb1ae278c5dde509c0</hash>
+      <hash piece="112">3fce7ba9fb93fbb33ddd4179d2a5acda85eb1968</hash>
+      <hash piece="113">9ac00dd0cab43dfdac088110d30077eea07a299e</hash>
+      <hash piece="114">f6f94338c7c8aaaade66f2be997fce63d555f38d</hash>
+      <hash piece="115">2ad1a3e5dcbade631c2b3f222b130e397a965b2f</hash>
+      <hash piece="116">4ca4d06902e722c117b9732f3bed20b2e61e3473</hash>
+      <hash piece="117">4d11acbb72de76af2847b369ccba3c8e5c7fd12e</hash>
+      <hash piece="118">30656193e332560bb8201d5c097044b5a1245de7</hash>
+      <hash piece="119">4d2cd4fc60ad8640735c699f506f9ba08744e82c</hash>
+      <hash piece="120">833f3115cfa0825d49dd720062a0386a5c62f566</hash>
+      <hash piece="121">d85069356779ed135fa19f5d22f121c0730f8c00</hash>
+      <hash piece="122">8d2ee0da51605c1fdb8bb7b87109aa4d92345f27</hash>
+      <hash piece="123">6e97c5a453eaca95c19a33fcba0c0bf3e10bd172</hash>
+      <hash piece="124">cc66519430c16c3af660392c473ea42f410a30c9</hash>
+      <hash piece="125">73be8d4be906d8b64fab47f90998d78a69c52128</hash>
+      <hash piece="126">9503d7431e61f37c4ee18cef0efde2233db9e8ec</hash>
+      <hash piece="127">ef1cb219fceecb8e6e10368bf290d9ce79785aab</hash>
+      <hash piece="128">37d7f951d0b8a4caf8b8a61ffe07d858b9adf25c</hash>
+      <hash piece="129">0bad9cc3f345c78344efbf5de133632f37d31530</hash>
+      <hash piece="130">52f19a988a93a755b9f6865154cbbb0b81f3b387</hash>
+      <hash piece="131">d852d97dacf5f2614bd6e9b8c7a203cd85f57793</hash>
+      <hash piece="132">9a211799f1d5fbc707fe8ea9698665425b08439f</hash>
+      <hash piece="133">8d63363a994760e9cd9b60ae0775b96bc322da73</hash>
+      <hash piece="134">7384a6f74e7753a3ed8a2bd0f9afa074f0715556</hash>
+      <hash piece="135">fba22815cc19d19850b504f2f2287d793b7a9a25</hash>
+      <hash piece="136">8f42888441b6c8fe4c0b75b572b844bf7258b25a</hash>
+      <hash piece="137">f26290ec2b564d6d401d40802029166a149c11ae</hash>
+      <hash piece="138">32479960119749973a3b51cd5173f1a5aa99d1bc</hash>
+      <hash piece="139">a409a134d09accf515473ac4d6b2cc7452a5942c</hash>
+     </pieces>
+
+
+    </verification>
+
+    <resources>
+
+
+
+
+     <url type="http" location="au" preference="10">http://ftp.au.debian.org/pub/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="au" preference="10">http://ftp.iinet.net.au/debian/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="au" preference="10">http://mirror.aarnet.edu.au/pub/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="au" preference="10">http://mirror.pacific.net.au/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="at" preference="10">http://debian.inode.at/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="at" preference="10">http://gd.tuwien.ac.at/opsys/linux/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="be" preference="10">http://ftp.belnet.be/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="br" preference="10">http://debian.pop-sc.rnp.br/mirror/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="br" preference="10">http://linorg.usp.br/iso/debian/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="br" preference="10">http://sft.if.usp.br/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="ca" preference="10">http://debian.yorku.ca/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="cl" preference="10">http://ftp.cl.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="hr" preference="10">http://ftp.carnet.hr/debian-cd/images/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="hr" preference="10">http://ftp.hr.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="hr" preference="10">http://ftp.irb.hr/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="hr" preference="10">http://iso.linux.hr/debian/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="cz" preference="10">http://debian.sh.cvut.cz/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="cz" preference="10">http://ftp.zcu.cz/pub/linux/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="dk" preference="10">http://ftp.dk.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="dk" preference="10">http://mirrors.telianet.dk/pub/mirrors/cdimage.debian.org/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="fi" preference="10">http://ftp.fi.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="fi" preference="10">http://ftp.funet.fi/pub/linux/mirrors/debian-cdimage/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="fi" preference="10">http://ftp.jyu.fi/ftp/pub/linux/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="fr" preference="10">http://debian.ens-cachan.fr/ftp/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="fr" preference="10">http://debian.mines.inpl-nancy.fr/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="fr" preference="10">http://debian.mirror.inra.fr/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="fr" preference="10">http://ftp.u-strasbg.fr/isos/Debian/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="fr" preference="10">http://ftp2.fr.debian.org/pub/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="fr" preference="10">http://webb.ens-cachan.fr/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="de" preference="10">http://debian.uni-essen.de/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="de" preference="10">http://ftp-stud.fht-esslingen.de/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="de" preference="10">http://ftp.de.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="de" preference="10">http://ftp.gwdg.de/pub/linux/debian/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="de" preference="10">http://ftp.hosteurope.de/mirror/ftp.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="de" preference="10">http://ftp.tiscali.de/pub/debian/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="de" preference="10">http://ftp.uni-bayreuth.de/linux/Debian/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="de" preference="10">http://sunsite.informatik.rwth-aachen.de/ftp/pub/Linux/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="uk" preference="10">http://ftp.ticklers.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="uk" preference="10">http://www.mirrorservice.org/sites/cdimage.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="gr" preference="10">http://ftp.ntua.gr/pub/linux/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="gr" preference="10">http://ftp.softnet.tuc.gr/ftp/linux/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="hk" preference="10">http://ftp.hk.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="ie" preference="10">http://ftp.esat.net/pub/linux/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="ie" preference="10">http://ftp.ie.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="il" preference="10">http://debian.co.il/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="it" preference="10">http://debian.fastbull.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="it" preference="10">http://debian.fastweb.it/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="it" preference="10">http://ftp.it.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="it" preference="10">http://ftp.unina.it/pub/linux/distributions/debian/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="jp" preference="10">http://ftp.jaist.ac.jp/pub/Linux/Debian-CD/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="jp" preference="10">http://ftp.jp.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="jp" preference="10">http://ftp.yz.yamagata-u.ac.jp/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="kr" preference="10">http://ftp.kr.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="nl" preference="10">http://debian.essentkabel.com/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="nl" preference="10">http://ftp.nl.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="nl" preference="10">http://ftp.tiscali.nl/debian-iso/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="nl" preference="10">http://mirror.scarlet-internet.nl/pub/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="no" preference="10">http://ftp.no.debian.org/pub/linux/debian-iso/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="pl" preference="10">http://ftp.icm.edu.pl/pub/Linux/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="pl" preference="10">http://ftp.pl.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="pl" preference="10">http://ftp.vectranet.pl/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="ro" preference="10">http://ftp.ro.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="ro" preference="10">http://ftp.lug.ro/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="ru" preference="10">http://debian.nsu.ru/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="ru" preference="10">http://ftp.psn.ru/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="ru" preference="10">http://ftp.ru.debian.org/pub/Linux/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="za" preference="10">http://ftp.sun.ac.za/ftp/iso-images/debian/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="es" preference="10">http://ftp.caliu.info/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="es" preference="10">http://ftp.cica.es/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="es" preference="10">http://ftp.es.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="es" preference="10">http://ftp.gva.es/mirror/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="es" preference="10">http://ftp.rediris.es/pub/linux/distributions/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="se" preference="10">http://cdimage.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="se" preference="10">http://ftp.port80.se/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="se" preference="10">http://ftp.se.debian.org/debian-iso/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="se" preference="10">http://ftp.sunet.se/pub/os/Linux/distributions/debian-iso/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="ch" preference="10">http://ftp.ch.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="ch" preference="10">http://mirror.switch.ch/ftp/mirror/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="tw" preference="10">http://ftp.tw.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="tw" preference="10">http://linux.cdpa.nsysu.edu.tw/Debian/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="tr" preference="10">http://ftp.tr.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="ua" preference="10">http://debian.org.ua/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="us" preference="10">http://aurolinux.mit.edu/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="us" preference="10">http://carroll.aset.psu.edu/pub/linux/distributions/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="us" preference="10">http://debian.cites.uiuc.edu/pub/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="us" preference="10">http://debian.fifi.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="us" preference="10">http://debian.midco.net/pub/iso/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="us" preference="10">http://debian.mirrors.tds.net/pub/linux/ftp.debian.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="us" preference="10">http://debian.osuosl.org/debian-cdimage/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="us" preference="10">http://ftp-mirror.internap.com/pub/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="us" preference="10">http://ftp.keystealth.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="us" preference="10">http://ftp.ndlug.nd.edu/mirrors/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="us" preference="10">http://mirrors.kernel.org/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+     <url type="http" location="us" preference="10">http://mirrors.usc.edu/pub/linux/distributions/debian-cd/3.1_r5/i386/iso-dvd/debian-31r5-i386-binary-1.iso</url>
+
+       <url type="magnet" preference="90">         magnet:?xt=urn:sha1:ae0e0870bb7d5802a13899315a51e6b50453ec6e&amp;xt=urn:ed2k:c54534fc9dd188034240fd56dbd6e060&amp;xl=4682901504&amp;dn=debian-31r5-i386-binary-1.iso
+       </url>
+
+
+
+    </resources>
+   </file>
+  </files>
+</metalink>

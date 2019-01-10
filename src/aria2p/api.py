@@ -108,9 +108,9 @@ class API:
         else:
             client_options = options
 
-        with open(metalink_file_path) as stream:
+        with open(metalink_file_path, "rb") as stream:
             metalink_contents = stream.read()
-        encoded_contents = b64encode(metalink_contents)
+        encoded_contents = b64encode(metalink_contents).decode("utf8")
 
         gids = self.client.add_metalink(encoded_contents, client_options, position)
 

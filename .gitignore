@@ -5,3 +5,4 @@ poetry.lock
 dist/
 *.egg-info/
 build/
+.coverage
