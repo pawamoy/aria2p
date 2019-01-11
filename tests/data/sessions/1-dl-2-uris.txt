@@ -1,0 +1,3 @@
+http://example.org/aria1	http://example.org/aria2
+ gid=2089b05ecca3d829
+ pause=true
