@@ -5,6 +5,9 @@ from base64 import b64encode
 from copy import deepcopy
 from pathlib import Path
 from tempfile import mkdtemp
+import http.server
+import socketserver
+from threading import Thread
 
 import pytest
 from aria2p import JSONRPCClient, JSONRPCError
@@ -246,13 +249,23 @@ class _Aria2Server:
         else:
             command.append("--no-conf")
         if session:
-            command.append(f"--input-file={session}")
+            if isinstance(session, list):
+                session_path = self.tmp_dir / "_session.txt"
+                with open(session_path, "w") as stream:
+                    stream.write("\n".join(session))
+                command.append(f"--input-file={session_path}")
+            else:
+                command.append(f"--input-file={session}")
 
-        # create the subprocess
-        self.process = subprocess.Popen(command)
+        self.command = command
+        self.process = None
 
         # create the client with port
         self.client = JSONRPCClient(port=port)
+
+    def start(self):
+        # create the subprocess
+        self.process = subprocess.Popen(self.command)
 
         # make sure the server is running
         while True:
@@ -300,12 +313,10 @@ class _Aria2Server:
 
 class Aria2Server:
     def __init__(self, port, config=None, session=None):
-        self.port = port
-        self.config = config
-        self.session = session
+        self.server = _Aria2Server(port, config, session)
 
     def __enter__(self):
-        self.server = _Aria2Server(self.port, self.config, self.session)
+        self.server.start()
         return self.server
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -357,39 +368,59 @@ def test_global_option_methods():
         assert max_concurrent_downloads == "10"
 
 
-# def test_option_methods():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.change_option() == "OK"
+def test_option_methods():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "max-dl-limit-10000.txt") as server:
+        gid = server.client.tell_active(keys=["gid"])[0]["gid"]
+        max_download_limit = server.client.get_option(gid=gid)["max-download-limit"]
+        assert max_download_limit == "10000"
+
+        assert server.client.change_option(gid, {"max-download-limit": "20000"}) == "OK"
+
+        max_download_limit = server.client.get_option(gid)["max-download-limit"]
+        assert max_download_limit == "20000"
 
 
-# def test_change_position_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.change_position() == "OK"
-#
-#
-# def test_change_uri_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.change_uri() == "OK"
-#
-#
-# def test_force_pause_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.force_pause() == "OK"
-#
-#
-# def test_force_pause_all_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.force_pause_all() == "OK"
-#
-#
-# def test_force_remove_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.force_remove() == "OK"
-#
-#
-# def test_force_shutdown_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.force_shutdown() == "OK"
+def test_position_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+        gids = server.client.tell_waiting(0, 5, keys=["gid"])
+        first, second = [r["gid"] for r in gids]
+        assert server.client.change_position(second, 0, "POS_SET") == 0
+        assert server.client.change_position(second, 5, "POS_CUR") == 1
+
+
+def test_change_uri_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "1-dl-2-uris.txt") as server:
+        gid = server.client.tell_waiting(0, 1, keys=["gid"])[0]["gid"]
+        assert server.client.change_uri(gid, 1, ["http://example.org/aria2"], ["http://example.org/aria3"]) == [1, 1]
+        assert server.client.change_uri(gid, 1, ["http://example.org/aria3"], []) == [1, 0]
+
+
+def test_force_pause_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "dl-aria2-1.34.0.txt") as server:
+        gid = server.client.tell_active(keys=["gid"])[0]["gid"]
+        assert server.client.force_pause(gid) == gid
+
+
+def test_force_pause_all_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "dl-2-aria2.txt") as server:
+        assert server.client.force_pause_all() == "OK"
+
+
+def test_force_remove_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "dl-aria2-1.34.0.txt") as server:
+        gid = server.client.tell_active(keys=["gid"])[0]["gid"]
+        assert server.client.force_remove(gid)
+        assert server.client.tell_status(gid, keys=["status"])["status"] == "removed"
+
+
+def test_force_shutdown_method():
+    with Aria2Server(port=6810) as server:
+        assert server.client.force_shutdown() == "OK"
+        with pytest.raises(ConnectionError):
+            for retry in range(10):
+                server.client.list_methods()
+                time.sleep(1)
+
 #
 #
 # def test_get_files_method():
@@ -457,14 +488,15 @@ def test_list_notifications_method():
 #         assert server.client.multicall2() == "OK"
 #
 #
-# def test_pause_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.pause() == "OK"
-#
-#
-# def test_pause_all_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.pause_all() == "OK"
+def test_pause_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "dl-aria2-1.34.0.txt") as server:
+        gid = server.client.tell_active(keys=["gid"])[0]["gid"]
+        assert server.client.pause(gid) == gid
+
+
+def test_pause_all_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "dl-2-aria2.txt") as server:
+        assert server.client.pause_all() == "OK"
 
 
 def test_purge_download_result_method():
@@ -472,51 +504,85 @@ def test_purge_download_result_method():
         assert server.client.purge_download_result() == "OK"
 
 
-# def test_remove_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.remove() == "OK"
-#
-#
-# def test_remove_download_result_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.remove_download_result() == "OK"
-#
-#
-# def test_save_session_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.save_session() == "OK"
-#
-#
-# def test_shutdown_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.shutdown() == "OK"
-#
-#
-# def test_tell_active_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.tell_active() == "OK", config="", session=""
-#
-#
-# def test_tell_status_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.tell_status() == "OK"
-#
-#
-# def test_tell_stopped_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.tell_stopped() == "OK"
-#
-#
-# def test_tell_waiting_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.tell_waiting() == "OK"
-#
-#
-# def test_unpause_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.unpause() == "OK"
-#
-#
-# def test_unpause_all_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.unpause_all() == "OK"
+def test_remove_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "dl-aria2-1.34.0.txt") as server:
+        gid = server.client.tell_active(keys=["gid"])[0]["gid"]
+        assert server.client.remove(gid)
+        assert server.client.tell_status(gid, keys=["status"])["status"] == "removed"
+
+
+def test_remove_download_result_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "dl-aria2-1.34.0.txt") as server:
+        gid = server.client.tell_active(keys=["gid"])[0]["gid"]
+        server.client.remove(gid)
+        assert server.client.remove_download_result(gid) == "OK"
+        assert len(server.client.tell_stopped(0, 1)) == 0
+
+
+def test_save_session_method():
+    session_input = SESSIONS_DIR / "dl-aria2-1.34.0.txt"
+    with Aria2Server(port=6810, session=session_input) as server:
+        session_output = server.tmp_dir / "_session.txt"
+        server.client.change_global_option({"save-session": str(session_output)})
+        assert server.client.save_session() == "OK"
+        with open(session_input) as stream:
+            input_contents = stream.read()
+        with open(session_output) as stream:
+            output_contents = stream.read()
+        for line in input_contents.split("\n"):
+            assert line in output_contents
+
+
+def test_shutdown_method():
+    with Aria2Server(port=6810) as server:
+        assert server.client.shutdown() == "OK"
+        with pytest.raises(ConnectionError):
+            for retry in range(10):
+                server.client.list_methods()
+                time.sleep(1)
+
+
+def test_tell_active_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "dl-aria2-1.34.0.txt") as server:
+        assert len(server.client.tell_active(keys=["gid"])) > 0
+
+
+def test_tell_status_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "dl-aria2-1.34.0-paused.txt") as server:
+        gid = server.client.tell_waiting(0, 1, keys=["gid"])[0]["gid"]
+        assert server.client.tell_status(gid)
+
+
+def test_tell_stopped_method():
+    for retry in range(10):
+        try:
+            with socketserver.TCPServer(("", 8000), http.server.SimpleHTTPRequestHandler) as httpd:
+                thread = Thread(target=httpd.serve_forever)
+                thread.start()
+
+                with Aria2Server(port=6810, session=SESSIONS_DIR / "small-local-download.txt") as server:
+                    time.sleep(0.5)
+                    assert len(server.client.tell_stopped(0, 1, keys=["gid"])) > 0
+
+                httpd.shutdown()
+                thread.join()
+        except OSError:
+            time.sleep(1)
+        else:
+            break
+
+
+def test_tell_waiting_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+        assert server.client.tell_waiting(0, 5, keys=["gid"]) == [{"gid": "2089b05ecca3d829"}, {"gid": "cca3d8292089b05e"}]
+
+
+def test_unpause_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "dl-aria2-1.34.0-paused.txt") as server:
+        gid = server.client.tell_waiting(0, 1, keys=["gid"])[0]["gid"]
+        assert server.client.unpause(gid) == gid
+
+
+def test_unpause_all_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+        assert server.client.unpause_all() == "OK"

@@ -1,0 +1,3 @@
+https://github.com/aria2/aria2/archive/release-1.34.0.tar.gz
+ gid=2089b05ecca3d829
+ pause=true
