@@ -421,51 +421,44 @@ def test_force_shutdown_method():
                 server.client.list_methods()
                 time.sleep(1)
 
-#
-#
-# def test_get_files_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.get_files() == "OK"
-#
-#
-# def test_get_global_option_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.get_global_option() == "OK"
-#
-#
-# def test_get_global_stat_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.get_global_stat() == "OK"
-#
-#
-# def test_get_option_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.get_option() == "OK"
-#
-#
-# def test_get_peers_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.get_peers() == "OK"
-#
-#
-# def test_get_servers_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.get_servers() == "OK"
-#
-#
-# def test_get_session_info_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.get_session_info() == "OK"
-#
-#
-# def test_get_uris_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.get_uris() == "OK"
-#
-#
-# def test_get_version_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.get_version() == "OK"
+
+def test_get_files_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "dl-aria2-1.34.0.txt") as server:
+        gid = server.client.tell_active(keys=["gid"])[0]["gid"]
+        assert len(server.client.get_files(gid)) == 1
+
+
+def test_get_global_stat_method():
+    with Aria2Server(port=6810) as server:
+        assert server.client.get_global_stat()
+
+
+def test_get_peers_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "max-dl-limit-10000.txt") as server:
+        gid = server.client.tell_active(keys=["gid"])[0]["gid"]
+        assert not server.client.get_peers(gid)
+
+
+def test_get_servers_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "max-dl-limit-10000.txt") as server:
+        gid = server.client.tell_active(keys=["gid"])[0]["gid"]
+        assert server.client.get_servers(gid)
+
+
+def test_get_session_info_method():
+    with Aria2Server(port=6810) as server:
+        assert server.client.get_session_info()
+
+
+def test_get_uris_method():
+    with Aria2Server(port=6810, session=SESSIONS_DIR / "1-dl-2-uris.txt") as server:
+        gid = server.client.tell_waiting(0, 1, keys=["gid"])[0]["gid"]
+        assert server.client.get_uris(gid) == [{"status": "waiting", "uri": "http://example.org/aria1"}, {"status": "waiting", "uri": "http://example.org/aria2"}]
+
+
+def test_get_version_method():
+    with Aria2Server(port=6810) as server:
+        assert server.client.get_version()
 
 
 def test_list_methods_method():
@@ -478,16 +471,22 @@ def test_list_notifications_method():
         assert server.client.list_notifications()
 
 
-# def test_multicall_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.multicall() == "OK"
-#
-#
-# def test_multicall2_method():
-#     with Aria2Server(port=6810) as server:
-#         assert server.client.multicall2() == "OK"
-#
-#
+def test_multicall_method():
+    with Aria2Server(port=6810) as server:
+        assert server.client.multicall([[
+            {"methodName": server.client.LIST_METHODS},
+            {"methodName": server.client.LIST_NOTIFICATIONS}
+        ]])
+
+
+def test_multicall2_method():
+    with Aria2Server(port=6810) as server:
+        assert server.client.multicall2([
+            (server.client.LIST_METHODS, []),
+            (server.client.LIST_NOTIFICATIONS, [])
+        ])
+
+
 def test_pause_method():
     with Aria2Server(port=6810, session=SESSIONS_DIR / "dl-aria2-1.34.0.txt") as server:
         gid = server.client.tell_active(keys=["gid"])[0]["gid"]
