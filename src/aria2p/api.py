@@ -116,12 +116,12 @@ class API:
 
         return self.get_downloads(gids)
 
-    def add_url(self, urls, options=None, position=None):
+    def add_uris(self, uris, options=None, position=None):
         """
         Add a download with a URL (or more).
 
         Args:
-            urls (list of str): the list of URLs that point to the same resource.
+            uris (list of str): a list of URIs that point to the same resource.
             options (:class:`aria2p.Options` or dict): an instance of the ``Options`` class or a dictionary
               containing Aria2c options to create the download with.
             position (int): the position where to insert the new download in the queue. Start at 0 (top).
@@ -138,7 +138,7 @@ class API:
         else:
             client_options = options
 
-        gid = self.client.add_uri(urls, client_options, position)
+        gid = self.client.add_uri(uris, client_options, position)
 
         return self.get_download(gid)
 
