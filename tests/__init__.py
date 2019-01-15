@@ -113,7 +113,7 @@ class _Aria2Server:
         directory.rmdir()
 
     def destroy(self, force=False):
-        print(f"Terminating process (port {self.port}, dir={self.tmp_dir}, ps output={self.ps_output})")
+        print(f"Terminating process (port {self.port}, dir={self.tmp_dir})")
         if force:
             self.kill()
         else:
