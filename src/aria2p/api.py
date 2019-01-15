@@ -231,7 +231,7 @@ class API:
             pos (int): the relative position (1 to move down, -1 to move up, -2 to move up two times, etc.).
 
         Returns:
-            bool: Success or failure of the operation.
+            int: The new position of the download.
         """
         return self.client.change_position(download.gid, pos, "POS_CUR")
 
@@ -244,9 +244,14 @@ class API:
             pos (int): the absolute position in the queue where to move the download. 0 for top, -1 for bottom.
 
         Returns:
-            bool: Success or failure of the operation.
+            int: The new position of the download.
         """
-        return self.client.change_position(download.gid, pos, "POS_SET")
+        if pos < 0:
+            how = "POS_END"
+            pos = -pos
+        else:
+            how = "POS_SET"
+        return self.client.change_position(download.gid, pos, how)
 
     def move_up(self, download, pos=1):
         """
@@ -257,7 +262,7 @@ class API:
             pos (int): number of times to move up. With negative values, will move down (use move or move_down instead).
 
         Returns:
-            bool: Success or failure of the operation.
+            int: The new position of the download.
         """
         return self.client.change_position(download.gid, -pos, "POS_CUR")
 
@@ -270,7 +275,7 @@ class API:
             pos (int): number of times to move down. With negative values, will move up (use move or move_up instead).
 
         Returns:
-            bool: Success or failure of the operation.
+            int: The new position of the download.
         """
         return self.client.change_position(download.gid, pos, "POS_CUR")
 
@@ -282,7 +287,7 @@ class API:
             download (:class:`aria2p.Download`): the download object to move.
 
         Returns:
-            bool: Success or failure of the operation.
+            int: The new position of the download.
         """
         return self.client.change_position(download.gid, 0, "POS_SET")
 
@@ -294,9 +299,9 @@ class API:
             download (:class:`aria2p.Download`): the download object to move.
 
         Returns:
-            bool: Success or failure of the operation.
+            int: The new position of the download.
         """
-        return self.client.change_position(download.gid, -1, "POS_SET")
+        return self.client.change_position(download.gid, 0, "POS_END")
 
     def remove(self, downloads, force=False):
         """
