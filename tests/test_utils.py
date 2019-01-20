@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from aria2p.utils import human_readable_bytes, human_readable_timedelta, bool_or_value, bool_to_str
+from aria2p.utils import bool_or_value, bool_to_str, human_readable_bytes, human_readable_timedelta
 
 
 def test_human_readable_bytes():

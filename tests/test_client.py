@@ -7,9 +7,9 @@ from copy import deepcopy
 from threading import Thread
 
 import pytest
+import requests
 from aria2p import JSONRPCClient, JSONRPCError
 from aria2p.client import JSONRPC_CODES, JSONRPC_PARSER_ERROR
-import requests
 from responses import mock as responses
 
 from . import (

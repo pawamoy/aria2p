@@ -5,8 +5,8 @@ torrent files, files and downloads in aria2c.
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from .utils import human_readable_bytes, bool_or_value, human_readable_timedelta
 from .client import JSONRPCError
+from .utils import bool_or_value, human_readable_bytes, human_readable_timedelta
 
 
 class BitTorrent:

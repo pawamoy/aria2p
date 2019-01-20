@@ -1,12 +1,12 @@
+import random
+import re
 import subprocess
 import tempfile
 import time
 from pathlib import Path
-import re
-import random
 
-import requests
 import aria2p
+import requests
 
 TESTS_DIR = Path(__file__).parent
 TESTS_TMP_DIR = TESTS_DIR / "tmp"
