@@ -28,11 +28,13 @@ class _Aria2Server:
     def __init__(self, port=None, config=None, session=None):
         # create the tmp dir
         self.tmp_dir = Path(tempfile.mkdtemp(dir=TESTS_TMP_DIR))
-        self.ps_output = None
 
         if port is None:
             ports_used = {
-                int(_.split("=")[1]) for _ in re.findall(r"--rpc-listen-port=[0-9]{4}", subprocess.check_output(["ps", "aux"]).decode("utf-8"))
+                int(_.split("=")[1])
+                for _ in re.findall(
+                    r"--rpc-listen-port=[0-9]{4}", subprocess.check_output(["ps", "aux"]).decode("utf-8")
+                )
             }
             while True:
                 port = random.randint(6810, 7000)
@@ -113,7 +115,6 @@ class _Aria2Server:
         directory.rmdir()
 
     def destroy(self, force=False):
-        print(f"Terminating process (port {self.port}, dir={self.tmp_dir})")
         if force:
             self.kill()
         else:
