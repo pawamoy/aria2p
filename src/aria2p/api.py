@@ -4,10 +4,10 @@ interact easily with a remote aria2c process.
 """
 from base64 import b64encode
 
+from .client import JSONRPCClient
 from .downloads import Download
 from .options import Options
 from .stats import Stats
-from .client import JSONRPCClient
 
 
 class API:

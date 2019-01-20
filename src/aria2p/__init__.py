@@ -11,7 +11,7 @@ please refer to the README.md included in this package to get the link to the of
 
 from .api import API
 from .client import JSONRPCClient, JSONRPCError
-from .downloads import Download, BitTorrent, File
+from .downloads import BitTorrent, Download, File
 from .options import Options
 from .stats import Stats
 

@@ -5,7 +5,7 @@ This module defines the Options class, which holds information retrieved with th
 
 from copy import deepcopy
 
-from .utils import bool_to_str, bool_or_value
+from .utils import bool_or_value, bool_to_str
 
 
 class Options:

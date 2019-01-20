@@ -2,8 +2,7 @@ import datetime
 from pathlib import Path
 
 import pytest
-
-from aria2p import BitTorrent, Download, File, API, JSONRPCError
+from aria2p import API, BitTorrent, Download, File, JSONRPCError
 
 from . import Aria2Server
 
@@ -55,21 +54,24 @@ class TestDownloadClass:
                 "connections": "44",
                 "dir": "/home/pawamoy/Downloads/torrents/tmp",
                 "downloadSpeed": "745509",
-                "files": [{
-                    "completedLength": "58132",
-                    "index": "1",
-                    "length": "58132",
-                    "path": "/home/pawamoy/Downloads/torrents/tmp/dl/logo.jpg",
-                    "selected": "true",
-                    "uris": []
-                }, {
-                    "completedLength": "885864384",
-                    "index": "2",
-                    "length": "1045247936",
-                    "path": "/home/pawamoy/Downloads/torrents/tmp/dl/video.mp4",
-                    "selected": "true",
-                    "uris": []
-                }],
+                "files": [
+                    {
+                        "completedLength": "58132",
+                        "index": "1",
+                        "length": "58132",
+                        "path": "/home/pawamoy/Downloads/torrents/tmp/dl/logo.jpg",
+                        "selected": "true",
+                        "uris": [],
+                    },
+                    {
+                        "completedLength": "885864384",
+                        "index": "2",
+                        "length": "1045247936",
+                        "path": "/home/pawamoy/Downloads/torrents/tmp/dl/video.mp4",
+                        "selected": "true",
+                        "uris": [],
+                    },
+                ],
                 "following": "a89a9c5ac990e6ef",
                 "gid": "0a6635c602761000",
                 "infoHash": "4f1da018803b65f61ed76612af9ad00d4373a771",
@@ -110,7 +112,7 @@ class TestDownloadClass:
         assert self.download.bittorrent.mode is None
 
     def test_completed_length(self):
-        assert self.download.completed_length == 889592532
+        assert self.download.completed_length == 889_592_532
 
     def test_completed_length_string(self):
         assert self.download.completed_length_string() == "848.38 MiB"
@@ -123,7 +125,7 @@ class TestDownloadClass:
         assert self.download.dir == Path("/home/pawamoy/Downloads/torrents/tmp")
 
     def test_download_speed(self):
-        assert self.download.download_speed == 745509
+        assert self.download.download_speed == 745_509
 
     def test_download_speed_string(self):
         assert self.download.download_speed_string() == "728.04 KiB/s"
@@ -250,7 +252,7 @@ class TestDownloadClass:
             self.download.pause()
 
     def test_piece_length(self):
-        assert self.download.piece_length == 524288
+        assert self.download.piece_length == 524_288
 
     def test_piece_length_string(self):
         assert self.download.piece_length_string() == "512.00 KiB"
@@ -282,7 +284,7 @@ class TestDownloadClass:
         assert self.download.status == "active"
 
     def test_total_length(self):
-        assert self.download.total_length == 1045306068
+        assert self.download.total_length == 1_045_306_068
 
     def test_total_length_string(self):
         assert self.download.total_length_string() == "996.88 MiB"
@@ -301,7 +303,7 @@ class TestDownloadClass:
                 self.download.update_options()
 
     def test_upload_length(self):
-        assert self.download.upload_length == 97207027
+        assert self.download.upload_length == 97_207_027
 
     def test_upload_length_string(self):
         assert self.download.upload_length_string() == "92.70 MiB"
@@ -358,7 +360,7 @@ class TestFileClass:
         assert self.file.index == 1
 
     def test_length(self):
-        assert self.file.length == 2097152
+        assert self.file.length == 2_097_152
 
     def test_length_string(self):
         assert self.file.length_string() == "2.00 MiB"
