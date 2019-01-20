@@ -5,23 +5,7 @@ This module defines the Options class, which holds information retrieved with th
 
 from copy import deepcopy
 
-
-def bool_or_value(value):
-    if value == "true":
-        return True
-    elif value == "false":
-        return False
-    else:
-        return value
-
-
-def bool_to_str(value):
-    if value is True:
-        return "true"
-    elif value is False:
-        return "false"
-    else:
-        return value
+from .utils import bool_to_str, bool_or_value
 
 
 class Options:
