@@ -2,6 +2,7 @@
 This module defines the Stats class, which holds information retrieved with the ``get_global_stat`` method of the
 client.
 """
+from .utils import human_readable_bytes
 
 
 class Stats:
@@ -19,22 +20,32 @@ class Stats:
     @property
     def download_speed(self):
         """Overall download speed (byte/sec)."""
-        return self._struct.get("downloadSpeed")
+        return int(self._struct.get("downloadSpeed"))
+
+    def download_speed_string(self, human_readable=True):
+        if human_readable:
+            return human_readable_bytes(self.download_speed, delim=" ", postfix="/s")
+        return str(self.download_speed) + " B/s"
 
     @property
     def upload_speed(self):
         """Overall upload speed(byte/sec)."""
-        return self._struct.get("uploadSpeed")
+        return int(self._struct.get("uploadSpeed"))
+
+    def upload_speed_string(self, human_readable=True):
+        if human_readable:
+            return human_readable_bytes(self.upload_speed, delim=" ", postfix="/s")
+        return str(self.upload_speed) + " B/s"
 
     @property
     def num_active(self):
         """The number of active downloads."""
-        return self._struct.get("numActive")
+        return int(self._struct.get("numActive"))
 
     @property
     def num_waiting(self):
         """The number of waiting downloads."""
-        return self._struct.get("numWaiting")
+        return int(self._struct.get("numWaiting"))
 
     @property
     def num_stopped(self):
@@ -42,9 +53,9 @@ class Stats:
         The number of stopped downloads in the current session. This value is capped by the --max-download-result
         option.
         """
-        return self._struct.get("numStopped")
+        return int(self._struct.get("numStopped"))
 
     @property
     def num_stopped_total(self):
         """The number of stopped downloads in the current session and not capped by the --max-download-result option."""
-        return self._struct.get("numStoppedTotal")
+        return int(self._struct.get("numStoppedTotal"))
