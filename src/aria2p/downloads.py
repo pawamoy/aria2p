@@ -5,20 +5,8 @@ torrent files, files and downloads in aria2c.
 from datetime import datetime, timedelta
 from pathlib import Path
 
-
-def human_readable_seconds(self):
-    pass
-
-
-def human_readable_bytes(value, digits=2, delim="", postfix=""):
-    unit = "B"
-    for u in ("kiB", "MiB", "GiB", "TiB", "PiB", "EiB"):
-        if value > 1000:
-            value /= 1024
-            unit = u
-        else:
-            break
-    return f"{value:.{digits}f}" + delim + unit + postfix
+from .utils import human_readable_bytes, bool_or_value, human_readable_timedelta
+from .client import JSONRPCError
 
 
 class BitTorrent:
@@ -96,7 +84,7 @@ class File:
         self._struct = struct
 
     def __str__(self):
-        return self.path
+        return str(self.path)
 
     def __eq__(self, other):
         return self.path == other.path
@@ -104,7 +92,7 @@ class File:
     @property
     def index(self):
         """Index of the file, starting at 1, in the same order as files appear in the multi-file torrent."""
-        return self._struct.get("index")
+        return int(self._struct.get("index"))
 
     @property
     def path(self):
@@ -145,7 +133,7 @@ class File:
         If --select-file is not specified or this is single-file torrent or not a torrent download at all, this value
         is always true. Otherwise false.
         """
-        return self._struct.get("selected")
+        return bool_or_value(self._struct.get("selected"))
 
     @property
     def uris(self):
@@ -174,7 +162,7 @@ class Download:
         self._bittorrent = None
         self._name = ""
         self._options = None
-        self._followed_by = []
+        self._followed_by = None
         self._following = None
         self._belongs_to = None
 
@@ -203,7 +191,7 @@ class Download:
         Name is the name of the file if single-file, first file's directory name if multi-file.
         """
         if not self._name:
-            self._name = str(self.files[0].path).replace(self.dir, "").lstrip("/").split("/")[0]
+            self._name = str(self.files[0].path).replace(str(self.dir), "").lstrip("/").split("/")[0]
         return self._name
 
     @property
@@ -344,7 +332,7 @@ class Download:
 
         BitTorrent only.
         """
-        return self._struct.get("seeder ")
+        return bool_or_value(self._struct.get("seeder"))
 
     @property
     def piece_length(self):
@@ -390,7 +378,7 @@ class Download:
         --follow-metalink option). This value is useful to track auto-generated downloads. If there are no such 
         downloads, this key will not be included in the response. 
         """
-        return self._struct.get("followedBy")
+        return self._struct.get("followedBy", [])
 
     @property
     def followed_by(self):
@@ -399,8 +387,14 @@ class Download:
 
         Returns a list of instances of :class:`aria2p.Download`.
         """
-        if not self._followed_by:
-            self._followed_by = [self.api.get_download(gid) for gid in self.followed_by_ids]
+        if self._followed_by is None:
+            result = []
+            for gid in self.followed_by_ids:
+                try:
+                    result.append(self.api.get_download(gid))
+                except JSONRPCError:
+                    pass
+            self._followed_by = result
         return self._followed_by
 
     @property
@@ -420,7 +414,10 @@ class Download:
         Returns an instance of :class:`aria2p.Download`.
         """
         if not self._following:
-            self._following = self.api.get_download(self.following_id)
+            try:
+                self._following = self.api.get_download(self.following_id)
+            except JSONRPCError:
+                return None
         return self._following
 
     @property
@@ -442,13 +439,16 @@ class Download:
         Returns an instance of :class:`aria2p.Download`.
         """
         if not self._belongs_to:
-            self._belongs_to = self.api.get_download(self.belongs_to_id)
+            try:
+                self._belongs_to = self.api.get_download(self.belongs_to_id)
+            except JSONRPCError:
+                return None
         return self._belongs_to
 
     @property
     def dir(self):
         """Directory to save files."""
-        return self._struct.get("dir")
+        return Path(self._struct.get("dir"))
 
     @property
     def files(self):
@@ -479,7 +479,7 @@ class Download:
 
         This key exists only when this download is being hash checked.
         """
-        return int(self._struct.get("verifiedLength"))
+        return int(self._struct.get("verifiedLength", 0))
 
     def verified_length_string(self, human_readable=True):
         if human_readable:
@@ -493,7 +493,7 @@ class Download:
 
         This key exists only when this download is in the queue.
         """
-        return self._struct.get("verifyIntegrityPending")
+        return bool_or_value(self._struct.get("verifyIntegrityPending"))
 
     @property
     def progress(self):
@@ -519,27 +519,7 @@ class Download:
         if eta == float("Inf"):
             return "-"
 
-        pieces = []
-
-        if eta.days:
-            pieces.append(f"{eta.days}d")
-
-        seconds = eta.seconds
-
-        if seconds >= 3600:
-            hours = int(seconds / 3600)
-            pieces.append(f"{hours}h")
-            seconds -= hours * 3600
-
-        if seconds >= 60:
-            minutes = int(seconds / 60)
-            pieces.append(f"{minutes}m")
-            seconds -= minutes * 60
-
-        if seconds > 0:
-            pieces.append(f"{seconds}s")
-
-        return "".join(pieces)
+        return human_readable_timedelta(eta)
 
     def move(self, pos):
         return self.api.move(self, pos)
