@@ -7,6 +7,7 @@ from base64 import b64encode
 from .downloads import Download
 from .options import Options
 from .stats import Stats
+from .client import JSONRPCClient
 
 
 class API:
@@ -20,13 +21,15 @@ class API:
     even more Pythonic interactions, without worrying about payloads, responses, JSON, etc..
     """
 
-    def __init__(self, json_rpc_client):
+    def __init__(self, json_rpc_client=None):
         """
         Initialization method.
 
         Args:
             json_rpc_client (:class:`aria2p.JSONRPCClient`): an instance of the ``JSONRPCClient`` class.
         """
+        if json_rpc_client is None:
+            json_rpc_client = JSONRPCClient()
         self.client = json_rpc_client
 
     def add_magnet(self, magnet_uri, options=None, position=None):
