@@ -1,0 +1,374 @@
+import datetime
+from pathlib import Path
+
+import pytest
+
+from aria2p import BitTorrent, Download, File, API, JSONRPCError
+
+from . import Aria2Server
+
+
+class TestBitTorrentClass:
+    def setup_method(self):
+        self.bittorrent = BitTorrent(
+            {"announceList": [], "comment": "", "creationDate": 10, "mode": "single", "info": {"name": ""}}
+        )
+
+    def test_init_method(self):
+        assert BitTorrent(self.bittorrent._struct)
+
+    def test_str_method(self):
+        assert str(self.bittorrent) == self.bittorrent.info["name"]
+
+    def test_announce_list_property(self):
+        assert self.bittorrent.announce_list == []
+
+    def test_comment_property(self):
+        assert self.bittorrent.comment == ""
+
+    def test_creation_date_property(self):
+        assert self.bittorrent.creation_date == datetime.datetime.fromtimestamp(10)
+
+    def test_mode_property(self):
+        assert self.bittorrent.mode == "single"
+
+    def test_info_property(self):
+        assert self.bittorrent.info == {"name": ""}
+
+
+class TestDownloadClass:
+    def setup_method(self):
+        self.bitfield = (
+            "9e7ef5fbdefdffffdfffffffffffffdf7fff5dfefff7feffefffdff7fffffffbfeffbffddf7de9f7eefffffffeffe77bb"
+            "f8fdbdcffef7fffffbefad7ffffffbf55bff7edfedfeff7ffff7ffffff3ffff7d3ffbfffddddffe7ffffffffffdedf7fd"
+            "fef62fbdfffffbffbffdcfaffffafebeff3ebff7d5fffbbb2bafef77ffaffe7d37fbffffffb6dfffffffedfebbecbbffe"
+            "bdefffffffff977f7ffdffee7fffffffdfeb3f67dddffeedfffffbfffffdaffbfeedfadef6dfd9d2df9fb7f689ffcff3f"
+            "fbfebbfdbd7fcddfa77dfddffdfe327fdcbf77fad87ffff6ff7ffebfefdfbbffdefdafeefed7fefffe7ffad9ffdcffefc"
+            "ffbbf3c07ef7fc0"
+        )
+        self.download = Download(
+            API(),
+            {
+                "bitfield": self.bitfield,
+                "bittorrent": {},
+                "completedLength": "889592532",
+                "connections": "44",
+                "dir": "/home/pawamoy/Downloads/torrents/tmp",
+                "downloadSpeed": "745509",
+                "files": [{
+                    "completedLength": "58132",
+                    "index": "1",
+                    "length": "58132",
+                    "path": "/home/pawamoy/Downloads/torrents/tmp/dl/logo.jpg",
+                    "selected": "true",
+                    "uris": []
+                }, {
+                    "completedLength": "885864384",
+                    "index": "2",
+                    "length": "1045247936",
+                    "path": "/home/pawamoy/Downloads/torrents/tmp/dl/video.mp4",
+                    "selected": "true",
+                    "uris": []
+                }],
+                "following": "a89a9c5ac990e6ef",
+                "gid": "0a6635c602761000",
+                "infoHash": "4f1da018803b65f61ed76612af9ad00d4373a771",
+                "numPieces": "1994",
+                "numSeeders": "12",
+                "pieceLength": "524288",
+                "seeder": "false",
+                "status": "active",
+                "totalLength": "1045306068",
+                "uploadLength": "97207027",
+                "uploadSpeed": "11032",
+            },
+        )
+
+    def test_eq_method(self):
+        assert self.download == Download(API(), {"gid": "0a6635c602761000"})
+
+    def test_init_method(self):
+        assert Download(API(), {})
+
+    def test_str_method(self):
+        assert str(self.download) == self.download.name
+
+    def test_belongs_to(self):
+        assert self.download.belongs_to is None
+
+    def test_belongs_to_id(self):
+        assert self.download.belongs_to_id is None
+
+    def test_bitfield(self):
+        assert self.download.bitfield == self.bitfield
+
+    def test_bittorrent(self):
+        assert self.download.bittorrent
+
+        # assert value was cached
+        self.download._struct["bittorrent"] = {"mode": "single"}
+        assert self.download.bittorrent.mode is None
+
+    def test_completed_length(self):
+        assert self.download.completed_length == 889592532
+
+    def test_completed_length_string(self):
+        assert self.download.completed_length_string() == "848.38 MiB"
+        assert self.download.completed_length_string(human_readable=False) == "889592532 B"
+
+    def test_connections(self):
+        assert self.download.connections == 44
+
+    def test_dir(self):
+        assert self.download.dir == Path("/home/pawamoy/Downloads/torrents/tmp")
+
+    def test_download_speed(self):
+        assert self.download.download_speed == 745509
+
+    def test_download_speed_string(self):
+        assert self.download.download_speed_string() == "728.04 KiB/s"
+        assert self.download.download_speed_string(human_readable=False) == "745509 B/s"
+
+    def test_error_code(self):
+        assert self.download.error_code is None
+
+    def test_error_message(self):
+        assert self.download.error_message is None
+
+    def test_eta(self):
+        assert isinstance(self.download.eta, datetime.timedelta)
+        self.download._struct["downloadSpeed"] = "0"
+        assert self.download.eta == float("Inf")
+
+    def test_eta_string(self):
+        assert self.download.eta_string() == "3m28s"
+        self.download._struct["downloadSpeed"] = "0"
+        assert self.download.eta_string() == "-"
+
+    def test_files(self):
+        assert len(self.download.files) == 2
+
+        # assert value was cached
+        self.download._struct["files"] = []
+        assert len(self.download.files) == 2
+
+    def test_followed_by(self):
+        with Aria2Server(port=7400) as server:
+            self.download.api = server.api
+            assert self.download.followed_by == []
+
+    def test_followed_by_ids(self):
+        with Aria2Server(port=7401) as server:
+            self.download.api = server.api
+            assert self.download.followed_by_ids == []
+
+    def test_following(self):
+        with Aria2Server(port=7402) as server:
+            self.download.api = server.api
+            assert self.download.following is None
+
+    def test_following_id(self):
+        assert self.download.following_id == "a89a9c5ac990e6ef"
+
+    def test_gid(self):
+        assert self.download.gid == "0a6635c602761000"
+
+    def test_has_failed(self):
+        assert self.download.has_failed is False
+
+    def test_info_hash(self):
+        assert self.download.info_hash == "4f1da018803b65f61ed76612af9ad00d4373a771"
+
+    def test_is_active(self):
+        assert self.download.is_active is True
+
+    def test_is_complete(self):
+        assert self.download.is_complete is False
+
+    def test_is_paused(self):
+        assert self.download.is_paused is False
+
+    def test_is_removed(self):
+        assert self.download.is_removed is False
+
+    def test_is_waiting(self):
+        assert self.download.is_waiting is False
+
+    def test_move(self):
+        with Aria2Server(port=7403) as server:
+            self.download.api = server.api
+            with pytest.raises(JSONRPCError):
+                self.download.move(2)
+
+    def test_move_down(self):
+        with Aria2Server(port=7404) as server:
+            self.download.api = server.api
+            with pytest.raises(JSONRPCError):
+                self.download.move_down(1)
+
+    def test_move_to(self):
+        with Aria2Server(port=7405) as server:
+            self.download.api = server.api
+            with pytest.raises(JSONRPCError):
+                self.download.move_to(10)
+
+    def test_move_to_bottom(self):
+        with Aria2Server(port=7406) as server:
+            self.download.api = server.api
+            with pytest.raises(JSONRPCError):
+                self.download.move_to_bottom()
+
+    def test_move_to_top(self):
+        with Aria2Server(port=7407) as server:
+            self.download.api = server.api
+            with pytest.raises(JSONRPCError):
+                self.download.move_to_top()
+
+    def test_move_up(self):
+        with Aria2Server(port=7408) as server:
+            self.download.api = server.api
+            with pytest.raises(JSONRPCError):
+                self.download.move_up()
+
+    def test_name(self):
+        assert self.download.name == "dl"
+
+    def test_num_pieces(self):
+        assert self.download.num_pieces == 1994
+
+    def test_num_seeders(self):
+        assert self.download.num_seeders == 12
+
+    def test_options(self):
+        with Aria2Server(port=7409) as server:
+            self.download.api = server.api
+            with pytest.raises(JSONRPCError):
+                print(self.download.options)
+
+    def test_pause(self):
+        with pytest.raises(JSONRPCError):
+            self.download.pause()
+
+    def test_piece_length(self):
+        assert self.download.piece_length == 524288
+
+    def test_piece_length_string(self):
+        assert self.download.piece_length_string() == "512.00 KiB"
+        assert self.download.piece_length_string(human_readable=False) == "524288 B"
+
+    def test_progress(self):
+        assert self.download.progress == self.download.completed_length / self.download.total_length * 100
+        self.download._struct["totalLength"] = 0
+        assert self.download.progress == 0.0
+
+    def test_progress_string(self):
+        progress = self.download.completed_length / self.download.total_length * 100
+        assert self.download.progress_string() == f"{progress:.2f}%"
+        self.download._struct["totalLength"] = 0
+        assert self.download.progress_string() == "0.00%"
+
+    def test_remove(self):
+        with pytest.raises(JSONRPCError):
+            self.download.remove()
+
+    def test_resume(self):
+        with pytest.raises(JSONRPCError):
+            self.download.resume()
+
+    def test_seeder(self):
+        assert self.download.seeder is False
+
+    def test_status(self):
+        assert self.download.status == "active"
+
+    def test_total_length(self):
+        assert self.download.total_length == 1045306068
+
+    def test_total_length_string(self):
+        assert self.download.total_length_string() == "996.88 MiB"
+        assert self.download.total_length_string(human_readable=False) == "1045306068 B"
+
+    def test_update(self):
+        with Aria2Server(port=7410) as server:
+            self.download.api = server.api
+            with pytest.raises(JSONRPCError):
+                self.download.update()
+
+    def test_update_options(self):
+        with Aria2Server(port=7411) as server:
+            self.download.api = server.api
+            with pytest.raises(JSONRPCError):
+                self.download.update_options()
+
+    def test_upload_length(self):
+        assert self.download.upload_length == 97207027
+
+    def test_upload_length_string(self):
+        assert self.download.upload_length_string() == "92.70 MiB"
+        assert self.download.upload_length_string(human_readable=False) == "97207027 B"
+
+    def test_upload_speed(self):
+        assert self.download.upload_speed == 11032
+
+    def test_upload_speed_string(self):
+        assert self.download.upload_speed_string() == "10.77 KiB/s"
+        assert self.download.upload_speed_string(human_readable=False) == "11032 B/s"
+
+    def test_verified_length(self):
+        assert self.download.verified_length == 0
+
+    def test_verified_length_string(self):
+        assert self.download.verified_length_string() == "0.00 B"
+        assert self.download.verified_length_string(human_readable=False) == "0 B"
+
+    def test_verify_integrity_pending(self):
+        assert self.download.verify_integrity_pending is None
+
+
+class TestFileClass:
+    def setup_method(self):
+        self.file = File(
+            {
+                "index": "1",
+                "path": "/some/file/path.txt",
+                "length": "2097152",
+                "completedLength": "2048",
+                "selected": "true",
+                "uris": [{"uri": "some uri", "status": "used"}, {"uri": "some other uri", "status": "waiting"}],
+            }
+        )
+
+    def test_eq_method(self):
+        assert self.file == File({"path": "/some/file/path.txt"})
+
+    def test_init_method(self):
+        assert File({})
+
+    def test_str_method(self):
+        assert str(self.file) == str(self.file.path)
+
+    def test_completed_length(self):
+        assert self.file.completed_length == 2048
+
+    def test_completed_length_string(self):
+        assert self.file.completed_length_string() == "2.00 KiB"
+        assert self.file.completed_length_string(human_readable=False) == "2048 B"
+
+    def test_index(self):
+        assert self.file.index == 1
+
+    def test_length(self):
+        assert self.file.length == 2097152
+
+    def test_length_string(self):
+        assert self.file.length_string() == "2.00 MiB"
+        assert self.file.length_string(human_readable=False) == "2097152 B"
+
+    def test_path(self):
+        assert self.file.path == Path("/some/file/path.txt")
+
+    def test_selected(self):
+        assert self.file.selected is True
+
+    def test_uris(self):
+        assert self.file.uris == [{"uri": "some uri", "status": "used"}, {"uri": "some other uri", "status": "waiting"}]
