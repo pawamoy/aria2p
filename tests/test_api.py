@@ -8,8 +8,6 @@ from . import (
     CONFIGS_DIR,
     DEBIAN_METALINK,
     SESSIONS_DIR,
-    TESTS_DATA_DIR,
-    TESTS_TMP_DIR,
     XUBUNTU_MIRRORS,
     Aria2Server,
 )
@@ -169,6 +167,7 @@ def test_resume_all_method():
         assert all([d.is_active for d in downloads])
 
 
+# TODO: write this test when search is implemented
 # def test_search_method():
 #     with Aria2Server(port=7122) as server:
 #         assert server.api.search()
