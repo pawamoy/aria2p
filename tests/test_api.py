@@ -1,5 +1,3 @@
-import time
-
 from aria2p import Download
 
 from . import (
