@@ -341,27 +341,39 @@ class API:
             remove_func = self.client.remove
         return [remove_func(d.gid) for d in self.get_downloads()]
 
-    def pause(self, downloads):
+    def pause(self, downloads, force=False):
         """
         Remove the given downloads from the list.
 
         Args:
             downloads (list of :class:`aria2p.Download`): the list of downloads to remove.
+            force (bool): whether to pause immediately without contacting servers or not.
 
         Returns:
             list of bool: Success or failure of the operation for each given download.
         """
         # TODO: batch/multicall candidate
-        return [self.client.pause(d.gid) for d in downloads]
+        if force:
+            pause_func = self.client.force_pause
+        else:
+            pause_func = self.client.pause
+        return [bool(pause_func(d.gid)) for d in downloads]
 
-    def pause_all(self):
+    def pause_all(self, force=False):
         """
         Remove the given downloads from the list.
+
+        Args:
+            force (bool): whether to pause immediately without contacting servers or not.
 
         Returns:
             bool: Success or failure of the operation to pause all downloads.
         """
-        return self.client.pause_all()
+        if force:
+            pause_func = self.client.force_pause_all
+        else:
+            pause_func = self.client.pause_all
+        return pause_func() == "OK"
 
     def resume(self, downloads):
         """
