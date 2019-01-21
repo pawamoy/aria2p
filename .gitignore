@@ -6,4 +6,5 @@ dist/
 *.egg-info/
 build/
 .coverage
-tests/tmp/
+tests/tmp/*
+!tests/tmp/.gitkeep
