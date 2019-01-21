@@ -1,0 +1,43 @@
+stages:
+  - quality
+  - tests
+
+check-black:
+  image: python:3.6
+  stage: quality
+  before_script:
+    - pip install black
+  script: black --check src/ tests/
+
+check-isort:
+  image: python:3.6
+  stage: quality
+  before_script:
+    - pip install isort
+  script: isort -c -rc src/ tests/
+
+check-flake8:
+  image: python:3.6
+  stage: quality
+  before_script:
+    - pip install flake8
+  script: flake8 src/ tests/
+
+python3.6:
+  image: python:3.6
+  stage: tests
+  before_script:
+    - pip install poetry
+    - poetry config settings.virtualenvs.create false
+    - poetry install
+  script: poetry run pytest -v
+
+python3.7:
+  image: python:3.7
+  stage: tests
+  before_script:
+    - pip install poetry
+    - poetry config settings.virtualenvs.create false
+    - poetry install
+  script: poetry run pytest -v
+

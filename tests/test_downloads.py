@@ -96,7 +96,9 @@ class TestDownloadClass:
         assert str(self.download) == self.download.name
 
     def test_belongs_to(self):
-        assert self.download.belongs_to is None
+        with Aria2Server(port=7412) as server:
+            self.download.api = server.api
+            assert self.download.belongs_to is None
 
     def test_belongs_to_id(self):
         assert self.download.belongs_to_id is None
@@ -248,8 +250,10 @@ class TestDownloadClass:
                 print(self.download.options)
 
     def test_pause(self):
-        with pytest.raises(JSONRPCError):
-            self.download.pause()
+        with Aria2Server(port=7412) as server:
+            self.download.api = server.api
+            with pytest.raises(JSONRPCError):
+                self.download.pause()
 
     def test_piece_length(self):
         assert self.download.piece_length == 524_288
@@ -270,12 +274,16 @@ class TestDownloadClass:
         assert self.download.progress_string() == "0.00%"
 
     def test_remove(self):
-        with pytest.raises(JSONRPCError):
-            self.download.remove()
+        with Aria2Server(port=7412) as server:
+            self.download.api = server.api
+            with pytest.raises(JSONRPCError):
+                self.download.remove()
 
     def test_resume(self):
-        with pytest.raises(JSONRPCError):
-            self.download.resume()
+        with Aria2Server(port=7412) as server:
+            self.download.api = server.api
+            with pytest.raises(JSONRPCError):
+                self.download.resume()
 
     def test_seeder(self):
         assert self.download.seeder is False
