@@ -139,8 +139,8 @@ class File:
     def uris(self):
         """
         Return a list of URIs for this file.
-        
-        The element type is the same struct used in the aria2.getUris() method. 
+
+        The element type is the same struct used in the aria2.getUris() method.
         """
         return self._struct.get("uris")
 
@@ -358,9 +358,9 @@ class Download:
     def error_code(self):
         """
         The code of the last error for this item, if any.
-        
-        The value is a string. The error codes are defined in the EXIT STATUS section. This value is only available 
-        for stopped/completed downloads. 
+
+        The value is a string. The error codes are defined in the EXIT STATUS section. This value is only available
+        for stopped/completed downloads.
         """
         return self._struct.get("errorCode")
 
@@ -373,10 +373,10 @@ class Download:
     def followed_by_ids(self):
         """
         List of GIDs which are generated as the result of this download.
-        
-        For example, when aria2 downloads a Metalink file, it generates downloads described in the Metalink (see the 
-        --follow-metalink option). This value is useful to track auto-generated downloads. If there are no such 
-        downloads, this key will not be included in the response. 
+
+        For example, when aria2 downloads a Metalink file, it generates downloads described in the Metalink (see the
+        --follow-metalink option). This value is useful to track auto-generated downloads. If there are no such
+        downloads, this key will not be included in the response.
         """
         return self._struct.get("followedBy", [])
 
