@@ -1,7 +1,9 @@
 # Aria2p
 [![pipeline status](https://gitlab.com/pawamoy/aria2p/badges/master/pipeline.svg)](https://gitlab.com/pawamoy/aria2p/commits/master)
 [![coverage report](https://gitlab.com/pawamoy/aria2p/badges/master/coverage.svg)](https://gitlab.com/pawamoy/aria2p/commits/master)
-[![documentation](https://img.shields.io/readthedocs/aria2p.svg?style=flat-square)](https://aria2p.readthedocs.io/en/latest/index.html)
+[![documentation](https://img.shields.io/readthedocs/aria2p.svg?style=flat)](https://aria2p.readthedocs.io/en/latest/index.html)
+[![pypi version](https://img.shields.io/pypi/v/aria2p.svg)](https://pypi.org/project/aria2p/)
+
 Command-line tool and Python library to interact with an `aria2c` daemon process through JSON-RPC.
 
 ## Requirements

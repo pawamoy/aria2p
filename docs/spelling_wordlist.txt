@@ -1,9 +1,12 @@
 aaaa
+addopts
 addr
 asdf
 bittorrent
 btrfs
+capsys
 checksums
+debian
 delim
 dscp
 ecca
@@ -25,12 +28,14 @@ inorder
 ipaddress
 jsonreq
 jsonrpc
+kibi
 kqueue
 libsqlite
 loopback
 maxconnections
 mazzucotelli
 mbps
+mebi
 metalink
 metalinks
 metaurl
@@ -39,11 +44,16 @@ myname
 mypass
 netinet
 nofile
+norecursedirs
 ntfs
 passwd
 pipelining
+pipx
 pkcs
 prealloc
+pyenv
+pypi
+pytest
 pythonic
 qwer
 rcvbuf
@@ -56,6 +66,7 @@ solaris
 stdin
 struct
 subcommand
+subcommands
 timothée
 tortious
 ulimit
@@ -65,3 +76,4 @@ unpaused
 versioning
 wikipedia
 xmlrpclib
+xubuntu
