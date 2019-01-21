@@ -1,4 +1,7 @@
 # Aria2p
+[![pipeline status](https://gitlab.com/pawamoy/aria2p/badges/master/pipeline.svg)](https://gitlab.com/pawamoy/aria2p/commits/master)
+[![coverage report](https://gitlab.com/pawamoy/aria2p/badges/master/coverage.svg)](https://gitlab.com/pawamoy/aria2p/commits/master)
+[![documentation](https://img.shields.io/readthedocs/aria2p.svg?style=flat-square)](https://aria2p.readthedocs.io/en/latest/index.html)
 Command-line tool and Python library to interact with an `aria2c` daemon process through JSON-RPC.
 
 ## Requirements
@@ -11,15 +14,16 @@ Command-line tool and Python library to interact with an `aria2c` daemon process
 # install pyenv
 git clone https://github.com/pyenv/pyenv ~/.pyenv
 
-# setup pyenv (you should also put these two lines in .bashrc or similar)
+# setup pyenv (you should also put these three lines in .bashrc or similar)
 export PATH="${HOME}/.pyenv/bin:${PATH}"
+export PYENV_ROOT="${HOME}/.pyenv"
 eval "$(pyenv init -)"
 
 # install Python 3.6
-pyenv install 3.6.7
+pyenv install 3.6.8
 
 # make it available globally
-pyenv global system 3.6.7
+pyenv global system 3.6.8
 ```
 </details>
 
@@ -38,7 +42,8 @@ pipx install --python python3.6 aria2p
 ```
 
 ## Usage (as a library)
-**This library is still a work in progress. Some things listed here might not be implemented yet.**
+**This library is still a work in progress. More examples will be added later.
+In the meantime, you can read the [Reference section](https://aria2p.readthedocs.io/en/latest/reference.html) on the official documentation.**
 ```python
 import aria2p
 
@@ -61,7 +66,6 @@ for download in downloads:
 magnet_uri = "magnet:?xt=urn:..."
 
 download = aria2.add_magnet(magnet_uri)
-
 ```
 
 ## Usage (command-line)
