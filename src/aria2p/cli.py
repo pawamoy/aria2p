@@ -19,8 +19,10 @@ import argparse
 import json
 import sys
 
+from aria2p import Download
+
 from .api import API
-from .client import DEFAULT_HOST, DEFAULT_PORT, JSONRPCClient, JSONRPCError
+from .client import DEFAULT_HOST, DEFAULT_PORT, Client, ClientException
 
 
 # ============ MAIN FUNCTION ============ #
@@ -31,7 +33,7 @@ def main(args=None):
     args = parser.parse_args(args=args)
     kwargs = args.__dict__
 
-    api = API(JSONRPCClient(host=kwargs.pop("host"), port=kwargs.pop("port"), secret=kwargs.pop("secret")))
+    api = API(Client(host=kwargs.pop("host"), port=kwargs.pop("port"), secret=kwargs.pop("secret")))
 
     subcommands = {
         None: subcommand_show,
@@ -45,7 +47,7 @@ def main(args=None):
 
     try:
         return subcommands.get(subcommand)(api, **kwargs)
-    except JSONRPCError as e:
+    except ClientException as e:
         print(e.message)
         return e.code
 
@@ -54,28 +56,97 @@ def get_parser():
     """Return a parser for the command-line options and arguments."""
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-p", "--port", dest="port", default=DEFAULT_PORT, type=int)
-    parser.add_argument("-H", "--host", dest="host", default=DEFAULT_HOST)
-    parser.add_argument("-s", "--secret", dest="secret", default="")
+    parser.add_argument(
+        "-p", "--port", dest="port", default=DEFAULT_PORT, type=int, help="Port to use to connect to the remote server."
+    )
+    parser.add_argument("-H", "--host", dest="host", default=DEFAULT_HOST, help="Host address for the remote server.")
+    parser.add_argument(
+        "-s", "--secret", dest="secret", default="", help="Secret token to use to connect to the remote server."
+    )
 
     subparsers = parser.add_subparsers(dest="subcommand")
 
     subparsers.add_parser("show", help="Show the download progression.")
 
     call_parser = subparsers.add_parser("call", help="Call a remote method through the JSON-RPC client.")
-    call_parser.add_argument("method")
+    call_parser.add_argument(
+        "method",
+        help=(
+            "The method to call (case insensitive). "
+            "Dashes and underscores will be removed so you can use as many as you want, or none. "
+            "Prefixes like 'aria2.' or 'system.' are also optional."
+        ),
+    )
     call_parser_mxg = call_parser.add_mutually_exclusive_group()
-    call_parser_mxg.add_argument("-P", "--params-list", dest="params", nargs="+")
-    call_parser_mxg.add_argument("-J", "--json-params", dest="params")
+    call_parser_mxg.add_argument(
+        "-P", "--params-list", dest="params", nargs="+", help="Parameters as a list of strings."
+    )
+    call_parser_mxg.add_argument(
+        "-J",
+        "--json-params",
+        dest="params",
+        help="Parameters as a JSON string. You should always wrap it at least once in an array '[]'.",
+    )
 
     add_magnet_parser = subparsers.add_parser("add-magnet", help="Add a download with a Magnet URI.")
-    add_magnet_parser.add_argument("uri")
+    add_magnet_parser.add_argument("uri", help="The magnet URI to use.")
 
     add_torrent_parser = subparsers.add_parser("add-torrent", help="Add a download with a Torrent file.")
-    add_torrent_parser.add_argument("torrent_file")
+    add_torrent_parser.add_argument("torrent_file", help="The path to the torrent file.")
 
-    # sub-commands: list, add, pause, resume, stop, remove, search, info
+    add_metalink_parser = subparsers.add_parser("add-metalink", help="Add a download with a Metalink file.")
+    add_metalink_parser.add_argument("metalink_file", help="The path to the metalink file.")
 
+    pause_parser = subparsers.add_parser("pause", help="Pause downloads.")
+    pause_parser.add_argument("gids", nargs="+", help="The GIDs of the downloads to pause.")
+    pause_parser.add_argument(
+        "-f", "--force", dest="force", action="store_true", help="Pause without contacting servers first."
+    )
+
+    pause_all_parser = subparsers.add_parser("pause-all", help="Pause all downloads.")
+    pause_all_parser.add_argument(
+        "-f", "--force", dest="force", action="store_true", help="Pause without contacting servers first."
+    )
+
+    resume_parser = subparsers.add_parser("resume", help="Resume downloads.")
+    resume_parser.add_argument("gids", nargs="+", help="The GIDs of the downloads to resume.")
+
+    subparsers.add_parser("resume-all", help="Resume all downloads.")
+
+    remove_parser = subparsers.add_parser("remove", help="Remove downloads.", aliases=["rm"])
+    remove_parser.add_argument("gids", nargs="+", help="The GIDs of the downloads to remove.")
+    remove_parser.add_argument(
+        "-f", "--force", dest="force", action="store_true", help="Remove without contacting servers first."
+    )
+
+    remove_all_parser = subparsers.add_parser("remove-all", help="Remove all downloads.")
+    remove_all_parser.add_argument(
+        "-f", "--force", dest="force", action="store_true", help="Remove without contacting servers first."
+    )
+
+    purge_parser = subparsers.add_parser(
+        "purge", help="Purge the completed/removed/errored downloads from the list.", aliases=["clear"]
+    )
+    purge_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to purge.")
+
+    # TODO: when API is ready
+    # info_parser = subparsers.add_parser("info", help="Show information about downloads.")
+    # info_parser_mxg = info_parser.add_mutually_exclusive_group()
+    # info_parser_mxg.add_argument("gids", nargs="+")
+    # info_parser_mxg.add_argument("-a", "--all", dest="select_all", action="store_true")
+    # TODO: add --format, --fields
+
+    # TODO: when API is ready
+    # list_parser = subparsers.add_parser("list", help="List downloads.", aliases=["ls"])
+    # list_parser.add_argument("-f", "--format", dest="format")
+    # list_parser.add_argument("-s", "--sort", dest="sort")
+    # TODO: add --hide-metadata
+
+    # TODO: when API is ready
+    # search_parser = subparsers.add_parser("search", help="Search downloads using patterns or regular expressions.")
+    # search_parser.add_argument("-L", "--literal", dest="literal", action="store_true")
+
+    # TODO: add options (--set), stats, move-files, save-session, shutdown
     return parser
 
 
@@ -126,7 +197,7 @@ def subcommand_call(api, method, params):
 def get_method(name, default=None):
     """Return the actual method name from a differently formatted name."""
     methods = {}
-    for method in JSONRPCClient.METHODS:
+    for method in Client.METHODS:
         methods[method.lower()] = method
         methods[method.split(".")[1].lower()] = method
     name = name.lower()
@@ -137,11 +208,119 @@ def get_method(name, default=None):
 
 # ============ ADD MAGNET SUBCOMMAND ============ #
 def subcommand_add_magnet(api, uri):
-    api.add_magnet(uri)
+    new_download = api.add_magnet(uri)
+    print(f"Created download {new_download.gid}")
     return 0
 
 
 # ============ ADD TORRENT SUBCOMMAND ============ #
 def subcommand_add_torrent(api, torrent_file):
-    api.add_torrent(torrent_file)
+    new_download = api.add_torrent(torrent_file)
+    print(f"Created download {new_download.gid}")
     return 0
+
+
+# ============ ADD METALINK SUBCOMMAND ============ #
+def subcommand_add_metalink(api: API, metalink_file):
+    new_download = api.add_metalink(metalink_file)
+    print(f"Created download {new_download.gid}")
+    return 0
+
+
+# ============ PAUSE SUBCOMMAND ============ #
+def subcommand_pause(api: API, gids, force=False):
+    downloads = [Download(api, {"gid": gid}) for gid in gids]
+    result = api.pause(downloads, force=force)
+    if all(result):
+        return 0
+    for item in result:
+        if isinstance(item, ClientException):
+            print(item)
+    return 1
+
+
+# ============ PAUSE ALL SUBCOMMAND ============ #
+def subcommand_pause_all(api: API, force=False):
+    if api.pause_all(force=force):
+        return 0
+    return 1
+
+
+# ============ RESUME SUBCOMMAND ============ #
+def subcommand_resume(api: API, gids):
+    downloads = [Download(api, {"gid": gid}) for gid in gids]
+    result = api.resume(downloads)
+    if all(result):
+        return 0
+    for item in result:
+        if isinstance(item, ClientException):
+            print(item)
+    return 1
+
+
+# ============ RESUME ALL SUBCOMMAND ============ #
+def subcommand_resume_all(api: API):
+    if api.resume_all():
+        return 0
+    return 1
+
+
+# ============ REMOVE SUBCOMMAND ============ #
+def subcommand_remove(api: API, gids, force=False):
+    downloads = [Download(api, {"gid": gid}) for gid in gids]
+    result = api.remove(downloads, force=force)
+    if all(result):
+        return 0
+    for item in result:
+        if isinstance(item, ClientException):
+            print(item)
+    return 1
+
+
+# ============ REMOVE ALL SUBCOMMAND ============ #
+def subcommand_remove_all(api: API, force=False):
+    if api.remove_all(force=force):
+        return 0
+    return 1
+
+
+# ============ PURGE SUBCOMMAND ============ #
+def subcommand_purge(api: API, gids):
+    downloads = [Download(api, {"gid": gid}) for gid in gids]
+    result = api.purge(downloads)
+    if all(result):
+        return 0
+    for item in result:
+        if isinstance(item, ClientException):
+            print(item)
+    return 1
+
+
+# ============ AUTOPURGE SUBCOMMAND ============ #
+def subcommand_autopurge(api: API):
+    if api.autopurge():
+        return 0
+    return 1
+
+
+# ============ INFO SUBCOMMAND ============ #
+# def subcommand_info(api: API, gids, select_all=False):
+#     if select_all:
+#         downloads = api.get_downloads()
+#     else:
+#         downloads = api.get_downloads(gids)
+#
+#     api.info(downloads)
+#     return 0
+
+
+# ============ LIST SUBCOMMAND ============ #
+# def subcommand_list(api: API, list_format=None, sort=None):
+#     api.list(list_format=list_format, sort=sort)
+#     return 0
+
+
+# ============ SEARCH SUBCOMMAND ============ #
+# def subcommand_search(api: API, ):
+#     api.search()
+#     return 0
