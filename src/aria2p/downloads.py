@@ -540,10 +540,19 @@ class Download:
         return self.api.move_to_bottom(self)
 
     def remove(self):
-        return self.api.remove([self])
+        result = self.api.remove([self])[0]
+        if not result:
+            raise result
+        return result
 
     def pause(self):
-        return self.api.pause([self])
+        result = self.api.pause([self])[0]
+        if not result:
+            raise result
+        return result
 
     def resume(self):
-        return self.api.resume([self])
+        result = self.api.resume([self])[0]
+        if not result:
+            raise result
+        return result
