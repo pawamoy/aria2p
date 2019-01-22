@@ -71,15 +71,100 @@ download = aria2.add_magnet(magnet_uri)
 ```
 
 ## Usage (command-line)
-For now, the command-line tool can only call methods using the client.
-More options directly using the API will come later.
+```
+usage: aria2p [GLOBAL_OPTS...] COMMAND [COMMAND_OPTS...]
 
-```bash
-aria2p -m,--method METHOD_NAME [-p,--params PARAMS... | -j,--json-params JSON_STRING]
+Command-line tool and Python library to interact with an `aria2c` daemon
+process through JSON-RPC.
+
+Global options:
+  -h, --help            Show this help message and exit. Commands also accept
+                        the -h/--help option.
+  -p PORT, --port PORT  Port to use to connect to the remote server.
+  -H HOST, --host HOST  Host address for the remote server.
+  -s SECRET, --secret SECRET
+                        Secret token to use to connect to the remote server.
+
+Commands:
+  
+    show                Show the download progression.
+    call                Call a remote method through the JSON-RPC client.
+    add-magnet          Add a download with a Magnet URI.
+    add-torrent         Add a download with a Torrent file.
+    add-metalink        Add a download with a Metalink file.
+    pause               Pause downloads.
+    pause-all           Pause all downloads.
+    resume              Resume downloads.
+    resume-all          Resume all downloads.
+    remove (rm)         Remove downloads.
+    remove-all          Remove all downloads.
+    purge (clear)       Purge the completed/removed/failed downloads.
 ```
 
-The `METHOD_NAME` can be the exact method name, or just the name without the prefix.
+Calling `aria2p` without any arguments will by default call the `show` command,
+which displays the list of current downloads:
+```
+GID  STATUS  PROGRESS  DOWN_SPEED  UP_SPEED  ETA  NAME
+```
+
+There is no interactive mode yet,
+but you can use `watch` combined with the `show` subcommand
+to see how the downloads progress:
+
+```bash
+watch -t -n1 aria2p show
+```
+
+Commands help:
+- [`show`](#show)
+- [`call`](#call)
+- [`add-magnet`](#add-magnet)
+- [`add-torrent`](#add-torrent)
+- [`add-metalink`](#add-metalink)
+- [`pause`](#pause)
+- [`pause-all`](#pause-all)
+- [`resume`](#resume)
+- [`resume-all`](#resume-all)
+- [`remove (rm)`](#remove)
+- [`remove-all`](#remove-all)
+- [`purge (clear)`](#purge)
+
+### `show`
+```
+usage: aria2p show [-h]
+
+Show the download progression.
+
+optional arguments:
+  -h, --help  Show this help message and exit.
+```
+
+### `call`
+```
+usage: aria2p call [-h] [-P PARAMS [PARAMS ...] | -J PARAMS] method
+
+Call a remote method through the JSON-RPC client.
+
+positional arguments:
+  method                The method to call (case insensitive). Dashes and
+                        underscores will be removed so you can use as many as
+                        you want, or none. Prefixes like 'aria2.' or 'system.'
+                        are also optional.
+
+optional arguments:
+  -h, --help            Show this help message and exit.
+  -P PARAMS [PARAMS ...], --params-list PARAMS [PARAMS ...]
+                        Parameters as a list of strings.
+  -J PARAMS, --json-params PARAMS
+                        Parameters as a JSON string. You should always wrap it
+                        at least once in an array '[]'.
+```
+
+As explain in the help text,
+the `method` can be the exact method name,
+or just the name without the prefix.
 It is case-insensitive, and dashes and underscores will be removed.
+
 The following are all equivalent:
 - `aria2.addUri`
 - `aria2.adduri`
@@ -91,21 +176,11 @@ The following are all equivalent:
 - `A---R---I---A---2.a__d__d__u__r__i` (I think you got it)
 - and even more ugly forms...
 
-Calling `aria2p` without any arguments will simply display the list of current downloads:
-```
-GID  STATUS  PROGRESS  DOWN_SPEED  UP_SPEED  ETA  NAME
-```
-
-There is no interactive mode yet, but you can use `watch` to see how the downloads progress:
-```bash
-watch -d -t -n1 aria2p
-```
-
-### Examples
+#### Examples
 List all available methods.
 *This example uses [`jq`](https://github.com/stedolan/jq).*
 ```console
-$ aria2p -m listmethods | jq
+$ aria2p call listmethods | jq
 [
   "aria2.addUri",
   "aria2.addTorrent",
@@ -149,26 +224,152 @@ $ aria2p -m listmethods | jq
 List the GIDs (identifiers) of all active downloads.
 *Note that we must give the parameters as a JSON string.*
 ```console
-$ aria2p -m tellactive -j '[["gid"]]'
+$ aria2p call tellactive -J '[["gid"]]'
 [{"gid": "b686cad55029d4df"}, {"gid": "4b39a1ad8fd94e26"}, {"gid": "9d331cc4b287e5df"}, {"gid": "8c9de0df753a5195"}]
 ```
 
 Pause a download using its GID.
 *Note that when a single string argument is required, it can be passed directly with `-p`.*
 ```console
-$ aria2p -m pause -p b686cad55029d4df
+$ aria2p call pause -P b686cad55029d4df
 "b686cad55029d4df"
 ```
 
 Add a download using magnet URIs.
 *This example uses `jq -r` to remove the quotation marks around the result.*
 ```console
-$ aria2p -m adduri -j '[["magnet:?xt=urn:..."]]' | jq -r
+$ aria2p call adduri -J '[["magnet:?xt=urn:..."]]' | jq -r
 4b39a1ad8fd94e26f
 ```
 
 Purge download results (remove completed downloads from the list).
 ```console
-$ aria2p -m purge_download_result
+$ aria2p call purge_download_result
 "OK"
+```
+
+
+### `add-magnet`
+```
+usage: aria2p add-magnet [-h] uri
+
+Add a download with a Magnet URI.
+
+positional arguments:
+  uri         The magnet URI to use.
+
+optional arguments:
+  -h, --help  Show this help message and exit.
+```
+
+### `add-torrent`
+```
+usage: aria2p add-torrent [-h] torrent_file
+
+Add a download with a Torrent file.
+
+positional arguments:
+  torrent_file  The path to the torrent file.
+
+optional arguments:
+  -h, --help    Show this help message and exit.
+```
+
+### `add-metalink`
+```
+usage: aria2p add-metalink [-h] metalink_file
+
+Add a download with a Metalink file.
+
+positional arguments:
+  metalink_file  The path to the metalink file.
+
+optional arguments:
+  -h, --help     Show this help message and exit.
+```
+
+### `pause`
+```
+usage: aria2p pause [-h] [-f] gids [gids ...]
+
+Pause downloads.
+
+positional arguments:
+  gids         The GIDs of the downloads to pause.
+
+optional arguments:
+  -h, --help   Show this help message and exit.
+  -f, --force  Pause without contacting servers first.
+```
+
+### `pause-all`
+```
+usage: aria2p pause-all [-h] [-f]
+
+Pause all downloads.
+
+optional arguments:
+  -h, --help   Show this help message and exit.
+  -f, --force  Pause without contacting servers first.
+```
+
+### `resume`
+```
+usage: aria2p resume [-h] gids [gids ...]
+
+Resume downloads.
+
+positional arguments:
+  gids        The GIDs of the downloads to resume.
+
+optional arguments:
+  -h, --help  Show this help message and exit.
+```
+
+### `resume-all`
+```
+usage: aria2p resume-all [-h]
+
+Resume all downloads.
+
+optional arguments:
+  -h, --help  Show this help message and exit.
+```
+
+### `remove`
+```
+usage: aria2p remove [-h] [-f] gids [gids ...]
+
+Remove downloads.
+
+positional arguments:
+  gids         The GIDs of the downloads to remove.
+
+optional arguments:
+  -h, --help   Show this help message and exit.
+  -f, --force  Remove without contacting servers first.
+```
+
+### `remove-all`
+```
+usage: aria2p remove-all [-h] [-f]
+
+Remove all downloads.
+
+optional arguments:
+  -h, --help   Show this help message and exit.
+  -f, --force  Remove without contacting servers first.
+```
+
+### `purge`
+```
+usage: aria2p purge [-h] [gids [gids ...]]
+
+Purge the completed/removed/failed downloads.
+
+positional arguments:
+  gids        The GIDs of the downloads to purge.
+
+optional arguments:
+  -h, --help  Show this help message and exit.
 ```
