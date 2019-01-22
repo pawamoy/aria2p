@@ -2,7 +2,7 @@ import datetime
 from pathlib import Path
 
 import pytest
-from aria2p import API, BitTorrent, Download, File, ClientException
+from aria2p import API, BitTorrent, ClientException, Download, File
 
 from . import Aria2Server
 
