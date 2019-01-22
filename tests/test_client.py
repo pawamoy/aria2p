@@ -8,7 +8,7 @@ from threading import Thread
 
 import pytest
 import requests
-from aria2p import JSONRPCClient, JSONRPCError
+from aria2p import Client, ClientException
 from aria2p.client import JSONRPC_CODES, JSONRPC_PARSER_ERROR
 from responses import mock as responses
 
@@ -42,7 +42,7 @@ class TestParameters:
     def test_insert_secret_with_aria2_method_call(self):
         # create client with secret
         secret = "hello"
-        client = JSONRPCClient(secret=secret)
+        client = Client(secret=secret)
 
         responses.add_callback(responses.POST, client.server, callback=self.call_params_callback)
 
@@ -60,7 +60,7 @@ class TestParameters:
     def test_insert_secret_with_system_multicall(self):
         # create client with secret
         secret = "hello"
-        client = JSONRPCClient(secret=secret)
+        client = Client(secret=secret)
 
         responses.add_callback(responses.POST, client.server, callback=self.call_params_callback)
 
@@ -84,7 +84,7 @@ class TestParameters:
     def test_does_not_insert_secret_with_unknown_method_call(self):
         # create client with secret
         secret = "hello"
-        client = JSONRPCClient(secret=secret)
+        client = Client(secret=secret)
 
         responses.add_callback(responses.POST, client.server, callback=self.call_params_callback)
 
@@ -99,7 +99,7 @@ class TestParameters:
     def test_does_not_insert_secret_if_told_so(self):
         # create client with secret
         secret = "hello"
-        client = JSONRPCClient(secret=secret)
+        client = Client(secret=secret)
 
         responses.add_callback(responses.POST, client.server, callback=self.call_params_callback)
 
@@ -113,12 +113,12 @@ class TestParameters:
     def test_client_str_returns_client_server(self):
         host = "https://example.com/"
         port = 7100
-        client = JSONRPCClient(host, port)
+        client = Client(host, port)
         assert client.server == f"{host.rstrip('/')}:{port}/jsonrpc" == str(client)
 
     @responses.activate
     def test_batch_call(self):
-        client = JSONRPCClient()
+        client = Client()
 
         responses.add_callback(responses.POST, client.server, callback=self.batch_call_params_callback)
 
@@ -136,7 +136,7 @@ class TestParameters:
     def test_insert_secret_with_batch_call(self):
         # create client with secret
         secret = "hello"
-        client = JSONRPCClient(secret=secret)
+        client = Client(secret=secret)
 
         responses.add_callback(responses.POST, client.server, callback=self.batch_call_params_callback)
 
@@ -156,7 +156,7 @@ class TestParameters:
 
     @responses.activate
     def test_multicall2(self):
-        client = JSONRPCClient()
+        client = Client()
 
         responses.add_callback(responses.POST, client.server, callback=self.call_params_callback)
 
@@ -180,7 +180,7 @@ class TestParameters:
     def test_insert_secret_with_multicall2(self):
         # create client with secret
         secret = "hello"
-        client = JSONRPCClient(secret=secret)
+        client = Client(secret=secret)
 
         responses.add_callback(responses.POST, client.server, callback=self.call_params_callback)
 
@@ -206,24 +206,24 @@ class TestParameters:
 class TestJSONRPCErrorClass:
     @responses.activate
     def test_call_raises_custom_error(self):
-        client = JSONRPCClient()
+        client = Client()
         responses.add(
             responses.POST, client.server, json={"error": {"code": 1, "message": "Custom message"}}, status=200
         )
-        with pytest.raises(JSONRPCError, match=r"Custom message") as e:
+        with pytest.raises(ClientException, match=r"Custom message") as e:
             client.call("aria2.method")
             assert e.code == 1
 
     @responses.activate
     def test_call_raises_known_error(self):
-        client = JSONRPCClient()
+        client = Client()
         responses.add(
             responses.POST,
             client.server,
             json={"error": {"code": JSONRPC_PARSER_ERROR, "message": "Custom message"}},
             status=200,
         )
-        with pytest.raises(JSONRPCError, match=rf"{JSONRPC_CODES[JSONRPC_PARSER_ERROR]}\nCustom message") as e:
+        with pytest.raises(ClientException, match=rf"{JSONRPC_CODES[JSONRPC_PARSER_ERROR]}\nCustom message") as e:
             client.call("aria2.method")
             assert e.code == JSONRPC_PARSER_ERROR
 

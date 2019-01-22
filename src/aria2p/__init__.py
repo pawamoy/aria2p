@@ -10,12 +10,12 @@ please refer to the README.md included in this package to get the link to the of
 
 
 from .api import API
-from .client import JSONRPCClient, JSONRPCError
+from .client import Client, ClientException
 from .downloads import BitTorrent, Download, File
 from .options import Options
 from .stats import Stats
 
-__all__ = ["API", "JSONRPCError", "JSONRPCClient", "Download", "BitTorrent", "File", "Options", "Stats"]
+__all__ = ["API", "ClientException", "Client", "Download", "BitTorrent", "File", "Options", "Stats"]
 
 # TODO: write aria2, aria2c, Aria2, Aria2c consistently
 # TODO: write all docstrings

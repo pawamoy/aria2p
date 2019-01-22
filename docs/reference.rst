@@ -7,19 +7,19 @@ API class
 .. autoclass:: aria2p.API
     :members:
 
-JSON-RPC client classes
------------------------
+Client classes
+--------------
 
-JSONRPCError
-^^^^^^^^^^^^
+ClientException
+^^^^^^^^^^^^^^^
 
-.. autoclass:: aria2p.JSONRPCError
+.. autoclass:: aria2p.ClientException
     :members:
 
-JSONRPCClient
-^^^^^^^^^^^^^
+Client
+^^^^^^
 
-.. autoclass:: aria2p.JSONRPCClient
+.. autoclass:: aria2p.Client
     :members:
 
 Download-related classes
