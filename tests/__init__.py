@@ -69,7 +69,7 @@ class _Aria2Server:
         self.process = None
 
         # create the client with port
-        self.client = aria2p.JSONRPCClient(port=self.port)
+        self.client = aria2p.Client(port=self.port)
 
         # create the API instance
         self.api = aria2p.API(self.client)

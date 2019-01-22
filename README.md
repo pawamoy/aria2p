@@ -51,7 +51,7 @@ import aria2p
 
 # initialization, these are the default values
 aria2 = aria2p.API(
-    aria2p.JSONRPCClient(
+    aria2p.Client(
         host="http://localhost",
         port=6800,
         secret=""

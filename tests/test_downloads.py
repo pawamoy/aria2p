@@ -2,7 +2,7 @@ import datetime
 from pathlib import Path
 
 import pytest
-from aria2p import API, BitTorrent, Download, File, JSONRPCError
+from aria2p import API, BitTorrent, Download, File, ClientException
 
 from . import Aria2Server
 
@@ -201,37 +201,37 @@ class TestDownloadClass:
     def test_move(self):
         with Aria2Server(port=7403) as server:
             self.download.api = server.api
-            with pytest.raises(JSONRPCError):
+            with pytest.raises(ClientException):
                 self.download.move(2)
 
     def test_move_down(self):
         with Aria2Server(port=7404) as server:
             self.download.api = server.api
-            with pytest.raises(JSONRPCError):
+            with pytest.raises(ClientException):
                 self.download.move_down(1)
 
     def test_move_to(self):
         with Aria2Server(port=7405) as server:
             self.download.api = server.api
-            with pytest.raises(JSONRPCError):
+            with pytest.raises(ClientException):
                 self.download.move_to(10)
 
     def test_move_to_bottom(self):
         with Aria2Server(port=7406) as server:
             self.download.api = server.api
-            with pytest.raises(JSONRPCError):
+            with pytest.raises(ClientException):
                 self.download.move_to_bottom()
 
     def test_move_to_top(self):
         with Aria2Server(port=7407) as server:
             self.download.api = server.api
-            with pytest.raises(JSONRPCError):
+            with pytest.raises(ClientException):
                 self.download.move_to_top()
 
     def test_move_up(self):
         with Aria2Server(port=7408) as server:
             self.download.api = server.api
-            with pytest.raises(JSONRPCError):
+            with pytest.raises(ClientException):
                 self.download.move_up()
 
     def test_name(self):
@@ -246,13 +246,13 @@ class TestDownloadClass:
     def test_options(self):
         with Aria2Server(port=7409) as server:
             self.download.api = server.api
-            with pytest.raises(JSONRPCError):
+            with pytest.raises(ClientException):
                 print(self.download.options)
 
     def test_pause(self):
         with Aria2Server(port=7412) as server:
             self.download.api = server.api
-            with pytest.raises(JSONRPCError):
+            with pytest.raises(ClientException):
                 self.download.pause()
 
     def test_piece_length(self):
@@ -276,13 +276,13 @@ class TestDownloadClass:
     def test_remove(self):
         with Aria2Server(port=7412) as server:
             self.download.api = server.api
-            with pytest.raises(JSONRPCError):
+            with pytest.raises(ClientException):
                 self.download.remove()
 
     def test_resume(self):
         with Aria2Server(port=7412) as server:
             self.download.api = server.api
-            with pytest.raises(JSONRPCError):
+            with pytest.raises(ClientException):
                 self.download.resume()
 
     def test_seeder(self):
@@ -301,13 +301,13 @@ class TestDownloadClass:
     def test_update(self):
         with Aria2Server(port=7410) as server:
             self.download.api = server.api
-            with pytest.raises(JSONRPCError):
+            with pytest.raises(ClientException):
                 self.download.update()
 
     def test_update_options(self):
         with Aria2Server(port=7411) as server:
             self.download.api = server.api
-            with pytest.raises(JSONRPCError):
+            with pytest.raises(ClientException):
                 self.download.update_options()
 
     def test_upload_length(self):

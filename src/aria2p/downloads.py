@@ -5,7 +5,7 @@ torrent files, files and downloads in aria2c.
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from .client import JSONRPCError
+from .client import ClientException
 from .utils import bool_or_value, human_readable_bytes, human_readable_timedelta
 
 
@@ -392,7 +392,7 @@ class Download:
             for gid in self.followed_by_ids:
                 try:
                     result.append(self.api.get_download(gid))
-                except JSONRPCError:
+                except ClientException:
                     pass
             self._followed_by = result
         return self._followed_by
@@ -416,7 +416,7 @@ class Download:
         if not self._following:
             try:
                 self._following = self.api.get_download(self.following_id)
-            except JSONRPCError:
+            except ClientException:
                 return None
         return self._following
 
@@ -441,7 +441,7 @@ class Download:
         if not self._belongs_to:
             try:
                 self._belongs_to = self.api.get_download(self.belongs_to_id)
-            except JSONRPCError:
+            except ClientException:
                 return None
         return self._belongs_to
 

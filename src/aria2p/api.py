@@ -4,7 +4,7 @@ interact easily with a remote aria2c process.
 """
 from base64 import b64encode
 
-from .client import JSONRPCClient
+from .client import Client, ClientException
 from .downloads import Download
 from .options import Options
 from .stats import Stats
@@ -14,23 +14,23 @@ class API:
     """
     A class providing high-level methods to interact with a remote aria2c process.
 
-    This class is instantiated with a reference to a :class:`aria2p.JSONRPCClient` instance. It then uses this client
+    This class is instantiated with a reference to a :class:`aria2p.Client` instance. It then uses this client
     to call remote procedures, or remote methods. The client methods reflect exactly what aria2c is providing
     through JSON-RPC, while this class's methods allow for easier / faster control of the remote process. It also
     wraps the information the client retrieves in Python object, like  :class:`aria2p.Download`, allowing for
     even more Pythonic interactions, without worrying about payloads, responses, JSON, etc..
     """
 
-    def __init__(self, json_rpc_client=None):
+    def __init__(self, client=None):
         """
         Initialization method.
 
         Args:
-            json_rpc_client (:class:`aria2p.JSONRPCClient`): an instance of the ``JSONRPCClient`` class.
+            json_rpc_client (:class:`aria2p.Client`): an instance of the ``JSONRPCClient`` class.
         """
-        if json_rpc_client is None:
-            json_rpc_client = JSONRPCClient()
-        self.client = json_rpc_client
+        if client is None:
+            client = Client()
+        self.client = client
 
     def add_magnet(self, magnet_uri, options=None, position=None):
         """
@@ -218,10 +218,11 @@ class API:
             for gid in gids:
                 downloads.append(Download(self, self.client.tell_status(gid)))
         else:
-            downloads.extend(self.client.tell_active())
-            downloads.extend(self.client.tell_waiting(0, 1000))
-            downloads.extend(self.client.tell_stopped(0, 1000))
-            downloads = [Download(self, d) for d in downloads]
+            structs = []
+            structs.extend(self.client.tell_active())
+            structs.extend(self.client.tell_waiting(0, 1000))
+            structs.extend(self.client.tell_stopped(0, 1000))
+            downloads = [Download(self, struct) for struct in structs]
 
         return downloads
 
@@ -322,7 +323,21 @@ class API:
             remove_func = self.client.force_remove
         else:
             remove_func = self.client.remove
-        return [remove_func(d.gid) for d in downloads]
+
+        result = []
+
+        for download in downloads:
+            try:
+                removed_gid = remove_func(download.gid)
+            except ClientException as e:
+                result.append(e)
+            else:
+                result.append(True)
+                self.client.remove_download_result(download.gid)
+                if removed_gid != download.gid:
+                    self.client.remove_download_result(removed_gid)
+
+        return result
 
     def remove_all(self, force=False):
         """
@@ -334,12 +349,7 @@ class API:
         Returns:
             bool: Success or failure of the operation to remove all downloads.
         """
-        # TODO: batch/multicall candidate
-        if force:
-            remove_func = self.client.force_remove
-        else:
-            remove_func = self.client.remove
-        return [remove_func(d.gid) for d in self.get_downloads()]
+        return all(self.remove(self.get_downloads(), force=force))
 
     def pause(self, downloads, force=False):
         """
@@ -357,7 +367,18 @@ class API:
             pause_func = self.client.force_pause
         else:
             pause_func = self.client.pause
-        return [bool(pause_func(d.gid)) for d in downloads]
+
+        result = []
+
+        for download in downloads:
+            try:
+                pause_func(download.gid)
+            except ClientException as e:
+                result.append(e)
+            else:
+                result.append(True)
+
+        return result
 
     def pause_all(self, force=False):
         """
@@ -369,11 +390,13 @@ class API:
         Returns:
             bool: Success or failure of the operation to pause all downloads.
         """
-        if force:
-            pause_func = self.client.force_pause_all
-        else:
-            pause_func = self.client.pause_all
-        return pause_func() == "OK"
+        # if force:
+        #     pause_func = self.client.force_pause_all
+        # else:
+        #     pause_func = self.client.pause_all
+        # return pause_func() == "OK"
+
+        return all(self.pause(self.get_downloads(), force=force))
 
     def resume(self, downloads):
         """
@@ -386,7 +409,17 @@ class API:
             list of bool: Success or failure of the operation for each given download.
         """
         # TODO: batch/multicall candidate
-        return [self.client.unpause(d.gid) for d in downloads]
+        result = []
+
+        for download in downloads:
+            try:
+                self.client.unpause(download.gid)
+            except ClientException as e:
+                result.append(e)
+            else:
+                result.append(True)
+
+        return result
 
     def resume_all(self):
         """
@@ -395,16 +428,35 @@ class API:
         Returns:
             bool: Success or failure of the operation to resume all downloads.
         """
-        return self.client.unpause_all()
+        return all(self.resume(self.get_downloads()))
 
-    def purge(self):
+    def autopurge(self):
         """
-        Delete completed, removed or failed downloads from the queue.
+        Purge completed, removed or failed downloads from the queue.
 
         Returns:
             bool: Success or failure of the operation.
         """
         return self.client.purge_download_result()
+
+    def purge(self, downloads):
+        """
+        Purge given downloads from the queue.
+
+        Returns:
+            list of bool: Success or failure of the operation for each download.
+        """
+        result = []
+
+        for download in downloads:
+            try:
+                self.client.remove_download_result(download.gid)
+            except ClientException as e:
+                result.append(e)
+            else:
+                result.append(True)
+
+        return result
 
     def get_options(self, downloads):
         """
