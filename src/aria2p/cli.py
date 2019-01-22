@@ -54,21 +54,46 @@ def main(args=None):
 
 def get_parser():
     """Return a parser for the command-line options and arguments."""
-    parser = argparse.ArgumentParser()
+    usage = "%(prog)s [GLOBAL_OPTS...] COMMAND [COMMAND_OPTS...]"
+    description = "Command-line tool and Python library to interact with an `aria2c` daemon process through JSON-RPC."
+    parser = argparse.ArgumentParser(add_help=False, usage=usage, description=description)
 
-    parser.add_argument(
+    main_help = "Show this help message and exit. Commands also accept the -h/--help option."
+    subcommand_help = "Show this help message and exit."
+
+    general_options = parser.add_argument_group(title="Global options")
+    general_options.add_argument("-h", "--help", action="help", help=main_help)
+
+    general_options.add_argument(
         "-p", "--port", dest="port", default=DEFAULT_PORT, type=int, help="Port to use to connect to the remote server."
     )
-    parser.add_argument("-H", "--host", dest="host", default=DEFAULT_HOST, help="Host address for the remote server.")
-    parser.add_argument(
+    general_options.add_argument("-H", "--host", dest="host", default=DEFAULT_HOST, help="Host address for the remote server.")
+    general_options.add_argument(
         "-s", "--secret", dest="secret", default="", help="Secret token to use to connect to the remote server."
     )
 
-    subparsers = parser.add_subparsers(dest="subcommand")
+    # ========= SUBPARSERS ========= #
+    subparsers = parser.add_subparsers(dest="subcommand", title="Commands", metavar="")
 
-    subparsers.add_parser("show", help="Show the download progression.")
+    def subparser(command, text, **kwargs):
+        p = subparsers.add_parser(command, add_help=False, help=text, description=text, **kwargs)
+        p.add_argument("-h", "--help", action="help", help=subcommand_help)
+        return p
 
-    call_parser = subparsers.add_parser("call", help="Call a remote method through the JSON-RPC client.")
+    subparser("show", "Show the download progression.")
+    call_parser = subparser("call", "Call a remote method through the JSON-RPC client.")
+    add_magnet_parser = subparser("add-magnet", "Add a download with a Magnet URI.")
+    add_torrent_parser = subparser("add-torrent", "Add a download with a Torrent file.")
+    add_metalink_parser = subparser("add-metalink", "Add a download with a Metalink file.")
+    pause_parser = subparser("pause", "Pause downloads.")
+    pause_all_parser = subparser("pause-all", "Pause all downloads.")
+    resume_parser = subparser("resume", "Resume downloads.")
+    subparser("resume-all", "Resume all downloads.")
+    remove_parser = subparser("remove", "Remove downloads.", aliases=["rm"])
+    remove_all_parser = subparser("remove-all", "Remove all downloads.")
+    purge_parser = subparser("purge", "Purge the completed/removed/failed downloads.", aliases=["clear"])
+
+    # ========= CALL PARSER ========= #
     call_parser.add_argument(
         "method",
         help=(
@@ -88,45 +113,41 @@ def get_parser():
         help="Parameters as a JSON string. You should always wrap it at least once in an array '[]'.",
     )
 
-    add_magnet_parser = subparsers.add_parser("add-magnet", help="Add a download with a Magnet URI.")
+    # ========= ADD MAGNET PARSER ========= #
     add_magnet_parser.add_argument("uri", help="The magnet URI to use.")
 
-    add_torrent_parser = subparsers.add_parser("add-torrent", help="Add a download with a Torrent file.")
+    # ========= ADD TORRENT PARSER ========= #
     add_torrent_parser.add_argument("torrent_file", help="The path to the torrent file.")
 
-    add_metalink_parser = subparsers.add_parser("add-metalink", help="Add a download with a Metalink file.")
+    # ========= ADD METALINK PARSER ========= #
     add_metalink_parser.add_argument("metalink_file", help="The path to the metalink file.")
 
-    pause_parser = subparsers.add_parser("pause", help="Pause downloads.")
+    # ========= PAUSE PARSER ========= #
     pause_parser.add_argument("gids", nargs="+", help="The GIDs of the downloads to pause.")
     pause_parser.add_argument(
         "-f", "--force", dest="force", action="store_true", help="Pause without contacting servers first."
     )
 
-    pause_all_parser = subparsers.add_parser("pause-all", help="Pause all downloads.")
+    # ========= PAUSE ALL PARSER ========= #
     pause_all_parser.add_argument(
         "-f", "--force", dest="force", action="store_true", help="Pause without contacting servers first."
     )
 
-    resume_parser = subparsers.add_parser("resume", help="Resume downloads.")
+    # ========= RESUME PARSER ========= #
     resume_parser.add_argument("gids", nargs="+", help="The GIDs of the downloads to resume.")
 
-    subparsers.add_parser("resume-all", help="Resume all downloads.")
-
-    remove_parser = subparsers.add_parser("remove", help="Remove downloads.", aliases=["rm"])
+    # ========= REMOVE PARSER ========= #
     remove_parser.add_argument("gids", nargs="+", help="The GIDs of the downloads to remove.")
     remove_parser.add_argument(
         "-f", "--force", dest="force", action="store_true", help="Remove without contacting servers first."
     )
 
-    remove_all_parser = subparsers.add_parser("remove-all", help="Remove all downloads.")
+    # ========= REMOVE ALL PARSER ========= #
     remove_all_parser.add_argument(
         "-f", "--force", dest="force", action="store_true", help="Remove without contacting servers first."
     )
 
-    purge_parser = subparsers.add_parser(
-        "purge", help="Purge the completed/removed/errored downloads from the list.", aliases=["clear"]
-    )
+    # ========= PURGE PARSER ========= #
     purge_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to purge.")
 
     # TODO: when API is ready
@@ -147,6 +168,7 @@ def get_parser():
     # search_parser.add_argument("-L", "--literal", dest="literal", action="store_true")
 
     # TODO: add options (--set), stats, move-files, save-session, shutdown
+
     return parser
 
 
