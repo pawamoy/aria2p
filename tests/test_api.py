@@ -144,24 +144,24 @@ def test_pause_all_method():
         #     raise AssertionError
 
 
-def test_purge_method():
+def test_autopurge_method():
     with Aria2Server(port=7117, session=SESSIONS_DIR / "3-dls.txt") as server:
-        assert server.api.purge()
+        assert server.api.autopurge()
 
 
 def test_remove_method():
     with Aria2Server(port=7118, session=SESSIONS_DIR / "3-dls.txt") as server:
         downloads = server.api.get_downloads()
-        assert server.api.remove(downloads) == [d.gid for d in downloads]
+        assert server.api.remove(downloads) == [True for _ in downloads]
         downloads = server.api.get_downloads()
-        assert all([d.is_removed for d in downloads])
+        assert not downloads
 
 
 def test_remove_all_method():
     with Aria2Server(port=7119, session=SESSIONS_DIR / "3-dls.txt") as server:
         assert server.api.remove_all()
         downloads = server.api.get_downloads()
-        assert all([d.is_removed for d in downloads])
+        assert not downloads
 
 
 def test_resume_method():
