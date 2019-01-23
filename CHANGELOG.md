@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.2.1](https://github.com/pawamoy/aria2p/tags/v0.2.1) ([compare](https://github.com/pawamoy/aria2p/compare/v0.2.0...v0.2.1)) - 2019-01-23
+
+### Fixed
+- Fix commands not being mapped properly ([4c286fc](https://github.com/pawamoy/aria2p/commit/4c286fcd8c9702a97f4bbdec7bbfab8c00672265)).
+
 ## [v0.2.0](https://github.com/pawamoy/aria2p/tags/v0.2.0) ([compare](https://github.com/pawamoy/aria2p/compare/v0.1.7...v0.2.0)) - 2019-01-23
 
 Version 0.2.0 adds subcommands to the CLI tool. The package now also provides documentation and tests.

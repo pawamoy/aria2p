@@ -33,7 +33,7 @@ project = "Aria2p"
 year = "2018"
 author = "Timothée Mazzucotelli"
 copyright = "{0}, {1}".format(year, author)
-version = release = "0.2.0"
+version = release = "0.2.1"
 
 pygments_style = "trac"
 templates_path = ["."]
