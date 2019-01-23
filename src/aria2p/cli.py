@@ -61,14 +61,16 @@ def get_parser():
     main_help = "Show this help message and exit. Commands also accept the -h/--help option."
     subcommand_help = "Show this help message and exit."
 
-    general_options = parser.add_argument_group(title="Global options")
-    general_options.add_argument("-h", "--help", action="help", help=main_help)
+    global_options = parser.add_argument_group(title="Global options")
+    global_options.add_argument("-h", "--help", action="help", help=main_help)
 
-    general_options.add_argument(
+    global_options.add_argument(
         "-p", "--port", dest="port", default=DEFAULT_PORT, type=int, help="Port to use to connect to the remote server."
     )
-    general_options.add_argument("-H", "--host", dest="host", default=DEFAULT_HOST, help="Host address for the remote server.")
-    general_options.add_argument(
+    global_options.add_argument(
+        "-H", "--host", dest="host", default=DEFAULT_HOST, help="Host address for the remote server."
+    )
+    global_options.add_argument(
         "-s", "--secret", dest="secret", default="", help="Secret token to use to connect to the remote server."
     )
 
