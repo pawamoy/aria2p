@@ -33,7 +33,9 @@ sphinx-rtd-theme = "^0.4.2"
 sphinxcontrib-spelling = "^4.2"
 responses = "^0.10.5"
 pytest-xdist = "^1.26"
+isort = "^4.3"
 flake8 = "^3.6"
+jinja2-cli = "^0.6.0"
 
 [tool.poetry.scripts]
 aria2p = 'aria2p.cli:main'

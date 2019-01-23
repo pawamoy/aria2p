@@ -1,3 +1,8 @@
+<!--
+IMPORTANT: This file is generated from the template at 'scripts/templates/README.md'.
+           Please update the template instead of this file.
+-->
+
 # Aria2p
 [![pipeline status](https://gitlab.com/pawamoy/aria2p/badges/master/pipeline.svg)](https://gitlab.com/pawamoy/aria2p/commits/master)
 [![coverage report](https://gitlab.com/pawamoy/aria2p/badges/master/coverage.svg)](https://gitlab.com/pawamoy/aria2p/commits/master)
@@ -87,18 +92,22 @@ Global options:
 
 Commands:
   
-    show                Show the download progression.
-    call                Call a remote method through the JSON-RPC client.
     add-magnet          Add a download with a Magnet URI.
-    add-torrent         Add a download with a Torrent file.
     add-metalink        Add a download with a Metalink file.
+    add-torrent         Add a download with a Torrent file.
+    autopurge (autoclear)
+                        Automatically purge completed/removed/failed
+                        downloads.
+    call                Call a remote method through the JSON-RPC client.
     pause               Pause downloads.
+    purge (clear)       Purge downloads.
     pause-all           Pause all downloads.
-    resume              Resume downloads.
-    resume-all          Resume all downloads.
     remove (rm)         Remove downloads.
     remove-all          Remove all downloads.
-    purge (clear)       Purge the completed/removed/failed downloads.
+    resume              Resume downloads.
+    resume-all          Resume all downloads.
+    show                Show the download progression.
+
 ```
 
 Calling `aria2p` without any arguments will by default call the `show` command,
@@ -115,29 +124,83 @@ to see how the downloads progress:
 watch -t -n1 aria2p show
 ```
 
-Commands help:
-- [`show`](#show)
-- [`call`](#call)
+Commands:
+
 - [`add-magnet`](#add-magnet)
-- [`add-torrent`](#add-torrent)
 - [`add-metalink`](#add-metalink)
+- [`add-torrent`](#add-torrent)
+- [`autopurge`](#autopurge)
+- [`call`](#call)
 - [`pause`](#pause)
+- [`purge`](#purge)
 - [`pause-all`](#pause-all)
+- [`remove`](#remove)
+- [`remove-all`](#remove-all)
 - [`resume`](#resume)
 - [`resume-all`](#resume-all)
-- [`remove (rm)`](#remove)
-- [`remove-all`](#remove-all)
-- [`purge (clear)`](#purge)
+- [`show`](#show)
 
-### `show`
+
+### `add-magnet`
 ```
-usage: aria2p show [-h]
+usage: aria2p add-magnet [-h] uri
 
-Show the download progression.
+Add a download with a Magnet URI.
+
+positional arguments:
+  uri         The magnet URI to use.
 
 optional arguments:
   -h, --help  Show this help message and exit.
+
 ```
+
+
+
+### `add-metalink`
+```
+usage: aria2p add-metalink [-h] metalink_file
+
+Add a download with a Metalink file.
+
+positional arguments:
+  metalink_file  The path to the metalink file.
+
+optional arguments:
+  -h, --help     Show this help message and exit.
+
+```
+
+
+
+### `add-torrent`
+```
+usage: aria2p add-torrent [-h] torrent_file
+
+Add a download with a Torrent file.
+
+positional arguments:
+  torrent_file  The path to the torrent file.
+
+optional arguments:
+  -h, --help    Show this help message and exit.
+
+```
+
+
+
+### `autopurge`
+```
+usage: aria2p autopurge [-h]
+
+Automatically purge completed/removed/failed downloads.
+
+optional arguments:
+  -h, --help  Show this help message and exit.
+
+```
+
+
 
 ### `call`
 ```
@@ -158,9 +221,10 @@ optional arguments:
   -J PARAMS, --json-params PARAMS
                         Parameters as a JSON string. You should always wrap it
                         at least once in an array '[]'.
+
 ```
 
-As explain in the help text,
+As explained in the help text,
 the `method` can be the exact method name,
 or just the name without the prefix.
 It is case-insensitive, and dashes and underscores will be removed.
@@ -249,45 +313,6 @@ $ aria2p call purge_download_result
 ```
 
 
-### `add-magnet`
-```
-usage: aria2p add-magnet [-h] uri
-
-Add a download with a Magnet URI.
-
-positional arguments:
-  uri         The magnet URI to use.
-
-optional arguments:
-  -h, --help  Show this help message and exit.
-```
-
-### `add-torrent`
-```
-usage: aria2p add-torrent [-h] torrent_file
-
-Add a download with a Torrent file.
-
-positional arguments:
-  torrent_file  The path to the torrent file.
-
-optional arguments:
-  -h, --help    Show this help message and exit.
-```
-
-### `add-metalink`
-```
-usage: aria2p add-metalink [-h] metalink_file
-
-Add a download with a Metalink file.
-
-positional arguments:
-  metalink_file  The path to the metalink file.
-
-optional arguments:
-  -h, --help     Show this help message and exit.
-```
-
 ### `pause`
 ```
 usage: aria2p pause [-h] [-f] gids [gids ...]
@@ -300,7 +325,26 @@ positional arguments:
 optional arguments:
   -h, --help   Show this help message and exit.
   -f, --force  Pause without contacting servers first.
+
 ```
+
+
+
+### `purge`
+```
+usage: aria2p purge [-h] [gids [gids ...]]
+
+Purge downloads.
+
+positional arguments:
+  gids        The GIDs of the downloads to purge.
+
+optional arguments:
+  -h, --help  Show this help message and exit.
+
+```
+
+
 
 ### `pause-all`
 ```
@@ -311,30 +355,10 @@ Pause all downloads.
 optional arguments:
   -h, --help   Show this help message and exit.
   -f, --force  Pause without contacting servers first.
+
 ```
 
-### `resume`
-```
-usage: aria2p resume [-h] gids [gids ...]
 
-Resume downloads.
-
-positional arguments:
-  gids        The GIDs of the downloads to resume.
-
-optional arguments:
-  -h, --help  Show this help message and exit.
-```
-
-### `resume-all`
-```
-usage: aria2p resume-all [-h]
-
-Resume all downloads.
-
-optional arguments:
-  -h, --help  Show this help message and exit.
-```
 
 ### `remove`
 ```
@@ -348,7 +372,10 @@ positional arguments:
 optional arguments:
   -h, --help   Show this help message and exit.
   -f, --force  Remove without contacting servers first.
+
 ```
+
+
 
 ### `remove-all`
 ```
@@ -359,17 +386,50 @@ Remove all downloads.
 optional arguments:
   -h, --help   Show this help message and exit.
   -f, --force  Remove without contacting servers first.
+
 ```
 
-### `purge`
-```
-usage: aria2p purge [-h] [gids [gids ...]]
 
-Purge the completed/removed/failed downloads.
+
+### `resume`
+```
+usage: aria2p resume [-h] gids [gids ...]
+
+Resume downloads.
 
 positional arguments:
-  gids        The GIDs of the downloads to purge.
+  gids        The GIDs of the downloads to resume.
 
 optional arguments:
   -h, --help  Show this help message and exit.
+
 ```
+
+
+
+### `resume-all`
+```
+usage: aria2p resume-all [-h]
+
+Resume all downloads.
+
+optional arguments:
+  -h, --help  Show this help message and exit.
+
+```
+
+
+
+### `show`
+```
+usage: aria2p show [-h]
+
+Show the download progression.
+
+optional arguments:
+  -h, --help  Show this help message and exit.
+
+```
+
+
+
