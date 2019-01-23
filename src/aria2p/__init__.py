@@ -18,5 +18,5 @@ from .stats import Stats
 __all__ = ["API", "ClientException", "Client", "Download", "BitTorrent", "File", "Options", "Stats"]
 
 # TODO: write aria2, aria2c, Aria2, Aria2c consistently
+# TODO: write Torrent, torrent, Metalink, metalink, BitTorrent... consistently
 # TODO: write all docstrings
-# TODO: write tests
