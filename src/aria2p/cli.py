@@ -65,7 +65,7 @@ def get_parser():
     """Return a parser for the command-line options and arguments."""
     usage = "%(prog)s [GLOBAL_OPTS...] COMMAND [COMMAND_OPTS...]"
     description = "Command-line tool and Python library to interact with an `aria2c` daemon process through JSON-RPC."
-    parser = argparse.ArgumentParser(add_help=False, usage=usage, description=description)
+    parser = argparse.ArgumentParser(add_help=False, usage=usage, description=description, prog="aria2p")
 
     main_help = "Show this help message and exit. Commands also accept the -h/--help option."
     subcommand_help = "Show this help message and exit."
@@ -84,26 +84,26 @@ def get_parser():
     )
 
     # ========= SUBPARSERS ========= #
-    subparsers = parser.add_subparsers(dest="subcommand", title="Commands", metavar="")
+    subparsers = parser.add_subparsers(dest="subcommand", title="Commands", metavar="", prog="aria2p")
 
     def subparser(command, text, **kwargs):
         p = subparsers.add_parser(command, add_help=False, help=text, description=text, **kwargs)
         p.add_argument("-h", "--help", action="help", help=subcommand_help)
         return p
 
-    subparser("show", "Show the download progression.")
-    call_parser = subparser("call", "Call a remote method through the JSON-RPC client.")
     add_magnet_parser = subparser("add-magnet", "Add a download with a Magnet URI.")
-    add_torrent_parser = subparser("add-torrent", "Add a download with a Torrent file.")
     add_metalink_parser = subparser("add-metalink", "Add a download with a Metalink file.")
+    add_torrent_parser = subparser("add-torrent", "Add a download with a Torrent file.")
+    subparser("autopurge", "Automatically purge completed/removed/failed downloads.", aliases=["autoclear"])
+    call_parser = subparser("call", "Call a remote method through the JSON-RPC client.")
     pause_parser = subparser("pause", "Pause downloads.")
+    purge_parser = subparser("purge", "Purge downloads.", aliases=["clear"])
     pause_all_parser = subparser("pause-all", "Pause all downloads.")
-    resume_parser = subparser("resume", "Resume downloads.")
-    subparser("resume-all", "Resume all downloads.")
     remove_parser = subparser("remove", "Remove downloads.", aliases=["rm"])
     remove_all_parser = subparser("remove-all", "Remove all downloads.")
-    purge_parser = subparser("purge", "Purge downloads.", aliases=["clear"])
-    subparser("autopurge", "Automatically purge completed/removed/failed downloads.", aliases=["autoclear"])
+    resume_parser = subparser("resume", "Resume downloads.")
+    subparser("resume-all", "Resume all downloads.")
+    subparser("show", "Show the download progression.")
 
     # ========= CALL PARSER ========= #
     call_parser.add_argument(
