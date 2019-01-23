@@ -37,10 +37,19 @@ def main(args=None):
 
     subcommands = {
         None: subcommand_show,
+        "show": subcommand_show,
         "call": subcommand_call,
         "add-magnet": subcommand_add_magnet,
         "add-torrent": subcommand_add_torrent,
-        "show": subcommand_show,
+        "add-metalink": subcommand_add_metalink,
+        "pause": subcommand_pause,
+        "pause-all": subcommand_pause_all,
+        "resume": subcommand_resume,
+        "resume-all": subcommand_resume_all,
+        "remove": subcommand_remove,
+        "remove-all": subcommand_remove_all,
+        "purge": subcommand_purge,
+        "autopurge": subcommand_autopurge,
     }
 
     subcommand = kwargs.pop("subcommand")
@@ -93,7 +102,8 @@ def get_parser():
     subparser("resume-all", "Resume all downloads.")
     remove_parser = subparser("remove", "Remove downloads.", aliases=["rm"])
     remove_all_parser = subparser("remove-all", "Remove all downloads.")
-    purge_parser = subparser("purge", "Purge the completed/removed/failed downloads.", aliases=["clear"])
+    purge_parser = subparser("purge", "Purge downloads.", aliases=["clear"])
+    subparser("autopurge", "Automatically purge completed/removed/failed downloads.", aliases=["autoclear"])
 
     # ========= CALL PARSER ========= #
     call_parser.add_argument(
