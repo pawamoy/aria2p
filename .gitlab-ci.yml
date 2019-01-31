@@ -23,6 +23,22 @@ check-flake8:
     - pip install flake8
   script: flake8 src/ tests/
 
+check-bandit:
+  image: python:3.6
+  stage: quality
+  before_script:
+    - pip install bandit
+  script: bandit -r src/
+
+check-safety:
+  image: python:3.6
+  stage: quality
+  before_script:
+    - apt-get install -y make
+    - pip install poetry
+    - poetry install -vv
+  script: make check-safety
+
 python3.6:
   image: python:3.6
   stage: tests
