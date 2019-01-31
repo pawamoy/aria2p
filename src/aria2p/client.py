@@ -146,7 +146,7 @@ class Client:
         LIST_NOTIFICATIONS,
     ]
 
-    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT, secret=""):
+    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT, secret=""):  # nosec
         """
         Initialization method.
 

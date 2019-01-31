@@ -23,6 +23,7 @@ python = "^3.6"
 requests = "*"
 
 [tool.poetry.dev-dependencies]
+black = { version = "*", allows-prereleases = true }
 pytest = "*"
 pytest-cov = "*"
 pytest-sugar = "*"
@@ -35,7 +36,9 @@ responses = "^0.10.5"
 pytest-xdist = "^1.26"
 isort = "^4.3"
 flake8 = "^3.6"
-jinja2-cli = "^0.6.0"
+jinja2-cli = { git = "git@github.com:mattrobenolt/jinja2-cli", branch = "master" }
+bandit = "^1.5"
+safety = "^1.8"
 
 [tool.poetry.scripts]
 aria2p = 'aria2p.cli:main'
