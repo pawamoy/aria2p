@@ -36,7 +36,7 @@ check-safety:
   before_script:
     - apt-get install -y make
     - pip install poetry
-    - poetry install -vv
+    - poetry install -vvv
   script: make check-safety
 
 python3.6:
