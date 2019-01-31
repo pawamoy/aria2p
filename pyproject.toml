@@ -36,7 +36,7 @@ responses = "^0.10.5"
 pytest-xdist = "^1.26"
 isort = "^4.3"
 flake8 = "^3.6"
-jinja2-cli = { git = "git@github.com:mattrobenolt/jinja2-cli", branch = "master" }
+jinja2-cli = { git = "git@github.com:mattrobenolt/jinja2-cli.git", branch = "master" }
 bandit = "^1.5"
 safety = "^1.8"
 
