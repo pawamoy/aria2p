@@ -8,3 +8,4 @@ build/
 .coverage
 tests/tmp/*
 !tests/tmp/.gitkeep
+pip-wheel-metadata/
