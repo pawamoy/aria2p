@@ -2,45 +2,44 @@ stages:
   - quality
   - tests
 
-check-black:
+.quality-template: &quality
   image: python:3.6
   stage: quality
+
+check-black:
+  <<: *quality
   before_script:
     - pip install black
   script: black --check src/ tests/
 
 check-isort:
-  image: python:3.6
-  stage: quality
+  <<: *quality
   before_script:
     - pip install isort
   script: isort -c -rc src/ tests/
 
 check-flake8:
-  image: python:3.6
-  stage: quality
+  <<: *quality
   before_script:
     - pip install flake8
   script: flake8 src/ tests/
 
 check-bandit:
-  image: python:3.6
-  stage: quality
+  <<: *quality
   before_script:
     - pip install bandit
   script: bandit -r src/
 
 check-safety:
-  image: python:3.6
-  stage: quality
+  <<: *quality
   before_script:
     - apt-get install -y make
     - pip install poetry
-    - poetry install -vvv
+    - poetry install -vv
+    - poetry --version
   script: make check-safety
 
-python3.6:
-  image: python:3.6
+.test-template: &test
   stage: tests
   before_script:
     - apt-get update
@@ -48,16 +47,13 @@ python3.6:
     - apt-get install -y aria2
     - pip install poetry
     - poetry install -vv
+    - poetry --version
   script: poetry run pytest -v
+
+python3.6:
+  <<: *test
+  image: python:3.6
 
 python3.7:
+  <<: *test
   image: python:3.7
-  stage: tests
-  before_script:
-    - apt-get update
-    - apt-get install -y python-enchant
-    - apt-get install -y aria2
-    - pip install poetry
-    - poetry install -vv
-  script: poetry run pytest -v
-
