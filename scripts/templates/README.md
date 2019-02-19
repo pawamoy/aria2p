@@ -11,6 +11,8 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
 
 Command-line tool and Python library to interact with an `aria2c` daemon process through JSON-RPC.
 
+N.B. In order for `aria2p` to function, `aria2c` needs to be already up and running.
+
 ## Requirements
 `aria2p` requires Python 3.6 or above.
 
@@ -106,3 +108,12 @@ Commands:
 
 {% include "command_" + command.name.replace("-", "_") + "_extra.md" ignore missing %}
 {% endfor %}
+
+## Troubleshoot
+1. Error outputs like below when using `aria2p` as a Python library:
+
+```
+requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=6800): Max retries exceeded with url: /jsonrpc (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1115b1908>: Failed to establish a new connection: [Errno 61] Connection refused',))
+```
+
+solution: `aria2c` needs to be up and running first.
