@@ -33,7 +33,8 @@ check-bandit:
 check-safety:
   <<: *quality
   before_script:
-    - apt-get install -y make
+    - apt-get update
+    - apt-get install -y python-enchant
     - pip install poetry
     - poetry install -vv
     - poetry --version
