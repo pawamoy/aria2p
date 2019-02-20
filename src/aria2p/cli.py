@@ -19,6 +19,7 @@ import argparse
 import json
 import sys
 
+import requests
 from aria2p import Download
 
 from .api import API
@@ -34,6 +35,17 @@ def main(args=None):
     kwargs = args.__dict__
 
     api = API(Client(host=kwargs.pop("host"), port=kwargs.pop("port"), secret=kwargs.pop("secret")))
+
+    # Warn if no aria2 daemon process seems to be running
+    try:
+        api.client.get_version()
+    except requests.ConnectionError as e:
+        print(f"[ERROR] {e}", file=sys.stderr)
+        print(file=sys.stderr)
+        print("Please make sure that an instance of aria2c is running with RPC mode enabled,", file=sys.stderr)
+        print("and that you have provided the right host, port and secret token.", file=sys.stderr)
+        print("More information at https://aria2p.readthedocs.io/en/latest.", file=sys.stderr)
+        return 2
 
     subcommands = {
         None: subcommand_show,
@@ -214,7 +226,9 @@ def subcommand_show(api):
 def subcommand_call(api, method, params):
     method = get_method(method)
     if method is None:
-        print(f"Unknown method {method}. Run '{sys.argv[0]} -m listmethods' to list the available methods.")
+        print(f"[ERROR] call: Unknown method {method}.", file=sys.stderr)
+        print(file=sys.stderr)
+        print("Run '{sys.argv[0]} -m listmethods' to list the available methods.", file=sys.stderr)
         return 1
 
     if isinstance(params, str):
