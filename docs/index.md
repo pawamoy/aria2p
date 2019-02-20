@@ -1,6 +1,7 @@
 # Welcome to Aria2p's documentation!
 
 - [Overview](readme.md)
+- [Configuration](configuration.md)
 - [Usage](usage.md)
 - [Reference](reference.rst)
 - [Contributing](contributing.md)
