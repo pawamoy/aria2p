@@ -25,7 +25,7 @@ XUBUNTU_MIRRORS = [
 
 
 class _Aria2Server:
-    def __init__(self, port=None, config=None, session=None):
+    def __init__(self, port=None, config=None, session=None, secret=""):
         # create the tmp dir
         self.tmp_dir = Path(tempfile.mkdtemp(dir=TESTS_TMP_DIR))
 
@@ -64,12 +64,14 @@ class _Aria2Server:
                 command.append(f"--input-file={session_path}")
             else:
                 command.append(f"--input-file={session}")
+        if secret:
+            command.append(f"--rpc-secret={secret}")
 
         self.command = command
         self.process = None
 
         # create the client with port
-        self.client = aria2p.Client(port=self.port)
+        self.client = aria2p.Client(port=self.port, secret=secret)
 
         # create the API instance
         self.api = aria2p.API(self.client)
@@ -123,8 +125,8 @@ class _Aria2Server:
 
 
 class Aria2Server:
-    def __init__(self, port=None, config=None, session=None):
-        self.server = _Aria2Server(port, config, session)
+    def __init__(self, port=None, config=None, session=None, secret=""):
+        self.server = _Aria2Server(port, config, session, secret)
 
     def __enter__(self):
         self.server.start()
