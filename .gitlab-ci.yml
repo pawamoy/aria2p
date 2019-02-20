@@ -4,7 +4,7 @@ variables:
 cache:
   paths:
     - .cache/pip
-    - .cache/pypoetry
+    - .venv
 
 stages:
   - quality
@@ -44,6 +44,7 @@ check-safety:
     - apt-get update
     - apt-get install -y python-enchant
     - pip install poetry
+    - poetry config settings.virtualenvs.in-project true
     - poetry install -vv
     - poetry --version
   script: make check-safety
@@ -55,6 +56,7 @@ check-safety:
     - apt-get install -y python-enchant
     - apt-get install -y aria2
     - pip install poetry
+    - poetry config settings.virtualenvs.in-project true
     - poetry install -vv
     - poetry --version
   script: poetry run pytest -v
