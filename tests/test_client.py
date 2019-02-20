@@ -454,3 +454,15 @@ class TestJSONRPCClientClass:
     def test_unpause_all_method(self):
         with Aria2Server(port=7034, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
             assert server.client.unpause_all() == "OK"
+
+
+class TestSecretToken:
+    def test_works_correctly_with_secret_set(self):
+        with Aria2Server(port=7040, secret="this secret token") as server:
+            assert server.client.get_version()
+
+    def test_does_not_authorize_with_invalid_secret(self):
+        with Aria2Server(port=7041, secret="this secret token") as server:
+            server.client.secret = "invalid secret token"
+            with pytest.raises(ClientException):
+                server.client.get_version()
