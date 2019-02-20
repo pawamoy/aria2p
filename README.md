@@ -9,9 +9,23 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
 [![documentation](https://img.shields.io/readthedocs/aria2p.svg?style=flat)](https://aria2p.readthedocs.io/en/latest/index.html)
 [![pypi version](https://img.shields.io/pypi/v/aria2p.svg)](https://pypi.org/project/aria2p/)
 
-Command-line tool and Python library to interact with an `aria2c` daemon process through JSON-RPC.
+Command-line tool and Python library to interact with an [`aria2c`][1] daemon process through JSON-RPC.
 
-N.B. In order for `aria2p` to function, `aria2c` needs to be already up and running.
+To avoid confusion:
+- [*aria2*][1] is a lightweight multi-protocol & multi-source, cross platform download utility operated in command-line.
+It supports HTTP/HTTPS, FTP, SFTP, BitTorrent and Metalink.
+- `aria2c` is the name of the command-line executable provided by *aria2*. It can act as a daemon.
+- `aria2p` (`p` for Python) is a command-line client that can interact with an `aria2c` daemon.
+  It is not an official client. There are other Python packages allowing you to interact with an `aria2c` daemon.
+  These other packages do not offer enough usability (in my opinion), this is why I'm developing `aria2p`.
+
+**Purpose**: `aria2c` can run in the foreground, for one-time downloads, or in the background, as a daemon.
+This is where `aria2p` intervenes: when an instance of `aria2c` is running in the background with RPC mode enabled,
+`aria2p` will be able to communicate with it to add downloads to the queue, remove, pause or resume them, etc.
+RPC mode is enabled with the `--enable-rpc` option of `aria2c`. RPC stands for [Remote Procedure Call][2].
+Although `aria2c` supports both JSON-RPC and XML-RPC protocols, `aria2p` **works with JSON only** (not XML).
+More information about how to configure `aria2c` to run as a daemon with RPC mode enabled
+can be found in the documentation at https://aria2p.readthedocs.io/en/latest.
 
 ## Requirements
 `aria2p` requires Python 3.6 or above.
@@ -35,6 +49,15 @@ pyenv install 3.6.8
 pyenv global system 3.6.8
 ```
 </details>
+
+You must also install [*aria2*][1]. On systems with `apt-get`:
+
+```bash
+sudo apt-get install aria2
+```
+
+[1]: https://github.com/aria2/aria2
+[2]: https://en.wikipedia.org/wiki/Remote_procedure_call
 
 ## Installation
 With `pip`:
