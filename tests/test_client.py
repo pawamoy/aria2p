@@ -50,7 +50,7 @@ class TestParameters:
         params = ["param1", "param2"]
         # copy params and insert secret
         expected_params = deepcopy(params)
-        expected_params.insert(0, secret)
+        expected_params.insert(0, f"token:{secret}")
 
         # call function and assert result
         resp = client.call(client.ADD_URI, params, insert_secret=True)
@@ -74,7 +74,7 @@ class TestParameters:
         # copy params and insert secret
         expected_params = deepcopy(params)
         for param in expected_params[0]:
-            param["params"].insert(0, secret)
+            param["params"].insert(0, f"token:{secret}")
 
         # call function and assert result
         resp = client.call(client.MULTICALL, params, insert_secret=True)
@@ -146,7 +146,7 @@ class TestParameters:
         # copy params and insert secret
         expected_params = [deepcopy(params_1), deepcopy(params_2)]
         for p in expected_params:
-            p.insert(0, secret)
+            p.insert(0, f"token:{secret}")
 
         # call function and assert result
         resp = client.batch_call(
@@ -196,7 +196,7 @@ class TestParameters:
             ]
         ]
         for param in expected_params[0]:
-            param["params"].insert(0, secret)
+            param["params"].insert(0, f"token:{secret}")
 
         # call function and assert result
         resp = client.multicall2(calls, insert_secret=True)

@@ -9,10 +9,15 @@ def _first_line(cs):
     return cs.readouterr().out.split("\n")[0]
 
 
+def test_main_returns_2_when_no_remote_running():
+    assert cli.main([]) == 2
+
+
 @patch("aria2p.cli.subcommand_show")
 def test_main_no_command_defaults_to_show(mocked_function):
-    cli.main([])
-    assert mocked_function.called
+    with Aria2Server(port=7500) as server:
+        cli.main(["-p", str(server.port)])
+        assert mocked_function.called
 
 
 def test_main_show_subcommand(capsys):
