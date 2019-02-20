@@ -187,7 +187,7 @@ class Client:
 
         if insert_secret and self.secret:
             if method.startswith("aria2."):
-                params.insert(0, self.secret)
+                params.insert(0, 'token:'+self.secret)
             elif method == self.MULTICALL:
                 for param in params[0]:
                     param["params"].insert(0, self.secret)
