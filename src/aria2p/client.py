@@ -187,10 +187,10 @@ class Client:
 
         if insert_secret and self.secret:
             if method.startswith("aria2."):
-                params.insert(0, self.secret)
+                params.insert(0, f"token:{self.secret}")
             elif method == self.MULTICALL:
                 for param in params[0]:
-                    param["params"].insert(0, self.secret)
+                    param["params"].insert(0, f"token:{self.secret}")
 
         return self.res_or_raise(self.post(self.get_payload(method, params, msg_id=msg_id)))
 
@@ -219,7 +219,7 @@ class Client:
         for method, params, msg_id in calls:
             params = self.get_params(*params)
             if insert_secret and self.secret and method.startswith("aria2."):
-                params.insert(0, self.secret)
+                params.insert(0, f"token:{self.secret}")
             payloads.append(self.get_payload(method, params, msg_id, as_json=False))
 
         payload = json.dumps(payloads)
@@ -265,7 +265,7 @@ class Client:
         for method, params in calls:
             params = self.get_params(*params)
             if insert_secret and self.secret and method.startswith("aria2."):
-                params.insert(0, self.secret)
+                params.insert(0, f"token:{self.secret}")
             multicall_params.append({"methodName": method, "params": params})
 
         payload = self.get_payload(self.MULTICALL, [multicall_params])
