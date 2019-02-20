@@ -29,5 +29,11 @@ check-safety:  ## Check for vulnerabilities in dependencies using safety.
 		grep -v aria2p | \
 		poetry run safety check --stdin --full-report 2>/dev/null
 
+run-black:  ## Lint the code using black.
+	poetry run black src/ tests/
+
+run-isort:  ## Sort the imports using isort.
+	poetry run isort -y -rc src/ tests/
+
 test:  ## Run the tests using pytest.
 	poetry run pytest -n6 2>/dev/null
