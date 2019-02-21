@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 
 import os
 
+import toml
 from recommonmark.transform import AutoStructify
 
 extensions = [
@@ -27,13 +28,15 @@ spelling_lang = "en_US"
 autodoc_default_flags = ["members", "special-members", "show-inheritance"]
 
 source_parsers = {".md": "recommonmark.parser.CommonMarkParser"}
-source_suffix = ['.rst', '.md']
+source_suffix = [".rst", ".md"]
 master_doc = "index"
 project = "Aria2p"
 year = "2018"
 author = "Timothée Mazzucotelli"
 copyright = "{0}, {1}".format(year, author)
-version = release = "0.2.1"
+version = release = toml.load(
+    os.path.join(os.path.dirname(os.path.dirname(__file__)), "pyproject.toml")
+)["tool"]["poetry"]["version"]
 
 pygments_style = "trac"
 templates_path = ["."]
