@@ -317,6 +317,7 @@ jinja2 = "*"
 reference = "a2d99e3a10589da12d5ac21074ffe8fae88c9e3f"
 type = "git"
 url = "https://github.com/mattrobenolt/jinja2-cli.git"
+
 [[package]]
 category = "main"
 description = "Safely add untrusted strings to HTML/XML markup."
@@ -744,7 +745,7 @@ python-versions = "*"
 version = "0.1.7"
 
 [metadata]
-content-hash = "1760e4c055640c0c1fd4818923f23ae4d6a0eb556f3c9e755d6226fb3145f9d6"
+content-hash = "faa636e7ba9f921db1c653ad642e38e87f9cb0ec976e99a7927fc07fe125b692"
 python-versions = "^3.6"
 
 [metadata.hashes]
