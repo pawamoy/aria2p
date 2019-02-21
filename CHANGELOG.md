@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.2.2](https://github.com/pawamoy/aria2p/releases/tag/v0.2.2) ([compare](https://github.com/pawamoy/aria2p/compare/v0.2.1...v0.2.2)) - 2019-02-21
+
+### Documented
+- Add configuration documentation ([c3643ea](https://github.com/pawamoy/aria2p/commit/c3643ea9e26edb8db33c019cf5059fb292232c2a)).
+- Add information in README ([c7f4378](https://github.com/pawamoy/aria2p/commit/c7f4378d062aa0d2d13de01df494153e371d2d1c)).
+- Add credits ([dc607fe](https://github.com/pawamoy/aria2p/commit/dc607fed97f8ca2ad43f31d10a04a65d0c1a0471), [8ec1f58](https://github.com/pawamoy/aria2p/commit/8ec1f58ed306d11f0501a60f701158d259be049a), [f89081c](https://github.com/pawamoy/aria2p/commit/f89081c8b2c248cd6fd51a59cb43d4306e64c646)).
+
+### Fixed
+- Fix format of secret in params ([8ff9075](https://github.com/pawamoy/aria2p/commit/8ff907588c7a87e96c1f99c3f4fd09c7e312be2b)). Issue [GH-4](https://github.com/pawamoy/aria2p/issues/4).
+- Print warning when connection to remote fails ([ab9a604](https://github.com/pawamoy/aria2p/commit/ab9a6040e3f02fbaf3a4814532dd1b4b36b73dc2)). Issue [GH-2](https://github.com/pawamoy/aria2p/issues/2).
+
 ## [v0.2.1](https://github.com/pawamoy/aria2p/releases/tag/v0.2.1) ([compare](https://github.com/pawamoy/aria2p/compare/v0.2.0...v0.2.1)) - 2019-01-23
 
 ### Fixed
