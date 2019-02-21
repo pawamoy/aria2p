@@ -1,14 +1,18 @@
 .PHONY: help
+.PHONY: docs
 .PHONY: test-py36
 .PHONY: test-py37
 .DEFAULT_GOAL := help
 
-help: ## Print this help.
+help:  ## Print this help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
 
 readme: README.md  ## Regenerate README.md.
 	poetry run ./scripts/gen-readme-data.py | \
 		poetry run jinja2 --format=json scripts/templates/README.md > README.md
+
+docs:  ## Build the documentation locally.
+	poetry run sphinx-build -E -b html docs build/docs
 
 check: check-bandit check-black check-flake8 check-isort check-safety  ## Check it all!
 
