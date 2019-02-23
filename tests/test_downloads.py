@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from aria2p import API, BitTorrent, ClientException, Download, File
 
-from . import Aria2Server
+from . import SESSIONS_DIR, Aria2Server
 
 
 class TestBitTorrentClass:
@@ -95,8 +95,13 @@ class TestDownloadClass:
     def test_str_method(self):
         assert str(self.download) == self.download.name
 
+    def test_update_method(self):
+        with Aria2Server(port=7416, session=SESSIONS_DIR / "dl-aria2-1.34.0-paused.txt") as server:
+            download = server.api.get_download("2089b05ecca3d829")
+            download.update()
+
     def test_belongs_to(self):
-        with Aria2Server(port=7412) as server:
+        with Aria2Server(port=7415) as server:
             self.download.api = server.api
             assert self.download.belongs_to is None
 
@@ -249,8 +254,25 @@ class TestDownloadClass:
             with pytest.raises(ClientException):
                 print(self.download.options)
 
+    def test_options2(self):
+        witness = []
+
+        def mocked():
+            witness.append(0)
+            self.download._options = True
+
+        self.download.update_options = mocked
+        assert self.download.options is True
+        assert witness == [0]
+        assert self.download.options is True
+        assert witness == [0]
+
+    def test_set_options(self):
+        self.download.options = "options"
+        assert self.download.options == "options"
+
     def test_pause(self):
-        with Aria2Server(port=7412) as server:
+        with Aria2Server(port=7410) as server:
             self.download.api = server.api
             with pytest.raises(ClientException):
                 self.download.pause()
@@ -274,7 +296,7 @@ class TestDownloadClass:
         assert self.download.progress_string() == "0.00%"
 
     def test_remove(self):
-        with Aria2Server(port=7412) as server:
+        with Aria2Server(port=7411) as server:
             self.download.api = server.api
             with pytest.raises(ClientException):
                 self.download.remove()
@@ -299,13 +321,13 @@ class TestDownloadClass:
         assert self.download.total_length_string(human_readable=False) == "1045306068 B"
 
     def test_update(self):
-        with Aria2Server(port=7410) as server:
+        with Aria2Server(port=7413) as server:
             self.download.api = server.api
             with pytest.raises(ClientException):
                 self.download.update()
 
     def test_update_options(self):
-        with Aria2Server(port=7411) as server:
+        with Aria2Server(port=7414) as server:
             self.download.api = server.api
             with pytest.raises(ClientException):
                 self.download.update_options()
