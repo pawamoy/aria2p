@@ -159,7 +159,7 @@ def test_remove_method():
 
 def test_remove_all_method():
     with Aria2Server(port=7119, session=SESSIONS_DIR / "3-dls.txt") as server:
-        # TODO: had it fail once, investigate
+        # TODO: had it fail several times, investigate
         assert server.api.remove_all()
         downloads = server.api.get_downloads()
         assert not downloads
