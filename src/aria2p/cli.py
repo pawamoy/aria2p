@@ -69,7 +69,7 @@ def main(args=None):
     try:
         return subcommands.get(subcommand)(api, **kwargs)
     except ClientException as e:
-        print(e.message)
+        print(e.message, file=sys.stderr)
         return e.code
 
 
@@ -221,14 +221,16 @@ def subcommand_show(api):
             f"{download.name}"
         )
 
+    return 0
+
 
 # ============ CALL SUBCOMMAND ============ #
 def subcommand_call(api, method, params):
-    method = get_method(method)
-    if method is None:
+    real_method = get_method(method)
+    if real_method is None:
         print(f"[ERROR] call: Unknown method {method}.", file=sys.stderr)
         print(file=sys.stderr)
-        print("Run '{sys.argv[0]} -m listmethods' to list the available methods.", file=sys.stderr)
+        print(f"Run 'aria2p call listmethods' to list the available methods.", file=sys.stderr)
         return 1
 
     if isinstance(params, str):
@@ -236,7 +238,7 @@ def subcommand_call(api, method, params):
     elif params is None:
         params = []
 
-    response = api.client.call(method, params)
+    response = api.client.call(real_method, params)
     print(json.dumps(response))
 
     return 0
@@ -270,8 +272,9 @@ def subcommand_add_torrent(api, torrent_file):
 
 # ============ ADD METALINK SUBCOMMAND ============ #
 def subcommand_add_metalink(api: API, metalink_file):
-    new_download = api.add_metalink(metalink_file)
-    print(f"Created download {new_download.gid}")
+    new_downloads = api.add_metalink(metalink_file)
+    for download in new_downloads:
+        print(f"Created download {download.gid}")
     return 0
 
 
@@ -283,7 +286,7 @@ def subcommand_pause(api: API, gids, force=False):
         return 0
     for item in result:
         if isinstance(item, ClientException):
-            print(item)
+            print(item, file=sys.stderr)
     return 1
 
 
@@ -302,7 +305,7 @@ def subcommand_resume(api: API, gids):
         return 0
     for item in result:
         if isinstance(item, ClientException):
-            print(item)
+            print(item, file=sys.stderr)
     return 1
 
 
@@ -321,7 +324,7 @@ def subcommand_remove(api: API, gids, force=False):
         return 0
     for item in result:
         if isinstance(item, ClientException):
-            print(item)
+            print(item, file=sys.stderr)
     return 1
 
 
@@ -340,7 +343,7 @@ def subcommand_purge(api: API, gids):
         return 0
     for item in result:
         if isinstance(item, ClientException):
-            print(item)
+            print(item, file=sys.stderr)
     return 1
 
 

@@ -101,7 +101,7 @@ class API:
             position (int): the position where to insert the new download in the queue. Start at 0 (top).
 
         Returns:
-            :class:`aria2p.Download` instance: the newly created download object.
+            list of :class:`aria2p.Download`: the newly created download objects.
         """
         if options is None:
             options = {}
