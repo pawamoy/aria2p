@@ -20,3 +20,4 @@ __all__ = ["API", "ClientException", "Client", "Download", "BitTorrent", "File",
 # TODO: write aria2, aria2c, Aria2, Aria2c consistently
 # TODO: write Torrent, torrent, Metalink, metalink, BitTorrent... consistently
 # TODO: write all docstrings
+# TODO: use proper logging messages (esp. in except: pass)

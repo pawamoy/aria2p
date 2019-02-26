@@ -333,9 +333,15 @@ class API:
                 result.append(e)
             else:
                 result.append(True)
-                self.client.remove_download_result(download.gid)
+                try:
+                    self.client.remove_download_result(download.gid)
+                except ClientException:
+                    pass
                 if removed_gid != download.gid:
-                    self.client.remove_download_result(removed_gid)
+                    try:
+                        self.client.remove_download_result(removed_gid)
+                    except ClientException:
+                        pass
 
         return result
 
