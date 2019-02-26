@@ -1,3 +1,4 @@
+import time
 from unittest.mock import patch
 
 from aria2p import cli
@@ -132,3 +133,49 @@ def test_resume_all_subcommand():
 def test_resume_all_subcommand_fails():
     with Aria2Server(port=7519, session=SESSIONS_DIR / "dl-2-aria2.txt") as server:
         assert cli.subcommand_resume_all(server.api) == 1
+
+
+def test_remove_subcommand():
+    with Aria2Server(port=7520, session=SESSIONS_DIR / "dl-aria2-1.34.0-paused.txt") as server:
+        assert cli.subcommand_remove(server.api, ["2089b05ecca3d829"]) == 0
+
+
+def test_remove_subcommand_one_failure(capsys):
+    with Aria2Server(port=7520, session=SESSIONS_DIR / "dl-aria2-1.34.0-paused.txt") as server:
+        assert cli.subcommand_remove(server.api, ["2089b05ecca3d829", "cca3d8292089b05e"]) == 1
+        assert capsys.readouterr().err == "GID cca3d8292089b05e is not found\n"
+
+
+def test_remove_all_subcommand():
+    with Aria2Server(port=7521) as server:
+        assert cli.subcommand_remove_all(server.api) == 0
+
+
+# def test_remove_all_subcommand_fails():
+#     with Aria2Server(port=7521) as server:
+#         assert cli.subcommand_remove_all(server.api) == 0
+
+
+def test_purge_subcommand():
+    with Aria2Server(port=7520, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
+        while not server.api.get_download("2089b05ecca3d829").is_complete:
+            time.sleep(0.2)
+        assert cli.subcommand_purge(server.api, ["2089b05ecca3d829"]) == 0
+
+
+def test_purge_subcommand_one_failure(capsys):
+    with Aria2Server(port=7520, session=SESSIONS_DIR / "small-file-and-paused-file.txt") as server:
+        while not server.api.get_download("2089b05ecca3d829").is_complete:
+            time.sleep(0.2)
+        assert cli.subcommand_purge(server.api, ["2089b05ecca3d829", "208a3d8299b05ecc"]) == 1
+        assert capsys.readouterr().err == "Could not remove download result of GID#208a3d8299b05ecc\n"
+
+
+def test_autopurge_subcommand():
+    with Aria2Server(port=7521, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
+        assert cli.subcommand_autopurge(server.api) == 0
+
+
+# def test_purge_all_subcommand_fails():
+#     with Aria2Server(port=7521) as server:
+#         assert cli.subcommand_purge_all(server.api) == 0
