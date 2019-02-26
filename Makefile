@@ -2,6 +2,8 @@
 .PHONY: docs
 .PHONY: test-py36
 .PHONY: test-py37
+.PHONY: clean
+.PHONY: clean-tests
 .DEFAULT_GOAL := help
 
 help:  ## Print this help.
@@ -39,5 +41,17 @@ run-black:  ## Lint the code using black.
 run-isort:  ## Sort the imports using isort.
 	poetry run isort -y -rc src/ tests/
 
-test:  ## Run the tests using pytest.
+lint: run-black run-isort  ## Run linting tools on the code.
+
+clean-tests:  ## Delete temporary tests files.
+	@rm -rf tests/tmp/* 2>/dev/null
+
+clean: clean-tests  ## Delete temporary files.
+	@rm -rf build 2>/dev/null
+	@rm -rf dist 2>/dev/null
+	@rm -rf src/aria2p.egg-info 2>/dev/null
+	@rm -rf .coverage 2>/dev/null
+	@rm -rf .pytest_cache 2>/dev/null
+
+test: clean-tests  ## Run the tests using pytest.
 	poetry run pytest -n6 2>/dev/null
