@@ -69,3 +69,9 @@ python3.6:
 python3.7:
   <<: *test
   image: python:3.7
+
+python3.8:
+  <<: *test
+  image: python:3.8-rc
+  allow_failure: true
+
