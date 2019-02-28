@@ -661,6 +661,12 @@ class TestOptionsProperties:
         self.options.listen_port = value
         assert self.options.listen_port == value
 
+    def test_load_cookies(self):
+        assert self.options.load_cookies is None
+        value = ""
+        self.options.load_cookies = value
+        assert self.options.load_cookies == value
+
     def test_log_properties(self):
         assert self.options.log is None
         value = ""
@@ -973,6 +979,12 @@ class TestOptionsProperties:
         self.options.reuse_uri = value
         assert self.options.reuse_uri == value
 
+    def test_rlimit_nofile(self):
+        assert self.options.rlimit_nofile is None
+        value = 10
+        self.options.rlimit_nofile = value
+        assert self.options.rlimit_nofile == value
+
     def test_rpc_allow_origin_all_properties(self):
         assert self.options.rpc_allow_origin_all is None
         value = ""
@@ -1020,6 +1032,12 @@ class TestOptionsProperties:
         value = ""
         self.options.rpc_save_upload_metadata = value
         assert self.options.rpc_save_upload_metadata == value
+
+    def test_rpc_secret(self):
+        assert self.options.rpc_secret is None
+        value = "secret"
+        self.options.rpc_secret = value
+        assert self.options.rpc_secret == value
 
     def test_rpc_secure_properties(self):
         assert self.options.rpc_secure is None
@@ -1128,6 +1146,12 @@ class TestOptionsProperties:
         value = ""
         self.options.stderr = value
         assert self.options.stderr == value
+
+    def test_stop(self):
+        assert self.options.stop is None
+        value = 1000
+        self.options.stop = value
+        assert self.options.stop == value
 
     def test_stop_with_process_properties(self):
         assert self.options.stop_with_process is None
