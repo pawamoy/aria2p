@@ -3,7 +3,7 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
            Please update the template instead of this file.
 -->
 
-# Aria2p
+# aria2p
 [![pipeline status](https://gitlab.com/pawamoy/aria2p/badges/master/pipeline.svg)](https://gitlab.com/pawamoy/aria2p/commits/master)
 [![coverage report](https://gitlab.com/pawamoy/aria2p/badges/master/coverage.svg)](https://gitlab.com/pawamoy/aria2p/commits/master)
 [![documentation](https://img.shields.io/readthedocs/aria2p.svg?style=flat)](https://aria2p.readthedocs.io/en/latest/index.html)

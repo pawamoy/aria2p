@@ -30,7 +30,7 @@ autodoc_default_flags = ["members", "special-members", "show-inheritance"]
 source_parsers = {".md": "recommonmark.parser.CommonMarkParser"}
 source_suffix = [".rst", ".md"]
 master_doc = "index"
-project = "Aria2p"
+project = "aria2p"
 year = "2018"
 author = "Timothée Mazzucotelli"
 copyright = "{0}, {1}".format(year, author)
@@ -73,7 +73,7 @@ def setup(app):
         "recommonmark_config",
         {
             "url_resolver": lambda url: github_doc_root + url,
-            "auto_toc_tree_section": "Welcome to Aria2p's documentation!",
+            "auto_toc_tree_section": "Welcome to aria2p's documentation!",
         },
         True,
     )

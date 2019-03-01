@@ -1,4 +1,4 @@
-# Welcome to Aria2p's documentation!
+# Welcome to aria2p's documentation!
 
 - [Overview](readme.md)
 - [Configuration](configuration.md)
