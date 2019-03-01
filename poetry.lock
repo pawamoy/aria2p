@@ -280,6 +280,9 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "4.3.9"
 
+[package.dependencies]
+toml = "*"
+
 [[package]]
 category = "dev"
 description = "An autocompletion tool for Python that can be used for text editors."
@@ -745,7 +748,7 @@ python-versions = "*"
 version = "0.1.7"
 
 [metadata]
-content-hash = "faa636e7ba9f921db1c653ad642e38e87f9cb0ec976e99a7927fc07fe125b692"
+content-hash = "3c2679449e67f0a46720a6ba4db1cff86f9ba1f605cd06da02fd5a47d7e16487"
 python-versions = "^3.6"
 
 [metadata.hashes]
