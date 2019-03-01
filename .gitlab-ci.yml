@@ -24,7 +24,7 @@ check-black:
 check-isort:
   <<: *quality
   before_script:
-    - pip install isort
+    - pip install isort[pyproject]
   script: isort -c -rc src/ tests/
 
 check-flake8:

@@ -27,7 +27,7 @@ bandit = "^1.5"
 black = { version = "*", allows-prereleases = true }
 flake8 = "^3.6"
 ipython = "^7.2"
-isort = "^4.3"
+isort = { version = "^4.3", extras = ["pyproject"] }
 jinja2-cli = { git = "https://github.com/mattrobenolt/jinja2-cli.git" }
 pytest = "^4.3"
 pytest-cov = "^2.6"
