@@ -59,10 +59,10 @@ class API:
 
     def add_torrent(self, torrent_file_path, uris=None, options=None, position=None):
         """
-        Add a download with a Torrent file (usually .torrent extension).
+        Add a download with a torrent file (usually .torrent extension).
 
         Args:
-            torrent_file_path (str/Path): the path to the Torrent file.
+            torrent_file_path (str/Path): the path to the torrent file.
             uris (list of str): a list of URIs used for Web-seeding.
             options (:class:`aria2p.Options` or dict): an instance of the ``Options`` class or a dictionary
               containing Aria2c options to create the download with.

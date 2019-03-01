@@ -36,18 +36,40 @@ class Options:
 
     @property
     def are_global(self):
+        """Property to tell if options are global, or tied to a Download object."""
         return self.download is None
 
     def get_struct(self):
+        """Return a copy of the struct dictionary of this Options object."""
         return deepcopy(self._struct)
 
     def get(self, item, cls=None):
+        """
+        Get the value of an option given its name.
+
+        Args:
+            item (str): the name of the option (example: "input-file").
+            cls (class or function): pass the value through this class/function to change its type.
+
+        Returns:
+            obj: the option value.
+        """
         value = self._struct.get(item)
         if cls is not None and value is not None:
             return cls(value)
         return value
 
     def set(self, key, value):
+        """
+        Set the value of an option given its name.
+
+        Args:
+            key (str): the name of the option (example: "input-file").
+            value: the value to set.
+
+        Returns:
+            bool: True if the value was successfully set, False otherwise.
+        """
         if not isinstance(value, str):
             value = str(value)
         if self.download:
@@ -162,23 +184,6 @@ class Options:
     @continue_downloads.setter
     def continue_downloads(self, value):
         self.set("continue", bool_to_str(value))
-
-    # FIXME: might not be an option (only command-line argument)
-    @property
-    def help(self):
-        """
-        The help messages are classified with tags.
-
-        A tag starts with #. For example, type --help=#http to get the usage for the options tagged with #http. If
-        non-tag word is given, print the usage for the options whose name includes that word. Available Values:
-        #basic, #advanced, #http, #https, #ftp, #metalink, #bittorrent, #cookie, #hook, #file, #rpc, #checksum,
-        #experimental, #deprecated, #help, #all Default: #basic
-        """
-        return self.get("help")
-
-    @help.setter
-    def help(self, value):
-        self.set("help", value)
 
     # HTTP/FTP/SFTP Options
     @property

@@ -119,7 +119,7 @@ Commands:
   
     add-magnet          Add a download with a Magnet URI.
     add-metalink        Add a download with a Metalink file.
-    add-torrent         Add a download with a Torrent file.
+    add-torrent         Add a download with a torrent file.
     autopurge (autoclear)
                         Automatically purge completed/removed/failed
                         downloads.
@@ -202,7 +202,7 @@ optional arguments:
 ```
 usage: aria2p add-torrent [-h] torrent_file
 
-Add a download with a Torrent file.
+Add a download with a torrent file.
 
 positional arguments:
   torrent_file  The path to the torrent file.

@@ -6,6 +6,7 @@ This module contains simple utility functions.
 
 
 def human_readable_timedelta(value):
+    """Return a human-readable time delta as a string."""
     pieces = []
 
     if value.days:
@@ -30,6 +31,18 @@ def human_readable_timedelta(value):
 
 
 def human_readable_bytes(value, digits=2, delim="", postfix=""):
+    """
+    Return a human-readable bytes value as a string.
+
+    Args:
+        value (int): the bytes value.
+        digits (int): how many decimal digits to use.
+        delim (str): string to add between value and unit.
+        postfix (str): string to add at the end.
+
+    Returns:
+        str: the human-readable version of the bytes.
+    """
     unit = "B"
     for u in ("KiB", "MiB", "GiB", "TiB"):
         if value > 1000:
@@ -41,18 +54,18 @@ def human_readable_bytes(value, digits=2, delim="", postfix=""):
 
 
 def bool_or_value(value):
+    """Return True for 'true', False for 'false', original value otherwise."""
     if value == "true":
         return True
-    elif value == "false":
+    if value == "false":
         return False
-    else:
-        return value
+    return value
 
 
 def bool_to_str(value):
+    """Return 'true' for True, 'false' for False, original value otherwise."""
     if value is True:
         return "true"
-    elif value is False:
+    if value is False:
         return "false"
-    else:
-        return value
+    return value

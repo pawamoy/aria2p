@@ -23,6 +23,15 @@ class Stats:
         return int(self._struct.get("downloadSpeed"))
 
     def download_speed_string(self, human_readable=True):
+        """
+        Return the download speed as string.
+
+        Args:
+            human_readable (bool): return in human readable format or not.
+
+        Returns:
+            str: the download speed string.
+        """
         if human_readable:
             return human_readable_bytes(self.download_speed, delim=" ", postfix="/s")
         return str(self.download_speed) + " B/s"
@@ -33,6 +42,15 @@ class Stats:
         return int(self._struct.get("uploadSpeed"))
 
     def upload_speed_string(self, human_readable=True):
+        """
+        Return the upload speed as string.
+
+        Args:
+            human_readable (bool): return in human readable format or not.
+
+        Returns:
+            str: the upload speed string.
+        """
         if human_readable:
             return human_readable_bytes(self.upload_speed, delim=" ", postfix="/s")
         return str(self.upload_speed) + " B/s"
