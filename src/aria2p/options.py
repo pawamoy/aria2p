@@ -12,7 +12,7 @@ class Options:
     """
     This class holds information retrieved with the ``get_option`` or ``get_global_option`` methods of the client.
 
-    Instances are given a reference to an :class:`aria2p.API` instance to be able to change their values both locally
+    Instances are given a reference to an :class:`~aria2p.api.API` instance to be able to change their values both locally
     and remotely, by using the API client and calling remote methods to change options.
 
     The options are available with the same names, using underscores instead of dashes, except for "continue"
@@ -25,9 +25,9 @@ class Options:
         Initialization method.
 
         Args:
-            api (:class:`aria2p.API`): the reference to an :class:`api.API` instance.
+            api (:class:`~aria2p.api.API`): the reference to an :class:`api.API` instance.
             struct (dict): a dictionary Python object returned by the JSON-RPC client.
-            download (:class:`aria2p.Download`): an optional ``Download`` object
+            download (:class:`~aria2p.downloads.Download`): an optional ``Download`` object
               to inform about the owner, or None to tell they are global options.
         """
         self.api = api
@@ -2501,7 +2501,7 @@ class Options:
     @property
     def auto_save_interval(self):
         """
-        Save a control file(*.aria2) every SEC seconds.
+        Save a control file (\*.aria2) every SEC seconds.
 
         If 0 is given, a control file is not saved during download. aria2 saves a control file when it stops
         regardless of the value. The possible values are between 0 to 600. Default: 60.
@@ -2744,7 +2744,7 @@ class Options:
 
         The possible values are epoll, kqueue, port, poll and select. For each epoll, kqueue, port and poll,
         it is available if system supports it. epoll is available on recent Linux. kqueue is available on various
-        *BSD systems including Mac OS X. port is available on Open Solaris. The default value may vary depending on
+        \*BSD systems including Mac OS X. port is available on Open Solaris. The default value may vary depending on
         the system you use.
 
         Returns:
