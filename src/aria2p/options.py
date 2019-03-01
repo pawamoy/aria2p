@@ -12,8 +12,8 @@ class Options:
     """
     This class holds information retrieved with the ``get_option`` or ``get_global_option`` methods of the client.
 
-    Instances are given a reference to an :class:`~aria2p.api.API` instance to be able to change their values both locally
-    and remotely, by using the API client and calling remote methods to change options.
+    Instances are given a reference to an :class:`~aria2p.api.API` instance to be able to change their values both
+    locally and remotely, by using the API client and calling remote methods to change options.
 
     The options are available with the same names, using underscores instead of dashes, except for "continue"
     (which is a Python reserved keyword) which is here called "continue_downloads". For example,
@@ -2500,7 +2500,7 @@ class Options:
 
     @property
     def auto_save_interval(self):
-        """
+        r"""
         Save a control file (\*.aria2) every SEC seconds.
 
         If 0 is given, a control file is not saved during download. aria2 saves a control file when it stops
@@ -2739,7 +2739,7 @@ class Options:
 
     @property
     def event_poll(self):
-        """
+        r"""
         Specify the method for polling events.
 
         The possible values are epoll, kqueue, port, poll and select. For each epoll, kqueue, port and poll,
