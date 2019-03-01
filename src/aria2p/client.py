@@ -176,7 +176,7 @@ class Client:
         Call a single JSON-RPC method.
 
         Args:
-            method (str): the method name. You can use the constant defined in :class:`aria2p.Client`.
+            method (str): the method name. You can use the constant defined in :class:`~aria2p.client.Client`.
             params (list): a list of parameters.
             msg_id (int/str): the ID of the call, sent back with the server's answer.
             insert_secret (bool): whether to insert the secret token in the parameters or not.
@@ -238,12 +238,16 @@ class Client:
 
         With a classic multicall, you would write your params like:
 
+        .. code:: python
+
             [
                 {"methodName": client.REMOVE, "params": ["2089b05ecca3d829"]},
                 {"methodName": client.REMOVE, "params": ["2fa07b6e85c40205"]},
             ]
 
         With multicall2, you can reduce the verbosity:
+
+        .. code:: python
 
             [
                 (client.REMOVE, ["2089b05ecca3d829"]),
@@ -259,7 +263,7 @@ class Client:
             insert_secret (bool): whether to insert the secret token in the parameters or not.
 
         Returns:
-            The answer from the server, as a Python object (dict / list / str / int).
+            obj: The answer from the server, as a Python object (dict / list / str / int).
         """
         multicall_params = []
 
@@ -301,7 +305,7 @@ class Client:
 
         Raises:
             ClientException: when the response contains an error (client/server error).
-                See the :class:`aria2p.ClientException` class.
+                See the :class:`~aria2p.client.ClientException` class.
         """
         if "result" in response:
             return response["result"]
@@ -313,13 +317,13 @@ class Client:
         Build a payload.
 
         Args:
-            method (str): the method name. You can use the constant defined in :aria2p:`client.Client`.
+            method (str): the method name. You can use the constant defined in :class:`~aria2p.client.Client`.
             params (list): the list of parameters.
             msg_id (int/str): the ID of the call, sent back with the server's answer.
             as_json (bool): whether to return the payload as a JSON-string or Python dictionary.
 
         Returns:
-
+            str/dict: The payload as a JSON string or as Python dictionary.
         """
         payload = {"jsonrpc": "2.0", "method": method}
 
@@ -338,12 +342,13 @@ class Client:
         """
         Build the list of parameters.
 
-        This method simply removes the ``None`̀` values from the given arguments.
+        This method simply removes the ``None`` values from the given arguments.
+
         Args:
             *args: list of parameters.
 
         Returns:
-            A new list, with ``None``s filtered out.
+            list: A new list, with ``None`` values filtered out.
         """
         return [p for p in args if p is not None]
 

@@ -20,12 +20,16 @@ It supports HTTP/HTTPS, FTP, SFTP, BitTorrent and Metalink.
   These other packages do not offer enough usability (in my opinion), this is why I'm developing `aria2p`.
 
 **Purpose**: `aria2c` can run in the foreground, for one-time downloads, or in the background, as a daemon.
-This is where `aria2p` intervenes: when an instance of `aria2c` is running in the background with RPC mode enabled,
+This is where `aria2p` intervenes: when an instance of `aria2c` is running in the background,
 `aria2p` will be able to communicate with it to add downloads to the queue, remove, pause or resume them, etc.
-RPC mode is enabled with the `--enable-rpc` option of `aria2c`. RPC stands for [Remote Procedure Call][2].
+
+In order for `aria2p` to be able to communicate with the `aria2c` process, RPC mode must be enabled
+with the `--enable-rpc` option of `aria2c`. RPC stands for [Remote Procedure Call][2].
 Although `aria2c` supports both JSON-RPC and XML-RPC protocols, `aria2p` **works with JSON only** (not XML).
 More information about how to configure `aria2c` to run as a daemon with RPC mode enabled
-can be found in the documentation at https://aria2p.readthedocs.io/en/latest.
+can be found in the [Configuration section][conf doc] of the documentation.
+
+[conf doc]: https://aria2p.readthedocs.io/en/latest/configuration.html
 
 ## Requirements
 `aria2p` requires Python 3.6 or above.
@@ -133,10 +137,10 @@ Commands:
 {% endfor %}
 
 ## Troubleshoot
-1. Error outputs like below when using `aria2p` as a Python library:
+- Error outputs like below when using `aria2p` as a Python library:
 
-```
-requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=6800): Max retries exceeded with url: /jsonrpc (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1115b1908>: Failed to establish a new connection: [Errno 61] Connection refused',))
-```
+  ```
+  requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=6800): Max retries exceeded with url: /jsonrpc (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1115b1908>: Failed to establish a new connection: [Errno 61] Connection refused',))
+  ```
 
-solution: `aria2c` needs to be up and running first.
+  Solution: `aria2c` needs to be up and running first.

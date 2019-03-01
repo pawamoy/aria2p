@@ -3,16 +3,16 @@ Module that contains the command line application.
 
 Why does this file exist, and why not put this in __main__?
 
-  You might be tempted to import things from __main__ later,
-  but that will cause problems: the code will get executed twice:
+You might be tempted to import things from __main__ later,
+but that will cause problems: the code will get executed twice:
 
-  - When you run `python -maria2p` python will execute
-    ``__main__.py`` as a script. That means there won't be any
-    ``aria2p.__main__`` in ``sys.modules``.
-  - When you import __main__ it will get executed again (as a module) because
-    there's no ``aria2p.__main__`` in ``sys.modules``.
+- When you run `python -m aria2p` python will execute
+  ``__main__.py`` as a script. That means there won't be any
+  ``aria2p.__main__`` in ``sys.modules``.
+- When you import __main__ it will get executed again (as a module) because
+  there's no ``aria2p.__main__`` in ``sys.modules``.
 
-  Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
+Also see http://click.pocoo.org/5/setuptools/#setuptools-integration.
 """
 
 import argparse
@@ -205,7 +205,7 @@ def subcommand_show(api):
         api (API): the API instance to use.
 
     Returns:
-        int: 0.
+        int: always 0.
     """
     downloads = api.get_downloads()
 
@@ -244,7 +244,7 @@ def subcommand_call(api, method, params):
         params (str / list of str): parameters to use when calling method.
 
     Returns:
-        int: 0.
+        int: always 0.
     """
     real_method = get_method(method)
     if real_method is None:
@@ -265,7 +265,7 @@ def subcommand_call(api, method, params):
 
 
 def get_method(name, default=None):
-    """Return the actual method name from a differently formatted name."""
+    """Return the actual aria2 method name from a differently formatted name."""
     methods = {}
     for method in Client.METHODS:
         methods[method.lower()] = method
@@ -286,7 +286,7 @@ def subcommand_add_magnet(api, uri):
         uri (str): the URI of the magnet.
 
     Returns:
-        int: 0.
+        int: always 0.
     """
     new_download = api.add_magnet(uri)
     print(f"Created download {new_download.gid}")
@@ -303,7 +303,7 @@ def subcommand_add_torrent(api, torrent_file):
         torrent_file (str): the path to the torrent file.
 
     Returns:
-        int: 0.
+        int: always 0.
     """
     new_download = api.add_torrent(torrent_file)
     print(f"Created download {new_download.gid}")
@@ -320,7 +320,7 @@ def subcommand_add_metalink(api: API, metalink_file):
         metalink_file (str): the path to the metalink file.
 
     Returns:
-        int: 0.
+        int: always 0.
     """
     new_downloads = api.add_metalink(metalink_file)
     for download in new_downloads:

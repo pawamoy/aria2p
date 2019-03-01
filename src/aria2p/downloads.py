@@ -171,7 +171,7 @@ class Download:
         Initialization method.
 
         Args:
-            api (:class:`aria2p.API`): the reference to an :class:`aria2p.API` instance.
+            api (:class:`~aria2p.api.API`): the reference to an :class:`~aria2p.api.API` instance.
             struct (dict): a dictionary Python object returned by the JSON-RPC client.
         """
         self.api = api
@@ -217,7 +217,7 @@ class Download:
         """
         Options specific to this download.
 
-        The returned object is an instance of :class:`aria2p.Options`.
+        The returned object is an instance of :class:`~aria2p.options.Options`.
         """
         if not self._options:
             self.update_options()
@@ -464,7 +464,7 @@ class Download:
         """
         List of downloads generated as the result of this download.
 
-        Returns a list of instances of :class:`aria2p.Download`.
+        Returns a list of instances of :class:`~aria2p.downloads.Download`.
         """
         if self._followed_by is None:
             result = []
@@ -490,7 +490,7 @@ class Download:
         """
         The download this download is following.
 
-        Returns an instance of :class:`aria2p.Download`.
+        Returns an instance of :class:`~aria2p.downloads.Download`.
         """
         if not self._following:
             try:
@@ -515,7 +515,7 @@ class Download:
         """
         Parent download.
 
-        Returns an instance of :class:`aria2p.Download`.
+        Returns an instance of :class:`~aria2p.downloads.Download`.
         """
         if not self._belongs_to:
             try:

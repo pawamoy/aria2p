@@ -50,7 +50,11 @@ aria2c --conf-path=$HOME/.config/aria2/aria2.conf
 
 ## `init.d` script
 I currently use this script, but am planning to improve it. Copy it as `/etc/init.d/aria2server`.
-You must update the CONF_PATH variable to match your username.
+
+With this script you will be able to start aria2 like a service with
+`sudo service aria2server start`.
+
+You must update the `CONF_PATH` variable to match your username.
 
 ```bash
 #!/bin/bash
@@ -68,7 +72,7 @@ You must update the CONF_PATH variable to match your username.
 
 #VAR
 RUN="/usr/bin/aria2c"
-CONF_PATH="/home/pawamoy/.config/aria2/aria2.conf"
+CONF_PATH="/home/user/.config/aria2/aria2.conf"
 ARIA_PID=$(ps ux | awk "/aria2c --conf-path=${CONF_PATH//\//\\/}/ && !/awk/ {print \$2}")
 
 # Some things that run always
@@ -110,8 +114,8 @@ exit 0
 
 ## `aria2p`
 For now, `aria2p` does not read any configuration file. Options are simply passed on the command-line.
-Based on the two previous files, you should run `aria2p` like this:
+Based on the previous configuration, you should run `aria2p` like this:
 
 ```bash
-aria2p -s HeLLo -p 6801 show
+aria2p --secret "HeLLo" --port 6801 show
 ```

@@ -14,10 +14,10 @@ class API:
     """
     A class providing high-level methods to interact with a remote aria2c process.
 
-    This class is instantiated with a reference to a :class:`aria2p.Client` instance. It then uses this client
-    to call remote procedures, or remote methods. The client methods reflect exactly what aria2c is providing
-    through JSON-RPC, while this class's methods allow for easier / faster control of the remote process. It also
-    wraps the information the client retrieves in Python object, like  :class:`aria2p.Download`, allowing for
+    This class is instantiated with a reference to a :class:`~aria2p.client.Client` instance. It then uses this client
+    to call remote procedures, or remote methods. While the client methods reflect exactly what aria2c is providing
+    through JSON-RPC, this class's methods allow for easier / faster control of the remote process. It also
+    wraps the information the client retrieves in Python object, like  :class:`~aria2p.downloads.Download`, allowing for
     even more Pythonic interactions, without worrying about payloads, responses, JSON, etc..
     """
 
@@ -26,7 +26,7 @@ class API:
         Initialization method.
 
         Args:
-            json_rpc_client (:class:`aria2p.Client`): an instance of the ``JSONRPCClient`` class.
+            client (:class:`~aria2p.client.Client`): an instance of the ``Client`` class.
         """
         if client is None:
             client = Client()
@@ -38,12 +38,12 @@ class API:
 
         Args:
             magnet_uri (str): the Magnet URI.
-            options (:class:`aria2p.Options` or dict): an instance of the ``Options`` class or a dictionary
+            options (:class:`~aria2p.options.Options` or dict): an instance of the ``Options`` class or a dictionary
               containing Aria2c options to create the download with.
             position (int): the position where to insert the new download in the queue. Start at 0 (top).
 
         Returns:
-            :class:`aria2p.Download` instance: the newly created download object.
+            :class:`~aria2p.downloads.Download` instance: the newly created download object.
         """
         if options is None:
             options = {}
@@ -64,12 +64,12 @@ class API:
         Args:
             torrent_file_path (str/Path): the path to the torrent file.
             uris (list of str): a list of URIs used for Web-seeding.
-            options (:class:`aria2p.Options` or dict): an instance of the ``Options`` class or a dictionary
+            options (:class:`~aria2p.options.Options` or dict): an instance of the ``Options`` class or a dictionary
               containing Aria2c options to create the download with.
             position (int): the position where to insert the new download in the queue. Start at 0 (top).
 
         Returns:
-            :class:`aria2p.Download` instance: the newly created download object.
+            :class:`~aria2p.downloads.Download` instance: the newly created download object.
         """
         if uris is None:
             uris = []
@@ -96,12 +96,12 @@ class API:
 
         Args:
             metalink_file_path (str/Path): the path to the Metalink file.
-            options (:class:`aria2p.Options` or dict): an instance of the ``Options`` class or a dictionary
+            options (:class:`~aria2p.options.Options` or dict): an instance of the ``Options`` class or a dictionary
               containing Aria2c options to create the download with.
             position (int): the position where to insert the new download in the queue. Start at 0 (top).
 
         Returns:
-            list of :class:`aria2p.Download`: the newly created download objects.
+            list of :class:`~aria2p.downloads.Download`: the newly created download objects.
         """
         if options is None:
             options = {}
@@ -125,12 +125,12 @@ class API:
 
         Args:
             uris (list of str): a list of URIs that point to the same resource.
-            options (:class:`aria2p.Options` or dict): an instance of the ``Options`` class or a dictionary
+            options (:class:`~aria2p.options.Options` or dict): an instance of the ``Options`` class or a dictionary
               containing Aria2c options to create the download with.
             position (int): the position where to insert the new download in the queue. Start at 0 (top).
 
         Returns:
-            :class:`aria2p.Download` instance: the newly created download object.
+            :class:`~aria2p.downloads.Download` instance: the newly created download object.
 
         """
         if options is None:
@@ -149,13 +149,13 @@ class API:
         """
         Not implemented.
 
-        Search and return :class:`aria2p.Download` object based on multiple patterns.
+        Search and return :class:`~aria2p.downloads.Download` object based on multiple patterns.
 
         Args:
             patterns (list of dict): the patterns used to filter the download list.
 
         Returns:
-            list of :class:`aria2p.Download` instances: the download objects matching the patterns.
+            list of :class:`~aria2p.downloads.Download` instances: the download objects matching the patterns.
 
         """
         # gid
@@ -192,25 +192,25 @@ class API:
 
     def get_download(self, gid):
         """
-        Get a :class:`aria2p.Download` object thanks to its GID.
+        Get a :class:`~aria2p.downloads.Download` object thanks to its GID.
 
         Args:
             gid (str): the GID of the download to get.
 
         Returns:
-            :class:`aria2p.Download` instance: the retrieved download object.
+            :class:`~aria2p.downloads.Download` instance: the retrieved download object.
         """
         return Download(self, self.client.tell_status(gid))
 
     def get_downloads(self, gids=None):
         """
-        Get a list :class:`aria2p.Download` object thanks to their GIDs.
+        Get a list :class:`~aria2p.downloads.Download` object thanks to their GIDs.
 
         Args:
             gids (list of str): the GIDs of the downloads to get. If None, return all the downloads.
 
         Returns:
-            list of :class:`aria2p.Download` instances: the retrieved download objects.
+            list of :class:`~aria2p.downloads.Download` instances: the retrieved download objects.
         """
         downloads = []
 
@@ -231,7 +231,7 @@ class API:
         Move a download in the queue, relatively to its current position.
 
         Args:
-            download (:class:`aria2p.Download`): the download object to move.
+            download (:class:`~aria2p.downloads.Download`): the download object to move.
             pos (int): the relative position (1 to move down, -1 to move up, -2 to move up two times, etc.).
 
         Returns:
@@ -244,7 +244,7 @@ class API:
         Move a download in the queue, with absolute positioning.
 
         Args:
-            download (:class:`aria2p.Download`): the download object to move.
+            download (:class:`~aria2p.downloads.Download`): the download object to move.
             pos (int): the absolute position in the queue where to move the download. 0 for top, -1 for bottom.
 
         Returns:
@@ -262,7 +262,7 @@ class API:
         Move a download up in the queue.
 
         Args:
-            download (:class:`aria2p.Download`): the download object to move.
+            download (:class:`~aria2p.downloads.Download`): the download object to move.
             pos (int): number of times to move up. With negative values, will move down (use move or move_down instead).
 
         Returns:
@@ -275,7 +275,7 @@ class API:
         Move a download down in the queue.
 
         Args:
-            download (:class:`aria2p.Download`): the download object to move.
+            download (:class:`~aria2p.downloads.Download`): the download object to move.
             pos (int): number of times to move down. With negative values, will move up (use move or move_up instead).
 
         Returns:
@@ -288,7 +288,7 @@ class API:
         Move a download to the top of the queue.
 
         Args:
-            download (:class:`aria2p.Download`): the download object to move.
+            download (:class:`~aria2p.downloads.Download`): the download object to move.
 
         Returns:
             int: The new position of the download.
@@ -300,7 +300,7 @@ class API:
         Move a download to the bottom of the queue.
 
         Args:
-            download (:class:`aria2p.Download`): the download object to move.
+            download (:class:`~aria2p.downloads.Download`): the download object to move.
 
         Returns:
             int: The new position of the download.
@@ -312,7 +312,7 @@ class API:
         Remove the given downloads from the list.
 
         Args:
-            downloads (list of :class:`aria2p.Download`): the list of downloads to remove.
+            downloads (list of :class:`~aria2p.downloads.Download`): the list of downloads to remove.
             force (bool): whether to force the removal or not.
 
         Returns:
@@ -362,7 +362,7 @@ class API:
         Remove the given downloads from the list.
 
         Args:
-            downloads (list of :class:`aria2p.Download`): the list of downloads to remove.
+            downloads (list of :class:`~aria2p.downloads.Download`): the list of downloads to remove.
             force (bool): whether to pause immediately without contacting servers or not.
 
         Returns:
@@ -409,7 +409,7 @@ class API:
         Resume (unpause) the given downloads.
 
         Args:
-            downloads (list of :class:`aria2p.Download`): the list of downloads to resume.
+            downloads (list of :class:`~aria2p.downloads.Download`): the list of downloads to resume.
 
         Returns:
             list of bool: Success or failure of the operation for each given download.
@@ -469,10 +469,10 @@ class API:
         Get options for each of the given downloads.
 
         Args:
-            downloads (list of :class:`aria2p.Download`): the list of downloads to get the options of.
+            downloads (list of :class:`~aria2p.downloads.Download`): the list of downloads to get the options of.
 
         Returns:
-            list of :class:`aria2p.Options`: options object for each given download.
+            list of :class:`~aria2p.options.Options`: options object for each given download.
         """
         # TODO: batch/multicall candidate
         options = []
@@ -485,7 +485,7 @@ class API:
         Get the global options.
 
         Returns:
-            :class:`aria2p.Options` instance: the global Aria2c options.
+            :class:`~aria2p.options.Options` instance: the global Aria2c options.
         """
         return Options(self, self.client.get_global_option())
 
@@ -494,9 +494,9 @@ class API:
         Set options for specific downloads.
 
         Args:
-            options (:class:`aria2p.Options` or dict): an instance of the ``Options`` class or a dictionary
+            options (:class:`~aria2p.options.Options` or dict): an instance of the ``Options`` class or a dictionary
               containing Aria2c options to create the download with.
-            downloads (list of :class:`aria2p.Download`): the list of downloads to set the options for.
+            downloads (list of :class:`~aria2p.downloads.Download`): the list of downloads to set the options for.
 
         Returns:
             list of bool: Success or failure of the operation for changing options for each given download.
@@ -517,7 +517,7 @@ class API:
         Set global options.
 
         Args:
-            options (:class:`aria2p.Options` or dict): an instance of the ``Options`` class or a dictionary
+            options (:class:`~aria2p.options.Options` or dict): an instance of the ``Options`` class or a dictionary
               containing Aria2c options to create the download with.
 
         Returns:
@@ -535,6 +535,6 @@ class API:
         Get the stats of the remote Aria2c process.
 
         Returns:
-            :class:`aria2p.Stats` instance: the global stats returned by the remote process.
+            :class:`~aria2p.stats.Stats` instance: the global stats returned by the remote process.
         """
         return Stats(self.client.get_global_stat())
