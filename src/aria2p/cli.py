@@ -105,7 +105,7 @@ def get_parser():
 
     add_magnet_parser = subparser("add-magnet", "Add a download with a Magnet URI.")
     add_metalink_parser = subparser("add-metalink", "Add a download with a Metalink file.")
-    add_torrent_parser = subparser("add-torrent", "Add a download with a Torrent file.")
+    add_torrent_parser = subparser("add-torrent", "Add a download with a torrent file.")
     subparser("autopurge", "Automatically purge completed/removed/failed downloads.", aliases=["autoclear"])
     call_parser = subparser("call", "Call a remote method through the JSON-RPC client.")
     pause_parser = subparser("pause", "Pause downloads.")
@@ -198,6 +198,15 @@ def get_parser():
 
 # ============ SHOW SUBCOMMAND ============ #
 def subcommand_show(api):
+    """
+    Show subcommand.
+
+    Args:
+        api (API): the API instance to use.
+
+    Returns:
+        int: 0.
+    """
     downloads = api.get_downloads()
 
     print(
@@ -226,6 +235,17 @@ def subcommand_show(api):
 
 # ============ CALL SUBCOMMAND ============ #
 def subcommand_call(api, method, params):
+    """
+    Call subcommand.
+
+    Args:
+        api (API): the API instance to use.
+        method (str): name of the method to call.
+        params (str / list of str): parameters to use when calling method.
+
+    Returns:
+        int: 0.
+    """
     real_method = get_method(method)
     if real_method is None:
         print(f"[ERROR] call: Unknown method {method}.", file=sys.stderr)
@@ -258,6 +278,16 @@ def get_method(name, default=None):
 
 # ============ ADD MAGNET SUBCOMMAND ============ #
 def subcommand_add_magnet(api, uri):
+    """
+    Add magnet subcommand.
+
+    Args:
+        api (API): the API instance to use.
+        uri (str): the URI of the magnet.
+
+    Returns:
+        int: 0.
+    """
     new_download = api.add_magnet(uri)
     print(f"Created download {new_download.gid}")
     return 0
@@ -265,6 +295,16 @@ def subcommand_add_magnet(api, uri):
 
 # ============ ADD TORRENT SUBCOMMAND ============ #
 def subcommand_add_torrent(api, torrent_file):
+    """
+    Add torrent subcommand.
+
+    Args:
+        api (API): the API instance to use.
+        torrent_file (str): the path to the torrent file.
+
+    Returns:
+        int: 0.
+    """
     new_download = api.add_torrent(torrent_file)
     print(f"Created download {new_download.gid}")
     return 0
@@ -272,6 +312,16 @@ def subcommand_add_torrent(api, torrent_file):
 
 # ============ ADD METALINK SUBCOMMAND ============ #
 def subcommand_add_metalink(api: API, metalink_file):
+    """
+    Add metalink subcommand.
+
+    Args:
+        api (API): the API instance to use.
+        metalink_file (str): the path to the metalink file.
+
+    Returns:
+        int: 0.
+    """
     new_downloads = api.add_metalink(metalink_file)
     for download in new_downloads:
         print(f"Created download {download.gid}")
@@ -280,6 +330,17 @@ def subcommand_add_metalink(api: API, metalink_file):
 
 # ============ PAUSE SUBCOMMAND ============ #
 def subcommand_pause(api: API, gids, force=False):
+    """
+    Pause subcommand.
+
+    Args:
+        api (API): the API instance to use.
+        gids (list of str): the GIDs of the downloads to pause.
+        force (bool): force pause or not (see API.pause).
+
+    Returns:
+        int: 0 if all success, 1 if one failure.
+    """
     downloads = [Download(api, {"gid": gid}) for gid in gids]
     result = api.pause(downloads, force=force)
     if all(result):
@@ -292,6 +353,16 @@ def subcommand_pause(api: API, gids, force=False):
 
 # ============ PAUSE ALL SUBCOMMAND ============ #
 def subcommand_pause_all(api: API, force=False):
+    """
+    Pause all subcommand.
+
+    Args:
+        api (API): the API instance to use.
+        force (bool): force pause or not (see API.pause_all).
+
+    Returns:
+        int: 0 if all success, 1 if one failure.
+    """
     if api.pause_all(force=force):
         return 0
     return 1
@@ -299,6 +370,16 @@ def subcommand_pause_all(api: API, force=False):
 
 # ============ RESUME SUBCOMMAND ============ #
 def subcommand_resume(api: API, gids):
+    """
+    Resume subcommand.
+
+    Args:
+        api (API): the API instance to use.
+        gids (list of str): the GIDs of the downloads to resume.
+
+    Returns:
+        int: 0 if all success, 1 if one failure.
+    """
     downloads = [Download(api, {"gid": gid}) for gid in gids]
     result = api.resume(downloads)
     if all(result):
@@ -311,6 +392,15 @@ def subcommand_resume(api: API, gids):
 
 # ============ RESUME ALL SUBCOMMAND ============ #
 def subcommand_resume_all(api: API):
+    """
+    Resume all subcommand.
+
+    Args:
+        api (API): the API instance to use.
+
+    Returns:
+        int: 0 if all success, 1 if one failure.
+    """
     if api.resume_all():
         return 0
     return 1
@@ -318,6 +408,17 @@ def subcommand_resume_all(api: API):
 
 # ============ REMOVE SUBCOMMAND ============ #
 def subcommand_remove(api: API, gids, force=False):
+    """
+    Remove subcommand.
+
+    Args:
+        api (API): the API instance to use.
+        gids (list of str): the GIDs of the downloads to remove.
+        force (bool): force pause or not (see API.remove).
+
+    Returns:
+        int: 0 if all success, 1 if one failure.
+    """
     downloads = [Download(api, {"gid": gid}) for gid in gids]
     result = api.remove(downloads, force=force)
     if all(result):
@@ -330,6 +431,16 @@ def subcommand_remove(api: API, gids, force=False):
 
 # ============ REMOVE ALL SUBCOMMAND ============ #
 def subcommand_remove_all(api: API, force=False):
+    """
+    Remove all subcommand.
+
+    Args:
+        api (API): the API instance to use.
+        force (bool): force pause or not (see API.remove_all).
+
+    Returns:
+        int: 0 if all success, 1 if one failure.
+    """
     if api.remove_all(force=force):
         return 0
     return 1
@@ -337,6 +448,16 @@ def subcommand_remove_all(api: API, force=False):
 
 # ============ PURGE SUBCOMMAND ============ #
 def subcommand_purge(api: API, gids):
+    """
+    Purge subcommand.
+
+    Args:
+        api (API): the API instance to use.
+        gids (list of str): the GIDs of the downloads to purge.
+
+    Returns:
+        int: 0 if all success, 1 if one failure.
+    """
     downloads = [Download(api, {"gid": gid}) for gid in gids]
     result = api.purge(downloads)
     if all(result):
@@ -349,6 +470,15 @@ def subcommand_purge(api: API, gids):
 
 # ============ AUTOPURGE SUBCOMMAND ============ #
 def subcommand_autopurge(api: API):
+    """
+    Autopurge subcommand.
+
+    Args:
+        api (API): the API instance to use.
+
+    Returns:
+        int: 0 if all success, 1 if one failure.
+    """
     if api.autopurge():
         return 0
     return 1

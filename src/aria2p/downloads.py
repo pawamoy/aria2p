@@ -10,7 +10,7 @@ from .utils import bool_or_value, human_readable_bytes, human_readable_timedelta
 
 
 class BitTorrent:
-    """Information retrieved from a .torrent file."""
+    """Information retrieved from a torrent file."""
 
     def __init__(self, struct):
         """
@@ -105,6 +105,15 @@ class File:
         return int(self._struct.get("length"))
 
     def length_string(self, human_readable=True):
+        """
+        Return the length as string.
+
+        Args:
+            human_readable (bool): return in human readable format or not.
+
+        Returns:
+            str: the length string.
+        """
         if human_readable:
             return human_readable_bytes(self.length, delim=" ")
         return str(self.length) + " B"
@@ -121,6 +130,15 @@ class File:
         return int(self._struct.get("completedLength"))
 
     def completed_length_string(self, human_readable=True):
+        """
+        Return the completed length as string.
+
+        Args:
+            human_readable (bool): return in human readable format or not.
+
+        Returns:
+            str: the completed length string.
+        """
         if human_readable:
             return human_readable_bytes(self.completed_length, delim=" ")
         return str(self.completed_length) + " B"
@@ -210,6 +228,7 @@ class Download:
         self._options = value
 
     def update_options(self):
+        """Re-fetch the options from the remote."""
         self._options = self.api.get_options(downloads=[self])[0]
 
     @property
@@ -224,26 +243,32 @@ class Download:
 
     @property
     def is_active(self):
+        """Return True if download is active."""
         return self.status == "active"
 
     @property
     def is_waiting(self):
+        """Return True if download is waiting."""
         return self.status == "waiting"
 
     @property
     def is_paused(self):
+        """Return True if download is paused."""
         return self.status == "paused"
 
     @property
     def has_failed(self):
+        """Return True if download has errored."""
         return self.status == "error"
 
     @property
     def is_complete(self):
+        """Return True if download is complete."""
         return self.status == "complete"
 
     @property
     def is_removed(self):
+        """Return True if download was removed."""
         return self.status == "removed"
 
     @property
@@ -252,6 +277,15 @@ class Download:
         return int(self._struct.get("totalLength"))
 
     def total_length_string(self, human_readable=True):
+        """
+        Return the total length as string.
+
+        Args:
+            human_readable (bool): return in human readable format or not.
+
+        Returns:
+            str: the total length string.
+        """
         if human_readable:
             return human_readable_bytes(self.total_length, delim=" ")
         return str(self.total_length) + " B"
@@ -262,6 +296,15 @@ class Download:
         return int(self._struct.get("completedLength"))
 
     def completed_length_string(self, human_readable=True):
+        """
+        Return the completed length as string.
+
+        Args:
+            human_readable (bool): return in human readable format or not.
+
+        Returns:
+            str: the completed length string.
+        """
         if human_readable:
             return human_readable_bytes(self.completed_length, delim=" ")
         return str(self.completed_length) + " B"
@@ -272,6 +315,15 @@ class Download:
         return int(self._struct.get("uploadLength"))
 
     def upload_length_string(self, human_readable=True):
+        """
+        Return the upload length as string.
+
+        Args:
+            human_readable (bool): return in human readable format or not.
+
+        Returns:
+            str: the upload length string.
+        """
         if human_readable:
             return human_readable_bytes(self.upload_length, delim=" ")
         return str(self.upload_length) + " B"
@@ -293,6 +345,15 @@ class Download:
         return int(self._struct.get("downloadSpeed"))
 
     def download_speed_string(self, human_readable=True):
+        """
+        Return the download speed as string.
+
+        Args:
+            human_readable (bool): return in human readable format or not.
+
+        Returns:
+            str: the download speed string.
+        """
         if human_readable:
             return human_readable_bytes(self.download_speed, delim=" ", postfix="/s")
         return str(self.download_speed) + " B/s"
@@ -303,6 +364,15 @@ class Download:
         return int(self._struct.get("uploadSpeed"))
 
     def upload_speed_string(self, human_readable=True):
+        """
+        Return the upload speed as string.
+
+        Args:
+            human_readable (bool): return in human readable format or not.
+
+        Returns:
+            str: the upload speed string.
+        """
         if human_readable:
             return human_readable_bytes(self.upload_speed, delim=" ", postfix="/s")
         return str(self.upload_speed) + " B/s"
@@ -340,6 +410,15 @@ class Download:
         return int(self._struct.get("pieceLength"))
 
     def piece_length_string(self, human_readable=True):
+        """
+        Return the piece length as string.
+
+        Args:
+            human_readable (bool): return in human readable format or not.
+
+        Returns:
+            str: the piece length string.
+        """
         if human_readable:
             return human_readable_bytes(self.piece_length, delim=" ")
         return str(self.piece_length) + " B"
@@ -482,6 +561,15 @@ class Download:
         return int(self._struct.get("verifiedLength", 0))
 
     def verified_length_string(self, human_readable=True):
+        """
+        Return the verified length as string.
+
+        Args:
+            human_readable (bool): return in human readable format or not.
+
+        Returns:
+            str: the verified length string.
+        """
         if human_readable:
             return human_readable_bytes(self.verified_length, delim=" ")
         return str(self.verified_length) + " B"
@@ -504,16 +592,30 @@ class Download:
             return 0.0
 
     def progress_string(self, digits=2):
+        """
+        Return the progress percentage as string.
+
+        Args:
+            digits (int): number of decimal digits to use.
+
+        Returns:
+            str: the progress percentage.
+        """
         return f"{self.progress:.{digits}f}%"
 
     @property
     def eta(self):
+        """
+        Return the Estimated Time of Arrival (a timedelta).
+
+        Return float("Inf") if unknown."""
         try:
             return timedelta(seconds=int((self.total_length - self.completed_length) / self.download_speed))
         except ZeroDivisionError:
             return float("Inf")
 
     def eta_string(self):
+        """Return the Estimated Time of Arrival as a string."""
         eta = self.eta
 
         if eta == float("Inf"):
@@ -522,36 +624,111 @@ class Download:
         return human_readable_timedelta(eta)
 
     def move(self, pos):
+        """
+        Move the download in the queue, relatively.
+
+        Args:
+            pos (int): number of times to move.
+
+        Returns:
+            int: The new position of the download.
+        """
         return self.api.move(self, pos)
 
     def move_to(self, pos):
+        """
+        Move the download in the queue, absolutely.
+
+        Args:
+            pos (int): the absolute position in the queue to take.
+
+        Returns:
+            int: The new position of the download.
+        """
         return self.api.move_to(self, pos)
 
     def move_up(self, pos=1):
+        """
+        Move the download up in the queue.
+
+        Args:
+            pos (int): number of times to move up.
+
+        Returns:
+            int: The new position of the download.
+        """
         return self.api.move_up(self, -pos)
 
     def move_down(self, pos=1):
+        """
+        Move the download down in the queue.
+
+        Args:
+            pos (int): number of times to move down.
+
+        Returns:
+            int: The new position of the download.
+        """
         return self.api.move_down(self, pos)
 
     def move_to_top(self):
+        """
+        Move the download to the top of the queue.
+
+        Returns:
+            int: The new position of the download.
+        """
         return self.api.move_to_top(self)
 
     def move_to_bottom(self):
+        """
+        Move the download to the bottom of the queue.
+
+        Returns:
+            int: The new position of the download.
+        """
         return self.api.move_to_bottom(self)
 
-    def remove(self):
-        result = self.api.remove([self])[0]
+    def remove(self, force=False):
+        """
+        Remove the download from the queue (even if active).
+
+        Returns:
+            bool: always True (raises exception otherwise).
+
+        Raises:
+            ClientException: when removal failed.
+        """
+        result = self.api.remove([self], force=force)[0]
         if not result:
             raise result
         return result
 
-    def pause(self):
-        result = self.api.pause([self])[0]
+    def pause(self, force=False):
+        """
+        Pause the download.
+
+        Returns:
+            bool: always True (raises exception otherwise).
+
+        Raises:
+            ClientException: when pausing failed.
+        """
+        result = self.api.pause([self], force=force)[0]
         if not result:
             raise result
         return result
 
     def resume(self):
+        """
+        Resume the download.
+
+        Returns:
+            bool: always True (raises exception otherwise).
+
+        Raises:
+            ClientException: when resuming failed.
+        """
         result = self.api.resume([self])[0]
         if not result:
             raise result

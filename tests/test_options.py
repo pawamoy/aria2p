@@ -553,12 +553,6 @@ class TestOptionsProperties:
         self.options.header = value
         assert self.options.header == value
 
-    def test_help_properties(self):
-        assert self.options.help is None
-        value = ""
-        self.options.help = value
-        assert self.options.help == value
-
     def test_http_accept_gzip_properties(self):
         assert self.options.http_accept_gzip is None
         value = ""

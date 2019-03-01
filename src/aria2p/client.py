@@ -31,6 +31,7 @@ class ClientException(Exception):
     """An exception specific to JSON-RPC errors."""
 
     def __init__(self, code, message):
+        super().__init__()
         if code in JSONRPC_CODES:
             message = f"{JSONRPC_CODES[code]}\n{message}"
 
