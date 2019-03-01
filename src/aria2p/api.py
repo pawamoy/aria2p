@@ -39,7 +39,7 @@ class API:
         Args:
             magnet_uri (str): the Magnet URI.
             options (:class:`~aria2p.options.Options` or dict): an instance of the ``Options`` class or a dictionary
-              containing Aria2c options to create the download with.
+              containing aria2c options to create the download with.
             position (int): the position where to insert the new download in the queue. Start at 0 (top).
 
         Returns:
@@ -65,7 +65,7 @@ class API:
             torrent_file_path (str/Path): the path to the torrent file.
             uris (list of str): a list of URIs used for Web-seeding.
             options (:class:`~aria2p.options.Options` or dict): an instance of the ``Options`` class or a dictionary
-              containing Aria2c options to create the download with.
+              containing aria2c options to create the download with.
             position (int): the position where to insert the new download in the queue. Start at 0 (top).
 
         Returns:
@@ -97,7 +97,7 @@ class API:
         Args:
             metalink_file_path (str/Path): the path to the Metalink file.
             options (:class:`~aria2p.options.Options` or dict): an instance of the ``Options`` class or a dictionary
-              containing Aria2c options to create the download with.
+              containing aria2c options to create the download with.
             position (int): the position where to insert the new download in the queue. Start at 0 (top).
 
         Returns:
@@ -126,7 +126,7 @@ class API:
         Args:
             uris (list of str): a list of URIs that point to the same resource.
             options (:class:`~aria2p.options.Options` or dict): an instance of the ``Options`` class or a dictionary
-              containing Aria2c options to create the download with.
+              containing aria2c options to create the download with.
             position (int): the position where to insert the new download in the queue. Start at 0 (top).
 
         Returns:
@@ -485,7 +485,7 @@ class API:
         Get the global options.
 
         Returns:
-            :class:`~aria2p.options.Options` instance: the global Aria2c options.
+            :class:`~aria2p.options.Options` instance: the global aria2c options.
         """
         return Options(self, self.client.get_global_option())
 
@@ -495,7 +495,7 @@ class API:
 
         Args:
             options (:class:`~aria2p.options.Options` or dict): an instance of the ``Options`` class or a dictionary
-              containing Aria2c options to create the download with.
+              containing aria2c options to create the download with.
             downloads (list of :class:`~aria2p.downloads.Download`): the list of downloads to set the options for.
 
         Returns:
@@ -518,7 +518,7 @@ class API:
 
         Args:
             options (:class:`~aria2p.options.Options` or dict): an instance of the ``Options`` class or a dictionary
-              containing Aria2c options to create the download with.
+              containing aria2c options to create the download with.
 
         Returns:
             bool: Success or failure of the operation for changing global options.
@@ -532,7 +532,7 @@ class API:
 
     def get_stats(self):
         """
-        Get the stats of the remote Aria2c process.
+        Get the stats of the remote aria2c process.
 
         Returns:
             :class:`~aria2p.stats.Stats` instance: the global stats returned by the remote process.
