@@ -16,7 +16,7 @@ readme: README.md  ## Regenerate README.md.
 docs:  ## Build the documentation locally.
 	poetry run sphinx-build -E -b html docs build/docs
 
-check: check-bandit check-black check-flake8 check-isort check-safety  ## Check it all!
+check: check-bandit check-black check-flake8 check-isort check-safety check-ports  ## Check it all!
 
 check-black:  ## Check if code is formatted nicely using black.
 	poetry run black --check src/ tests/
@@ -35,6 +35,9 @@ check-safety:  ## Check for vulnerabilities in dependencies using safety.
 		grep -v aria2p | \
 		poetry run safety check --stdin --full-report 2>/dev/null
 
+check-ports:  ## Check if the ports used in the tests are all unique.
+	./scripts/check-ports.sh
+
 run-black:  ## Lint the code using black.
 	poetry run black src/ tests/
 
@@ -50,8 +53,8 @@ clean: clean-tests  ## Delete temporary files.
 	@rm -rf build 2>/dev/null
 	@rm -rf dist 2>/dev/null
 	@rm -rf src/aria2p.egg-info 2>/dev/null
-	@rm -rf .coverage 2>/dev/null
+	@rm -rf .coverage* 2>/dev/null
 	@rm -rf .pytest_cache 2>/dev/null
 
-test: clean-tests  ## Run the tests using pytest.
+test: check-ports clean-tests  ## Run the tests using pytest.
 	poetry run pytest -n6 2>/dev/null
