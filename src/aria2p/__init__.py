@@ -19,3 +19,12 @@ __all__ = ["API", "ClientException", "Client", "Download", "BitTorrent", "File",
 
 # TODO: use proper logging messages (esp. in except: pass)
 # TODO: maybe add type annotations
+
+# Roadmap:
+# - feature: Ability to hide metadata downloads (magnet URIs)
+# - feature: Ability to move files to another directory
+# - feature: Ability to tag downloads with markers (like categories)
+# - feature: Ability to execute instructions on events (download completed, etc.)
+# - feature: Improved queue
+# - feature: Interactive display (htop-style) with sorting, filtering and actions
+# - feature: Ability to search current downloads with patterns and filters on fields

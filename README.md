@@ -130,11 +130,8 @@ Commands:
     call                Call a remote method through the JSON-RPC client.
     pause               Pause downloads.
     purge (clear)       Purge downloads.
-    pause-all           Pause all downloads.
     remove (rm)         Remove downloads.
-    remove-all          Remove all downloads.
     resume              Resume downloads.
-    resume-all          Resume all downloads.
     show                Show the download progression.
 
 ```
@@ -162,11 +159,8 @@ Commands:
 - [`call`](#call)
 - [`pause`](#pause)
 - [`purge`](#purge)
-- [`pause-all`](#pause-all)
 - [`remove`](#remove)
-- [`remove-all`](#remove-all)
 - [`resume`](#resume)
-- [`resume-all`](#resume-all)
 - [`show`](#show)
 
 
@@ -344,7 +338,7 @@ $ aria2p call purge_download_result
 
 ### `pause`
 ```
-usage: aria2p pause [-h] [-f] gids [gids ...]
+usage: aria2p pause [-h] [-a] [-f] [gids [gids ...]]
 
 Pause downloads.
 
@@ -353,6 +347,7 @@ positional arguments:
 
 optional arguments:
   -h, --help   Show this help message and exit.
+  -a, --all    Pause all the downloads.
   -f, --force  Pause without contacting servers first.
 
 ```
@@ -361,7 +356,7 @@ optional arguments:
 
 ### `purge`
 ```
-usage: aria2p purge [-h] [gids [gids ...]]
+usage: aria2p purge [-h] [-a] [gids [gids ...]]
 
 Purge downloads.
 
@@ -370,20 +365,7 @@ positional arguments:
 
 optional arguments:
   -h, --help  Show this help message and exit.
-
-```
-
-
-
-### `pause-all`
-```
-usage: aria2p pause-all [-h] [-f]
-
-Pause all downloads.
-
-optional arguments:
-  -h, --help   Show this help message and exit.
-  -f, --force  Pause without contacting servers first.
+  -a, --all   Purge all the downloads.
 
 ```
 
@@ -391,7 +373,7 @@ optional arguments:
 
 ### `remove`
 ```
-usage: aria2p remove [-h] [-f] gids [gids ...]
+usage: aria2p remove [-h] [-a] [-f] [gids [gids ...]]
 
 Remove downloads.
 
@@ -400,20 +382,7 @@ positional arguments:
 
 optional arguments:
   -h, --help   Show this help message and exit.
-  -f, --force  Remove without contacting servers first.
-
-```
-
-
-
-### `remove-all`
-```
-usage: aria2p remove-all [-h] [-f]
-
-Remove all downloads.
-
-optional arguments:
-  -h, --help   Show this help message and exit.
+  -a, --all    Remove all the downloads.
   -f, --force  Remove without contacting servers first.
 
 ```
@@ -422,7 +391,7 @@ optional arguments:
 
 ### `resume`
 ```
-usage: aria2p resume [-h] gids [gids ...]
+usage: aria2p resume [-h] [-a] [gids [gids ...]]
 
 Resume downloads.
 
@@ -431,19 +400,7 @@ positional arguments:
 
 optional arguments:
   -h, --help  Show this help message and exit.
-
-```
-
-
-
-### `resume-all`
-```
-usage: aria2p resume-all [-h]
-
-Resume all downloads.
-
-optional arguments:
-  -h, --help  Show this help message and exit.
+  -a, --all   Resume all the downloads.
 
 ```
 
