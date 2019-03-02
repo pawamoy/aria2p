@@ -1,17 +1,55 @@
 import time
 from unittest.mock import patch
 
+import pytest
 from aria2p import cli
 
 from . import BUNSENLABS_MAGNET, SESSIONS_DIR, TESTS_DATA_DIR, Aria2Server
 
 
-def _first_line(cs):
-    return cs.readouterr().out.split("\n")[0]
+def out_lines(cs):
+    return cs.readouterr().out.split("\n")
+
+
+def err_lines(cs):
+    return cs.readouterr().err.split("\n")
+
+
+def first_out_line(cs):
+    return out_lines(cs)[0]
+
+
+def first_err_line(cs):
+    return err_lines(cs)[0]
 
 
 def test_main_returns_2_when_no_remote_running():
     assert cli.main([]) == 2
+
+
+def test_parser_error_when_gids_and_all_option(capsys):
+    with pytest.raises(SystemExit) as e:
+        cli.main(["pause", "-a", "2089b05ecca3d829"])
+        assert e.value.code == 2
+    lines = err_lines(capsys)
+    assert lines[0].startswith("usage: aria2p pause")
+    assert lines[1].endswith("-a/--all: not allowed with arguments gids")
+
+
+def test_parser_error_when_no_gid_and_no_all_option(capsys):
+    with pytest.raises(SystemExit) as e:
+        assert cli.main(["resume"])
+        assert e.value.code == 2
+    lines = err_lines(capsys)
+    assert lines[0].startswith("usage: aria2p resume")
+    assert lines[1].endswith("the following arguments are required: gids or --all")
+
+
+@patch("aria2p.cli.subcommand_purge")
+def test_parser_no_error(mocked_function):
+    with Aria2Server(port=7550) as server:
+        cli.main(["-p", str(server.port), "purge", "-a"])
+        assert mocked_function.called
 
 
 @patch("aria2p.cli.subcommand_show")
@@ -24,7 +62,7 @@ def test_main_no_command_defaults_to_show(mocked_function):
 def test_main_show_subcommand(capsys):
     with Aria2Server(port=7501) as server:
         cli.main(["-p", str(server.port), "show"])
-        first_line = _first_line(capsys)
+        first_line = first_out_line(capsys)
         for word in ("GID", "STATUS", "PROGRESS", "DOWN_SPEED", "UP_SPEED", "ETA", "NAME"):
             assert word in first_line
 
@@ -97,12 +135,12 @@ def test_pause_subcommand_one_paused(capsys):
 
 def test_pause_all_subcommand():
     with Aria2Server(port=7513) as server:
-        assert cli.subcommand_pause_all(server.api) == 0
+        assert cli.subcommand_pause(server.api, do_all=True) == 0
 
 
 def test_pause_all_subcommand_fails():
     with Aria2Server(port=7514, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
-        assert cli.subcommand_pause_all(server.api) == 1
+        assert cli.subcommand_pause(server.api, do_all=True) == 1
 
 
 def test_resume_subcommand(capsys):
@@ -127,12 +165,12 @@ def test_resume_subcommand_one_unpaused(capsys):
 
 def test_resume_all_subcommand():
     with Aria2Server(port=7518) as server:
-        assert cli.subcommand_resume_all(server.api) == 0
+        assert cli.subcommand_resume(server.api, do_all=True) == 0
 
 
 def test_resume_all_subcommand_fails():
     with Aria2Server(port=7519, session=SESSIONS_DIR / "dl-2-aria2.txt") as server:
-        assert cli.subcommand_resume_all(server.api) == 1
+        assert cli.subcommand_resume(server.api, do_all=True) == 1
 
 
 def test_remove_subcommand():
@@ -141,41 +179,46 @@ def test_remove_subcommand():
 
 
 def test_remove_subcommand_one_failure(capsys):
-    with Aria2Server(port=7520, session=SESSIONS_DIR / "dl-aria2-1.34.0-paused.txt") as server:
+    with Aria2Server(port=7521, session=SESSIONS_DIR / "dl-aria2-1.34.0-paused.txt") as server:
         assert cli.subcommand_remove(server.api, ["2089b05ecca3d829", "cca3d8292089b05e"]) == 1
         assert capsys.readouterr().err == "GID cca3d8292089b05e is not found\n"
 
 
 def test_remove_all_subcommand():
-    with Aria2Server(port=7521) as server:
-        assert cli.subcommand_remove_all(server.api) == 0
+    with Aria2Server(port=7522) as server:
+        assert cli.subcommand_remove(server.api, do_all=True) == 0
 
 
 # def test_remove_all_subcommand_fails():
-#     with Aria2Server(port=7521) as server:
+#     with Aria2Server(port=7523) as server:
 #         assert cli.subcommand_remove_all(server.api) == 0
 
 
 def test_purge_subcommand():
-    with Aria2Server(port=7520, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
+    with Aria2Server(port=7524, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
         while not server.api.get_download("2089b05ecca3d829").is_complete:
             time.sleep(0.2)
         assert cli.subcommand_purge(server.api, ["2089b05ecca3d829"]) == 0
 
 
 def test_purge_subcommand_one_failure(capsys):
-    with Aria2Server(port=7520, session=SESSIONS_DIR / "small-file-and-paused-file.txt") as server:
+    with Aria2Server(port=7525, session=SESSIONS_DIR / "small-file-and-paused-file.txt") as server:
         while not server.api.get_download("2089b05ecca3d829").is_complete:
             time.sleep(0.2)
         assert cli.subcommand_purge(server.api, ["2089b05ecca3d829", "208a3d8299b05ecc"]) == 1
         assert capsys.readouterr().err == "Could not remove download result of GID#208a3d8299b05ecc\n"
 
 
+def test_purge_all_subcommand():
+    with Aria2Server(port=7526) as server:
+        assert cli.subcommand_purge(server.api, do_all=True) == 0
+
+
 def test_autopurge_subcommand():
-    with Aria2Server(port=7521, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
+    with Aria2Server(port=7527, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
         assert cli.subcommand_autopurge(server.api) == 0
 
 
 # def test_purge_all_subcommand_fails():
-#     with Aria2Server(port=7521) as server:
+#     with Aria2Server(port=7528) as server:
 #         assert cli.subcommand_purge_all(server.api) == 0

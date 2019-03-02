@@ -452,6 +452,7 @@ class API:
         Returns:
             list of bool: Success or failure of the operation for each download.
         """
+        # TODO: batch/multicall candidate
         result = []
 
         for download in downloads:
@@ -463,6 +464,15 @@ class API:
                 result.append(True)
 
         return result
+
+    def purge_all(self):
+        """
+        Purge all downloads from the list.
+
+        Returns:
+            bool: Success or failure of the operation to purge all downloads.
+        """
+        return all(self.purge(self.get_downloads()))
 
     def get_options(self, downloads):
         """

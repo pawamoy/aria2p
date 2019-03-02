@@ -32,6 +32,7 @@ def main(args=None):
 
     parser = get_parser()
     args = parser.parse_args(args=args)
+    check_args(parser, args)
     kwargs = args.__dict__
 
     api = API(Client(host=kwargs.pop("host"), port=kwargs.pop("port"), secret=kwargs.pop("secret")))
@@ -55,11 +56,8 @@ def main(args=None):
         "add-torrent": subcommand_add_torrent,
         "add-metalink": subcommand_add_metalink,
         "pause": subcommand_pause,
-        "pause-all": subcommand_pause_all,
         "resume": subcommand_resume,
-        "resume-all": subcommand_resume_all,
         "remove": subcommand_remove,
-        "remove-all": subcommand_remove_all,
         "purge": subcommand_purge,
         "autopurge": subcommand_autopurge,
     }
@@ -71,6 +69,16 @@ def main(args=None):
     except ClientException as e:
         print(e.message, file=sys.stderr)
         return e.code
+
+
+def check_args(parser, args):
+    subparser = [action for action in parser._actions if isinstance(action, argparse._SubParsersAction)][0].choices
+
+    if args.subcommand in ("pause", "remove", "resume", "purge"):
+        if not args.do_all and not args.gids:
+            subparser[args.subcommand].error("the following arguments are required: gids or --all")
+        elif args.do_all and args.gids:
+            subparser[args.subcommand].error("argument -a/--all: not allowed with arguments gids")
 
 
 def get_parser():
@@ -110,11 +118,8 @@ def get_parser():
     call_parser = subparser("call", "Call a remote method through the JSON-RPC client.")
     pause_parser = subparser("pause", "Pause downloads.")
     purge_parser = subparser("purge", "Purge downloads.", aliases=["clear"])
-    pause_all_parser = subparser("pause-all", "Pause all downloads.")
     remove_parser = subparser("remove", "Remove downloads.", aliases=["rm"])
-    remove_all_parser = subparser("remove-all", "Remove all downloads.")
     resume_parser = subparser("resume", "Resume downloads.")
-    subparser("resume-all", "Resume all downloads.")
     subparser("show", "Show the download progression.")
 
     # ========= CALL PARSER ========= #
@@ -147,32 +152,26 @@ def get_parser():
     add_metalink_parser.add_argument("metalink_file", help="The path to the metalink file.")
 
     # ========= PAUSE PARSER ========= #
-    pause_parser.add_argument("gids", nargs="+", help="The GIDs of the downloads to pause.")
+    pause_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to pause.")
+    pause_parser.add_argument("-a", "--all", action="store_true", dest="do_all", help="Pause all the downloads.")
     pause_parser.add_argument(
         "-f", "--force", dest="force", action="store_true", help="Pause without contacting servers first."
     )
 
-    # ========= PAUSE ALL PARSER ========= #
-    pause_all_parser.add_argument(
-        "-f", "--force", dest="force", action="store_true", help="Pause without contacting servers first."
-    )
-
     # ========= RESUME PARSER ========= #
-    resume_parser.add_argument("gids", nargs="+", help="The GIDs of the downloads to resume.")
+    resume_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to resume.")
+    resume_parser.add_argument("-a", "--all", action="store_true", dest="do_all", help="Resume all the downloads.")
 
     # ========= REMOVE PARSER ========= #
-    remove_parser.add_argument("gids", nargs="+", help="The GIDs of the downloads to remove.")
+    remove_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to remove.")
+    remove_parser.add_argument("-a", "--all", action="store_true", dest="do_all", help="Remove all the downloads.")
     remove_parser.add_argument(
-        "-f", "--force", dest="force", action="store_true", help="Remove without contacting servers first."
-    )
-
-    # ========= REMOVE ALL PARSER ========= #
-    remove_all_parser.add_argument(
         "-f", "--force", dest="force", action="store_true", help="Remove without contacting servers first."
     )
 
     # ========= PURGE PARSER ========= #
     purge_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to purge.")
+    purge_parser.add_argument("-a", "--all", action="store_true", dest="do_all", help="Purge all the downloads.")
 
     # TODO: when API is ready
     # info_parser = subparsers.add_parser("info", help="Show information about downloads.")
@@ -329,18 +328,24 @@ def subcommand_add_metalink(api: API, metalink_file):
 
 
 # ============ PAUSE SUBCOMMAND ============ #
-def subcommand_pause(api: API, gids, force=False):
+def subcommand_pause(api: API, gids=None, do_all=False, force=False):
     """
     Pause subcommand.
 
     Args:
         api (API): the API instance to use.
         gids (list of str): the GIDs of the downloads to pause.
+        do_all (bool): pause all downloads if True.
         force (bool): force pause or not (see API.pause).
 
     Returns:
         int: 0 if all success, 1 if one failure.
     """
+    if do_all:
+        if api.pause_all(force=force):
+            return 0
+        return 1
+
     downloads = [Download(api, {"gid": gid}) for gid in gids]
     result = api.pause(downloads, force=force)
     if all(result):
@@ -351,35 +356,24 @@ def subcommand_pause(api: API, gids, force=False):
     return 1
 
 
-# ============ PAUSE ALL SUBCOMMAND ============ #
-def subcommand_pause_all(api: API, force=False):
-    """
-    Pause all subcommand.
-
-    Args:
-        api (API): the API instance to use.
-        force (bool): force pause or not (see API.pause_all).
-
-    Returns:
-        int: 0 if all success, 1 if one failure.
-    """
-    if api.pause_all(force=force):
-        return 0
-    return 1
-
-
 # ============ RESUME SUBCOMMAND ============ #
-def subcommand_resume(api: API, gids):
+def subcommand_resume(api: API, gids=None, do_all=False):
     """
     Resume subcommand.
 
     Args:
         api (API): the API instance to use.
         gids (list of str): the GIDs of the downloads to resume.
+        do_all (bool): pause all downloads if True.
 
     Returns:
         int: 0 if all success, 1 if one failure.
     """
+    if do_all:
+        if api.resume_all():
+            return 0
+        return 1
+
     downloads = [Download(api, {"gid": gid}) for gid in gids]
     result = api.resume(downloads)
     if all(result):
@@ -390,35 +384,25 @@ def subcommand_resume(api: API, gids):
     return 1
 
 
-# ============ RESUME ALL SUBCOMMAND ============ #
-def subcommand_resume_all(api: API):
-    """
-    Resume all subcommand.
-
-    Args:
-        api (API): the API instance to use.
-
-    Returns:
-        int: 0 if all success, 1 if one failure.
-    """
-    if api.resume_all():
-        return 0
-    return 1
-
-
 # ============ REMOVE SUBCOMMAND ============ #
-def subcommand_remove(api: API, gids, force=False):
+def subcommand_remove(api: API, gids=None, do_all=False, force=False):
     """
     Remove subcommand.
 
     Args:
         api (API): the API instance to use.
         gids (list of str): the GIDs of the downloads to remove.
+        do_all (bool): pause all downloads if True.
         force (bool): force pause or not (see API.remove).
 
     Returns:
         int: 0 if all success, 1 if one failure.
     """
+    if do_all:
+        if api.remove_all():
+            return 0
+        return 1
+
     downloads = [Download(api, {"gid": gid}) for gid in gids]
     result = api.remove(downloads, force=force)
     if all(result):
@@ -429,35 +413,24 @@ def subcommand_remove(api: API, gids, force=False):
     return 1
 
 
-# ============ REMOVE ALL SUBCOMMAND ============ #
-def subcommand_remove_all(api: API, force=False):
-    """
-    Remove all subcommand.
-
-    Args:
-        api (API): the API instance to use.
-        force (bool): force pause or not (see API.remove_all).
-
-    Returns:
-        int: 0 if all success, 1 if one failure.
-    """
-    if api.remove_all(force=force):
-        return 0
-    return 1
-
-
 # ============ PURGE SUBCOMMAND ============ #
-def subcommand_purge(api: API, gids):
+def subcommand_purge(api: API, gids=None, do_all=False):
     """
     Purge subcommand.
 
     Args:
         api (API): the API instance to use.
         gids (list of str): the GIDs of the downloads to purge.
+        do_all (bool): pause all downloads if True.
 
     Returns:
         int: 0 if all success, 1 if one failure.
     """
+    if do_all:
+        if api.purge_all():
+            return 0
+        return 1
+
     downloads = [Download(api, {"gid": gid}) for gid in gids]
     result = api.purge(downloads)
     if all(result):
