@@ -8,10 +8,10 @@ version = "0.2.2"
 description = "Command-line tool and library to interact with an aria2c daemon process with JSON-RPC."
 license = "ISC"
 authors = ["Timothée Mazzucotelli <pawamoy@pm.me>"]
-readme = 'README.md'
+readme = "README.md"
 repository = "https://github.com/pawamoy/aria2p"
 homepage = "https://github.com/pawamoy/aria2p"
-keywords = ['aria2', 'aria2c', 'aria2-cli']
+keywords = ["aria2", "aria2c", "aria2-cli"]
 packages = [ { include = "aria2p", from = "src" } ]
 include = [
     "README.md",
@@ -42,7 +42,7 @@ sphinx-rtd-theme = "^0.4.2"
 toml = "^0.10.0"
 
 [tool.poetry.scripts]
-aria2p = 'aria2p.cli:main'
+aria2p = "aria2p.cli:main"
 
 [tool.black]
 line-length = 120
@@ -50,7 +50,6 @@ line-length = 120
 [tool.isort]
 line_length = 120
 not_skip = "__init__.py"
-skip = "migrations"
 multi_line_output = 3
 force_single_line = false
 balanced_wrapping = true
