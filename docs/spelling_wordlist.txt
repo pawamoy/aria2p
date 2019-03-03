@@ -240,6 +240,7 @@ verifyIntegrityPending
 versioning
 viewcode
 wcwidth
+weakref
 websupport
 wikipedia
 www
