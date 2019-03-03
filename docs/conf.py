@@ -22,7 +22,7 @@ extensions = [
 ]
 
 # Auto-documentation directives in RST files
-autodoc_default_options = {"members": None, "special-members": None, "exclude-members": "__weakref__"}
+autodoc_default_options = {"members": None, "special-members": "__init__", "exclude-members": "__weakref__"}
 
 # ReadTheDocs theme for local builds
 on_rtd = os.environ.get("READTHEDOCS", None) == "True"
