@@ -327,6 +327,7 @@ class TestJSONRPCClientClass:
             assert not server.client.get_peers(gid)
 
     def test_get_servers_method(self):
+        # FIXME: subject to failure "IndexError: list index out of range"
         with Aria2Server(port=7014, session=SESSIONS_DIR / "max-dl-limit-10000.txt") as server:
             gid = server.client.tell_active(keys=["gid"])[0]["gid"]
             assert server.client.get_servers(gid)
