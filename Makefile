@@ -16,13 +16,19 @@ readme: README.md  ## Regenerate README.md.
 docs:  ## Build the documentation locally.
 	poetry run sphinx-build -E -b html docs build/docs
 
-check: check-bandit check-black check-flake8 check-isort check-safety check-ports  ## Check it all!
+check: check-bandit check-black check-flake8 check-isort check-safety check-ports check-docs-spelling  ## Check it all!
+
+update-spelling-wordlist:  ## Update the spelling word list.
+	scripts/update-spelling-wordlist.sh
+
+check-docs-spelling: update-spelling-wordlist  ## Check spelling in the documentation.
+	scripts/check-docs-spelling.sh
 
 check-black:  ## Check if code is formatted nicely using black.
-	poetry run black --check src/ tests/
+	poetry run black --check src/ tests/ docs/conf.py
 
 check-isort:  ## Check if imports are correctly ordered using isort.
-	poetry run isort -c -rc src/ tests/
+	poetry run isort -c -rc src/ tests/ docs/conf.py
 
 check-flake8:  ## Check for general warnings in code using flake8.
 	poetry run flake8 src/ tests/
@@ -36,13 +42,13 @@ check-safety:  ## Check for vulnerabilities in dependencies using safety.
 		poetry run safety check --stdin --full-report 2>/dev/null
 
 check-ports:  ## Check if the ports used in the tests are all unique.
-	./scripts/check-ports.sh
+	scripts/check-ports.sh
 
 run-black:  ## Lint the code using black.
-	poetry run black src/ tests/
+	poetry run black src/ tests/ docs/conf.py
 
 run-isort:  ## Sort the imports using isort.
-	poetry run isort -y -rc src/ tests/
+	poetry run isort -y -rc src/ tests/ docs/conf.py
 
 lint: run-black run-isort  ## Run linting tools on the code.
 
@@ -55,6 +61,7 @@ clean: clean-tests  ## Delete temporary files.
 	@rm -rf src/aria2p.egg-info 2>/dev/null
 	@rm -rf .coverage* 2>/dev/null
 	@rm -rf .pytest_cache 2>/dev/null
+	@rm -rf pip-wheel-metadata 2>/dev/null
 
 test: check-ports clean-tests  ## Run the tests using pytest.
 	poetry run pytest -n6 2>/dev/null

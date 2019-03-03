@@ -15,3 +15,11 @@ ClientException
 
 .. autoclass:: aria2p.client.ClientException
     :members:
+
+
+.. spelling::
+
+   bt
+   de
+   ip
+   pos
