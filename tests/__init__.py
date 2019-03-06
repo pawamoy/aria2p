@@ -5,8 +5,9 @@ import tempfile
 import time
 from pathlib import Path
 
-import aria2p
 import requests
+
+import aria2p
 
 TESTS_DIR = Path(__file__).parent
 TESTS_TMP_DIR = TESTS_DIR / "tmp"

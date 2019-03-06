@@ -8,9 +8,10 @@ from threading import Thread
 
 import pytest
 import requests
+from responses import mock as responses
+
 from aria2p import Client, ClientException
 from aria2p.client import JSONRPC_CODES, JSONRPC_PARSER_ERROR
-from responses import mock as responses
 
 from . import (
     BUNSENLABS_MAGNET,

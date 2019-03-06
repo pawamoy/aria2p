@@ -20,6 +20,7 @@ import json
 import sys
 
 import requests
+
 from aria2p import Download
 
 from .api import API

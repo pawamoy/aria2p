@@ -2,6 +2,7 @@ import time
 from unittest.mock import patch
 
 import pytest
+
 from aria2p import cli
 
 from . import BUNSENLABS_MAGNET, SESSIONS_DIR, TESTS_DATA_DIR, Aria2Server
