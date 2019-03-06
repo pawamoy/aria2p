@@ -1,4 +1,5 @@
 import pytest
+
 from aria2p import Stats
 
 
