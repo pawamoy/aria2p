@@ -1,9 +1,10 @@
 import os
+from pathlib import Path
 
 import toml
 from recommonmark.transform import AutoStructify
 
-metadata = toml.load(os.path.join(os.path.dirname(os.path.dirname(__file__)), "pyproject.toml"))["tool"]["poetry"]
+metadata = toml.load(Path(__file__).parent.parent / "pyproject.toml")["tool"]["poetry"]
 project = metadata["name"]
 repository = metadata["repository"].rstrip("/")
 year = "2018"
