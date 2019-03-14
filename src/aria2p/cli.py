@@ -73,6 +73,7 @@ def main(args=None):
 
 
 def check_args(parser, args):
+    """Additional checks for command line arguments."""
     subparser = [action for action in parser._actions if isinstance(action, argparse._SubParsersAction)][0].choices
 
     if args.subcommand in ("pause", "remove", "resume", "purge"):
