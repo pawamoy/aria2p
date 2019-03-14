@@ -2,7 +2,9 @@
 This module defines the API class, which makes use of a JSON-RPC client to provide higher-level methods to
 interact easily with a remote aria2c process.
 """
+import shutil
 from base64 import b64encode
+from pathlib import Path
 
 from .client import Client, ClientException
 from .downloads import Download
@@ -548,3 +550,98 @@ class API:
             :class:`~aria2p.stats.Stats` instance: the global stats returned by the remote process.
         """
         return Stats(self.client.get_global_stat())
+
+    @staticmethod
+    def move_files(downloads, to_directory, force=False):
+        """
+        Move downloaded files to another directory.
+
+        Args:
+            downloads (list of :class:`~aria2p.downloads.Download`):  the list of downloads for which to move files.
+            to_directory (str/Path): the target directory to move files to.
+            force (bool): whether to move files even if download is not complete.
+
+        Returns:
+            list of bool: Success or failure of the operation for each given download.
+        """
+        if isinstance(to_directory, str):
+            to_directory = Path(to_directory)
+
+        # raises FileExistsError when target is already a file
+        to_directory.mkdir(parents=True, exist_ok=True)
+
+        results = []
+        for download in downloads:
+            if download.is_complete or force:
+
+                # don't move leaf after leaf: move entire directories at once
+                # we build here the list of unique dirs/files
+                source_directory = Path(download.options.dir)
+                paths = set()
+                for file in download.files:
+                    if file.is_metadata:
+                        continue
+                    try:
+                        relative_path = file.path.relative_to(source_directory)
+                    except ValueError:
+                        pass  # TODO: log
+                    else:
+                        paths.add(source_directory / relative_path.parts[0])
+
+                # actual move operation
+                for path in paths:
+                    shutil.move(str(path), str(to_directory))
+
+                results.append(True)
+            else:
+                results.append(False)
+        return results
+
+    @staticmethod
+    def copy_files(downloads, to_directory, force=False):
+        """
+        Copy downloaded files to another directory.
+
+        Args:
+            downloads (list of :class:`~aria2p.downloads.Download`):  the list of downloads for which to move files.
+            to_directory (str/Path): the target directory to copy files into.
+            force (bool): whether to move files even if download is not complete.
+
+        Returns:
+            list of bool: Success or failure of the operation for each given download.
+        """
+        if isinstance(to_directory, str):
+            to_directory = Path(to_directory)
+
+        # raises FileExistsError when target is already a file
+        to_directory.mkdir(parents=True, exist_ok=True)
+
+        results = []
+        for download in downloads:
+            if download.is_complete or force:
+
+                # don't copy leaf after leaf: copy entire directories at once
+                # we build here the list of unique dirs/files
+                source_directory = Path(download.options.dir)
+                paths = set()
+                for file in download.files:
+                    if file.is_metadata:
+                        continue
+                    try:
+                        relative_path = file.path.relative_to(source_directory)
+                    except ValueError:
+                        pass  # TODO: log
+                    else:
+                        paths.add(source_directory / relative_path.parts[0])
+
+                # actual copy operation
+                for path in paths:
+                    if path.is_dir():
+                        shutil.copytree(str(path), str(to_directory / path.name))
+                    elif path.is_file():
+                        shutil.copy(str(path), str(to_directory))
+
+                results.append(True)
+            else:
+                results.append(False)
+        return results

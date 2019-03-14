@@ -100,6 +100,11 @@ class File:
         return Path(self._struct.get("path"))
 
     @property
+    def is_metadata(self):
+        """Return True if this file is aria2 metadata and not an actual file."""
+        return str(self.path).startswith("[METADATA]")
+
+    @property
     def length(self):
         """File size in bytes."""
         return int(self._struct.get("length"))
@@ -270,6 +275,11 @@ class Download:
     def is_removed(self):
         """Return True if download was removed."""
         return self.status == "removed"
+
+    @property
+    def is_metadata(self):
+        """Return True if this download is only composed of metadata, and no actual files."""
+        return all(_.is_metadata for _ in self.files)
 
     @property
     def total_length(self):
