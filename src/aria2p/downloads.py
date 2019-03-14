@@ -182,6 +182,7 @@ class Download:
         self.api = api
         self._struct = struct
         self._files = []
+        self._root_files_paths = []
         self._bittorrent = None
         self._name = ""
         self._options = None
@@ -216,6 +217,41 @@ class Download:
         if not self._name:
             self._name = str(self.files[0].path).replace(str(self.dir), "").lstrip("/").split("/")[0]
         return self._name
+
+    @property
+    def root_files_paths(self):
+        """
+        Return the unique set of directories/files for this download.
+
+        Instead of returning all the leaves like self.files,
+        return the relative root directories if any, and relative root files.
+
+        This property is useful when we need to list the directories and files
+        in order to move or copy them. We don't want to copy files one by one,
+        but rather entire directories at once when possible.
+
+        Examples:
+            # download dir is /a/b.
+            >>> self.files
+            ["/a/b/c/1.txt", "/a/b/c/2.txt", "/a/b/3.txt"]
+            >>> self.root_files_paths
+            ["/a/b/c", "/a/b/3.txt"]
+        """
+        if not self._root_files_paths:
+            paths = []
+            for file in self.files:
+                if file.is_metadata:
+                    continue
+                try:
+                    relative_path = file.path.relative_to(self.dir)
+                except ValueError:
+                    pass  # TODO: log
+                else:
+                    path = self.dir / relative_path.parts[0]
+                    if path not in paths:
+                        paths.append(path)
+            self._root_files_paths = paths
+        return self._root_files_paths
 
     @property
     def options(self):
