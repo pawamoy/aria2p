@@ -19,6 +19,9 @@ __all__ = ["API", "ClientException", "Client", "Download", "BitTorrent", "File",
 
 # TODO: use proper logging messages (esp. in except: pass)
 # TODO: maybe add type annotations
+# TODO: handle both str and pathlib.Path for paths consistently
+# TODO: add command "add" for normal downloads!!
+# TODO: add "--options" options for "add" commands
 
 # Roadmap:
 # - feature: Ability to hide metadata downloads (magnet URIs)
