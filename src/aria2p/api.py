@@ -573,25 +573,8 @@ class API:
         results = []
         for download in downloads:
             if download.is_complete or force:
-
-                # don't move leaf after leaf: move entire directories at once
-                # we build here the list of unique dirs/files
-                source_directory = Path(download.options.dir)
-                paths = set()
-                for file in download.files:
-                    if file.is_metadata:
-                        continue
-                    try:
-                        relative_path = file.path.relative_to(source_directory)
-                    except ValueError:
-                        pass  # TODO: log
-                    else:
-                        paths.add(source_directory / relative_path.parts[0])
-
-                # actual move operation
-                for path in paths:
+                for path in download.root_files_paths:
                     shutil.move(str(path), str(to_directory))
-
                 results.append(True)
             else:
                 results.append(False)
@@ -619,23 +602,7 @@ class API:
         results = []
         for download in downloads:
             if download.is_complete or force:
-
-                # don't copy leaf after leaf: copy entire directories at once
-                # we build here the list of unique dirs/files
-                source_directory = Path(download.options.dir)
-                paths = set()
-                for file in download.files:
-                    if file.is_metadata:
-                        continue
-                    try:
-                        relative_path = file.path.relative_to(source_directory)
-                    except ValueError:
-                        pass  # TODO: log
-                    else:
-                        paths.add(source_directory / relative_path.parts[0])
-
-                # actual copy operation
-                for path in paths:
+                for path in download.root_files_paths:
                     if path.is_dir():
                         shutil.copytree(str(path), str(to_directory / path.name))
                     elif path.is_file():
