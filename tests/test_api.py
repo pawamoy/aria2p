@@ -1,3 +1,7 @@
+import tempfile
+import time
+from pathlib import Path
+
 from aria2p import Download
 
 from . import (
@@ -6,6 +10,7 @@ from . import (
     CONFIGS_DIR,
     DEBIAN_METALINK,
     SESSIONS_DIR,
+    TESTS_TMP_DIR,
     XUBUNTU_MIRRORS,
     Aria2Server,
 )
@@ -199,3 +204,69 @@ def test_set_options_method():
         assert server.api.set_options({"max-download-limit": "20000"}, downloads)[0]
         options = server.api.get_options(downloads)[0]
         assert options.max_download_limit == 20000
+
+
+def test_copy_files_method():
+    with Aria2Server(port=7125, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
+        # initialize temp dir to copy to
+        tmp_dir = Path(tempfile.mkdtemp(dir=TESTS_TMP_DIR))
+
+        # wait until download is finished
+        download = server.api.get_downloads()[0]
+        while not download.is_complete:
+            time.sleep(0.2)
+            download.update()
+
+        # actual method run
+        server.api.copy_files([download], tmp_dir)
+
+        # assert file was copied and contents are identical
+        source = download.files[0].path
+        target = tmp_dir / source.name
+
+        assert source.exists()
+        assert target.exists()
+
+        with open(source) as stream:
+            source_contents = stream.read()
+        with open(target) as stream:
+            target_contents = stream.read()
+        assert source_contents == target_contents
+
+        # clean up
+        target.unlink()
+        tmp_dir.rmdir()
+
+
+def test_move_files_method():
+    with Aria2Server(port=7126, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
+        # initialize temp dir to copy to
+        tmp_dir = Path(tempfile.mkdtemp(dir=TESTS_TMP_DIR))
+
+        # wait until download is finished
+        download = server.api.get_downloads()[0]
+        while not download.is_complete:
+            time.sleep(0.2)
+            download.update()
+
+        # read source contents before move
+        source = download.files[0].path
+        with open(source) as stream:
+            source_contents = stream.read()
+
+        # actual method run
+        server.api.move_files([download], tmp_dir)
+
+        # assert file was copied and contents are identical
+        target = tmp_dir / source.name
+
+        assert not source.exists()
+        assert target.exists()
+
+        with open(target) as stream:
+            target_contents = stream.read()
+        assert source_contents == target_contents
+
+        # clean up
+        target.unlink()
+        tmp_dir.rmdir()
