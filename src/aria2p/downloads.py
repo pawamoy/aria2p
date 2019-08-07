@@ -223,7 +223,7 @@ class Download:
                 file_path = str(self.files[0].path.absolute())
                 dir_path = str(self.dir.absolute())
                 if file_path.startswith(dir_path):
-                    self._name = Path(file_path[len(dir_path)+1:]).parts[0]
+                    self._name = Path(file_path[len(dir_path) + 1 :]).parts[0]
                 else:
                     self._name = self.files[0].uris[0]["uri"].split("/")[-1]
         return self._name
