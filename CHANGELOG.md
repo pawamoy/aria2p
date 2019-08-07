@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.2.3](https://github.com/pawamoy/aria2p/releases/tag/v0.2.3) ([compare](https://github.com/pawamoy/aria2p/compare/v0.2.2...v0.2.3)) - 2019-08-07
+
+### Added
+- Add some aliases ([be454b2](https://github.com/pawamoy/aria2p/commit/be454b273f29b84e67ec48ef07849d28d3caf678)).
+- Add file moving and purge ability to Download class ([9d821c0](https://github.com/pawamoy/aria2p/commit/9d821c0f492ec39477691e30c1d0bc1d8d882c12)).
+- Add move/copy files methods to API ([380b09a](https://github.com/pawamoy/aria2p/commit/380b09afb639ae1de96bf810bbea5e49239a88aa)).
+- Combine -all commands to normal ones, with -a, --all option, keep old ones as deprecated ([944d6c2](https://github.com/pawamoy/aria2p/commit/944d6c268818d0af75ec7e23b5dc2b07c6ba6892) and [f41f98a](https://github.com/pawamoy/aria2p/commit/f41f98ab759db51c8a4fe17c12fec51674c16569)).
+- Improve exceptions handling with `loguru` ([c75d991](https://github.com/pawamoy/aria2p/commit/c75d9911698075b0cff774c4ef7d4b5cf8ede623)).
+
+### Fixed
+- Add missing aliases in subcommands dictionary ([be454b2](https://github.com/pawamoy/aria2p/commit/be454b273f29b84e67ec48ef07849d28d3caf678)).
+- Cast return value in get method with argument ([d2bca2b](https://github.com/pawamoy/aria2p/commit/d2bca2b9241aa1e6b07932ae66fac0a326b0018d)).
+- Pass exceptions when download result cannot be removed ([f346fe5](https://github.com/pawamoy/aria2p/commit/f346fe55d94817b2ce6a459d9db7e72f3785352b)).
+
 ## [v0.2.2](https://github.com/pawamoy/aria2p/releases/tag/v0.2.2) ([compare](https://github.com/pawamoy/aria2p/compare/v0.2.1...v0.2.2)) - 2019-02-21
 
 ### Documented
