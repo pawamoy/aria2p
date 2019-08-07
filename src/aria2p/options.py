@@ -32,7 +32,7 @@ class Options:
         """
         self.api = api
         self.download = download
-        self._struct = struct
+        self._struct = struct or {}
 
     @property
     def are_global(self):

@@ -21,7 +21,7 @@ class BitTorrent:
         Args:
             struct (dict): a dictionary Python object returned by the JSON-RPC client.
         """
-        self._struct = struct
+        self._struct = struct or {}
 
     def __str__(self):
         return self.info["name"]
@@ -83,7 +83,7 @@ class File:
         Args:
             struct (dict): a dictionary Python object returned by the JSON-RPC client.
         """
-        self._struct = struct
+        self._struct = struct or {}
 
     def __str__(self):
         return str(self.path)
@@ -182,7 +182,7 @@ class Download:
             struct (dict): a dictionary Python object returned by the JSON-RPC client.
         """
         self.api = api
-        self._struct = struct
+        self._struct = struct or {}
         self._files = []
         self._root_files_paths = []
         self._bittorrent = None
@@ -220,7 +220,12 @@ class Download:
             if self.bittorrent and self.bittorrent.info:
                 self._name = self.bittorrent.info["name"]
             else:
-                self._name = str(self.files[0].path.relative_to(self.dir))
+                file_path = str(self.files[0].path.absolute())
+                dir_path = str(self.dir.absolute())
+                if file_path.startswith(dir_path):
+                    self._name = Path(file_path[len(dir_path)+1:]).parts[0]
+                else:
+                    self._name = self.files[0].uris[0]["uri"].split("/")[-1]
         return self._name
 
     @property

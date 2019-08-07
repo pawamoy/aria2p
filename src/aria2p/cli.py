@@ -97,7 +97,7 @@ def check_args(parser, args):
             subparser[args.subcommand].error("the following arguments are required: gids or --all")
         elif args.do_all and args.gids:
             subparser[args.subcommand].error("argument -a/--all: not allowed with arguments gids")
-    elif args.subcommand.endswith("-all"):
+    elif (args.subcommand or "").endswith("-all"):
         warnings.warn(
             f"Subcommand '{args.subcommand}' is deprecated in favor of '{args.subcommand[:-4]} --all'.\n"
             f"It will be removed in version 0.5.0, please update your scripts/code.",

@@ -15,7 +15,7 @@ class Stats:
         Args:
             struct (dict): a dictionary Python object returned by the JSON-RPC client.
         """
-        self._struct = struct
+        self._struct = struct or {}
 
     @property
     def download_speed(self):
