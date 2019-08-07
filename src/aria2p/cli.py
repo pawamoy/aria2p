@@ -63,13 +63,20 @@ def main(args=None):
         "add-torrent": subcommand_add_torrent,
         "add-metalink": subcommand_add_metalink,
         "pause": subcommand_pause,
+        "stop": subcommand_pause,  # alias for pause
         "pause-all": subcommand_pause_all,
         "resume": subcommand_resume,
+        "start": subcommand_resume,  # alias for resume
         "resume-all": subcommand_resume_all,
         "remove": subcommand_remove,
+        "rm": subcommand_remove,  # alias for remove
+        "del": subcommand_remove,  # alias for remove
+        "delete": subcommand_remove,  # alias for remove
         "remove-all": subcommand_remove_all,
         "purge": subcommand_purge,
+        "clear": subcommand_purge,  # alias for purge
         "autopurge": subcommand_autopurge,
+        "autoclear": subcommand_autopurge,  # alias for autopurge
     }
 
     subcommand = kwargs.pop("subcommand")
@@ -142,12 +149,12 @@ def get_parser():
     add_torrent_parser = subparser("add-torrent", "Add a download with a torrent file.")
     subparser("autopurge", "Automatically purge completed/removed/failed downloads.", aliases=["autoclear"])
     call_parser = subparser("call", "Call a remote method through the JSON-RPC client.")
-    pause_parser = subparser("pause", "Pause downloads.")
+    pause_parser = subparser("pause", "Pause downloads.", aliases=["stop"])
     pause_all_parser = subparser("pause-all", "Pause all downloads.")
     purge_parser = subparser("purge", "Purge downloads.", aliases=["clear"])
-    remove_parser = subparser("remove", "Remove downloads.", aliases=["rm"])
+    remove_parser = subparser("remove", "Remove downloads.", aliases=["rm", "del", "delete"])
     remove_all_parser = subparser("remove-all", "Remove all downloads.")
-    resume_parser = subparser("resume", "Resume downloads.")
+    resume_parser = subparser("resume", "Resume downloads.", aliases=["start"])
     subparser("resume-all", "Resume all downloads.")
     subparser("show", "Show the download progression.")
 
