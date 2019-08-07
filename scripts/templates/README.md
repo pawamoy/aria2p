@@ -128,6 +128,9 @@ Commands:
 {% for command in commands %}
 - [`{{ command.name }}`](#{{ command.name }}){% endfor %}
 
+**Warning:** commands ending with `-all` are deprecated. Please use their equivalent with the `-a` or `--all` option
+(e.g. instead of `pause-all`, use `pause -a`). These commands will be removed in version 0.5.0.
+
 {% for command in commands %}
 ### `{{ command.name }}`
 ```

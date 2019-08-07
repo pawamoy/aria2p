@@ -18,6 +18,7 @@ Also see http://click.pocoo.org/5/setuptools/#setuptools-integration.
 import argparse
 import json
 import sys
+import warnings
 
 import requests
 from loguru import logger
@@ -62,8 +63,11 @@ def main(args=None):
         "add-torrent": subcommand_add_torrent,
         "add-metalink": subcommand_add_metalink,
         "pause": subcommand_pause,
+        "pause-all": subcommand_pause_all,
         "resume": subcommand_resume,
+        "resume-all": subcommand_resume_all,
         "remove": subcommand_remove,
+        "remove-all": subcommand_remove_all,
         "purge": subcommand_purge,
         "autopurge": subcommand_autopurge,
     }
@@ -86,6 +90,12 @@ def check_args(parser, args):
             subparser[args.subcommand].error("the following arguments are required: gids or --all")
         elif args.do_all and args.gids:
             subparser[args.subcommand].error("argument -a/--all: not allowed with arguments gids")
+    elif args.subcommand.endswith("-all"):
+        warnings.warn(
+            f"Subcommand '{args.subcommand}' is deprecated in favor of '{args.subcommand[:-4]} --all'.\n"
+            f"It will be removed in version 0.5.0, please update your scripts/code.",
+            DeprecationWarning
+        )
 
 
 def get_parser():
@@ -133,9 +143,12 @@ def get_parser():
     subparser("autopurge", "Automatically purge completed/removed/failed downloads.", aliases=["autoclear"])
     call_parser = subparser("call", "Call a remote method through the JSON-RPC client.")
     pause_parser = subparser("pause", "Pause downloads.")
+    pause_all_parser = subparser("pause-all", "Pause all downloads.")
     purge_parser = subparser("purge", "Purge downloads.", aliases=["clear"])
     remove_parser = subparser("remove", "Remove downloads.", aliases=["rm"])
+    remove_all_parser = subparser("remove-all", "Remove all downloads.")
     resume_parser = subparser("resume", "Resume downloads.")
+    subparser("resume-all", "Resume all downloads.")
     subparser("show", "Show the download progression.")
 
     # ========= CALL PARSER ========= #
@@ -174,6 +187,11 @@ def get_parser():
         "-f", "--force", dest="force", action="store_true", help="Pause without contacting servers first."
     )
 
+    # ========= PAUSE ALL PARSER ========= #
+    pause_all_parser.add_argument(
+        "-f", "--force", dest="force", action="store_true", help="Pause without contacting servers first."
+    )
+
     # ========= RESUME PARSER ========= #
     resume_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to resume.")
     resume_parser.add_argument("-a", "--all", action="store_true", dest="do_all", help="Resume all the downloads.")
@@ -182,6 +200,11 @@ def get_parser():
     remove_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to remove.")
     remove_parser.add_argument("-a", "--all", action="store_true", dest="do_all", help="Remove all the downloads.")
     remove_parser.add_argument(
+        "-f", "--force", dest="force", action="store_true", help="Remove without contacting servers first."
+    )
+
+    # ========= REMOVE ALL PARSER ========= #
+    remove_all_parser.add_argument(
         "-f", "--force", dest="force", action="store_true", help="Remove without contacting servers first."
     )
 
@@ -393,6 +416,23 @@ def subcommand_pause(api: API, gids=None, do_all=False, force=False):
     return 1
 
 
+# ============ PAUSE ALL SUBCOMMAND ============ #
+def subcommand_pause_all(api: API, force=False):
+    """
+    Pause all subcommand.
+
+    Args:
+        api (API): the API instance to use.
+        force (bool): force pause or not (see API.pause_all).
+
+    Returns:
+        int: 0 if all success, 1 if one failure.
+    """
+    if api.pause_all(force=force):
+        return 0
+    return 1
+
+
 # ============ RESUME SUBCOMMAND ============ #
 def subcommand_resume(api: API, gids=None, do_all=False):
     """
@@ -418,6 +458,22 @@ def subcommand_resume(api: API, gids=None, do_all=False):
     for item in result:
         if isinstance(item, ClientException):
             print(item, file=sys.stderr)
+    return 1
+
+
+# ============ RESUME ALL SUBCOMMAND ============ #
+def subcommand_resume_all(api: API):
+    """
+    Resume all subcommand.
+
+    Args:
+        api (API): the API instance to use.
+
+    Returns:
+        int: 0 if all success, 1 if one failure.
+    """
+    if api.resume_all():
+        return 0
     return 1
 
 
@@ -447,6 +503,23 @@ def subcommand_remove(api: API, gids=None, do_all=False, force=False):
     for item in result:
         if isinstance(item, ClientException):
             print(item, file=sys.stderr)
+    return 1
+
+
+# ============ REMOVE ALL SUBCOMMAND ============ #
+def subcommand_remove_all(api: API, force=False):
+    """
+    Remove all subcommand.
+
+    Args:
+        api (API): the API instance to use.
+        force (bool): force pause or not (see API.remove_all).
+
+    Returns:
+        int: 0 if all success, 1 if one failure.
+    """
+    if api.remove_all(force=force):
+        return 0
     return 1
 
 
