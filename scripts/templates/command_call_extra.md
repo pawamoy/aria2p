@@ -67,7 +67,7 @@ $ aria2p call tellactive -J '[["gid"]]'
 ```
 
 Pause a download using its GID.
-*Note that when a single string argument is required, it can be passed directly with `-p`.*
+*Note that when a single string argument is required, it can be passed directly with `-P`.*
 ```console
 $ aria2p call pause -P b686cad55029d4df
 "b686cad55029d4df"

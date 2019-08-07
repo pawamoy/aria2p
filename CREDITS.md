@@ -11,6 +11,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`ipython`](https://ipython.org) |
 [`isort`](https://github.com/timothycrosley/isort) |
 [`jinja2-cli`](https://github.com/mattrobenolt/jinja2-cli) |
+[`loguru`](https://github.com/Delgan/loguru) |
 [`pytest`](https://docs.pytest.org/en/latest/) |
 [`pytest-cov`](https://github.com/pytest-dev/pytest-cov) |
 [`pytest-sugar`](http://pivotfinland.com/pytest-sugar/) |
@@ -26,6 +27,7 @@ These projects were used to build `aria2p`. **Thank you!**
 
 ### Indirect dependencies
 [`alabaster`](https://alabaster.readthedocs.io) |
+[`ansimarkup`](https://github.com/gvalkov/python-ansimarkup) |
 [`apipkg`](https://github.com/pytest-dev/apipkg) |
 [`appdirs`](http://github.com/ActiveState/appdirs) |
 [`appnope`](http://github.com/minrk/appnope) |
@@ -33,12 +35,13 @@ These projects were used to build `aria2p`. **Thank you!**
 [`attrs`](https://www.attrs.org/) |
 [`Babel`](http://babel.pocoo.org/) |
 [`backcall`](https://github.com/takluyver/backcall) |
+[`better-exceptions-fork`](https://github.com/delgan/better-exceptions) |
 [`certifi`](https://certifi.io/) |
 [`chardet`](https://github.com/chardet/chardet) |
 [`Click`](https://palletsprojects.com/p/click/) |
 [`colorama`](https://github.com/tartley/colorama) |
 [![`CommonMark`](https://www.vectorlogo.zone/logos/commonmark/commonmark-ar21.svg)](https://github.com/rolandshoemaker/CommonMark-py) |
-[`coverage`](https://bitbucket.org/ned/coveragepy) |
+[`coverage`](https://github.com/nedbat/coveragepy) |
 [`decorator`](https://github.com/micheles/decorator) |
 [`docutils`](http://docutils.sourceforge.net/) |
 [`dparse`](https://github.com/jayfk/dparse) |
@@ -70,7 +73,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`pyparsing`](https://github.com/pyparsing/pyparsing/) |
 [`pytest-forked`](https://github.com/pytest-dev/pytest-forked) |
 [`pytz`](http://pythonhosted.org/pytz) |
-[`PyYAML`](http://pyyaml.org/wiki/PyYAML) |
+[`PyYAML`](https://github.com/yaml/pyyaml) |
 [`six`](https://github.com/benjaminp/six) |
 [`smmap2`](https://github.com/gitpython-developers/smmap) |
 [`snowballstemmer`](https://github.com/shibukawa/snowball_py) |
