@@ -8,6 +8,7 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
 [![coverage report](https://gitlab.com/pawamoy/aria2p/badges/master/coverage.svg)](https://gitlab.com/pawamoy/aria2p/commits/master)
 [![documentation](https://img.shields.io/readthedocs/aria2p.svg?style=flat)](https://aria2p.readthedocs.io/en/latest/index.html)
 [![pypi version](https://img.shields.io/pypi/v/aria2p.svg)](https://pypi.org/project/aria2p/)
+[![Gitter](https://badges.gitter.im/aria2p/community.svg)](https://gitter.im/aria2p/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 Command-line tool and Python library to interact with an [`aria2c`][1] daemon process through JSON-RPC.
 
@@ -97,7 +98,7 @@ downloads = aria2.get_downloads()
 
 for download in downloads:
     print(download.name, download.download_speed)
-    
+
 # add downloads
 magnet_uri = "magnet:?xt=urn:..."
 
@@ -118,6 +119,8 @@ Global options:
   -H HOST, --host HOST  Host address for the remote server.
   -s SECRET, --secret SECRET
                         Secret token to use to connect to the remote server.
+  -L {TRACE,DEBUG,INFO,SUCCESS,WARNING,ERROR,CRITICAL}, --log-level {TRACE,DEBUG,INFO,SUCCESS,WARNING,ERROR,CRITICAL}
+                        Log level to use
 
 Commands:
   
@@ -129,9 +132,12 @@ Commands:
                         downloads.
     call                Call a remote method through the JSON-RPC client.
     pause               Pause downloads.
+    pause-all           Pause all downloads.
     purge (clear)       Purge downloads.
     remove (rm)         Remove downloads.
+    remove-all          Remove all downloads.
     resume              Resume downloads.
+    resume-all          Resume all downloads.
     show                Show the download progression.
 
 ```
@@ -158,10 +164,16 @@ Commands:
 - [`autopurge`](#autopurge)
 - [`call`](#call)
 - [`pause`](#pause)
+- [`pause-all`](#pause-all)
 - [`purge`](#purge)
 - [`remove`](#remove)
+- [`remove-all`](#remove-all)
 - [`resume`](#resume)
+- [`resume-all`](#resume-all)
 - [`show`](#show)
+
+**Warning:** commands ending with `-all` are deprecated. Please use their equivalent with the `-a` or `--all` option
+(e.g. instead of `pause-all`, use `pause -a`). These commands will be removed in version 0.5.0.
 
 
 ### `add-magnet`
@@ -316,7 +328,7 @@ $ aria2p call tellactive -J '[["gid"]]'
 ```
 
 Pause a download using its GID.
-*Note that when a single string argument is required, it can be passed directly with `-p`.*
+*Note that when a single string argument is required, it can be passed directly with `-P`.*
 ```console
 $ aria2p call pause -P b686cad55029d4df
 "b686cad55029d4df"
@@ -348,6 +360,20 @@ positional arguments:
 optional arguments:
   -h, --help   Show this help message and exit.
   -a, --all    Pause all the downloads.
+  -f, --force  Pause without contacting servers first.
+
+```
+
+
+
+### `pause-all`
+```
+usage: aria2p pause-all [-h] [-f]
+
+Pause all downloads.
+
+optional arguments:
+  -h, --help   Show this help message and exit.
   -f, --force  Pause without contacting servers first.
 
 ```
@@ -389,6 +415,20 @@ optional arguments:
 
 
 
+### `remove-all`
+```
+usage: aria2p remove-all [-h] [-f]
+
+Remove all downloads.
+
+optional arguments:
+  -h, --help   Show this help message and exit.
+  -f, --force  Remove without contacting servers first.
+
+```
+
+
+
 ### `resume`
 ```
 usage: aria2p resume [-h] [-a] [gids [gids ...]]
@@ -401,6 +441,19 @@ positional arguments:
 optional arguments:
   -h, --help  Show this help message and exit.
   -a, --all   Resume all the downloads.
+
+```
+
+
+
+### `resume-all`
+```
+usage: aria2p resume-all [-h]
+
+Resume all downloads.
+
+optional arguments:
+  -h, --help  Show this help message and exit.
 
 ```
 
