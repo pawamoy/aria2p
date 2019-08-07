@@ -101,7 +101,7 @@ def check_args(parser, args):
         warnings.warn(
             f"Subcommand '{args.subcommand}' is deprecated in favor of '{args.subcommand[:-4]} --all'.\n"
             f"It will be removed in version 0.5.0, please update your scripts/code.",
-            DeprecationWarning
+            DeprecationWarning,
         )
 
 
