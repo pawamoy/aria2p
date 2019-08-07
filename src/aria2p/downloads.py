@@ -217,8 +217,15 @@ class Download:
         Name is the name of the file if single-file, first file's directory name if multi-file.
         """
         if not self._name:
-            self._name = str(self.files[0].path).replace(str(self.dir), "").lstrip("/").split("/")[0]
+            if self.bittorrent and self.bittorrent.info:
+                self._name = self.bittorrent.info["name"]
+            else:
+                self._name = str(self.files[0].path.relative_to(self.dir))
         return self._name
+
+    @property
+    def control_file_path(self):
+        return self.dir / (self.name + ".aria2")
 
     @property
     def root_files_paths(self):
@@ -791,3 +798,33 @@ class Download:
         if not result:
             raise result
         return result
+
+    def purge(self):
+        """Purge itself from the results."""
+        return self.api.purge([self])[0]
+
+    def move_files(self, to_directory, force=False):
+        """
+        Move downloaded files to another directory.
+
+        Args:
+            to_directory (str/Path): the target directory to move files to.
+            force (bool): whether to move files even if download is not complete.
+
+        Returns:
+            list of bool: Success or failure of the operation for each given download.
+        """
+        return self.api.move_files([self], to_directory, force)[0]
+
+    def copy_files(self, to_directory, force=False):
+        """
+        Copy downloaded files to another directory.
+
+        Args:
+            to_directory (str/Path): the target directory to copy files into.
+            force (bool): whether to move files even if download is not complete.
+
+        Returns:
+            list of bool: Success or failure of the operation for each given download.
+        """
+        return self.api.copy_files([self], to_directory, force)[0]
