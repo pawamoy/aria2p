@@ -6,6 +6,8 @@ import shutil
 from base64 import b64encode
 from pathlib import Path
 
+from loguru import logger
+
 from .client import Client, ClientException
 from .downloads import Download
 from .options import Options
@@ -332,18 +334,23 @@ class API:
             try:
                 removed_gid = remove_func(download.gid)
             except ClientException as e:
+                logger.debug(f"Failed to remove download {download.gid}")
+                logger.opt(exception=True).trace(e)
                 result.append(e)
             else:
                 result.append(True)
                 try:
                     self.client.remove_download_result(download.gid)
-                except ClientException:
-                    pass
+                except ClientException as ee:
+                    logger.debug(f"Failed to remove download result {download.gid}")
+                    logger.opt(exception=True).trace(ee)
                 if removed_gid != download.gid:
+                    logger.debug(f"Removed download GID#{removed_gid} is different than download GID#{download.gid}")
                     try:
                         self.client.remove_download_result(removed_gid)
-                    except ClientException:
-                        pass
+                    except ClientException as ee:
+                        logger.debug(f"Failed to remove download result {removed_gid}")
+                        logger.opt(exception=True).trace(ee)
 
         return result
 
@@ -382,6 +389,8 @@ class API:
             try:
                 pause_func(download.gid)
             except ClientException as e:
+                logger.debug(f"Failed to pause download {download.gid}")
+                logger.opt(exception=True).trace(e)
                 result.append(e)
             else:
                 result.append(True)
@@ -423,6 +432,8 @@ class API:
             try:
                 self.client.unpause(download.gid)
             except ClientException as e:
+                logger.debug(f"Failed to resume download {download.gid}")
+                logger.opt(exception=True).trace(e)
                 result.append(e)
             else:
                 result.append(True)
@@ -461,6 +472,8 @@ class API:
             try:
                 self.client.remove_download_result(download.gid)
             except ClientException as e:
+                logger.debug(f"Failed to purge download result {download.gid}")
+                logger.opt(exception=True).trace(e)
                 result.append(e)
             else:
                 result.append(True)

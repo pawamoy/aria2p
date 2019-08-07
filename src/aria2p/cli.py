@@ -20,6 +20,7 @@ import json
 import sys
 
 import requests
+from loguru import logger
 
 from aria2p import Download
 
@@ -35,6 +36,10 @@ def main(args=None):
     args = parser.parse_args(args=args)
     check_args(parser, args)
     kwargs = args.__dict__
+
+    logger.remove()
+    logger.configure(handlers=[{"sink": sys.stderr, "level": kwargs.pop("log_level")}])
+    logger.enable("aria2p")
 
     api = API(Client(host=kwargs.pop("host"), port=kwargs.pop("port"), secret=kwargs.pop("secret")))
 
@@ -103,6 +108,15 @@ def get_parser():
     )
     global_options.add_argument(
         "-s", "--secret", dest="secret", default="", help="Secret token to use to connect to the remote server."
+    )
+    global_options.add_argument(
+        "-L",
+        "--log-level",
+        dest="log_level",
+        default="ERROR",
+        help="Log level to use",
+        choices=("TRACE", "DEBUG", "INFO", "SUCCESS", "WARNING", "ERROR", "CRITICAL"),
+        type=str.upper,
     )
 
     # ========= SUBPARSERS ========= #

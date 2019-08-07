@@ -8,12 +8,15 @@ If you read this message, you probably want to learn about the library and not t
 please refer to the README.md included in this package to get the link to the official documentation.
 """
 
+from loguru import logger
 
 from .api import API
 from .client import Client, ClientException
 from .downloads import BitTorrent, Download, File
 from .options import Options
 from .stats import Stats
+
+logger.disable("aria2p")
 
 __all__ = ["API", "ClientException", "Client", "Download", "BitTorrent", "File", "Options", "Stats"]
 
@@ -22,6 +25,9 @@ __all__ = ["API", "ClientException", "Client", "Download", "BitTorrent", "File",
 # TODO: handle both str and pathlib.Path for paths consistently
 # TODO: add command "add" for normal downloads!!
 # TODO: add "--options" options for "add" commands
+# TODO: in API, support download arguments to be both Download or str (GID)?
+# TODO: add clean parameter for api.move_files method (to clean .aria2 files)
+# TODO: add value verification for options (see man page)
 
 # Roadmap:
 # - feature: Ability to hide metadata downloads (magnet URIs)

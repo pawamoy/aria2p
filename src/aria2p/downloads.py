@@ -5,6 +5,8 @@ torrent files, files and downloads in aria2c.
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from loguru import logger
+
 from .client import ClientException
 from .utils import bool_or_value, human_readable_bytes, human_readable_timedelta
 
@@ -244,8 +246,9 @@ class Download:
                     continue
                 try:
                     relative_path = file.path.relative_to(self.dir)
-                except ValueError:
-                    pass  # TODO: log
+                except ValueError as e:
+                    logger.warning(f"Can't determine file path '{file.path}' relative to '{self.dir}'")
+                    logger.opt(exception=True).trace(e)
                 else:
                     path = self.dir / relative_path.parts[0]
                     if path not in paths:
@@ -517,8 +520,9 @@ class Download:
             for gid in self.followed_by_ids:
                 try:
                     result.append(self.api.get_download(gid))
-                except ClientException:
-                    pass
+                except ClientException as e:
+                    logger.warning(f"Can't find download with GID {gid}, try to update download {self.gid} ({id(self)}")
+                    logger.opt(exception=True).trace(e)
             self._followed_by = result
         return self._followed_by
 
@@ -541,8 +545,12 @@ class Download:
         if not self._following:
             try:
                 self._following = self.api.get_download(self.following_id)
-            except ClientException:
-                return None
+            except ClientException as e:
+                logger.warning(
+                    f"Can't find download with GID {self.following_id}, try to update download {self.gid} ({id(self)}"
+                )
+                logger.opt(exception=True).trace(e)
+                self._following = None
         return self._following
 
     @property
@@ -566,8 +574,12 @@ class Download:
         if not self._belongs_to:
             try:
                 self._belongs_to = self.api.get_download(self.belongs_to_id)
-            except ClientException:
-                return None
+            except ClientException as e:
+                logger.warning(
+                    f"Can't find download with GID {self.belongs_to_id}, try to update download {self.gid} ({id(self)}"
+                )
+                logger.opt(exception=True).trace(e)
+                self._belongs_to = None
         return self._belongs_to
 
     @property
