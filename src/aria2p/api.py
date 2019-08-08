@@ -208,7 +208,7 @@ class API:
 
     def get_downloads(self, gids=None):
         """
-        Get a list :class:`~aria2p.downloads.Download` object thanks to their GIDs.
+        Get a list of :class:`~aria2p.downloads.Download` object thanks to their GIDs.
 
         Args:
             gids (list of str): the GIDs of the downloads to get. If None, return all the downloads.

@@ -130,12 +130,13 @@ Commands:
                         Automatically purge completed/removed/failed
                         downloads.
     call                Call a remote method through the JSON-RPC client.
-    pause               Pause downloads.
+    pause (stop)        Pause downloads.
     pause-all           Pause all downloads.
     purge (clear)       Purge downloads.
-    remove (rm)         Remove downloads.
+    remove (rm, del, delete)
+                        Remove downloads.
     remove-all          Remove all downloads.
-    resume              Resume downloads.
+    resume (start)      Resume downloads.
     resume-all          Resume all downloads.
     show                Show the download progression.
 
@@ -175,6 +176,8 @@ Commands:
 (e.g. instead of `pause-all`, use `pause -a`). These commands will be removed in version 0.5.0.
 
 
+---
+
 ### `add-magnet`
 ```
 usage: aria2p add-magnet [-h] uri
@@ -190,6 +193,8 @@ optional arguments:
 ```
 
 
+
+---
 
 ### `add-metalink`
 ```
@@ -207,6 +212,8 @@ optional arguments:
 
 
 
+---
+
 ### `add-torrent`
 ```
 usage: aria2p add-torrent [-h] torrent_file
@@ -223,6 +230,8 @@ optional arguments:
 
 
 
+---
+
 ### `autopurge`
 ```
 usage: aria2p autopurge [-h]
@@ -235,6 +244,8 @@ optional arguments:
 ```
 
 
+
+---
 
 ### `call`
 ```
@@ -347,6 +358,8 @@ $ aria2p call purge_download_result
 ```
 
 
+---
+
 ### `pause`
 ```
 usage: aria2p pause [-h] [-a] [-f] [gids [gids ...]]
@@ -365,6 +378,8 @@ optional arguments:
 
 
 
+---
+
 ### `pause-all`
 ```
 usage: aria2p pause-all [-h] [-f]
@@ -378,6 +393,8 @@ optional arguments:
 ```
 
 
+
+---
 
 ### `purge`
 ```
@@ -395,6 +412,8 @@ optional arguments:
 ```
 
 
+
+---
 
 ### `remove`
 ```
@@ -414,6 +433,8 @@ optional arguments:
 
 
 
+---
+
 ### `remove-all`
 ```
 usage: aria2p remove-all [-h] [-f]
@@ -427,6 +448,8 @@ optional arguments:
 ```
 
 
+
+---
 
 ### `resume`
 ```
@@ -445,6 +468,8 @@ optional arguments:
 
 
 
+---
+
 ### `resume-all`
 ```
 usage: aria2p resume-all [-h]
@@ -457,6 +482,8 @@ optional arguments:
 ```
 
 
+
+---
 
 ### `show`
 ```
