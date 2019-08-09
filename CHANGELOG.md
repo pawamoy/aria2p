@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.2.5](https://github.com/pawamoy/aria2p/releases/tag/v0.2.5) ([compare](https://github.com/pawamoy/aria2p/compare/v0.2.4...v0.2.5)) - 2019-08-09
+
+### Fixed
+- Use path for name when download is metadata ([3523950](https://github.com/pawamoy/aria2p/commit/3523950a79cf316b49c860b2f8e48d406f8aaaec)).
+
 ## [v0.2.4](https://github.com/pawamoy/aria2p/releases/tag/v0.2.4) ([compare](https://github.com/pawamoy/aria2p/compare/v0.2.3...v0.2.4)) - 2019-08-09
 
 ### Fixed
