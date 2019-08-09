@@ -28,6 +28,7 @@ __all__ = ["API", "ClientException", "Client", "Download", "BitTorrent", "File",
 # TODO: in API, support download arguments to be both Download or str (GID)?
 # TODO: add clean parameter for api.move_files method (to clean .aria2 files)
 # TODO: add value verification for options (see man page)
+# TODO: check_args must check that commands like rm have arguments
 
 # Roadmap:
 # - feature: Ability to hide metadata downloads (magnet URIs)
