@@ -219,6 +219,8 @@ class Download:
         if not self._name:
             if self.bittorrent and self.bittorrent.info:
                 self._name = self.bittorrent.info["name"]
+            elif self.files[0].is_metadata:
+                self._name = str(self.files[0].path)
             else:
                 file_path = str(self.files[0].path.absolute())
                 dir_path = str(self.dir.absolute())
