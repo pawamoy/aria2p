@@ -225,7 +225,10 @@ class Download:
                 if file_path.startswith(dir_path):
                     self._name = Path(file_path[len(dir_path) + 1 :]).parts[0]
                 else:
-                    self._name = self.files[0].uris[0]["uri"].split("/")[-1]
+                    try:
+                        self._name = self.files[0].uris[0]["uri"].split("/")[-1]
+                    except IndexError:
+                        pass
         return self._name
 
     @property
