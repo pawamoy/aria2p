@@ -244,6 +244,22 @@ class TestDownloadClass:
     def test_name(self):
         assert self.download.name == "dl"
 
+    def test_name_bittorrent(self):
+        # TODO
+        pass
+
+    def test_name_metadata(self):
+        # TODO
+        pass
+
+    def test_name_filepath(self):
+        # TODO
+        pass
+
+    def test_name_uri(self):
+        # TODO
+        pass
+
     def test_num_pieces(self):
         assert self.download.num_pieces == 1994
 
