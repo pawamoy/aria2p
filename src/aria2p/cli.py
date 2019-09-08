@@ -18,7 +18,6 @@ Also see http://click.pocoo.org/5/setuptools/#setuptools-integration.
 import argparse
 import json
 import sys
-import warnings
 
 import requests
 from loguru import logger
@@ -35,12 +34,13 @@ def main(args=None):
 
     parser = get_parser()
     args = parser.parse_args(args=args)
-    check_args(parser, args)
     kwargs = args.__dict__
 
     logger.remove()
     logger.configure(handlers=[{"sink": sys.stderr, "level": kwargs.pop("log_level")}])
     logger.enable("aria2p")
+
+    check_args(parser, args)
 
     api = API(Client(host=kwargs.pop("host"), port=kwargs.pop("port"), secret=kwargs.pop("secret")))
 
@@ -98,10 +98,9 @@ def check_args(parser, args):
         elif args.do_all and args.gids:
             subparser[args.subcommand].error("argument -a/--all: not allowed with arguments gids")
     elif (args.subcommand or "").endswith("-all"):
-        warnings.warn(
-            f"Subcommand '{args.subcommand}' is deprecated in favor of '{args.subcommand[:-4]} --all'.\n"
-            f"It will be removed in version 0.5.0, please update your scripts/code.",
-            DeprecationWarning,
+        logger.warning(
+            f"Subcommand '{args.subcommand}' is deprecated in favor of '{args.subcommand[:-4]} --all'. "
+            f"It will be removed in version 0.5.0, please update your scripts/code."
         )
 
 
@@ -130,7 +129,7 @@ def get_parser():
         "-L",
         "--log-level",
         dest="log_level",
-        default="ERROR",
+        default="WARNING",
         help="Log level to use",
         choices=("TRACE", "DEBUG", "INFO", "SUCCESS", "WARNING", "ERROR", "CRITICAL"),
         type=str.upper,
