@@ -241,6 +241,7 @@ versioning
 viewcode
 wcwidth
 weakref
+websocket
 websupport
 wikipedia
 www
