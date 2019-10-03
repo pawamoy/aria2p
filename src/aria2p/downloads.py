@@ -689,14 +689,14 @@ class Download:
         except ZeroDivisionError:
             return float("Inf")
 
-    def eta_string(self):
+    def eta_string(self, precision=0):
         """Return the Estimated Time of Arrival as a string."""
         eta = self.eta
 
         if eta == float("Inf"):
             return "-"
 
-        return human_readable_timedelta(eta)
+        return human_readable_timedelta(eta, precision=precision)
 
     def move(self, pos):
         """

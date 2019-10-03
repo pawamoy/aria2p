@@ -33,7 +33,7 @@ class SignalHandler:
         self.triggered = True
 
 
-def human_readable_timedelta(value):
+def human_readable_timedelta(value, precision=0):
     """Return a human-readable time delta as a string."""
     pieces = []
 
@@ -55,7 +55,10 @@ def human_readable_timedelta(value):
     if seconds > 0 or not pieces:
         pieces.append(f"{seconds}s")
 
-    return "".join(pieces)
+    if not precision:
+        return "".join(pieces)
+    else:
+        return "".join(pieces[:precision])
 
 
 def human_readable_bytes(value, digits=2, delim="", postfix=""):
