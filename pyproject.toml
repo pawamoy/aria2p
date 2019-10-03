@@ -22,6 +22,7 @@ include = [
 python = "^3.6"
 requests = "*"
 loguru = "^0.2.5"
+websocket_client = "^0.56.0"
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.5"
