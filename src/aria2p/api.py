@@ -632,11 +632,11 @@ class API:
         """
         Start listening to aria2 notifications via WebSocket.
 
-        This method differs from :method:`~aria2p.client.Client.listen_to_notifications` in that it expects callbacks
+        This method differs from :meth:`~aria2p.client.Client.listen_to_notifications` in that it expects callbacks
         accepting two arguments, "api" and "gid", instead of only "gid". Accepting "api" allows to use the high-level
         methods of the API class.
 
-        Stop listening to notifications with the :method:`~aria2p.api.API.stop_listening` method.
+        Stop listening to notifications with the :meth:`~aria2p.api.API.stop_listening` method.
 
         Args:
             threaded (bool): Whether to start the listening loop in a thread or not (non-blocking or blocking).
@@ -661,8 +661,9 @@ class API:
         """
         Stop listening to notifications.
 
-        If the listening loop was threaded, this method will wait for the thread to finish. The time it takes
-        for the thread to finish will depend on the timeout given while calling ``listen_to_notifications``.
+        If the listening loop was threaded, this method will wait for the thread to finish.
+        The time it takes for the thread to finish will depend on the timeout given while calling
+        :meth:`~aria2p.api.API.listen_to_notifications`.
         """
         self.client.stop_listening()
         if self.listener:

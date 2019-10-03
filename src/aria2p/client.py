@@ -1646,7 +1646,7 @@ class Client:
         It accepts callbacks as arguments, which are functions accepting one parameter called "gid", for each type
         of notification.
 
-        Stop listening to notifications with the :method:`~aria2p.client.Client.stop_listening` method.
+        Stop listening to notifications with the :meth:`~aria2p.client.Client.stop_listening` method.
 
         Args:
             on_download_start (func): Callback for the "aria2.onDownloadStart" event.
@@ -1719,7 +1719,7 @@ class Client:
         Stop listening to notifications.
 
         Although this method returns instantly, the actual listening loop can take some time to break out,
-        depending on the timeout that was given to it.
+        depending on the timeout that was given to :meth:`~aria2p.client.Client.listen_to_notifications`.
         """
         self.listening = False
 
