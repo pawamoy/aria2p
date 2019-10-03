@@ -22,7 +22,7 @@ import sys
 import requests
 from loguru import logger
 
-from aria2p import Download
+from aria2p import Download, enable_logger
 
 from .api import API
 from .client import DEFAULT_HOST, DEFAULT_PORT, Client, ClientException
@@ -36,9 +36,7 @@ def main(args=None):
     args = parser.parse_args(args=args)
     kwargs = args.__dict__
 
-    logger.remove()
-    logger.configure(handlers=[{"sink": sys.stderr, "level": kwargs.pop("log_level")}])
-    logger.enable("aria2p")
+    enable_logger(kwargs.pop("log_level"))
 
     check_args(parser, args)
 
