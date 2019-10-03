@@ -3,10 +3,13 @@ This module defines the ClientException and Client classes, which are used to co
 process through the JSON-RPC protocol.
 """
 
-
 import json
 
 import requests
+import websocket
+from loguru import logger
+
+from .utils import SignalHandler
 
 DEFAULT_ID = -1
 DEFAULT_HOST = "http://localhost"
@@ -25,6 +28,22 @@ JSONRPC_CODES = {
     JSONRPC_INVALID_PARAMS: "Invalid method parameter(s).",
     JSONRPC_INTERNAL_ERROR: "Internal JSON-RPC error.",
 }
+
+NOTIFICATION_START = "aria2.onDownloadStart"
+NOTIFICATION_PAUSE = "aria2.onDownloadPause"
+NOTIFICATION_STOP = "aria2.onDownloadStop"
+NOTIFICATION_COMPLETE = "aria2.onDownloadComplete"
+NOTIFICATION_ERROR = "aria2.onDownloadError"
+NOTIFICATION_BT_COMPLETE = "aria2.onBtDownloadComplete"
+
+NOTIFICATION_TYPES = [
+    NOTIFICATION_START,
+    NOTIFICATION_PAUSE,
+    NOTIFICATION_STOP,
+    NOTIFICATION_COMPLETE,
+    NOTIFICATION_ERROR,
+    NOTIFICATION_BT_COMPLETE,
+]
 
 
 class ClientException(Exception):
@@ -161,6 +180,7 @@ class Client:
         self.host = host
         self.port = port
         self.secret = secret
+        self.listening = False
 
     def __str__(self):
         return self.server
@@ -169,6 +189,11 @@ class Client:
     def server(self):
         """Property to return the full remote process / server address."""
         return f"{self.host}:{self.port}/jsonrpc"
+
+    @property
+    def ws_server(self):
+        """Property to return the full WebSocket remote server address."""
+        return f"ws{self.host[4:]}:{self.port}/jsonrpc"
 
     # utils
     def call(self, method, params=None, msg_id=None, insert_secret=True):
@@ -293,6 +318,10 @@ class Client:
         return requests.post(self.server, data=payload).json()
 
     @staticmethod
+    def response_as_exception(response):
+        return ClientException(response["error"]["code"], response["error"]["message"])
+
+    @staticmethod
     def res_or_raise(response):
         """
         Return the result of the response, or raise an error with code and message.
@@ -307,9 +336,9 @@ class Client:
             ClientException: when the response contains an error (client/server error).
                 See the :class:`~aria2p.client.ClientException` class.
         """
-        if "result" in response:
-            return response["result"]
-        raise ClientException(response["error"]["code"], response["error"]["message"])
+        if "error" in response:
+            raise Client.response_as_exception(response)
+        return response["result"]
 
     @staticmethod
     def get_payload(method, params=None, msg_id=None, as_json=True):
@@ -1598,3 +1627,152 @@ class Client:
             ['aria2.onDownloadStart', 'aria2.onDownloadPause', ...
         """
         return self.call(self.LIST_NOTIFICATIONS)
+
+    def listen_to_notifications(
+        self,
+        on_download_start=None,
+        on_download_pause=None,
+        on_download_stop=None,
+        on_download_complete=None,
+        on_download_error=None,
+        on_bt_download_complete=None,
+        timeout=5,
+        handle_signals=True,
+    ):
+        """
+        Start listening to aria2 notifications via WebSocket.
+
+        This method opens a WebSocket connection to the server and wait for notifications (or events) to be received.
+        It accepts callbacks as arguments, which are functions accepting one parameter called "gid", for each type
+        of notification.
+
+        Stop listening to notifications with the :method:`~aria2p.client.Client.stop_listening` method.
+
+        Args:
+            on_download_start (func): Callback for the "aria2.onDownloadStart" event.
+            on_download_pause (func): Callback for the "aria2.onDownloadPause" event.
+            on_download_stop (func): Callback for the "aria2.onDownloadStop" event.
+            on_download_complete (func): Callback for the "aria2.onDownloadComplete" event.
+            on_download_error (func): Callback for the "aria2.onDownloadError" event.
+            on_bt_download_complete (func): Callback for the "aria2.onBtDownloadComplete" event.
+            timeout (int): Timeout when waiting for data to be received. Use a small value for faster reactivity
+                when stopping to listen. Default is 5 seconds.
+            handle_signals (bool): Whether to add signal handlers to gracefully stop the loop on SIGTERM and SIGINT.
+        """
+        self.listening = True
+        ws_server = self.ws_server
+
+        logger.debug(f"Notifications ({ws_server}): opening WebSocket with timeout={timeout}")
+        try:
+            ws = websocket.create_connection(ws_server, timeout=timeout)
+        except ConnectionRefusedError:
+            logger.error(f"Notifications ({ws_server}): connection refused. Is the server running?")
+            return
+
+        stopped = SignalHandler(["SIGTERM", "SIGINT"]) if handle_signals else False
+
+        while not stopped:
+            try:
+                logger.debug(f"Notifications ({ws_server}): waiting for data over WebSocket")
+                message = ws.recv()
+            except websocket.WebSocketConnectionClosedException:
+                logger.error(f"Notifications ({ws_server}): connection to server was closed. Is the server running?")
+                break
+            except websocket.WebSocketTimeoutException:
+                logger.debug(f"Notifications ({ws_server}): reached timeout ({timeout}s)")
+            else:
+                notification = Notification.get_or_raise(json.loads(message))
+                for notification_type, callback in (
+                    (NOTIFICATION_START, on_download_start),
+                    (NOTIFICATION_PAUSE, on_download_pause),
+                    (NOTIFICATION_STOP, on_download_stop),
+                    (NOTIFICATION_COMPLETE, on_download_complete),
+                    (NOTIFICATION_ERROR, on_download_error),
+                    (NOTIFICATION_BT_COMPLETE, on_bt_download_complete),
+                ):
+                    if notification.type == notification_type:
+                        logger.info(
+                            f"Notifications ({ws_server}): received {notification_type} with gid={notification.gid}"
+                        )
+                        if callable(callback):
+                            logger.debug(f"Notifications ({ws_server}): calling {callback} with gid={notification.gid}")
+                            callback(notification.gid)
+                        else:
+                            logger.debug(
+                                f"Notifications ({ws_server}): no callback given for type " + notification.type
+                            )
+                        break
+
+            if not self.listening:
+                logger.debug(f"Notifications ({ws_server}): stopped listening")
+                break
+
+        if stopped:
+            logger.debug("Notifications: stopped listening after receiving a signal")
+            self.listening = False
+
+        logger.debug(f"Notifications ({ws_server}): closing WebSocket")
+        ws.close()
+
+    def stop_listening(self):
+        """
+        Stop listening to notifications.
+
+        Although this method returns instantly, the actual listening loop can take some time to break out,
+        depending on the timeout that was given to it.
+        """
+        self.listening = False
+
+
+class Notification:
+    """
+    A helper class for notifications.
+
+    You should not need to use this class. It simply provides methods to instantiate a notification with a
+    message received from the server through a WebSocket, or to raise a ClientException if the message is invalid.
+    """
+
+    def __init__(self, type, gid):
+        f"""
+        Initialization method.
+
+        Args:
+            type (str): The notification type. Possible types are {",".join(NOTIFICATION_TYPES)}.
+            gid (str): The GID of the download related to the notification.
+        """
+
+        self.type = type
+        self.gid = gid
+
+    @staticmethod
+    def get_or_raise(message):
+        """
+        Static method to raise a ClientException when the message is invalid or return a Notification instance.
+
+        Args:
+            message (dict): The JSON-loaded message received over WebSocket.
+
+        Returns:
+            Notification: a Notification instance if the message is valid.
+
+        Raises:
+            ClientException: when the message contains an error.
+        """
+        if "error" in message:
+            raise Client.response_as_exception(message)
+        return Notification.from_message(message)
+
+    @staticmethod
+    def from_message(message):
+        """
+        Static method to return an instance of Notification.
+
+        This method expects a valid message (not containing errors).
+
+        Args:
+            message (dict): A valid message received over WebSocket.
+
+        Returns:
+            Notification: a Notification instance.
+        """
+        return Notification(type=message["method"], gid=message["params"][0]["gid"])

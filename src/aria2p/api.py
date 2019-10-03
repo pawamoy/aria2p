@@ -3,6 +3,7 @@ This module defines the API class, which makes use of a JSON-RPC client to provi
 interact easily with a remote aria2c process.
 """
 import shutil
+import threading
 from base64 import b64encode
 from pathlib import Path
 
@@ -35,6 +36,7 @@ class API:
         if client is None:
             client = Client()
         self.client = client
+        self.listener = None
 
     def add_magnet(self, magnet_uri, options=None, position=None):
         """
@@ -625,3 +627,45 @@ class API:
             else:
                 results.append(False)
         return results
+
+    def listen_to_notifications(self, threaded=False, **kwargs):
+        """
+        Start listening to aria2 notifications via WebSocket.
+
+        This method differs from :method:`~aria2p.client.Client.listen_to_notifications` in that it expects callbacks
+        accepting two arguments, "api" and "gid", instead of only "gid". Accepting "api" allows to use the high-level
+        methods of the API class.
+
+        Stop listening to notifications with the :method:`~aria2p.api.API.stop_listening` method.
+
+        Args:
+            threaded (bool): Whether to start the listening loop in a thread or not (non-blocking or blocking).
+        """
+
+        def closure(callback):
+            return (lambda gid: callback(self, gid)) if callable(callback) else None
+
+        def run():
+            self.client.listen_to_notifications(
+                **{key: closure(value) if key.startswith("on_") else value for key, value in kwargs.items()}
+            )
+
+        if threaded:
+            if "handle_signals" in kwargs:
+                kwargs["handle_signals"] = False
+            self.listener = threading.Thread(target=run)
+            self.listener.start()
+        else:
+            run()
+
+    def stop_listening(self):
+        """
+        Stop listening to notifications.
+
+        If the listening loop was threaded, this method will wait for the thread to finish. The time it takes
+        for the thread to finish will depend on the timeout given while calling ``listen_to_notifications``.
+        """
+        self.client.stop_listening()
+        if self.listener:
+            self.listener.join()
+            self.listener = None

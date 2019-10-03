@@ -1,8 +1,36 @@
 """
 Utils module.
 
-This module contains simple utility functions.
+This module contains simple utility classes and functions.
 """
+import signal
+
+from loguru import logger
+
+
+class SignalHandler:
+    """A helper class to handle signals."""
+
+    def __init__(self, signals):
+        """
+        Initialization method.
+
+        Args:
+            signals (list of str): List of signals names as found in the ``signal`` module (example: SIGTERM).
+        """
+        logger.debug("Signal handler: handling signals " + ", ".join(signals))
+        self.triggered = False
+        for sig in signals:
+            signal.signal(signal.Signals[sig], self.trigger)
+
+    def __bool__(self):
+        """Return True when one of the given signal was received, False otherwise."""
+        return self.triggered
+
+    def trigger(self, signum, frame):
+        """Mark this instance as 'triggered' (a specified signal was received)."""
+        logger.debug(f"Signal handler: caught signal {signal.Signals(signum).name} ({signum})")
+        self.triggered = True
 
 
 def human_readable_timedelta(value):
