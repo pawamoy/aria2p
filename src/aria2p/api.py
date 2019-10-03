@@ -651,8 +651,7 @@ class API:
             )
 
         if threaded:
-            if "handle_signals" in kwargs:
-                kwargs["handle_signals"] = False
+            kwargs["handle_signals"] = False
             self.listener = threading.Thread(target=run)
             self.listener.start()
         else:
