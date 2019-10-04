@@ -20,7 +20,7 @@ from asciimatics.event import KeyboardEvent
 from asciimatics.exceptions import ResizeScreenError, StopApplication
 from asciimatics.scene import Scene
 from asciimatics.screen import Screen
-from asciimatics.widgets import Frame, Label, Layout, MultiColumnListBox, TextBox, Widget
+from asciimatics.widgets import Frame, Label, Layout, MultiColumnListBox, Widget
 
 
 def bring_up(api):
@@ -124,4 +124,3 @@ def bring_up(api):
             break
         except ResizeScreenError:
             pass
-
