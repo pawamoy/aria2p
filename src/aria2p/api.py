@@ -13,6 +13,7 @@ from .client import Client, ClientException
 from .downloads import Download
 from .options import Options
 from .stats import Stats
+from .utils import Queue
 
 
 class API:
@@ -37,6 +38,7 @@ class API:
             client = Client()
         self.client = client
         self.listener = None
+        self._queue = None
 
     def add_magnet(self, magnet_uri, options=None, position=None):
         """
@@ -218,6 +220,7 @@ class API:
         Returns:
             list of :class:`~aria2p.downloads.Download` instances: the retrieved download objects.
         """
+        # TODO: batch/multicall candidate
         downloads = []
 
         if gids:
@@ -232,6 +235,12 @@ class API:
 
         return downloads
 
+    @property
+    def download_queue(self):
+        if self._queue is None:
+            self._queue = Queue(self.get_downloads())
+        return self._queue
+
     def move(self, download, pos):
         """
         Move a download in the queue, relatively to its current position.
@@ -243,7 +252,11 @@ class API:
         Returns:
             int: The new position of the download.
         """
-        return self.client.change_position(download.gid, pos, "POS_CUR")
+        new_position = self.client.change_position(download.gid, pos, "POS_CUR")
+        if new_position != self.download_queue.index(download):
+            self.download_queue.move(download, new_position)
+            download.position = new_position
+        return new_position
 
     def move_to(self, download, pos):
         """

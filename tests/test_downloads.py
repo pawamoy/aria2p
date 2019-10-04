@@ -374,6 +374,12 @@ class TestDownloadClass:
     def test_verify_integrity_pending(self):
         assert self.download.verify_integrity_pending is None
 
+    def test_position(self):
+        with Aria2Server(port=7417) as server:
+            self.download.api = server.api
+            with pytest.raises(KeyError):
+                print(self.download.position)
+
 
 class TestFileClass:
     def setup_method(self):

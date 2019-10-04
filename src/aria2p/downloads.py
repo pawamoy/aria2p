@@ -191,12 +191,16 @@ class Download:
         self._followed_by = None
         self._following = None
         self._belongs_to = None
+        self._position = None
 
     def __str__(self):
         return self.name
 
     def __eq__(self, other):
         return self.gid == other.gid
+
+    def __hash__(self):
+        return hash(self.gid)
 
     def update(self):
         """Method to update the internal values of the download with more recent values."""
@@ -234,6 +238,10 @@ class Download:
         return self._name
 
     @property
+    def position(self):
+        return self.api.download_queue.index(self)
+
+    @property
     def control_file_path(self):
         return self.dir / (self.name + ".aria2")
 
@@ -250,6 +258,7 @@ class Download:
         but rather entire directories at once when possible.
 
         Examples:
+
             # download dir is /a/b.
             >>> self.files
             ["/a/b/c/1.txt", "/a/b/c/2.txt", "/a/b/3.txt"]
