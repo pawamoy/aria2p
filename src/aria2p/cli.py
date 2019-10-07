@@ -26,6 +26,7 @@ from aria2p import Download, enable_logger
 
 from .api import API
 from .client import DEFAULT_HOST, DEFAULT_PORT, Client, ClientException
+from .interface import Interface
 
 
 # ============ MAIN FUNCTION ============ #
@@ -56,6 +57,7 @@ def main(args=None):
     subcommands = {
         None: subcommand_show,
         "show": subcommand_show,
+        "top": subcommand_top,
         "call": subcommand_call,
         "add-magnet": subcommand_add_magnet,
         "add-torrent": subcommand_add_torrent,
@@ -154,6 +156,7 @@ def get_parser():
     resume_parser = subparser("resume", "Resume downloads.", aliases=["start"])
     subparser("resume-all", "Resume all downloads.")
     subparser("show", "Show the download progression.")
+    subparser("top", "Launch the top-like interactive interface.")
 
     # ========= CALL PARSER ========= #
     call_parser.add_argument(
@@ -293,6 +296,13 @@ def subcommand_show(api):
             f"{download.name}"
         )
 
+    return 0
+
+
+# ============ TOP SUBCOMMAND ============ #
+def subcommand_top(api):
+    interface = Interface(api)
+    interface.run()
     return 0
 
 
