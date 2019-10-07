@@ -14,12 +14,12 @@ This module contains all the top-like interface code.
 #
 # Well, asciimatics also provides a "top" example, so...
 
-from collections import defaultdict
 import time
-from loguru import logger
+from collections import defaultdict
 
 from asciimatics.event import KeyboardEvent
-from asciimatics.screen import Screen, ManagedScreen
+from asciimatics.screen import ManagedScreen, Screen
+from loguru import logger
 
 from .api import API
 
@@ -42,7 +42,7 @@ class OffsetPrinter:
         else:
             text_length = len(text)
             if text_length > self.offset:
-                new_text = text[self.offset:]
+                new_text = text[self.offset :]
                 written = len(new_text)
                 self.screen.print_at(new_text, *args, **kwargs)
                 self.offset = 0
