@@ -139,6 +139,7 @@ Commands:
     resume (start)      Resume downloads.
     resume-all          Resume all downloads.
     show                Show the download progression.
+    top                 Launch the top-like interactive interface.
 
 ```
 
@@ -171,6 +172,7 @@ Commands:
 - [`resume`](#resume)
 - [`resume-all`](#resume-all)
 - [`show`](#show)
+- [`top`](#top)
 
 **Warning:** commands ending with `-all` are deprecated. Please use their equivalent with the `-a` or `--all` option
 (e.g. instead of `pause-all`, use `pause -a`). These commands will be removed in version 0.5.0.
@@ -490,6 +492,21 @@ optional arguments:
 usage: aria2p show [-h]
 
 Show the download progression.
+
+optional arguments:
+  -h, --help  Show this help message and exit.
+
+```
+
+
+
+---
+
+### `top`
+```
+usage: aria2p top [-h]
+
+Launch the top-like interactive interface.
 
 optional arguments:
   -h, --help  Show this help message and exit.

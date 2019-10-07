@@ -5,6 +5,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`poetry`](https://poetry.eustace.io/)
 
 ### Direct dependencies
+[`asciimatics`](https://github.com/peterbrittain/asciimatics) |
 [`bandit`](https://bandit.readthedocs.io/en/latest/) |
 [`black`](https://github.com/ambv/black) |
 [`flake8`](https://gitlab.com/pycqa/flake8) |
@@ -23,7 +24,8 @@ These projects were used to build `aria2p`. **Thank you!**
 [`Sphinx`](http://sphinx-doc.org/) |
 [`sphinx-rtd-theme`](https://github.com/rtfd/sphinx_rtd_theme/) |
 [`sphinxcontrib-spelling`](https://github.com/sphinx-contrib/spelling) |
-[`toml`](https://github.com/uiri/toml)
+[`toml`](https://github.com/uiri/toml) |
+[`websocket_client`](https://github.com/websocket-client/websocket-client.git)
 
 ### Indirect dependencies
 [`alabaster`](https://alabaster.readthedocs.io) |
@@ -47,6 +49,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`dparse`](https://github.com/jayfk/dparse) |
 [`entrypoints`](https://github.com/takluyver/entrypoints) |
 [`execnet`](http://codespeak.net/execnet) |
+[`future`](https://python-future.org) |
 [`gitdb2`](https://github.com/gitpython-developers/gitdb) |
 [`GitPython`](https://github.com/gitpython-developers/GitPython) |
 [`idna`](https://github.com/kjd/idna) |
@@ -62,17 +65,21 @@ These projects were used to build `aria2p`. **Thank you!**
 [`pbr`](https://docs.openstack.org/pbr/latest/) |
 [`pexpect`](https://pexpect.readthedocs.io/) |
 [`pickleshare`](https://github.com/pickleshare/pickleshare) |
+[`Pillow`](http://python-pillow.org) |
 [`pluggy`](https://github.com/pytest-dev/pluggy) |
 [`prompt-toolkit`](https://github.com/jonathanslenders/python-prompt-toolkit) |
 [`ptyprocess`](https://github.com/pexpect/ptyprocess) |
 [`py`](http://py.readthedocs.io/) |
 [`pycodestyle`](https://pycodestyle.readthedocs.io/) |
 [`pyenchant`](https://pythonhosted.org/pyenchant/) |
+[`pyfiglet`](https://github.com/pwaller/pyfiglet) |
 [`pyflakes`](https://github.com/PyCQA/pyflakes) |
 [`Pygments`](http://pygments.org/) |
 [`pyparsing`](https://github.com/pyparsing/pyparsing/) |
+[`pypiwin32`]() |
 [`pytest-forked`](https://github.com/pytest-dev/pytest-forked) |
 [`pytz`](http://pythonhosted.org/pytz) |
+[`pywin32`](https://github.com/mhammond/pywin32) |
 [`PyYAML`](https://github.com/yaml/pyyaml) |
 [`six`](https://github.com/benjaminp/six) |
 [`smmap2`](https://github.com/gitpython-developers/smmap) |
@@ -82,7 +89,8 @@ These projects were used to build `aria2p`. **Thank you!**
 [`termcolor`](http://pypi.python.org/pypi/termcolor) |
 [`traitlets`](http://ipython.org) |
 [`urllib3`](https://urllib3.readthedocs.io/) |
-[`wcwidth`](https://github.com/jquast/wcwidth)
+[`wcwidth`](https://github.com/jquast/wcwidth) |
+[`websocket-client`](https://github.com/websocket-client/websocket-client.git)
 
 **[More credits from the author](http://pawamoy.github.io/credits/)**
  
