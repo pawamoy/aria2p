@@ -683,17 +683,17 @@ class Download:
         """
         Return the Estimated Time of Arrival (a timedelta).
 
-        Return float("Inf") if unknown."""
+        Return timedelta.max if unknown."""
         try:
             return timedelta(seconds=int((self.total_length - self.completed_length) / self.download_speed))
         except ZeroDivisionError:
-            return float("Inf")
+            return timedelta.max
 
     def eta_string(self, precision=0):
         """Return the Estimated Time of Arrival as a string."""
         eta = self.eta
 
-        if eta == float("Inf"):
+        if eta == timedelta.max:
             return "-"
 
         return human_readable_timedelta(eta, precision=precision)
