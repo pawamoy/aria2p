@@ -16,8 +16,10 @@ Also see http://click.pocoo.org/5/setuptools/#setuptools-integration.
 """
 
 import argparse
+import importlib.util
 import json
 import sys
+from pathlib import Path
 
 import requests
 from loguru import logger
@@ -607,11 +609,11 @@ def subcommand_autopurge(api: API):
 
 # ============ LISTEN SUBCOMMAND ============ #
 def subcommand_listen(api: API, callbacks_module=None, event_types=None, timeout=5):
-    import importlib.util
-
     if not callbacks_module:
         print("aria2p: listen: Please provide the callback module file path with -c option", file=sys.stderr)
         return 1
+    elif isinstance(callbacks_module, Path):
+        callbacks_module = str(callbacks_module)
 
     if not event_types:
         event_types = ["start", "pause", "stop", "error", "complete", "btcomplete"]
