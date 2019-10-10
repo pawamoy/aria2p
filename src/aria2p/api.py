@@ -666,4 +666,4 @@ class API:
         self.client.stop_listening()
         if self.listener:
             self.listener.join()
-            self.listener = None
+        self.listener = None
