@@ -335,24 +335,24 @@ class API:
         for download in downloads:
             try:
                 removed_gid = remove_func(download.gid)
-            except ClientException as e:
+            except ClientException as error:
                 logger.debug(f"Failed to remove download {download.gid}")
-                logger.opt(exception=True).trace(e)
-                result.append(e)
+                logger.opt(exception=True).trace(error)
+                result.append(error)
             else:
                 result.append(True)
                 try:
                     self.client.remove_download_result(download.gid)
-                except ClientException as ee:
+                except ClientException as error2:
                     logger.debug(f"Failed to remove download result {download.gid}")
-                    logger.opt(exception=True).trace(ee)
+                    logger.opt(exception=True).trace(error2)
                 if removed_gid != download.gid:
                     logger.debug(f"Removed download GID#{removed_gid} is different than download GID#{download.gid}")
                     try:
                         self.client.remove_download_result(removed_gid)
-                    except ClientException as ee:
+                    except ClientException as error2:
                         logger.debug(f"Failed to remove download result {removed_gid}")
-                        logger.opt(exception=True).trace(ee)
+                        logger.opt(exception=True).trace(error2)
 
         return result
 
@@ -390,10 +390,10 @@ class API:
         for download in downloads:
             try:
                 pause_func(download.gid)
-            except ClientException as e:
+            except ClientException as error:
                 logger.debug(f"Failed to pause download {download.gid}")
-                logger.opt(exception=True).trace(e)
-                result.append(e)
+                logger.opt(exception=True).trace(error)
+                result.append(error)
             else:
                 result.append(True)
 
@@ -431,10 +431,10 @@ class API:
         for download in downloads:
             try:
                 self.client.unpause(download.gid)
-            except ClientException as e:
+            except ClientException as error:
                 logger.debug(f"Failed to resume download {download.gid}")
-                logger.opt(exception=True).trace(e)
-                result.append(e)
+                logger.opt(exception=True).trace(error)
+                result.append(error)
             else:
                 result.append(True)
 
@@ -471,10 +471,10 @@ class API:
         for download in downloads:
             try:
                 self.client.remove_download_result(download.gid)
-            except ClientException as e:
+            except ClientException as error:
                 logger.debug(f"Failed to purge download result {download.gid}")
-                logger.opt(exception=True).trace(e)
-                result.append(e)
+                logger.opt(exception=True).trace(error)
+                result.append(error)
             else:
                 result.append(True)
 

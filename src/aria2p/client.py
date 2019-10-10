@@ -1664,7 +1664,7 @@ class Client:
 
         logger.debug(f"Notifications ({ws_server}): opening WebSocket with timeout={timeout}")
         try:
-            ws = websocket.create_connection(ws_server, timeout=timeout)
+            socket = websocket.create_connection(ws_server, timeout=timeout)
         except ConnectionRefusedError:
             logger.error(f"Notifications ({ws_server}): connection refused. Is the server running?")
             return
@@ -1683,7 +1683,7 @@ class Client:
         while not stopped:
             try:
                 logger.debug(f"Notifications ({ws_server}): waiting for data over WebSocket")
-                message = ws.recv()
+                message = socket.recv()
             except websocket.WebSocketConnectionClosedException:
                 logger.error(f"Notifications ({ws_server}): connection to server was closed. Is the server running?")
                 break
@@ -1708,7 +1708,7 @@ class Client:
             self.listening = False
 
         logger.debug(f"Notifications ({ws_server}): closing WebSocket")
-        ws.close()
+        socket.close()
 
     def stop_listening(self):
         """
@@ -1728,16 +1728,16 @@ class Notification:
     message received from the server through a WebSocket, or to raise a ClientException if the message is invalid.
     """
 
-    def __init__(self, type, gid):
-        f"""
+    def __init__(self, event_type, gid):
+        """
         Initialization method.
 
         Args:
-            type (str): The notification type. Possible types are {",".join(NOTIFICATION_TYPES)}.
+            event_type (str): The notification type. Possible types are available in the NOTIFICATION_TYPES variable.
             gid (str): The GID of the download related to the notification.
         """
 
-        self.type = type
+        self.type = event_type
         self.gid = gid
 
     @staticmethod
@@ -1771,4 +1771,4 @@ class Notification:
         Returns:
             Notification: a Notification instance.
         """
-        return Notification(type=message["method"], gid=message["params"][0]["gid"])
+        return Notification(event_type=message["method"], gid=message["params"][0]["gid"])

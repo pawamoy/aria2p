@@ -50,8 +50,8 @@ def main(args=None):
     logger.debug("Testing connection")
     try:
         api.client.get_version()
-    except requests.ConnectionError as e:
-        print(f"[ERROR] {e}", file=sys.stderr)
+    except requests.ConnectionError as error:
+        print(f"[ERROR] {error}", file=sys.stderr)
         print(file=sys.stderr)
         print("Please make sure that an instance of aria2c is running with RPC mode enabled,", file=sys.stderr)
         print("and that you have provided the right host, port and secret token.", file=sys.stderr)
@@ -89,9 +89,9 @@ def main(args=None):
         logger.debug("Running subcommand " + subcommand)
     try:
         return subcommands.get(subcommand)(api, **kwargs)
-    except ClientException as e:
-        print(e.message, file=sys.stderr)
-        return e.code
+    except ClientException as error:
+        print(error.message, file=sys.stderr)
+        return error.code
 
 
 def check_args(parser, args):
@@ -145,9 +145,9 @@ def get_parser():
     subparsers = parser.add_subparsers(dest="subcommand", title="Commands", metavar="", prog="aria2p")
 
     def subparser(command, text, **kwargs):
-        p = subparsers.add_parser(command, add_help=False, help=text, description=text, **kwargs)
-        p.add_argument("-h", "--help", action="help", help=subcommand_help)
-        return p
+        sub = subparsers.add_parser(command, add_help=False, help=text, description=text, **kwargs)
+        sub.add_argument("-h", "--help", action="help", help=subcommand_help)
+        return sub
 
     add_magnet_parser = subparser("add-magnet", "Add a download with a Magnet URI.")
     add_metalink_parser = subparser("add-metalink", "Add a download with a Metalink file.")
@@ -612,7 +612,8 @@ def subcommand_listen(api: API, callbacks_module=None, event_types=None, timeout
     if not callbacks_module:
         print("aria2p: listen: Please provide the callback module file path with -c option", file=sys.stderr)
         return 1
-    elif isinstance(callbacks_module, Path):
+
+    if isinstance(callbacks_module, Path):
         callbacks_module = str(callbacks_module)
 
     if not event_types:

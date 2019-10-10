@@ -74,14 +74,14 @@ def human_readable_bytes(value, digits=2, delim="", postfix=""):
     Returns:
         str: the human-readable version of the bytes.
     """
-    unit = "B"
-    for u in ("KiB", "MiB", "GiB", "TiB"):
+    chosen_unit = "B"
+    for unit in ("KiB", "MiB", "GiB", "TiB"):
         if value > 1000:
             value /= 1024
-            unit = u
+            chosen_unit = unit
         else:
             break
-    return f"{value:.{digits}f}" + delim + unit + postfix
+    return f"{value:.{digits}f}" + delim + chosen_unit + postfix
 
 
 def bool_or_value(value):

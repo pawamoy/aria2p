@@ -42,6 +42,7 @@ sphinx = "^1.8"
 sphinxcontrib-spelling = "^4.2"
 sphinx-rtd-theme = "^0.4.2"
 toml = "^0.10.0"
+pylint = { git = "https://github.com/PyCQA/pylint" }
 
 [tool.poetry.scripts]
 aria2p = "aria2p.cli:main"
@@ -58,3 +59,16 @@ balanced_wrapping = true
 default_section = "THIRDPARTY"
 known_first_party = "aria2p"
 include_trailing_comma = true
+
+[tool.pylint.options]
+disable = """
+  bad-continuation,
+  too-many-lines,
+  too-many-public-methods,
+  too-many-locals,
+  too-many-statements,
+  too-many-arguments,
+  unused-argument,
+  too-many-instance-attributes
+"""
+max-line-length = "120"
