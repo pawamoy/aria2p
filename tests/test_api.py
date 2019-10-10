@@ -1,8 +1,9 @@
 import tempfile
+import threading
 import time
 from pathlib import Path
 
-from aria2p import Download
+from aria2p import API, Client, Download
 
 from . import (
     BUNSENLABS_MAGNET,
@@ -270,3 +271,43 @@ def test_move_files_method():
         # clean up
         target.unlink()
         tmp_dir.rmdir()
+
+
+def test_listen_to_notifications():
+    with Aria2Server(port=7127, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+        server.api.listen_to_notifications(threaded=True, timeout=1)
+    time.sleep(3)
+    assert not server.api.listener.is_alive()
+
+
+def test_listen_to_notifications_then_stop():
+    api = API(Client(port=7128))
+    api.listen_to_notifications(threaded=True, timeout=1)
+    api.stop_listening()
+    assert api.listener is None
+
+
+def test_listen_to_notifications_callbacks(capsys):
+    with Aria2Server(port=7129, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+        server.api.listen_to_notifications(
+            on_download_start=lambda api, gid: print("started " + gid), threaded=True, timeout=1
+        )
+        time.sleep(1)
+        server.api.resume_all()
+        time.sleep(3)
+        server.api.stop_listening()
+    assert capsys.readouterr().out == "started 2089b05ecca3d829\nstarted cca3d8292089b05e\n"
+
+
+def test_listen_to_notifications_no_thread():
+    with Aria2Server(port=7130, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+
+        def thread_target():
+            server.api.listen_to_notifications(threaded=False, timeout=1)
+
+        thread = threading.Thread(target=thread_target)
+        thread.start()
+        time.sleep(1)
+        server.client.stop_listening()
+        time.sleep(1)
+        server.api.stop_listening()
