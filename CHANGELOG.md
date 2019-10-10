@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.3.0](https://github.com/pawamoy/aria2p/releases/tag/v0.3.0) ([compare](https://github.com/pawamoy/aria2p/compare/v0.2.5...v0.3.0)) - 2019-10-11
+
+### Added
+- Add listen subcommand ([09195ae](https://github.com/pawamoy/aria2p/commit/09195aeb0146d8e3f4108c8fc7b7548485d1417b)).
+- Implement notifications listener ([33ee9ae](https://github.com/pawamoy/aria2p/commit/33ee9ae72811a18b4430e5ff163e1df113b209af)).
+- Provide function to enable/configure logger ([8620a09](https://github.com/pawamoy/aria2p/commit/8620a0928cdb9def7c661baf819eb4aea8d085c9)).
+
+### Fixed
+- Fix API pause_all and resume_all methods ([0bf2209](https://github.com/pawamoy/aria2p/commit/0bf2209553e138387d2597900f2a182275bd0fa5)).
+
+
 ## [v0.2.5](https://github.com/pawamoy/aria2p/releases/tag/v0.2.5) ([compare](https://github.com/pawamoy/aria2p/compare/v0.2.4...v0.2.5)) - 2019-08-09
 
 ### Fixed
