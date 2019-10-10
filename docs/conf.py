@@ -43,16 +43,10 @@ napoleon_use_param = False
 # Documentation in Markdown
 source_suffix = [".rst"]
 source_parsers = {".md": "recommonmark.parser.CommonMarkParser"}
-doc_root = repository + "/tree/master/docs/"
 
 
 def setup(app):
     app.add_config_value(
-        "recommonmark_config",
-        {
-            "url_resolver": lambda url: doc_root + url,
-            "auto_toc_tree_section": "Welcome to " + metadata["name"] + "'s documentation!",
-        },
-        True,
+        "recommonmark_config", {"auto_toc_tree_section": "Welcome to " + metadata["name"] + "'s documentation!"}, True
     )
     app.add_transform(AutoStructify)
