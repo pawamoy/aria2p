@@ -3,7 +3,7 @@ Extensive usage instructions will be added later, when the application is more s
 You can also refer to the README / Overview.
 
 ## Listening to notifications
-Since [version 0.3](changelog.html#v0-3-0-compare-2019-10-10), it is possible to listen to the server notifications
+Since [version 0.3](changelog.html#v0-3-0-compare-2019-10-11), it is possible to listen to the server notifications
 thanks to the [`websocket-client`](https://pypi.org/project/websocket_client/) Python package.
 
 The server sends a notification to the client through a WebSocket for each of these events:
