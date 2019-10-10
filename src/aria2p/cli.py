@@ -78,6 +78,7 @@ def main(args=None):
         "clear": subcommand_purge,  # alias for purge
         "autopurge": subcommand_autopurge,
         "autoclear": subcommand_autopurge,  # alias for autopurge
+        "listen": subcommand_listen,
     }
 
     subcommand = kwargs.pop("subcommand")
@@ -158,6 +159,7 @@ def get_parser():
     resume_parser = subparser("resume", "Resume downloads.", aliases=["start"])
     subparser("resume-all", "Resume all downloads.")
     subparser("show", "Show the download progression.")
+    listen_parser = subparser("listen", "Listen to notifications.")
 
     # ========= CALL PARSER ========= #
     call_parser.add_argument(
@@ -219,6 +221,33 @@ def get_parser():
     # ========= PURGE PARSER ========= #
     purge_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to purge.")
     purge_parser.add_argument("-a", "--all", action="store_true", dest="do_all", help="Purge all the downloads.")
+
+    # ========= LISTEN PARSER ========= #
+    listen_parser.add_argument(
+        "-c",
+        "--callbacks-module",
+        dest="callbacks_module",
+        help="Path to the Python module defining your notifications callbacks.",
+    )
+    listen_parser.add_argument(
+        "event_types",
+        nargs="*",
+        help="The types of notifications to process: "
+        "start, pause, stop, error, complete or btcomplete. "
+        "Example: aria2p listen error btcomplete. "
+        "Useful if you want to spawn multiple specialized aria2p listener, "
+        "for example one for each type of notification, "
+        "but still want to use only one callback file.",
+    )
+    listen_parser.add_argument(
+        "-t",
+        "--timeout",
+        dest="timeout",
+        type=float,
+        default=5,
+        help="Timeout in seconds to use when waiting for data over the WebSocket at each iteration. "
+        "Use small values for faster reactivity when stopping to listen.",
+    )
 
     # TODO: when API is ready
     # info_parser = subparsers.add_parser("info", help="Show information about downloads.")
@@ -573,6 +602,44 @@ def subcommand_autopurge(api: API):
     if api.autopurge():
         return 0
     return 1
+
+
+# ============ LISTEN SUBCOMMAND ============ #
+def subcommand_listen(api: API, callbacks_module=None, event_types=None, timeout=5):
+    import importlib.util
+
+    if not callbacks_module:
+        print("aria2p: listen: Please provide the callback module file path with -c option", file=sys.stderr)
+        return 1
+
+    if not event_types:
+        event_types = ["start", "pause", "stop", "error", "complete", "btcomplete"]
+
+    spec = importlib.util.spec_from_file_location("aria2p_callbacks", callbacks_module)
+    callbacks = importlib.util.module_from_spec(spec)
+
+    if callbacks is None:
+        print(f"aria2p: Could not import module file {callbacks_module}", file=sys.stderr)
+        return 1
+
+    spec.loader.exec_module(callbacks)
+
+    callbacks_kwargs = {}
+    for callback_name in (
+        "on_download_start",
+        "on_download_pause",
+        "on_download_stop",
+        "on_download_error",
+        "on_download_complete",
+        "on_bt_download_complete",
+    ):
+        if callback_name[3:].replace("download", "").replace("_", "") in event_types:
+            callback = getattr(callbacks, callback_name, None)
+            if callback:
+                callbacks_kwargs[callback_name] = callback
+
+    api.listen_to_notifications(timeout=timeout, handle_signals=True, threaded=False, **callbacks_kwargs)
+    return 0
 
 
 # ============ INFO SUBCOMMAND ============ #
