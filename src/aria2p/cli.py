@@ -38,11 +38,14 @@ def main(args=None):
 
     enable_logger(level=kwargs.pop("log_level"))
 
+    logger.debug("Checking arguments")
     check_args(parser, args)
 
+    logger.debug("Instantiating API")
     api = API(Client(host=kwargs.pop("host"), port=kwargs.pop("port"), secret=kwargs.pop("secret")))
 
     # Warn if no aria2 daemon process seems to be running
+    logger.debug("Testing connection")
     try:
         api.client.get_version()
     except requests.ConnectionError as e:
@@ -79,6 +82,7 @@ def main(args=None):
 
     subcommand = kwargs.pop("subcommand")
 
+    logger.debug("Running subcommand " + subcommand)
     try:
         return subcommands.get(subcommand)(api, **kwargs)
     except ClientException as e:
