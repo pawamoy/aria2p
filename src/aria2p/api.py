@@ -415,7 +415,7 @@ class API:
         #     pause_func = self.client.pause_all
         # return pause_func() == "OK"
 
-        return all(self.pause(self.get_downloads(), force=force))
+        return all(self.pause([d for d in self.get_downloads() if d.status in ("active", "waiting")], force=force))
 
     def resume(self, downloads):
         """
