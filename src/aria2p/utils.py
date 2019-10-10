@@ -21,7 +21,10 @@ class SignalHandler:
         logger.debug("Signal handler: handling signals " + ", ".join(signals))
         self.triggered = False
         for sig in signals:
-            signal.signal(signal.Signals[sig], self.trigger)
+            try:
+                signal.signal(signal.Signals[sig], self.trigger)
+            except ValueError as error:
+                logger.error(f"Failed to setup signal handler for {sig}: {error}")
 
     def __bool__(self):
         """Return True when one of the given signal was received, False otherwise."""
