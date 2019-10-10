@@ -36,7 +36,7 @@ def main(args=None):
     args = parser.parse_args(args=args)
     kwargs = args.__dict__
 
-    enable_logger(kwargs.pop("log_level"))
+    enable_logger(level=kwargs.pop("log_level"))
 
     check_args(parser, args)
 
