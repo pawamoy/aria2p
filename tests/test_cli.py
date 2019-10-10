@@ -139,9 +139,9 @@ def test_pause_all_subcommand():
         assert cli.subcommand_pause(server.api, do_all=True) == 0
 
 
-def test_pause_all_subcommand_fails():
+def test_pause_all_subcommand_doesnt_fail_with_already_paused_downloads():
     with Aria2Server(port=7514, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
-        assert cli.subcommand_pause(server.api, do_all=True) == 1
+        assert cli.subcommand_pause(server.api, do_all=True) == 0
 
 
 def test_resume_subcommand(capsys):
