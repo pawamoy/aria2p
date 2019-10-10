@@ -1669,6 +1669,15 @@ class Client:
             logger.error(f"Notifications ({ws_server}): connection refused. Is the server running?")
             return
 
+        callbacks = {
+            NOTIFICATION_START: on_download_start,
+            NOTIFICATION_PAUSE: on_download_pause,
+            NOTIFICATION_STOP: on_download_stop,
+            NOTIFICATION_COMPLETE: on_download_complete,
+            NOTIFICATION_ERROR: on_download_error,
+            NOTIFICATION_BT_COMPLETE: on_bt_download_complete,
+        }
+
         stopped = SignalHandler(["SIGTERM", "SIGINT"]) if handle_signals else False
 
         while not stopped:
@@ -1682,26 +1691,13 @@ class Client:
                 logger.debug(f"Notifications ({ws_server}): reached timeout ({timeout}s)")
             else:
                 notification = Notification.get_or_raise(json.loads(message))
-                for notification_type, callback in (
-                    (NOTIFICATION_START, on_download_start),
-                    (NOTIFICATION_PAUSE, on_download_pause),
-                    (NOTIFICATION_STOP, on_download_stop),
-                    (NOTIFICATION_COMPLETE, on_download_complete),
-                    (NOTIFICATION_ERROR, on_download_error),
-                    (NOTIFICATION_BT_COMPLETE, on_bt_download_complete),
-                ):
-                    if notification.type == notification_type:
-                        logger.info(
-                            f"Notifications ({ws_server}): received {notification_type} with gid={notification.gid}"
-                        )
-                        if callable(callback):
-                            logger.debug(f"Notifications ({ws_server}): calling {callback} with gid={notification.gid}")
-                            callback(notification.gid)
-                        else:
-                            logger.debug(
-                                f"Notifications ({ws_server}): no callback given for type " + notification.type
-                            )
-                        break
+                logger.info(f"Notifications ({ws_server}): received {notification.type} with gid={notification.gid}")
+                callback = callbacks.get(notification.type)
+                if callable(callback):
+                    logger.debug(f"Notifications ({ws_server}): calling {callback} with gid={notification.gid}")
+                    callback(notification.gid)
+                else:
+                    logger.debug(f"Notifications ({ws_server}): no callback given for type " + notification.type)
 
             if not self.listening:
                 logger.debug(f"Notifications ({ws_server}): stopped listening")
