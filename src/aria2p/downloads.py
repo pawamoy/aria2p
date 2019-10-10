@@ -235,6 +235,7 @@ class Download:
 
     @property
     def control_file_path(self):
+        """Return the path to the aria2 control file for this download."""
         return self.dir / (self.name + ".aria2")
 
     @property

@@ -16,6 +16,12 @@ ClientException
 .. autoclass:: aria2p.client.ClientException
     :members:
 
+Notification
+------------
+
+.. autoclass:: aria2p.client.Notification
+    :members:
+
 
 .. spelling::
 

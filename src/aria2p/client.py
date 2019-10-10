@@ -319,6 +319,15 @@ class Client:
 
     @staticmethod
     def response_as_exception(response):
+        """
+        Transform the response as a :class:`~aria2p.client.ClientException` instance and return it.
+
+        Args:
+            response (dict): a response sent by the server.
+
+        Returns:
+            An instance of the :class:`~aria2p.client.ClientException` class.
+        """
         return ClientException(response["error"]["code"], response["error"]["message"])
 
     @staticmethod

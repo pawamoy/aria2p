@@ -609,6 +609,18 @@ def subcommand_autopurge(api: API):
 
 # ============ LISTEN SUBCOMMAND ============ #
 def subcommand_listen(api: API, callbacks_module=None, event_types=None, timeout=5):
+    """
+    Listen subcommand.
+
+    Args:
+        api (API): the API instance to use.
+        callbacks_module (Path/str): the path to the module to import, containing the callbacks as functions.
+        event_types (list of str): the event types to process.
+        timeout (float/int): the timeout to pass to the WebSocket connection, in seconds.
+
+    Returns:
+        int: always 0.
+    """
     if not callbacks_module:
         print("aria2p: listen: Please provide the callback module file path with -c option", file=sys.stderr)
         return 1
