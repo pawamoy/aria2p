@@ -83,7 +83,8 @@ def main(args=None):
 
     subcommand = kwargs.pop("subcommand")
 
-    logger.debug("Running subcommand " + subcommand)
+    if subcommand:
+        logger.debug("Running subcommand " + subcommand)
     try:
         return subcommands.get(subcommand)(api, **kwargs)
     except ClientException as e:
