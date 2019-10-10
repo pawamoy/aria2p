@@ -25,7 +25,7 @@ def first_err_line(cs):
 
 
 def test_main_returns_2_when_no_remote_running():
-    assert cli.main([]) == 2
+    assert cli.main(["--port=7549"]) == 2
 
 
 def test_parser_error_when_gids_and_all_option(capsys):
