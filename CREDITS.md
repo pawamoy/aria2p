@@ -23,7 +23,8 @@ These projects were used to build `aria2p`. **Thank you!**
 [`Sphinx`](http://sphinx-doc.org/) |
 [`sphinx-rtd-theme`](https://github.com/rtfd/sphinx_rtd_theme/) |
 [`sphinxcontrib-spelling`](https://github.com/sphinx-contrib/spelling) |
-[`toml`](https://github.com/uiri/toml)
+[`toml`](https://github.com/uiri/toml) |
+[`websocket_client`](https://github.com/websocket-client/websocket-client.git)
 
 ### Indirect dependencies
 [`alabaster`](https://alabaster.readthedocs.io) |
@@ -82,7 +83,8 @@ These projects were used to build `aria2p`. **Thank you!**
 [`termcolor`](http://pypi.python.org/pypi/termcolor) |
 [`traitlets`](http://ipython.org) |
 [`urllib3`](https://urllib3.readthedocs.io/) |
-[`wcwidth`](https://github.com/jquast/wcwidth)
+[`wcwidth`](https://github.com/jquast/wcwidth) |
+[`websocket-client`](https://github.com/websocket-client/websocket-client.git)
 
 **[More credits from the author](http://pawamoy.github.io/credits/)**
  

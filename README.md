@@ -139,6 +139,7 @@ Commands:
     resume (start)      Resume downloads.
     resume-all          Resume all downloads.
     show                Show the download progression.
+    listen              Listen to notifications.
 
 ```
 
@@ -171,6 +172,7 @@ Commands:
 - [`resume`](#resume)
 - [`resume-all`](#resume-all)
 - [`show`](#show)
+- [`listen`](#listen)
 
 **Warning:** commands ending with `-all` are deprecated. Please use their equivalent with the `-a` or `--all` option
 (e.g. instead of `pause-all`, use `pause -a`). These commands will be removed in version 0.5.0.
@@ -493,6 +495,37 @@ Show the download progression.
 
 optional arguments:
   -h, --help  Show this help message and exit.
+
+```
+
+
+
+---
+
+### `listen`
+```
+usage: aria2p listen [-h] [-c CALLBACKS_MODULE] [-t TIMEOUT]
+                     [event_types [event_types ...]]
+
+Listen to notifications.
+
+positional arguments:
+  event_types           The types of notifications to process: start, pause,
+                        stop, error, complete or btcomplete. Example: aria2p
+                        listen error btcomplete. Useful if you want to spawn
+                        multiple specialized aria2p listener, for example one
+                        for each type of notification, but still want to use
+                        only one callback file.
+
+optional arguments:
+  -h, --help            Show this help message and exit.
+  -c CALLBACKS_MODULE, --callbacks-module CALLBACKS_MODULE
+                        Path to the Python module defining your notifications
+                        callbacks.
+  -t TIMEOUT, --timeout TIMEOUT
+                        Timeout in seconds to use when waiting for data over
+                        the WebSocket at each iteration. Use small values for
+                        faster reactivity when stopping to listen.
 
 ```
 
