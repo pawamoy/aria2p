@@ -409,13 +409,11 @@ class API:
         Returns:
             bool: Success or failure of the operation to pause all downloads.
         """
-        # if force:
-        #     pause_func = self.client.force_pause_all
-        # else:
-        #     pause_func = self.client.pause_all
-        # return pause_func() == "OK"
-
-        return all(self.pause([d for d in self.get_downloads() if d.status in ("active", "waiting")], force=force))
+        if force:
+            pause_func = self.client.force_pause_all
+        else:
+            pause_func = self.client.pause_all
+        return pause_func() == "OK"
 
     def resume(self, downloads):
         """
@@ -449,7 +447,7 @@ class API:
         Returns:
             bool: Success or failure of the operation to resume all downloads.
         """
-        return all(self.resume(self.get_downloads()))
+        return self.client.unpause_all() == "OK"
 
     def autopurge(self):
         """

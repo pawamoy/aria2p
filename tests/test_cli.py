@@ -169,9 +169,9 @@ def test_resume_all_subcommand():
         assert cli.subcommand_resume(server.api, do_all=True) == 0
 
 
-def test_resume_all_subcommand_fails():
+def test_resume_all_subcommand_doesnt_fail_with_already_active_downloads():
     with Aria2Server(port=7519, session=SESSIONS_DIR / "dl-2-aria2.txt") as server:
-        assert cli.subcommand_resume(server.api, do_all=True) == 1
+        assert cli.subcommand_resume(server.api, do_all=True) == 0
 
 
 def test_remove_subcommand():
