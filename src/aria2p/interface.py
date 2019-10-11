@@ -135,17 +135,19 @@ class Interface:
     _bounds = []
 
     palettes = defaultdict(lambda: (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK))
-    palettes.update({
-        "header": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_GREEN),
-        "focused_header": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_CYAN),
-        "focused_row": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_CYAN),
-        "status_active": (Screen.COLOUR_CYAN, Screen.A_NORMAL, Screen.COLOUR_BLACK),
-        "status_paused": (Screen.COLOUR_YELLOW, Screen.A_NORMAL, Screen.COLOUR_BLACK),
-        "status_waiting": (Screen.COLOUR_WHITE, Screen.A_BOLD, Screen.COLOUR_BLACK),
-        "status_error": (Screen.COLOUR_RED, Screen.A_BOLD, Screen.COLOUR_BLACK),
-        "status_complete": (Screen.COLOUR_GREEN, Screen.A_NORMAL, Screen.COLOUR_BLACK),
-        "metadata": (Screen.COLOUR_WHITE, Screen.A_UNDERLINE, Screen.COLOUR_BLACK),
-    })
+    palettes.update(
+        {
+            "header": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_GREEN),
+            "focused_header": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_CYAN),
+            "focused_row": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_CYAN),
+            "status_active": (Screen.COLOUR_CYAN, Screen.A_NORMAL, Screen.COLOUR_BLACK),
+            "status_paused": (Screen.COLOUR_YELLOW, Screen.A_NORMAL, Screen.COLOUR_BLACK),
+            "status_waiting": (Screen.COLOUR_WHITE, Screen.A_BOLD, Screen.COLOUR_BLACK),
+            "status_error": (Screen.COLOUR_RED, Screen.A_BOLD, Screen.COLOUR_BLACK),
+            "status_complete": (Screen.COLOUR_GREEN, Screen.A_NORMAL, Screen.COLOUR_BLACK),
+            "metadata": (Screen.COLOUR_WHITE, Screen.A_UNDERLINE, Screen.COLOUR_BLACK),
+        }
+    )
 
     columns_order = ["gid", "status", "progress", "size", "down_speed", "up_speed", "eta", "name"]
     columns = {

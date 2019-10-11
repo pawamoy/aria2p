@@ -1,17 +1,19 @@
 import http.server
 import json
+import os
+import signal
 import socketserver
+import threading
 import time
 from base64 import b64encode
 from copy import deepcopy
-from threading import Thread
 
 import pytest
 import requests
 from responses import mock as responses
 
 from aria2p import Client, ClientException
-from aria2p.client import JSONRPC_CODES, JSONRPC_PARSER_ERROR
+from aria2p.client import JSONRPC_CODES, JSONRPC_PARSER_ERROR, Notification
 
 from . import (
     BUNSENLABS_MAGNET,
@@ -204,7 +206,7 @@ class TestParameters:
         assert resp == expected_params
 
 
-class TestJSONRPCErrorClass:
+class TestClientExceptionClass:
     @responses.activate
     def test_call_raises_custom_error(self):
         client = Client()
@@ -229,7 +231,7 @@ class TestJSONRPCErrorClass:
             assert e.code == JSONRPC_PARSER_ERROR
 
 
-class TestJSONRPCClientClass:
+class TestClientClass:
     def test_add_metalink_method(self):
         # get file contents
         with open(DEBIAN_METALINK, "rb") as stream:
@@ -427,7 +429,7 @@ class TestJSONRPCClientClass:
         for retry in range(10):
             try:
                 with socketserver.TCPServer(("", 8000), http.server.SimpleHTTPRequestHandler) as httpd:
-                    thread = Thread(target=httpd.serve_forever)
+                    thread = threading.Thread(target=httpd.serve_forever)
                     thread.start()
 
                     with Aria2Server(port=7031, session=SESSIONS_DIR / "small-local-download.txt") as server:
@@ -456,6 +458,76 @@ class TestJSONRPCClientClass:
     def test_unpause_all_method(self):
         with Aria2Server(port=7034, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
             assert server.client.unpause_all() == "OK"
+
+    def test_listen_to_notifications_no_server(self):
+        client = Client(port=7035)
+        client.listen_to_notifications(timeout=1)
+
+    def test_listen_to_notifications_no_callbacks(self):
+        with Aria2Server(port=7036, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+
+            def thread_target():
+                server.client.listen_to_notifications(timeout=1, handle_signals=False)
+
+            thread = threading.Thread(target=thread_target)
+            thread.start()
+            server.client.unpause("2089b05ecca3d829")
+            time.sleep(3)
+        thread.join()
+
+    def test_listen_to_notifications_callbacks(self, capsys):
+        with Aria2Server(port=7037, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+
+            def thread_target():
+                server.client.listen_to_notifications(
+                    on_download_start=lambda gid: print("started " + gid), timeout=1, handle_signals=False
+                )
+
+            thread = threading.Thread(target=thread_target)
+            thread.start()
+            time.sleep(1)
+            server.client.unpause("2089b05ecca3d829")
+            time.sleep(3)
+        thread.join()
+        assert capsys.readouterr().out == "started 2089b05ecca3d829\n"
+
+    def test_listen_to_notifications_then_stop(self):
+        with Aria2Server(port=7038, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+
+            def thread_target():
+                server.client.listen_to_notifications(timeout=1, handle_signals=False)
+
+            thread = threading.Thread(target=thread_target)
+            thread.start()
+            server.client.stop_listening()
+            thread.join()
+
+    def test_listen_to_notifications_then_stop_with_signal(self):
+        with Aria2Server(port=7039, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+
+            def thread_target():
+                time.sleep(2)
+                os.kill(os.getpid(), signal.SIGTERM)
+
+            thread = threading.Thread(target=thread_target)
+            thread.start()
+            server.client.listen_to_notifications(timeout=1, handle_signals=True)
+            thread.join()
+
+
+class TestNotificationClass:
+    def test_init(self):
+        notification = Notification("random", "random")
+        assert notification
+
+    def test_get(self):
+        message = {"method": "random_event", "params": [{"gid": "random_gid"}]}
+        assert Notification.get_or_raise(message)
+
+    def test_raise(self):
+        message = {"error": {"code": 9000, "message": "it's over 9000"}}
+        with pytest.raises(ClientException):
+            Notification.get_or_raise(message)
 
 
 class TestSecretToken:

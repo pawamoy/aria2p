@@ -1,3 +1,4 @@
+import threading
 import time
 from unittest.mock import patch
 
@@ -25,7 +26,7 @@ def first_err_line(cs):
 
 
 def test_main_returns_2_when_no_remote_running():
-    assert cli.main([]) == 2
+    assert cli.main(["--port=7549"]) == 2
 
 
 def test_parser_error_when_gids_and_all_option(capsys):
@@ -139,9 +140,9 @@ def test_pause_all_subcommand():
         assert cli.subcommand_pause(server.api, do_all=True) == 0
 
 
-def test_pause_all_subcommand_fails():
+def test_pause_all_subcommand_doesnt_fail_with_already_paused_downloads():
     with Aria2Server(port=7514, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
-        assert cli.subcommand_pause(server.api, do_all=True) == 1
+        assert cli.subcommand_pause(server.api, do_all=True) == 0
 
 
 def test_resume_subcommand(capsys):
@@ -169,9 +170,9 @@ def test_resume_all_subcommand():
         assert cli.subcommand_resume(server.api, do_all=True) == 0
 
 
-def test_resume_all_subcommand_fails():
+def test_resume_all_subcommand_doesnt_fail_with_already_active_downloads():
     with Aria2Server(port=7519, session=SESSIONS_DIR / "dl-2-aria2.txt") as server:
-        assert cli.subcommand_resume(server.api, do_all=True) == 1
+        assert cli.subcommand_resume(server.api, do_all=True) == 0
 
 
 def test_remove_subcommand():
@@ -223,3 +224,20 @@ def test_autopurge_subcommand():
 # def test_purge_all_subcommand_fails():
 #     with Aria2Server(port=7528) as server:
 #         assert cli.subcommand_purge_all(server.api) == 0
+
+
+def test_listen_subcommand(capsys):
+    with Aria2Server(port=7529, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+
+        def thread_target():
+            time.sleep(2)
+            server.api.resume_all()
+            time.sleep(3)
+            server.api.stop_listening()
+
+        thread = threading.Thread(target=thread_target)
+        thread.start()
+        cli.subcommand_listen(server.api, callbacks_module=TESTS_DATA_DIR / "callbacks.py", event_types=["start"])
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert captured.out == "started 2089b05ecca3d829\nstarted cca3d8292089b05e\n"

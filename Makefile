@@ -58,6 +58,10 @@ check-safety:  ## Check for vulnerabilities in dependencies using safety.
 check-ports:  ## Check if the ports used in the tests are all unique.
 	scripts/check-ports.sh
 
+.PHONY: check-pylint
+check-pylint:  ## Check for code smells using pylint.
+	poetry run pylint src/
+
 .PHONY: run-black
 run-black:  ## Lint the code using black.
 	poetry run black $(PY_SRC)

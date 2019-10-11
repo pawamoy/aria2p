@@ -319,6 +319,15 @@ class Client:
 
     @staticmethod
     def response_as_exception(response):
+        """
+        Transform the response as a :class:`~aria2p.client.ClientException` instance and return it.
+
+        Args:
+            response (dict): a response sent by the server.
+
+        Returns:
+            An instance of the :class:`~aria2p.client.ClientException` class.
+        """
         return ClientException(response["error"]["code"], response["error"]["message"])
 
     @staticmethod
@@ -1664,17 +1673,26 @@ class Client:
 
         logger.debug(f"Notifications ({ws_server}): opening WebSocket with timeout={timeout}")
         try:
-            ws = websocket.create_connection(ws_server, timeout=timeout)
+            socket = websocket.create_connection(ws_server, timeout=timeout)
         except ConnectionRefusedError:
             logger.error(f"Notifications ({ws_server}): connection refused. Is the server running?")
             return
+
+        callbacks = {
+            NOTIFICATION_START: on_download_start,
+            NOTIFICATION_PAUSE: on_download_pause,
+            NOTIFICATION_STOP: on_download_stop,
+            NOTIFICATION_COMPLETE: on_download_complete,
+            NOTIFICATION_ERROR: on_download_error,
+            NOTIFICATION_BT_COMPLETE: on_bt_download_complete,
+        }
 
         stopped = SignalHandler(["SIGTERM", "SIGINT"]) if handle_signals else False
 
         while not stopped:
             try:
                 logger.debug(f"Notifications ({ws_server}): waiting for data over WebSocket")
-                message = ws.recv()
+                message = socket.recv()
             except websocket.WebSocketConnectionClosedException:
                 logger.error(f"Notifications ({ws_server}): connection to server was closed. Is the server running?")
                 break
@@ -1682,26 +1700,13 @@ class Client:
                 logger.debug(f"Notifications ({ws_server}): reached timeout ({timeout}s)")
             else:
                 notification = Notification.get_or_raise(json.loads(message))
-                for notification_type, callback in (
-                    (NOTIFICATION_START, on_download_start),
-                    (NOTIFICATION_PAUSE, on_download_pause),
-                    (NOTIFICATION_STOP, on_download_stop),
-                    (NOTIFICATION_COMPLETE, on_download_complete),
-                    (NOTIFICATION_ERROR, on_download_error),
-                    (NOTIFICATION_BT_COMPLETE, on_bt_download_complete),
-                ):
-                    if notification.type == notification_type:
-                        logger.info(
-                            f"Notifications ({ws_server}): received {notification_type} with gid={notification.gid}"
-                        )
-                        if callable(callback):
-                            logger.debug(f"Notifications ({ws_server}): calling {callback} with gid={notification.gid}")
-                            callback(notification.gid)
-                        else:
-                            logger.debug(
-                                f"Notifications ({ws_server}): no callback given for type " + notification.type
-                            )
-                        break
+                logger.info(f"Notifications ({ws_server}): received {notification.type} with gid={notification.gid}")
+                callback = callbacks.get(notification.type)
+                if callable(callback):
+                    logger.debug(f"Notifications ({ws_server}): calling {callback} with gid={notification.gid}")
+                    callback(notification.gid)
+                else:
+                    logger.debug(f"Notifications ({ws_server}): no callback given for type " + notification.type)
 
             if not self.listening:
                 logger.debug(f"Notifications ({ws_server}): stopped listening")
@@ -1712,7 +1717,7 @@ class Client:
             self.listening = False
 
         logger.debug(f"Notifications ({ws_server}): closing WebSocket")
-        ws.close()
+        socket.close()
 
     def stop_listening(self):
         """
@@ -1732,16 +1737,16 @@ class Notification:
     message received from the server through a WebSocket, or to raise a ClientException if the message is invalid.
     """
 
-    def __init__(self, type, gid):
-        f"""
+    def __init__(self, event_type, gid):
+        """
         Initialization method.
 
         Args:
-            type (str): The notification type. Possible types are {",".join(NOTIFICATION_TYPES)}.
+            event_type (str): The notification type. Possible types are available in the NOTIFICATION_TYPES variable.
             gid (str): The GID of the download related to the notification.
         """
 
-        self.type = type
+        self.type = event_type
         self.gid = gid
 
     @staticmethod
@@ -1775,4 +1780,4 @@ class Notification:
         Returns:
             Notification: a Notification instance.
         """
-        return Notification(type=message["method"], gid=message["params"][0]["gid"])
+        return Notification(event_type=message["method"], gid=message["params"][0]["gid"])

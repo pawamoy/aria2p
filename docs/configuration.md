@@ -49,10 +49,23 @@ aria2c --conf-path=$HOME/.config/aria2/aria2.conf
 ```
 
 ## `init.d` script
-I currently use this script, but am planning to improve it. Copy it as `/etc/init.d/aria2server`.
+I don't recommend this method anymore, but left it for legacy purpose.
+The big disadvantage of this method is that the `aria2c` process will run as root.
+If you use the `HOME` variable in the configuration file, it will point to `/root` instead of your home directory.
+The downloaded files will also be owned by root only.
+
+What I recommend instead, if you want to run your `aria2c` process at system startup,
+is to run it with this simple command, `aria2c --conf-path=~/.config/aria2/aria2.conf`
+(assuming you have `daemon=true` in the config file),
+in your window manager startup script or equivalent. For example, Openbox has an `autostart` script,
+QTile has startup hooks, etc. Most of the time, you should even be able to start `aria2c` from `~/.xinitrc`.
+
+If you still want to use the `init.d` script, continue reading. Otherwise, skip up to the next section.
 
 With this script you will be able to start aria2 like a service with
-`sudo service aria2server start`.
+`sudo service aria2server start`. 
+
+Copy it as `/etc/init.d/aria2server`.
 
 You must update the `CONF_PATH` variable to match your username.
 

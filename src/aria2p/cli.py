@@ -16,8 +16,10 @@ Also see http://click.pocoo.org/5/setuptools/#setuptools-integration.
 """
 
 import argparse
+import importlib.util
 import json
 import sys
+from pathlib import Path
 
 import requests
 from loguru import logger
@@ -39,15 +41,18 @@ def main(args=None):
 
     enable_logger(level=kwargs.pop("log_level"))
 
+    logger.debug("Checking arguments")
     check_args(parser, args)
 
+    logger.debug("Instantiating API")
     api = API(Client(host=kwargs.pop("host"), port=kwargs.pop("port"), secret=kwargs.pop("secret")))
 
     # Warn if no aria2 daemon process seems to be running
+    logger.debug("Testing connection")
     try:
         api.client.get_version()
-    except requests.ConnectionError as e:
-        print(f"[ERROR] {e}", file=sys.stderr)
+    except requests.ConnectionError as error:
+        print(f"[ERROR] {error}", file=sys.stderr)
         print(file=sys.stderr)
         print("Please make sure that an instance of aria2c is running with RPC mode enabled,", file=sys.stderr)
         print("and that you have provided the right host, port and secret token.", file=sys.stderr)
@@ -77,15 +82,18 @@ def main(args=None):
         "clear": subcommand_purge,  # alias for purge
         "autopurge": subcommand_autopurge,
         "autoclear": subcommand_autopurge,  # alias for autopurge
+        "listen": subcommand_listen,
     }
 
     subcommand = kwargs.pop("subcommand")
 
+    if subcommand:
+        logger.debug("Running subcommand " + subcommand)
     try:
         return subcommands.get(subcommand)(api, **kwargs)
-    except ClientException as e:
-        print(e.message, file=sys.stderr)
-        return e.code
+    except ClientException as error:
+        print(error.message, file=sys.stderr)
+        return error.code
 
 
 def check_args(parser, args):
@@ -139,9 +147,9 @@ def get_parser():
     subparsers = parser.add_subparsers(dest="subcommand", title="Commands", metavar="", prog="aria2p")
 
     def subparser(command, text, **kwargs):
-        p = subparsers.add_parser(command, add_help=False, help=text, description=text, **kwargs)
-        p.add_argument("-h", "--help", action="help", help=subcommand_help)
-        return p
+        sub = subparsers.add_parser(command, add_help=False, help=text, description=text, **kwargs)
+        sub.add_argument("-h", "--help", action="help", help=subcommand_help)
+        return sub
 
     add_magnet_parser = subparser("add-magnet", "Add a download with a Magnet URI.")
     add_metalink_parser = subparser("add-metalink", "Add a download with a Metalink file.")
@@ -157,6 +165,7 @@ def get_parser():
     subparser("resume-all", "Resume all downloads.")
     subparser("show", "Show the download progression.")
     subparser("top", "Launch the top-like interactive interface.")
+    listen_parser = subparser("listen", "Listen to notifications.")
 
     # ========= CALL PARSER ========= #
     call_parser.add_argument(
@@ -218,6 +227,33 @@ def get_parser():
     # ========= PURGE PARSER ========= #
     purge_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to purge.")
     purge_parser.add_argument("-a", "--all", action="store_true", dest="do_all", help="Purge all the downloads.")
+
+    # ========= LISTEN PARSER ========= #
+    listen_parser.add_argument(
+        "-c",
+        "--callbacks-module",
+        dest="callbacks_module",
+        help="Path to the Python module defining your notifications callbacks.",
+    )
+    listen_parser.add_argument(
+        "event_types",
+        nargs="*",
+        help="The types of notifications to process: "
+        "start, pause, stop, error, complete or btcomplete. "
+        "Example: aria2p listen error btcomplete. "
+        "Useful if you want to spawn multiple specialized aria2p listener, "
+        "for example one for each type of notification, "
+        "but still want to use only one callback file.",
+    )
+    listen_parser.add_argument(
+        "-t",
+        "--timeout",
+        dest="timeout",
+        type=float,
+        default=5,
+        help="Timeout in seconds to use when waiting for data over the WebSocket at each iteration. "
+        "Use small values for faster reactivity when stopping to listen.",
+    )
 
     # TODO: when API is ready
     # info_parser = subparsers.add_parser("info", help="Show information about downloads.")
@@ -579,6 +615,57 @@ def subcommand_autopurge(api: API):
     if api.autopurge():
         return 0
     return 1
+
+
+# ============ LISTEN SUBCOMMAND ============ #
+def subcommand_listen(api: API, callbacks_module=None, event_types=None, timeout=5):
+    """
+    Listen subcommand.
+
+    Args:
+        api (API): the API instance to use.
+        callbacks_module (Path/str): the path to the module to import, containing the callbacks as functions.
+        event_types (list of str): the event types to process.
+        timeout (float/int): the timeout to pass to the WebSocket connection, in seconds.
+
+    Returns:
+        int: always 0.
+    """
+    if not callbacks_module:
+        print("aria2p: listen: Please provide the callback module file path with -c option", file=sys.stderr)
+        return 1
+
+    if isinstance(callbacks_module, Path):
+        callbacks_module = str(callbacks_module)
+
+    if not event_types:
+        event_types = ["start", "pause", "stop", "error", "complete", "btcomplete"]
+
+    spec = importlib.util.spec_from_file_location("aria2p_callbacks", callbacks_module)
+    callbacks = importlib.util.module_from_spec(spec)
+
+    if callbacks is None:
+        print(f"aria2p: Could not import module file {callbacks_module}", file=sys.stderr)
+        return 1
+
+    spec.loader.exec_module(callbacks)
+
+    callbacks_kwargs = {}
+    for callback_name in (
+        "on_download_start",
+        "on_download_pause",
+        "on_download_stop",
+        "on_download_error",
+        "on_download_complete",
+        "on_bt_download_complete",
+    ):
+        if callback_name[3:].replace("download", "").replace("_", "") in event_types:
+            callback = getattr(callbacks, callback_name, None)
+            if callback:
+                callbacks_kwargs[callback_name] = callback
+
+    api.listen_to_notifications(timeout=timeout, handle_signals=True, threaded=False, **callbacks_kwargs)
+    return 0
 
 
 # ============ INFO SUBCOMMAND ============ #
