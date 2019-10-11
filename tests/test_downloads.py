@@ -148,7 +148,7 @@ class TestDownloadClass:
     def test_eta(self):
         assert isinstance(self.download.eta, datetime.timedelta)
         self.download._struct["downloadSpeed"] = "0"
-        assert self.download.eta == float("Inf")
+        assert self.download.eta == datetime.timedelta.max
 
     def test_eta_string(self):
         assert self.download.eta_string() == "3m28s"
