@@ -732,7 +732,7 @@ class Download:
         Returns:
             int: The new position of the download.
         """
-        return self.api.move_up(self, -pos)
+        return self.api.move_up(self, pos)
 
     def move_down(self, pos=1):
         """
