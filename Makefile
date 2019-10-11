@@ -69,6 +69,14 @@ run-isort:  ## Sort the imports using isort.
 .PHONY: lint
 lint: run-black run-isort  ## Run linting tools on the code.
 
+.PHONY: load-queue
+load-queue:  ## Load fixture downloads in the queue.
+	while read -r m; do poetry run aria2p add-magnet "$$m"; done < tests/data/linux_magnets
+
+.PHONY: clear-queue
+clear-queue:  ## Remove all downloads from the queue.
+	poetry run aria2p remove -a
+
 .PHONY: clean-tests
 clean-tests:  ## Delete temporary tests files.
 	@rm -rf tests/tmp/* 2>/dev/null
