@@ -337,6 +337,15 @@ def subcommand_show(api):
 
 # ============ TOP SUBCOMMAND ============ #
 def subcommand_top(api):
+    """
+    Top subcommand.
+
+    Args:
+        api (API): the API instance to use.
+
+    Returns:
+        int: always 0.
+    """
     interface = Interface(api)
     interface.run()
     return 0
