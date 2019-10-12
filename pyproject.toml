@@ -69,7 +69,9 @@ disable = """
   too-many-locals,
   too-many-statements,
   too-many-arguments,
-  unused-argument,
-  too-many-instance-attributes
+  too-many-instance-attributes,
+  too-many-branches,
+  too-few-public-methods,
+  duplicate-code
 """
 max-line-length = "120"

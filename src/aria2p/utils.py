@@ -30,6 +30,7 @@ class SignalHandler:
         """Return True when one of the given signal was received, False otherwise."""
         return self.triggered
 
+    # pylint: disable=unused-argument
     def trigger(self, signum, frame):
         """Mark this instance as 'triggered' (a specified signal was received)."""
         logger.debug(f"Signal handler: caught signal {signal.Signals(signum).name} ({signum})")
@@ -60,8 +61,8 @@ def human_readable_timedelta(value, precision=0):
 
     if not precision:
         return "".join(pieces)
-    else:
-        return "".join(pieces[:precision])
+
+    return "".join(pieces[:precision])
 
 
 def human_readable_bytes(value, digits=2, delim="", postfix=""):
