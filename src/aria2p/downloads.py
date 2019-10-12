@@ -765,7 +765,7 @@ class Download:
         """
         return self.api.move_to_bottom(self)
 
-    def remove(self, force=False):
+    def remove(self, force=False, files=False):
         """
         Remove the download from the queue (even if active).
 
@@ -775,7 +775,7 @@ class Download:
         Raises:
             ClientException: when removal failed.
         """
-        result = self.api.remove([self], force=force)[0]
+        result = self.api.remove([self], force=force, files=files)[0]
         if not result:
             raise result
         return result

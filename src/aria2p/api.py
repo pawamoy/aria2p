@@ -313,13 +313,14 @@ class API:
         """
         return self.client.change_position(download.gid, 0, "POS_END")
 
-    def remove(self, downloads, force=False):
+    def remove(self, downloads, force=False, files=False):
         """
         Remove the given downloads from the list.
 
         Args:
             downloads (list of :class:`~aria2p.downloads.Download`): the list of downloads to remove.
             force (bool): whether to force the removal or not.
+            files (bool): whether to remove downloads files as well.
 
         Returns:
             list of bool: Success or failure of the operation for each given download.
@@ -353,6 +354,8 @@ class API:
                     except ClientException as error2:
                         logger.debug(f"Failed to remove download result {removed_gid}")
                         logger.opt(exception=True).trace(error2)
+                if files:
+                    self.remove_files([download], force=force)
 
         return result
 
@@ -563,6 +566,28 @@ class API:
             :class:`~aria2p.stats.Stats` instance: the global stats returned by the remote process.
         """
         return Stats(self.client.get_global_stat())
+
+    @staticmethod
+    def remove_files(downloads, force=False):
+        """
+        Remove downloaded files.
+
+        Args:
+            downloads (list of :class:`~aria2p.downloads.Download`):  the list of downloads for which to remove files.
+            force (bool): whether to remove files even if download is not complete.
+
+        Returns:
+            list of bool: Success or failure of the operation for each given download.
+        """
+        results = []
+        for download in downloads:
+            if download.is_complete or force:
+                for path in download.root_files_paths:
+                    shutil.rmtree(str(path))
+                results.append(True)
+            else:
+                results.append(False)
+        return results
 
     @staticmethod
     def move_files(downloads, to_directory, force=False):
