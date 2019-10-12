@@ -48,6 +48,8 @@ class Keys:
     TOGGLE_SELECT = [ord("s")]
     UN_SELECT_ALL = [ord("U")]
     QUIT = [ord("q"), ord("Q"), Screen.KEY_F10]
+    CANCEL = [Screen.KEY_ESCAPE, ord("q")]
+    ENTER = [ord("\n"), ord("\r")]
     MOVE_UP = [Screen.KEY_UP]
     MOVE_DOWN = [Screen.KEY_DOWN]
     MOVE_LEFT = [Screen.KEY_LEFT]
@@ -85,28 +87,28 @@ class Column:
         self.get_palette = get_palette
 
 
-class OffsetPrinter:
+class HorizontalScroll:
     """
     A wrapper around asciimatics' Screen.print_at and Screen.paint methods.
 
-    It allows to print the rows with an horizontal offset, used when moving left and right:
-    the first OFFSET characters will not be printed.
+    It allows scroll the rows horizontally, used when moving left and right:
+    the first N characters will not be printed.
     """
 
-    def __init__(self, screen, offset=0):
+    def __init__(self, screen, scroll=0):
         """
         Initialization method.
 
         Args:
             screen (Screen): The asciimatics screen object.
-            offset (int): Base offset to use when printing. Will decrease by one with each character skipped.
+            scroll (int): Base scroll to use when printing. Will decrease by one with each character skipped.
         """
         self.screen = screen
-        self.offset = offset
+        self.scroll = scroll
 
-    def set_offset(self, offset):
-        """Set the offset."""
-        self.offset = offset
+    def set_scroll(self, scroll):
+        """Set the scroll value."""
+        self.scroll = scroll
 
     def print_at(self, text, x, y, palette):
         """
@@ -121,9 +123,9 @@ class OffsetPrinter:
         Returns:
             int: The number of characters actually printed.
         """
-        logger.debug(f"Printing following text with offset={self.offset}")
+        logger.debug(f"Printing following text with offset={self.scroll}")
         logger.debug(text)
-        if self.offset == 0:
+        if self.scroll == 0:
             if isinstance(palette, list):
                 self.screen.paint(text, x, y, colour_map=palette)
             else:
@@ -131,20 +133,20 @@ class OffsetPrinter:
             written = len(text)
         else:
             text_length = len(text)
-            if text_length > self.offset:
-                new_text = text[self.offset :]
+            if text_length > self.scroll:
+                new_text = text[self.scroll :]
                 written = len(new_text)
                 if isinstance(palette, list):
-                    new_palette = palette[self.offset :]
+                    new_palette = palette[self.scroll :]
                     self.screen.paint(new_text, x, y, colour_map=new_palette)
                 else:
                     self.screen.print_at(new_text, x, y, *palette)
-                self.offset = 0
-            elif text_length == self.offset:
-                self.offset = 0
+                self.scroll = 0
+            elif text_length == self.scroll:
+                self.scroll = 0
                 written = 0
             else:
-                self.offset -= text_length
+                self.scroll -= text_length
                 written = 0
         return written
 
@@ -169,12 +171,7 @@ class Palette:
         return "name"
 
 
-# TODO: allow drawing of a separate column on the left, for interactive picking of options,
-# for example when removing a download: asking whether to force and/or remove files as well.
-# I.e. adding a global horizontal offset.
-
 # TODO: allow other interfaces to be drawn, like the setup menu or the help menu
-# TODO: allow vertical offset to be able to draw chart and stats above the table.
 
 
 class Interface:
@@ -193,13 +190,24 @@ class Interface:
     - remove/change the few events with "download" or "self.api" in the process_event method
     """
 
+    class State:
+        MAIN = 0
+        HELP = 1
+        SETUP = 2
+        REMOVE_ASK = 3
+        SELECT_SORT = 4
+
+    state = State.MAIN
     sleep = 0.005
     frames = 200  # 200 * 0.005 seconds == 1 second
     frame = 0
     focused = 0
+    side_focused = 0
     sort = 2
     reverse = True
+    x_scroll = 0
     x_offset = 0
+    y_offset = 0
     row_offset = 0
     refresh = False
     width = None
@@ -207,7 +215,7 @@ class Interface:
     screen = None
     data = []
     rows = []
-    printer = None
+    scroller = None
     follow = None
     bounds = []
 
@@ -223,6 +231,9 @@ class Interface:
             "status_error": (Screen.COLOUR_RED, Screen.A_BOLD, Screen.COLOUR_BLACK),
             "status_complete": (Screen.COLOUR_GREEN, Screen.A_NORMAL, Screen.COLOUR_BLACK),
             "metadata": (Screen.COLOUR_WHITE, Screen.A_UNDERLINE, Screen.COLOUR_BLACK),
+            "side_column_header": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_GREEN),
+            "side_column_row": (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),
+            "side_column_focused_row": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_CYAN),
         }
     )
 
@@ -282,6 +293,18 @@ class Interface:
         ),
     }
 
+    remove_ask_header = "Remove:"
+    remove_ask_rows = [
+        ("Remove", lambda d: d.remove(force=False, files=False)),
+        ("Remove with files", lambda d: d.remove(force=False, files=True)),
+        ("Force remove", lambda d: d.remove(force=True, files=False)),
+        ("Force remove with files", lambda d: d.remove(force=True, files=True)),
+    ]
+    last_remove_choice = None
+
+    select_sort_header = "Select sort:"
+    select_sort_rows = columns_order
+
     def __init__(self, api=None):
         """
         Initialization method.
@@ -292,6 +315,34 @@ class Interface:
         if api is None:
             api = API()
         self.api = api
+
+        self.state_mapping = {
+            self.State.MAIN: {
+                "process_keyboard_event": self.process_keyboard_event_main,
+                "process_mouse_event": self.process_mouse_event_main,
+                "print_side_column": lambda: None,
+            },
+            self.State.HELP: {
+                "process_keyboard_event": self.process_keyboard_event_help,
+                "process_mouse_event": self.process_mouse_event_help,
+                "print_side_column": lambda: None,
+            },
+            self.State.SETUP: {
+                "process_keyboard_event": self.process_keyboard_event_setup,
+                "process_mouse_event": self.process_mouse_event_setup,
+                "print_side_column": lambda: None,
+            },
+            self.State.REMOVE_ASK: {
+                "process_keyboard_event": self.process_keyboard_event_remove_ask,
+                "process_mouse_event": self.process_mouse_event_remove_ask,
+                "print_side_column": self.print_remove_ask_column,
+            },
+            self.State.SELECT_SORT: {
+                "process_keyboard_event": self.process_keyboard_event_select_sort,
+                "process_mouse_event": self.process_mouse_event_select_sort,
+                "print_side_column": self.print_select_sort_column,
+            }
+        }
 
     def run(self):
         """The main drawing loop."""
@@ -320,15 +371,18 @@ class Interface:
                         # time to update data and rows
                         if self.frame == 0:
                             self.update_data()
+                            self.update_rows()
                             self.refresh = True
 
                         # time to refresh the screen
                         if self.refresh:
-                            # sort if needed, unless it was just done at frame 0 when updating rows
+                            # sort if needed, unless it was just done at frame 0 when updating
                             if (self.sort, self.reverse) != previous_sort and self.frame != 0:
+                                self.sort_data()
                                 self.update_rows()
 
                             # actual printing and screen refresh
+                            self.state_mapping[self.state]["print_side_column"]()
                             self.print_headers()
                             self.print_rows()
                             screen.refresh()
@@ -338,6 +392,9 @@ class Interface:
                         self.frame = (self.frame + 1) % self.frames
         except Exit:
             pass
+
+    def update_select_sort_rows(self):
+        self.select_sort_rows = self.columns_order
 
     def process_event(self, event):
         """
@@ -353,127 +410,256 @@ class Interface:
             return
 
         if isinstance(event, KeyboardEvent):
-
-            if event.key_code in Keys.MOVE_UP:
-                if self.focused > 0:
-                    self.focused -= 1
-                    if self.focused < self.row_offset:
-                        self.row_offset = self.focused
-                    elif self.focused >= self.row_offset + (self.height - 1):
-                        # happens when shrinking height
-                        self.row_offset = self.focused + 1 - (self.height - 1)
-                    self.follow = None
-                    self.refresh = True
-
-            elif event.key_code in Keys.MOVE_DOWN:
-                if self.focused < len(self.rows) - 1:
-                    self.focused += 1
-                    if self.focused - self.row_offset >= (self.height - 1):
-                        self.row_offset = self.focused + 1 - (self.height - 1)
-                    self.follow = None
-                    self.refresh = True
-
-            elif event.key_code in Keys.MOVE_LEFT:
-                if self.x_offset > 0:
-                    self.x_offset = max(0, self.x_offset - 5)
-                    self.refresh = True
-
-            elif event.key_code in Keys.MOVE_RIGHT:
-                self.x_offset += 5
-                self.refresh = True
-
-            elif event.key_code in Keys.HELP:
-                pass  # TODO
-
-            elif event.key_code in Keys.SETUP:
-                pass  # TODO
-
-            elif event.key_code in Keys.TOGGLE_RESUME_PAUSE:
-                download = self.data[self.focused]
-                if download.is_active or download.is_waiting:
-                    download.pause()
-                elif download.is_paused:
-                    download.resume()
-
-            elif event.key_code in Keys.PRIORITY_UP:
-                download = self.data[self.focused]
-                if not download.is_active:
-                    download.move_up()
-                    self.follow = download
-
-            elif event.key_code in Keys.PRIORITY_DOWN:
-                download = self.data[self.focused]
-                if not download.is_active:
-                    download.move_down()
-                    self.follow = download
-
-            elif event.key_code in Keys.REVERSE_SORT:
-                self.reverse = not self.reverse
-                self.refresh = True
-
-            elif event.key_code in Keys.NEXT_SORT:
-                if self.sort < len(self.columns) - 1:
-                    self.sort += 1
-                    self.refresh = True
-
-            elif event.key_code in Keys.PREVIOUS_SORT:
-                if self.sort > 0:
-                    self.sort -= 1
-                    self.refresh = True
-
-            elif event.key_code in Keys.SELECT_SORT:
-                pass  # TODO
-
-            elif event.key_code in Keys.REMOVE_ASK:
-                pass  # TODO
-
-            elif event.key_code in Keys.TOGGLE_EXPAND_COLLAPSE:
-                pass  # TODO
-
-            elif event.key_code in Keys.TOGGLE_EXPAND_COLLAPSE_ALL:
-                pass  # TODO
-
-            elif event.key_code in Keys.AUTOCLEAR:
-                self.api.autopurge()
-
-            elif event.key_code in Keys.FOLLOW_ROW:
-                self.follow = self.data[self.focused]
-
-            elif event.key_code in Keys.SEARCH:
-                pass  # TODO
-
-            elif event.key_code in Keys.FILTER:
-                pass  # TODO
-
-            elif event.key_code in Keys.TOGGLE_SELECT:
-                pass  # TODO
-
-            elif event.key_code in Keys.UN_SELECT_ALL:
-                pass  # TODO
-
-            elif event.key_code in Keys.QUIT:
-                raise Exit()
+            self.process_keyboard_event(event)
 
         elif isinstance(event, MouseEvent):
+            self.process_mouse_event(event)
 
-            if event.buttons & MouseEvent.LEFT_CLICK:
-                if event.y == 0:
-                    new_sort = self.get_column_at_x(event.x)
-                    if new_sort == self.sort:
-                        self.reverse = not self.reverse
-                    else:
-                        self.sort = new_sort
-                else:
-                    self.focused = min(event.y - 1 + self.row_offset, len(self.rows) - 1)
+    def process_keyboard_event(self, event):
+        self.state_mapping[self.state]["process_keyboard_event"](event)
+
+    def process_keyboard_event_main(self, event):
+        if event.key_code in Keys.MOVE_UP:
+            if self.focused > 0:
+                self.focused -= 1
+                if self.focused < self.row_offset:
+                    self.row_offset = self.focused
+                elif self.focused >= self.row_offset + (self.height - 1):
+                    # happens when shrinking height
+                    self.row_offset = self.focused + 1 - (self.height - 1)
+                self.follow = None
                 self.refresh = True
 
-            # elif event.buttons & MouseEvent.RIGHT_CLICK:
-            #     pass  # TODO: expand/collapse
+        elif event.key_code in Keys.MOVE_DOWN:
+            if self.focused < len(self.rows) - 1:
+                self.focused += 1
+                if self.focused - self.row_offset >= (self.height - 1):
+                    self.row_offset = self.focused + 1 - (self.height - 1)
+                self.follow = None
+                self.refresh = True
+
+        elif event.key_code in Keys.MOVE_LEFT:
+            if self.x_scroll > 0:
+                self.x_scroll = max(0, self.x_scroll - 5)
+                self.refresh = True
+
+        elif event.key_code in Keys.MOVE_RIGHT:
+            self.x_scroll += 5
+            self.refresh = True
+
+        elif event.key_code in Keys.HELP:
+            pass  # TODO
+
+        elif event.key_code in Keys.SETUP:
+            pass  # TODO
+
+        elif event.key_code in Keys.TOGGLE_RESUME_PAUSE:
+            download = self.data[self.focused]
+            if download.is_active or download.is_waiting:
+                download.pause()
+            elif download.is_paused:
+                download.resume()
+
+        elif event.key_code in Keys.PRIORITY_UP:
+            download = self.data[self.focused]
+            if not download.is_active:
+                download.move_up()
+                self.follow = download
+
+        elif event.key_code in Keys.PRIORITY_DOWN:
+            download = self.data[self.focused]
+            if not download.is_active:
+                download.move_down()
+                self.follow = download
+
+        elif event.key_code in Keys.REVERSE_SORT:
+            self.reverse = not self.reverse
+            self.refresh = True
+
+        elif event.key_code in Keys.NEXT_SORT:
+            if self.sort < len(self.columns) - 1:
+                self.sort += 1
+                self.refresh = True
+
+        elif event.key_code in Keys.PREVIOUS_SORT:
+            if self.sort > 0:
+                self.sort -= 1
+                self.refresh = True
+
+        elif event.key_code in Keys.SELECT_SORT:
+            self.state = self.State.SELECT_SORT
+            self.side_focused = self.sort
+            self.x_offset = self.width_select_sort() + 1
+            self.refresh = True
+
+        elif event.key_code in Keys.REMOVE_ASK:
+            self.state = self.State.REMOVE_ASK
+            self.x_offset = self.width_remove_ask() + 1
+            if self.last_remove_choice is not None:
+                self.side_focused = self.last_remove_choice
+            self.follow_focused()
+            self.refresh = True
+
+        elif event.key_code in Keys.TOGGLE_EXPAND_COLLAPSE:
+            pass  # TODO
+
+        elif event.key_code in Keys.TOGGLE_EXPAND_COLLAPSE_ALL:
+            pass  # TODO
+
+        elif event.key_code in Keys.AUTOCLEAR:
+            self.api.autopurge()
+
+        elif event.key_code in Keys.FOLLOW_ROW:
+            self.follow_focused()
+
+        elif event.key_code in Keys.SEARCH:
+            pass  # TODO
+
+        elif event.key_code in Keys.FILTER:
+            pass  # TODO
+
+        elif event.key_code in Keys.TOGGLE_SELECT:
+            pass  # TODO
+
+        elif event.key_code in Keys.UN_SELECT_ALL:
+            pass  # TODO
+
+        elif event.key_code in Keys.QUIT:
+            raise Exit()
+
+    def process_keyboard_event_help(self, event):
+        pass
+
+    def process_keyboard_event_setup(self, event):
+        pass
+
+    def process_keyboard_event_remove_ask(self, event):
+        if event.key_code in Keys.CANCEL:
+            self.state = self.State.MAIN
+            self.x_offset = 0
+            self.refresh = True
+
+        elif event.key_code in Keys.ENTER:
+            if self.follow:
+                self.remove_ask_rows[self.side_focused][1](self.follow)
+                self.follow = None
+            self.last_remove_choice = self.side_focused
+            self.state = self.State.MAIN
+            self.x_offset = 0
+            self.refresh = True
+
+        elif event.key_code in Keys.MOVE_UP:
+            if self.side_focused > 0:
+                self.side_focused -= 1
+                self.refresh = True
+
+        elif event.key_code in Keys.MOVE_DOWN:
+            if self.side_focused < len(self.remove_ask_rows) - 1:
+                self.side_focused += 1
+                self.refresh = True
+
+    def process_keyboard_event_select_sort(self, event):
+        if event.key_code in Keys.CANCEL:
+            self.state = self.State.MAIN
+            self.x_offset = 0
+            self.refresh = True
+
+        elif event.key_code in Keys.ENTER:
+            self.sort = self.side_focused
+            self.state = self.State.MAIN
+            self.x_offset = 0
+            self.refresh = True
+
+        elif event.key_code in Keys.MOVE_UP:
+            if self.side_focused > 0:
+                self.side_focused -= 1
+                self.refresh = True
+
+        elif event.key_code in Keys.MOVE_DOWN:
+            if self.side_focused < len(self.select_sort_rows) - 1:
+                self.side_focused += 1
+                self.refresh = True
+
+    def process_mouse_event(self, event):
+        self.state_mapping[self.state]["process_mouse_event"](event)
+
+    def process_mouse_event_main(self, event):
+        if event.buttons & MouseEvent.LEFT_CLICK:
+            if event.y == 0:
+                new_sort = self.get_column_at_x(event.x)
+                if new_sort == self.sort:
+                    self.reverse = not self.reverse
+                else:
+                    self.sort = new_sort
+            else:
+                self.focused = min(event.y - 1 + self.row_offset, len(self.rows) - 1)
+            self.refresh = True
+
+        # elif event.buttons & MouseEvent.RIGHT_CLICK:
+        #     pass  # TODO: expand/collapse
+
+    def process_mouse_event_help(self, event):
+        pass
+
+    def process_mouse_event_setup(self, event):
+        pass
+
+    def process_mouse_event_remove_ask(self, event):
+        pass
+
+    def process_mouse_event_select_sort(self, event):
+        pass
+
+    def width_remove_ask(self):
+        return max(len(self.remove_ask_header), max(len(row[0]) for row in self.remove_ask_rows))
+
+    def width_select_sort(self):
+        return max(len(column_name) for column_name in self.columns_order + [self.select_sort_header])
+
+    def follow_focused(self):
+        self.follow = self.data[self.focused]
+
+    def print_remove_ask_column(self):
+        y = self.y_offset
+        padding = self.width_remove_ask()
+        header_string = f"{self.remove_ask_header:<{padding}}"
+        len_header = len(header_string)
+        self.screen.print_at(header_string, 0, y, *self.palettes["side_column_header"])
+        self.screen.print_at(" ", len_header, y, *self.palettes["default"])
+        for i, row in enumerate(self.remove_ask_rows):
+            y += 1
+            palette = self.palettes["side_column_focused_row"] if i == self.side_focused else self.palettes["side_column_row"]
+            row_string = f"{row[0]:<{padding}}"
+            len_row = len(row_string)
+            self.screen.print_at(row_string, 0, y, *palette)
+            self.screen.print_at(" ", len_row, y, *self.palettes["default"])
+
+        for i in range(1, self.height - y):
+            self.screen.print_at(" " * (padding + 1), 0, y + i)
+
+    def print_select_sort_column(self):
+        y = self.y_offset
+        padding = self.width_select_sort()
+        header_string = f"{self.select_sort_header:<{padding}}"
+        len_header = len(header_string)
+        self.screen.print_at(header_string, 0, y, *self.palettes["side_column_header"])
+        self.screen.print_at(" ", len_header, y, *self.palettes["default"])
+        for i, row in enumerate(self.select_sort_rows):
+            y += 1
+            palette = self.palettes["side_column_focused_row"] if i == self.side_focused else self.palettes[
+                "side_column_row"]
+            row_string = f"{row:<{padding}}"
+            len_row = len(row_string)
+            self.screen.print_at(row_string, 0, y, *palette)
+            self.screen.print_at(" ", len_row, y, *self.palettes["default"])
+
+        for i in range(1, self.height - y):
+            self.screen.print_at(" " * (padding + 1), 0, y + i)
 
     def print_headers(self):
         """Print the headers (columns names)."""
-        self.printer.set_offset(self.x_offset)
-        x, y, c = 0, 0, 0
+        self.scroller.set_scroll(self.x_scroll)
+        x, y, c = self.x_offset, self.y_offset, 0
 
         for column_name in self.columns_order:
             column = self.columns[column_name]
@@ -482,29 +668,29 @@ class Interface:
             if column.padding == "100%":
                 header_string = f"{column.header}"
                 fill_up = " " * max(0, self.width - x - len(header_string))
-                written = self.printer.print_at(header_string, x, y, palette)
-                self.printer.print_at(fill_up, x + written, y, self.palettes["header"])
+                written = self.scroller.print_at(header_string, x, y, palette)
+                self.scroller.print_at(fill_up, x + written, y, self.palettes["header"])
 
             else:
                 header_string = f"{column.header:{column.padding}} "
-                written = self.printer.print_at(header_string, x, y, palette)
+                written = self.scroller.print_at(header_string, x, y, palette)
 
             x += written
             c += 1
 
     def print_rows(self):
         """Print the rows."""
-        y = 1
+        y = self.y_offset + 1
         for row in self.rows[self.row_offset : self.row_offset + self.height]:
 
-            self.printer.set_offset(self.x_offset)
-            x = 0
+            self.scroller.set_scroll(self.x_scroll)
+            x = self.x_offset
 
             for i, column_name in enumerate(self.columns_order):
                 column = self.columns[column_name]
                 padding = f"<{max(0, self.width - x)}" if column.padding == "100%" else column.padding
 
-                if self.focused == y - 1 + self.row_offset:
+                if self.focused == y -self.y_offset - 1 + self.row_offset:
                     palette = self.palettes["focused_row"]
                 else:
                     palette = column.get_palette(row[i])
@@ -512,13 +698,13 @@ class Interface:
                         palette = self.palettes[palette]
 
                 field_string = f"{row[i]:{padding}} "
-                written = self.printer.print_at(field_string, x, y, palette)
+                written = self.scroller.print_at(field_string, x, y, palette)
                 x += written
 
             y += 1
 
         for i in range(self.height - y):
-            self.screen.print_at(" " * self.width, 0, y + i)
+            self.screen.print_at(" " * self.width, self.x_offset, y + i)
 
     def get_column_at_x(self, x):
         """For an horizontal position X, return the column index."""
@@ -528,10 +714,10 @@ class Interface:
         raise ValueError
 
     def set_screen(self, screen):
-        """Set the screen object, its printer wrapper, width, height, and columns bounds."""
+        """Set the screen object, its scroller wrapper, width, height, and columns bounds."""
         self.screen = screen
         self.height, self.width = screen.dimensions
-        self.printer = OffsetPrinter(screen)
+        self.scroller = HorizontalScroll(screen)
         self.bounds = []
         for column_name in self.columns_order:
             column = self.columns[column_name]
@@ -550,16 +736,16 @@ class Interface:
 
     def update_data(self):
         """Set the interface data and rows contents."""
-        self.data = self.sort_data(self.get_data())
-        self.update_rows()
+        self.data = self.get_data()
+        self.sort_data()
 
-    def sort_data(self, data):
+    def sort_data(self):
         """Sort data according to interface state."""
         sort_function = self.columns[self.columns_order[self.sort]].get_sort
-        return sorted(data, key=sort_function, reverse=self.reverse)
+        self.data = sorted(self.data, key=sort_function, reverse=self.reverse)
 
     def update_rows(self):
-        """Update rows contents according to interface state."""
+        """Update rows contents according to data and interface state."""
         text_getters = [self.columns[c].get_text for c in self.columns_order]
         n_columns = len(self.columns_order)
         self.rows = [tuple(text_getters[i](item) for i in range(n_columns)) for item in self.data]
