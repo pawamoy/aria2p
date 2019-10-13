@@ -16,9 +16,11 @@ This module contains all the code responsible for the HTOP-like interface.
 
 # pylint: disable=invalid-name
 
+import os
 import time
 from collections import defaultdict
 
+import pkg_resources
 from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import ManagedScreen, Screen
 from loguru import logger
@@ -26,34 +28,53 @@ from loguru import logger
 from .api import API
 
 
+class Key:
+    def __init__(self, name, value=None):
+        self.name = name
+        if value is None:
+            value = ord(name)
+        self.value = value
+
+    def __eq__(self, value):
+        return self.value == value
+
+
 class Keys:
     """The actions and their shortcuts keys."""
 
-    HELP = [ord("h"), Screen.KEY_F1]
-    SETUP = [Screen.KEY_F2]
-    TOGGLE_RESUME_PAUSE = [ord(" ")]
-    PRIORITY_UP = [ord("u"), ord("["), Screen.KEY_F7]
-    PRIORITY_DOWN = [ord("d"), ord("]"), Screen.KEY_F8]
-    REVERSE_SORT = [ord("I")]
-    NEXT_SORT = [ord("n"), ord(">")]
-    PREVIOUS_SORT = [ord("p"), ord("<")]
-    SELECT_SORT = [Screen.KEY_F6]
-    REMOVE_ASK = [Screen.KEY_DELETE, Screen.KEY_F9]
-    TOGGLE_EXPAND_COLLAPSE = [ord("x")]
-    TOGGLE_EXPAND_COLLAPSE_ALL = [ord("X")]
-    AUTOCLEAR = [ord("c")]
-    FOLLOW_ROW = [ord("F")]
-    SEARCH = [ord("/"), Screen.KEY_F3]
-    FILTER = [ord("\\"), Screen.KEY_F4]
-    TOGGLE_SELECT = [ord("s")]
-    UN_SELECT_ALL = [ord("U")]
-    QUIT = [ord("q"), ord("Q"), Screen.KEY_F10]
-    CANCEL = [Screen.KEY_ESCAPE, ord("q")]
-    ENTER = [ord("\n"), ord("\r")]
-    MOVE_UP = [Screen.KEY_UP]
-    MOVE_DOWN = [Screen.KEY_DOWN]
-    MOVE_LEFT = [Screen.KEY_LEFT]
-    MOVE_RIGHT = [Screen.KEY_RIGHT]
+    HELP = [Key("F1", Screen.KEY_F1), Key("h")]
+    SETUP = [Key("F2", Screen.KEY_F2)]
+    TOGGLE_RESUME_PAUSE = [Key("space", ord(" "))]
+    PRIORITY_UP = [Key("F7", Screen.KEY_F7), Key("u"), Key("[")]
+    PRIORITY_DOWN = [Key("F8", Screen.KEY_F8), Key("d"), Key("]")]
+    REVERSE_SORT = [Key("I")]
+    NEXT_SORT = [Key("n"), Key(">")]
+    PREVIOUS_SORT = [Key("p"), Key("<")]
+    SELECT_SORT = [Key("F6", Screen.KEY_F6)]
+    REMOVE_ASK = [Key("F9", Screen.KEY_F9), Key("del", Screen.KEY_DELETE)]
+    TOGGLE_EXPAND_COLLAPSE = [Key("x")]
+    TOGGLE_EXPAND_COLLAPSE_ALL = [Key("X")]
+    AUTOCLEAR = [Key("c")]
+    FOLLOW_ROW = [Key("F")]
+    SEARCH = [Key("F3", Screen.KEY_F3), Key("/")]
+    FILTER = [Key("F4", Screen.KEY_F4), Key("\\")]
+    TOGGLE_SELECT = [Key("s")]
+    UN_SELECT_ALL = [Key("U")]
+    QUIT = [Key("F10", Screen.KEY_F10), Key("q")]
+    CANCEL = [Key("esc", Screen.KEY_ESCAPE)]
+    ENTER = [Key("enter", ord("\n"))]
+    MOVE_UP = [Key("up", Screen.KEY_UP)]
+    MOVE_DOWN = [Key("down", Screen.KEY_DOWN)]
+    MOVE_LEFT = [Key("left", Screen.KEY_LEFT)]
+    MOVE_RIGHT = [Key("right", Screen.KEY_RIGHT)]
+
+    @staticmethod
+    def names(keys_list):
+        return [key.name for key in keys_list]
+
+    @staticmethod
+    def values(keys_list):
+        return [key.value for key in keys_list]
 
 
 class Exit(Exception):
@@ -65,7 +86,7 @@ class Column:
     A class to specify a column in the interface.
 
     It's composed of a header (the string to display on top), a padding (how to align the text),
-    and three callable functions to get the text from a Download object, to sort between downloads,
+    and three callable functions to get the text from a Python object, to sort between these objects,
     and to get a color palette based on the text.
     """
 
@@ -234,6 +255,7 @@ class Interface:
             "side_column_header": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_GREEN),
             "side_column_row": (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),
             "side_column_focused_row": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_CYAN),
+            "bright_help": (Screen.COLOUR_CYAN, Screen.A_BOLD, Screen.COLOUR_BLACK),
         }
     )
 
@@ -316,32 +338,35 @@ class Interface:
             api = API()
         self.api = api
 
+        # reduce curses' 1 second delay when hitting escape to 25 ms
+        os.environ.setdefault("ESCDELAY", "25")
+
         self.state_mapping = {
             self.State.MAIN: {
                 "process_keyboard_event": self.process_keyboard_event_main,
                 "process_mouse_event": self.process_mouse_event_main,
-                "print_side_column": lambda: None,
+                "print_functions": [self.print_table],
             },
             self.State.HELP: {
                 "process_keyboard_event": self.process_keyboard_event_help,
                 "process_mouse_event": self.process_mouse_event_help,
-                "print_side_column": lambda: None,
+                "print_functions": [self.print_help],
             },
             self.State.SETUP: {
                 "process_keyboard_event": self.process_keyboard_event_setup,
                 "process_mouse_event": self.process_mouse_event_setup,
-                "print_side_column": lambda: None,
+                "print_functions": [],
             },
             self.State.REMOVE_ASK: {
                 "process_keyboard_event": self.process_keyboard_event_remove_ask,
                 "process_mouse_event": self.process_mouse_event_remove_ask,
-                "print_side_column": self.print_remove_ask_column,
+                "print_functions": [self.print_remove_ask_column, self.print_table],
             },
             self.State.SELECT_SORT: {
                 "process_keyboard_event": self.process_keyboard_event_select_sort,
                 "process_mouse_event": self.process_mouse_event_select_sort,
-                "print_side_column": self.print_select_sort_column,
-            }
+                "print_functions": [self.print_select_sort_column, self.print_table],
+            },
         }
 
     def run(self):
@@ -382,9 +407,8 @@ class Interface:
                                 self.update_rows()
 
                             # actual printing and screen refresh
-                            self.state_mapping[self.state]["print_side_column"]()
-                            self.print_headers()
-                            self.print_rows()
+                            for print_function in self.state_mapping[self.state]["print_functions"]:
+                                print_function()
                             screen.refresh()
 
                         # sleep and increment frame
@@ -448,7 +472,8 @@ class Interface:
             self.refresh = True
 
         elif event.key_code in Keys.HELP:
-            pass  # TODO
+            self.state = self.State.HELP
+            self.refresh = True
 
         elif event.key_code in Keys.SETUP:
             pass  # TODO
@@ -493,12 +518,12 @@ class Interface:
             self.refresh = True
 
         elif event.key_code in Keys.REMOVE_ASK:
-            self.state = self.State.REMOVE_ASK
-            self.x_offset = self.width_remove_ask() + 1
-            if self.last_remove_choice is not None:
-                self.side_focused = self.last_remove_choice
-            self.follow_focused()
-            self.refresh = True
+            if self.follow_focused():
+                self.state = self.State.REMOVE_ASK
+                self.x_offset = self.width_remove_ask() + 1
+                if self.last_remove_choice is not None:
+                    self.side_focused = self.last_remove_choice
+                self.refresh = True
 
         elif event.key_code in Keys.TOGGLE_EXPAND_COLLAPSE:
             pass  # TODO
@@ -528,7 +553,8 @@ class Interface:
             raise Exit()
 
     def process_keyboard_event_help(self, event):
-        pass
+        self.state = self.State.MAIN
+        self.refresh = True
 
     def process_keyboard_event_setup(self, event):
         pass
@@ -617,7 +643,63 @@ class Interface:
         return max(len(column_name) for column_name in self.columns_order + [self.select_sort_header])
 
     def follow_focused(self):
-        self.follow = self.data[self.focused]
+        if self.focused < len(self.data):
+            self.follow = self.data[self.focused]
+            return True
+        return False
+
+    def print_help(self):
+        version = pkg_resources.get_distribution("aria2p").version
+        lines = [f"aria2p {version} — (C) 2018-2019 Timothée Mazzucotelli", "Released under the ISC license.", ""]
+
+        y = 0
+        for line in lines:
+            self.screen.print_at(f"{line:<{self.width}}", 0, y, *self.palettes["bright_help"])
+            y += 1
+
+        self.print_keys_text("Arrows:", " scroll downloads list", y)
+        y += 1
+
+        for keys, text in [
+            (Keys.HELP, " show this help screen"),
+            # (Keys.SETUP, " setup"),  # not implemented
+            (Keys.TOGGLE_RESUME_PAUSE, " toggle pause/resume"),
+            (Keys.PRIORITY_UP, " priority up (-)"),
+            (Keys.PRIORITY_DOWN, " priority down (+)"),
+            (Keys.REVERSE_SORT, " invert sort order"),
+            (Keys.NEXT_SORT, " sort next column"),
+            (Keys.PREVIOUS_SORT, " sort previous column"),
+            (Keys.SELECT_SORT, " select sort column"),
+            (Keys.REMOVE_ASK, " remove download"),
+            # (Keys.TOGGLE_EXPAND_COLLAPSE, " toggle expand/collapse"),  # not implemented
+            # (Keys.TOGGLE_EXPAND_COLLAPSE_ALL, " toggle expand/collapse all"),  # not implemented
+            (Keys.AUTOCLEAR, " autopurge downloads"),
+            (Keys.FOLLOW_ROW, " cursor follows download"),
+            # (Keys.SEARCH, " name search"),  # not implemented
+            # (Keys.FILTER, " name filtering"),  # not implemented
+            # (Keys.TOGGLE_SELECT, " toggle select download"),  # not implemented
+            # (Keys.UN_SELECT_ALL, " unselect all downloads"),  # not implemented
+            (Keys.QUIT, " quit"),
+        ]:
+            self.print_keys(keys, text, y)
+            y += 1
+
+        self.screen.print_at(" " * self.width, 0, y)
+        y += 1
+        self.screen.print_at(f"{'Press any key to return.':<{self.width}}", 0, y, *self.palettes["bright_help"])
+        y += 1
+
+        for i in range(self.height - y):
+            self.screen.print_at(" " * self.width, 0, y + i)
+
+    def print_keys(self, keys, text, y):
+        self.print_keys_text(" ".join(Keys.names(keys)) + ":", text, y)
+
+    def print_keys_text(self, keys_text, text, y):
+        length = 8
+        padding = self.width - length
+        self.screen.print_at(f"{keys_text:>{length}}", 0, y, *self.palettes["bright_help"])
+        self.screen.print_at(f"{text:<{padding}}", length, y, *self.palettes["default"])
 
     def print_remove_ask_column(self):
         y = self.y_offset
@@ -628,7 +710,9 @@ class Interface:
         self.screen.print_at(" ", len_header, y, *self.palettes["default"])
         for i, row in enumerate(self.remove_ask_rows):
             y += 1
-            palette = self.palettes["side_column_focused_row"] if i == self.side_focused else self.palettes["side_column_row"]
+            palette = (
+                self.palettes["side_column_focused_row"] if i == self.side_focused else self.palettes["side_column_row"]
+            )
             row_string = f"{row[0]:<{padding}}"
             len_row = len(row_string)
             self.screen.print_at(row_string, 0, y, *palette)
@@ -646,8 +730,9 @@ class Interface:
         self.screen.print_at(" ", len_header, y, *self.palettes["default"])
         for i, row in enumerate(self.select_sort_rows):
             y += 1
-            palette = self.palettes["side_column_focused_row"] if i == self.side_focused else self.palettes[
-                "side_column_row"]
+            palette = (
+                self.palettes["side_column_focused_row"] if i == self.side_focused else self.palettes["side_column_row"]
+            )
             row_string = f"{row:<{padding}}"
             len_row = len(row_string)
             self.screen.print_at(row_string, 0, y, *palette)
@@ -655,6 +740,10 @@ class Interface:
 
         for i in range(1, self.height - y):
             self.screen.print_at(" " * (padding + 1), 0, y + i)
+
+    def print_table(self):
+        self.print_headers()
+        self.print_rows()
 
     def print_headers(self):
         """Print the headers (columns names)."""
@@ -690,7 +779,7 @@ class Interface:
                 column = self.columns[column_name]
                 padding = f"<{max(0, self.width - x)}" if column.padding == "100%" else column.padding
 
-                if self.focused == y -self.y_offset - 1 + self.row_offset:
+                if self.focused == y - self.y_offset - 1 + self.row_offset:
                     palette = self.palettes["focused_row"]
                 else:
                     palette = column.get_palette(row[i])
