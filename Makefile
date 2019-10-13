@@ -96,4 +96,4 @@ clean: clean-tests  ## Delete temporary files.
 
 .PHONY: test
 test: check-ports clean-tests  ## Run the tests using pytest.
-	poetry run pytest -n6 2>/dev/null
+	poetry run pytest -nauto 2>/dev/null
