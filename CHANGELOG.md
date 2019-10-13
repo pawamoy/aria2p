@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.4.0](https://github.com/pawamoy/aria2p/releases/tag/v0.4.0) ([compare](https://github.com/pawamoy/aria2p/compare/v0.3.0...v0.4.0)) - 2019-10-13
+
+### Added
+- Add interactive interface (top command) (last commit: [d8a2db2](https://github.com/pawamoy/aria2p/commit/d8a2db2b2dba19c42056dbdb854cc6fc1a0b8efc)).
+  Run the interactive interface with `aria2p top`. Hit "h" to show help.
+  The interface is not finished, but I'm releasing it now to get early feedback.
+- API: add option to remove files as well when removing downloads ([981dcc0](https://github.com/pawamoy/aria2p/commit/981dcc015f8baef5b3d2f0230b27376f482442fa)).
+
+### Fixed
+- Fix Download.move_up method (it was doing the inverse) ([96a287a](https://github.com/pawamoy/aria2p/commit/96a287ab4e563c27ffb56afbccc8901c02e4a9f2)).
+
 ## [v0.3.0](https://github.com/pawamoy/aria2p/releases/tag/v0.3.0) ([compare](https://github.com/pawamoy/aria2p/compare/v0.2.5...v0.3.0)) - 2019-10-11
 
 ### Added
@@ -127,5 +138,3 @@ Various improvements and fixes. Status is still alpha, things might break!
 ### Misc
 - Package with Poetry! ([648d0a5](https://github.com/pawamoy/aria2p/commit/648d0a5b3c68d3a06b5a0f7957b5861e42d7279d)).
 - Hello Git(Hub|Lab) ([878497b](https://github.com/pawamoy/aria2p/commit/878497bb3eacfdd6e385e33470a4b99d2df3d3bd)).
-
-
