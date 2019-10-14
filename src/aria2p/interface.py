@@ -18,6 +18,7 @@ This module contains all the code responsible for the HTOP-like interface.
 
 import os
 import time
+import traceback
 from collections import defaultdict
 
 import pkg_resources
@@ -415,7 +416,10 @@ class Interface:
                         time.sleep(self.sleep)
                         self.frame = (self.frame + 1) % self.frames
         except Exit:
-            pass
+            return True
+        except Exception as error:
+            logger.exception(f"Exception: {error}")
+            return False
 
     def update_select_sort_rows(self):
         self.select_sort_rows = self.columns_order

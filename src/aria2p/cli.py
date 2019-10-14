@@ -347,8 +347,8 @@ def subcommand_top(api):
         int: always 0.
     """
     interface = Interface(api)
-    interface.run()
-    return 0
+    success = interface.run()
+    return 0 if success else 1
 
 
 # ============ CALL SUBCOMMAND ============ #
