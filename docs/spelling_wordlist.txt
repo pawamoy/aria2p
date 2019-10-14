@@ -8,6 +8,7 @@ addUris
 amChoking
 announceList
 apipkg
+asciimatics
 asdf
 atomicwrites
 autoclear
@@ -183,6 +184,7 @@ rlimit
 roadmap
 rpc
 saveSession
+scroller
 searchbox
 sessionId
 setsockopt
