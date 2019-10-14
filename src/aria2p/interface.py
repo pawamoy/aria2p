@@ -18,7 +18,6 @@ This module contains all the code responsible for the HTOP-like interface.
 
 import os
 import time
-import traceback
 from collections import defaultdict
 
 import pkg_resources
