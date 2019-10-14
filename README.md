@@ -12,6 +12,8 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
 
 Command-line tool and Python library to interact with an [`aria2c`][1] daemon process through JSON-RPC.
 
+![demo](demo.svg)
+
 To avoid confusion:
 - [*aria2*][1] is a lightweight multi-protocol & multi-source, cross platform download utility operated in command-line.
 It supports HTTP/HTTPS, FTP, SFTP, BitTorrent and Metalink.
@@ -122,7 +124,7 @@ Global options:
                         Log level to use
 
 Commands:
-  
+
     add-magnet          Add a download with a Magnet URI.
     add-metalink        Add a download with a Metalink file.
     add-torrent         Add a download with a torrent file.
