@@ -39,12 +39,23 @@ def test_parser_error_when_gids_and_all_option(capsys):
 
 
 def test_parser_error_when_no_gid_and_no_all_option(capsys):
-    with pytest.raises(SystemExit) as e:
-        assert cli.main(["resume"])
-        assert e.value.code == 2
-    lines = err_lines(capsys)
-    assert lines[0].startswith("usage: aria2p resume")
-    assert lines[1].endswith("the following arguments are required: gids or --all")
+    def assert_func(command, alias):
+        with pytest.raises(SystemExit) as e:
+            cli.main([alias])
+            assert e.value.code == 2
+        lines = err_lines(capsys)
+        assert lines[0].startswith("usage: aria2p " + command)
+        assert lines[1].endswith("the following arguments are required: gids or --all")
+
+    for command, aliases in [
+        ("pause", ["stop"]),
+        ("remove", ["rm", "del", "delete"]),
+        ("resume", ["start"]),
+        ("purge", ["clear"]),
+    ]:
+        assert_func(command, command)
+        for alias in aliases:
+            assert_func(command, alias)
 
 
 @patch("aria2p.cli.subcommand_purge")

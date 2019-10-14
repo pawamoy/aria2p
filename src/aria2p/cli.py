@@ -100,7 +100,7 @@ def check_args(parser, args):
     """Additional checks for command line arguments."""
     subparser = [action for action in parser._actions if isinstance(action, argparse._SubParsersAction)][0].choices
 
-    if args.subcommand in ("pause", "remove", "resume", "purge"):
+    if args.subcommand in ("pause", "stop", "remove", "rm", "del", "delete", "resume", "start", "purge", "clear"):
         if not args.do_all and not args.gids:
             subparser[args.subcommand].error("the following arguments are required: gids or --all")
         elif args.do_all and args.gids:
