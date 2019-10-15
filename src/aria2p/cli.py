@@ -40,7 +40,16 @@ def main(args=None):
     args = parser.parse_args(args=args)
     kwargs = args.__dict__
 
-    enable_logger(level=kwargs.pop("log_level"))
+    log_level = kwargs.pop("log_level")
+    log_path = kwargs.pop("log_path")
+
+    if log_path:
+        log_path = Path(log_path)
+        if log_path.is_dir():
+            log_path = log_path / "aria2p-{time}.log"
+        enable_logger(sink=log_path, level=log_level or "WARNING")
+    elif log_level:
+        enable_logger(sink=sys.stderr, level=log_level)
 
     logger.debug("Checking arguments")
     check_args(parser, args)
@@ -147,10 +156,13 @@ def get_parser():
         "-L",
         "--log-level",
         dest="log_level",
-        default="WARNING",
+        default=None,
         help="Log level to use",
         choices=("TRACE", "DEBUG", "INFO", "SUCCESS", "WARNING", "ERROR", "CRITICAL"),
         type=str.upper,
+    )
+    global_options.add_argument(
+        "-P", "--log-path", dest="log_path", default=None, help="Log path to use. Can be a directory or a file."
     )
 
     # ========= SUBPARSERS ========= #
