@@ -185,6 +185,9 @@ class Client:
     def __str__(self):
         return self.server
 
+    def __repr__(self):
+        return f"Client(host='{self.host}', port={self.port}, secret='********')"
+
     @property
     def server(self):
         """Property to return the full remote process / server address."""
@@ -1637,6 +1640,7 @@ class Client:
         """
         return self.call(self.LIST_NOTIFICATIONS)
 
+    # notifications
     def listen_to_notifications(
         self,
         on_download_start=None,

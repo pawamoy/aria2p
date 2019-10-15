@@ -13,6 +13,7 @@ from .client import Client, ClientException
 from .downloads import Download
 from .options import Options
 from .stats import Stats
+from .utils import get_version
 
 
 class API:
@@ -37,6 +38,9 @@ class API:
             client = Client()
         self.client = client
         self.listener = None
+
+    def __repr__(self):
+        return f"API({self.client!r})"
 
     def add_magnet(self, magnet_uri, options=None, position=None):
         """
@@ -462,6 +466,9 @@ class API:
         Returns:
             bool: Success or failure of the operation.
         """
+        version = get_version()
+        if version.major == 0 and 9 > version.minor >= 7:
+            logger.warning("Future change warning: API method 'autopurge' will be renamed 'purge' in version 0.9.0.")
         return self.client.purge_download_result()
 
     def purge(self, downloads):
@@ -472,14 +479,17 @@ class API:
             list of bool: Success or failure of the operation for each download.
         """
         # TODO: batch/multicall candidate
+        logger.warning(
+            "Deprecation warning: API method 'purge' is deprecated in favor of method 'remove', "
+            "and will be removed in version 0.7.0."
+        )
         result = []
 
         for download in downloads:
             try:
                 self.client.remove_download_result(download.gid)
             except ClientException as error:
-                logger.debug(f"Failed to purge download result {download.gid}")
-                logger.opt(exception=True).trace(error)
+                logger.exception(error)
                 result.append(error)
             else:
                 result.append(True)
@@ -493,6 +503,9 @@ class API:
         Returns:
             bool: Success or failure of the operation to purge all downloads.
         """
+        logger.warning(
+            "Deprecation warning: API method 'purge_all' is deprecated, and will be removed in version 0.7.0."
+        )
         return all(self.purge(self.get_downloads()))
 
     def get_options(self, downloads):

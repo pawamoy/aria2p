@@ -29,6 +29,7 @@ from aria2p import Download, enable_logger
 from .api import API
 from .client import DEFAULT_HOST, DEFAULT_PORT, Client, ClientException
 from .interface import Interface
+from .utils import get_version
 
 
 # ============ MAIN FUNCTION ============ #
@@ -46,6 +47,8 @@ def main(args=None):
 
     logger.debug("Instantiating API")
     api = API(Client(host=kwargs.pop("host"), port=kwargs.pop("port"), secret=kwargs.pop("secret")))
+
+    logger.info(f"API instantiated: {api!r}")
 
     # Warn if no aria2 daemon process seems to be running
     logger.debug("Testing connection")
@@ -89,6 +92,11 @@ def main(args=None):
 
     if subcommand:
         logger.debug("Running subcommand " + subcommand)
+    else:
+        print(
+            "Future change warning: starting at version 0.6, the default command will be 'top' instead of 'show'.",
+            file=sys.stderr,
+        )
     try:
         return subcommands.get(subcommand)(api, **kwargs)
     except ClientException as error:
@@ -106,9 +114,11 @@ def check_args(parser, args):
         elif args.do_all and args.gids:
             subparser[args.subcommand].error("argument -a/--all: not allowed with arguments gids")
     elif (args.subcommand or "").endswith("-all"):
-        logger.warning(
-            f"Subcommand '{args.subcommand}' is deprecated in favor of '{args.subcommand[:-4]} --all'. "
-            f"It will be removed in version 0.5.0, please update your scripts/code."
+        print(
+            f"Deprecation warning: command '{args.subcommand}' is deprecated "
+            f"in favor of '{args.subcommand[:-4]} --all', "
+            f"and will be removed in version 0.5.0.",
+            file=sys.stderr,
         )
 
 
@@ -258,7 +268,7 @@ def get_parser():
     return parser
 
 
-# ============ SHOW SUBCOMMAND ============ #
+# ============ SUBCOMMANDS ============ #
 def subcommand_show(api):
     """
     Show subcommand.
@@ -295,7 +305,6 @@ def subcommand_show(api):
     return 0
 
 
-# ============ TOP SUBCOMMAND ============ #
 def subcommand_top(api):
     """
     Top subcommand.
@@ -311,7 +320,6 @@ def subcommand_top(api):
     return 0 if success else 1
 
 
-# ============ CALL SUBCOMMAND ============ #
 def subcommand_call(api, method, params):
     """
     Call subcommand.
@@ -326,9 +334,8 @@ def subcommand_call(api, method, params):
     """
     real_method = get_method(method)
     if real_method is None:
-        print(f"[ERROR] call: Unknown method {method}.", file=sys.stderr)
-        print(file=sys.stderr)
-        print(f"Run 'aria2p call listmethods' to list the available methods.", file=sys.stderr)
+        print(f"aria2p: call: Unknown method {method}.", file=sys.stderr)
+        print("  Run 'aria2p call listmethods' to list the available methods.", file=sys.stderr)
         return 1
 
     if isinstance(params, str):
@@ -354,7 +361,6 @@ def get_method(name, default=None):
     return methods.get(name, default)
 
 
-# ============ ADD MAGNET SUBCOMMAND ============ #
 def subcommand_add_magnet(api, uri):
     """
     Add magnet subcommand.
@@ -371,7 +377,6 @@ def subcommand_add_magnet(api, uri):
     return 0
 
 
-# ============ ADD TORRENT SUBCOMMAND ============ #
 def subcommand_add_torrent(api, torrent_file):
     """
     Add torrent subcommand.
@@ -388,7 +393,6 @@ def subcommand_add_torrent(api, torrent_file):
     return 0
 
 
-# ============ ADD METALINK SUBCOMMAND ============ #
 def subcommand_add_metalink(api: API, metalink_file):
     """
     Add metalink subcommand.
@@ -406,7 +410,6 @@ def subcommand_add_metalink(api: API, metalink_file):
     return 0
 
 
-# ============ PAUSE SUBCOMMAND ============ #
 def subcommand_pause(api: API, gids=None, do_all=False, force=False):
     """
     Pause subcommand.
@@ -435,7 +438,6 @@ def subcommand_pause(api: API, gids=None, do_all=False, force=False):
     return 1
 
 
-# ============ PAUSE ALL SUBCOMMAND ============ #
 def subcommand_pause_all(api: API, force=False):
     """
     Pause all subcommand.
@@ -452,7 +454,6 @@ def subcommand_pause_all(api: API, force=False):
     return 1
 
 
-# ============ RESUME SUBCOMMAND ============ #
 def subcommand_resume(api: API, gids=None, do_all=False):
     """
     Resume subcommand.
@@ -480,7 +481,6 @@ def subcommand_resume(api: API, gids=None, do_all=False):
     return 1
 
 
-# ============ RESUME ALL SUBCOMMAND ============ #
 def subcommand_resume_all(api: API):
     """
     Resume all subcommand.
@@ -496,7 +496,6 @@ def subcommand_resume_all(api: API):
     return 1
 
 
-# ============ REMOVE SUBCOMMAND ============ #
 def subcommand_remove(api: API, gids=None, do_all=False, force=False):
     """
     Remove subcommand.
@@ -525,7 +524,6 @@ def subcommand_remove(api: API, gids=None, do_all=False, force=False):
     return 1
 
 
-# ============ REMOVE ALL SUBCOMMAND ============ #
 def subcommand_remove_all(api: API, force=False):
     """
     Remove all subcommand.
@@ -542,7 +540,6 @@ def subcommand_remove_all(api: API, force=False):
     return 1
 
 
-# ============ PURGE SUBCOMMAND ============ #
 def subcommand_purge(api: API, gids=None, do_all=False):
     """
     Purge subcommand.
@@ -555,6 +552,11 @@ def subcommand_purge(api: API, gids=None, do_all=False):
     Returns:
         int: 0 if all success, 1 if one failure.
     """
+    print(
+        "Deprecation warning: command 'purge' is deprecated in favor of command 'remove', "
+        "and will be removed in version 0.7.0.",
+        file=sys.stderr,
+    )
     if do_all:
         if api.purge_all():
             return 0
@@ -570,7 +572,6 @@ def subcommand_purge(api: API, gids=None, do_all=False):
     return 1
 
 
-# ============ AUTOPURGE SUBCOMMAND ============ #
 def subcommand_autopurge(api: API):
     """
     Autopurge subcommand.
@@ -581,12 +582,18 @@ def subcommand_autopurge(api: API):
     Returns:
         int: 0 if all success, 1 if one failure.
     """
+    version = get_version()
+    if version.major == 0 and 9 > version.minor >= 7:
+        print(
+            "Future change warning: command 'autopurge' will be renamed 'purge' in version 0.9.0, "
+            "with an 'autoremove' alias.",
+            file=sys.stderr,
+        )
     if api.autopurge():
         return 0
     return 1
 
 
-# ============ LISTEN SUBCOMMAND ============ #
 def subcommand_listen(api: API, callbacks_module=None, event_types=None, timeout=5):
     """
     Listen subcommand.
@@ -635,26 +642,3 @@ def subcommand_listen(api: API, callbacks_module=None, event_types=None, timeout
 
     api.listen_to_notifications(timeout=timeout, handle_signals=True, threaded=False, **callbacks_kwargs)
     return 0
-
-
-# ============ INFO SUBCOMMAND ============ #
-# def subcommand_info(api: API, gids, select_all=False):
-#     if select_all:
-#         downloads = api.get_downloads()
-#     else:
-#         downloads = api.get_downloads(gids)
-#
-#     api.info(downloads)
-#     return 0
-
-
-# ============ LIST SUBCOMMAND ============ #
-# def subcommand_list(api: API, list_format=None, sort=None):
-#     api.list(list_format=list_format, sort=sort)
-#     return 0
-
-
-# ============ SEARCH SUBCOMMAND ============ #
-# def subcommand_search(api: API, ):
-#     api.search()
-#     return 0

@@ -96,8 +96,8 @@ def test_call_subcommand(capsys):
     with Aria2Server(port=7504) as server:
         assert cli.subcommand_call(server.api, "wrongMethod", []) == 1
         assert (
-            capsys.readouterr().err == "[ERROR] call: Unknown method wrongMethod.\n\n"
-            "Run 'aria2p call listmethods' to list the available methods.\n"
+            capsys.readouterr().err == "aria2p: call: Unknown method wrongMethod.\n"
+            "  Run 'aria2p call listmethods' to list the available methods.\n"
         )
 
 
@@ -219,7 +219,8 @@ def test_purge_subcommand_one_failure(capsys):
         while not server.api.get_download("2089b05ecca3d829").is_complete:
             time.sleep(0.2)
         assert cli.subcommand_purge(server.api, ["2089b05ecca3d829", "208a3d8299b05ecc"]) == 1
-        assert capsys.readouterr().err == "Could not remove download result of GID#208a3d8299b05ecc\n"
+        lines = err_lines(capsys)
+        assert lines[1] == "Could not remove download result of GID#208a3d8299b05ecc"
 
 
 def test_purge_all_subcommand():

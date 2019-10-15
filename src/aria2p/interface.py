@@ -20,12 +20,12 @@ import os
 import time
 from collections import defaultdict
 
-import pkg_resources
 from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import ManagedScreen, Screen
 from loguru import logger
 
 from .api import API
+from .utils import get_version
 
 
 class Key:
@@ -190,9 +190,6 @@ class Palette:
                 + [Interface.palettes["row"]]
             )
         return "name"
-
-
-# TODO: allow other interfaces to be drawn, like the setup menu or the help menu
 
 
 class Interface:
@@ -652,7 +649,7 @@ class Interface:
         return False
 
     def print_help(self):
-        version = pkg_resources.get_distribution("aria2p").version
+        version = get_version()
         lines = [f"aria2p {version} — (C) 2018-2019 Timothée Mazzucotelli", "Released under the ISC license.", ""]
 
         y = 0
