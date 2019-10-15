@@ -255,46 +255,6 @@ def get_parser():
         "Use small values for faster reactivity when stopping to listen.",
     )
 
-    # TODO: when API is ready
-    # info_parser = subparsers.add_parser("info", help="Show information about downloads.")
-    # info_parser_mxg = info_parser.add_mutually_exclusive_group()
-    # info_parser_mxg.add_argument("gids", nargs="+")
-    # info_parser_mxg.add_argument("-a", "--all", dest="select_all", action="store_true")
-    # TODO: add --format, --fields
-
-    # TODO: when API is ready
-    # list_parser = subparsers.add_parser("list", help="List downloads.", aliases=["ls"])
-    # list_parser.add_argument("-f", "--format", dest="format")
-    # list_parser.add_argument("-s", "--sort", dest="sort")
-    # TODO: add --hide-metadata
-
-    # TODO: when API is ready
-    # search_parser = subparsers.add_parser("search", help="Search downloads using patterns or regular expressions.")
-    # search_parser.add_argument("-L", "--literal", dest="literal", action="store_true")
-
-    # TODO: add options (--set), stats, move-files, save-session, shutdown
-
-    # "show" to show progress.
-    # Will evolve into a top-like interface with its own alternate buffer.
-    # Many display options, stored in a configuration file.
-
-    # "list" to list current downloads. Alias "ls".
-    # By default only outputs downloads names.
-    # Option -l, --long for additional information (--format=long).
-    # Option -f, --format with choices and custom string.
-    # Option -a, --all to list all downloads.
-    # Option -m, --metadata to show metadata downloads (default false).
-    # Option -s, --sort with choices and custom sort.
-    # Option -H, --human-readable.
-
-    # "options" to manipulate options. Alias "opt".
-    # Option -s, --set to set an option to a given value.
-    # Option -g, --get to get the value of an option.
-    # Option -u, --unset to unset an option (reset to default value).
-    # Option -i, --increase to increase an integer/float option value.
-    # Option -d, --decrease to decrease an integer/float option value.
-    # Example: aria2p opts -i max-concurrent-downloads:2 -d timeout:30
-
     return parser
 
 
