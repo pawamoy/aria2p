@@ -334,6 +334,9 @@ class API:
         result = []
 
         for download in downloads:
+            if download.is_complete or download.is_removed or download.has_failed:
+                result.append(self.purge([download])[0])
+                continue
             try:
                 removed_gid = remove_func(download.gid)
             except ClientException as error:
@@ -656,8 +659,8 @@ class API:
         Start listening to aria2 notifications via WebSocket.
 
         This method differs from :meth:`~aria2p.client.Client.listen_to_notifications` in that it expects callbacks
-        accepting two arguments, "api" and "gid", instead of only "gid". Accepting "api" allows to use the high-level
-        methods of the API class.
+        accepting two arguments, ``api`` and ``gid``, instead of only ``gid``.
+        Accepting ``api`` allows to use the high-level methods of the :class:`~aria2p.api.API` class.
 
         Stop listening to notifications with the :meth:`~aria2p.api.API.stop_listening` method.
 

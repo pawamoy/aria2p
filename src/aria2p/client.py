@@ -1658,12 +1658,12 @@ class Client:
         Stop listening to notifications with the :meth:`~aria2p.client.Client.stop_listening` method.
 
         Args:
-            on_download_start (func): Callback for the "aria2.onDownloadStart" event.
-            on_download_pause (func): Callback for the "aria2.onDownloadPause" event.
-            on_download_stop (func): Callback for the "aria2.onDownloadStop" event.
-            on_download_complete (func): Callback for the "aria2.onDownloadComplete" event.
-            on_download_error (func): Callback for the "aria2.onDownloadError" event.
-            on_bt_download_complete (func): Callback for the "aria2.onBtDownloadComplete" event.
+            on_download_start (func): Callback for the ``aria2.onDownloadStart`` event.
+            on_download_pause (func): Callback for the ``aria2.onDownloadPause`` event.
+            on_download_stop (func): Callback for the ``aria2.onDownloadStop`` event.
+            on_download_complete (func): Callback for the ``aria2.onDownloadComplete`` event.
+            on_download_error (func): Callback for the ``aria2.onDownloadError`` event.
+            on_bt_download_complete (func): Callback for the ``aria2.onBtDownloadComplete`` event.
             timeout (int): Timeout when waiting for data to be received. Use a small value for faster reactivity
                 when stopping to listen. Default is 5 seconds.
             handle_signals (bool): Whether to add signal handlers to gracefully stop the loop on SIGTERM and SIGINT.

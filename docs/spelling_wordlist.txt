@@ -140,6 +140,7 @@ numStopped
 numStoppedTotal
 numWaiting
 nvidia
+openbox
 parameterized
 params
 parso
@@ -160,6 +161,7 @@ pluggy
 posix
 Pragma
 prealloc
+programmatically
 ptyprocess
 purgeDownloadResult
 pycodestyle
@@ -176,6 +178,8 @@ pytest
 pythonic
 pytz
 QoS
+qtile
+QTile
 qwer
 rcvbuf
 readthedocs

@@ -49,7 +49,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Cast return value in get method with argument ([5ee651a](https://github.com/pawamoy/aria2p/commit/5ee651a17e28502903103959bf1b7b9abd71eb60)).
-- Fix Download.name and always init struct args to empty dicts ([874deb9](https://github.com/pawamoy/aria2p/commit/874deb98b0e61f1c5e115253974ca525ba313fdf)).
+- Fix Download.name and always initialize struct arguments to empty dictionaries ([874deb9](https://github.com/pawamoy/aria2p/commit/874deb98b0e61f1c5e115253974ca525ba313fdf)).
 - Pass exceptions when download result cannot be removed ([9a7659e](https://github.com/pawamoy/aria2p/commit/9a7659e6763173b90f94b0711a65e43aec047c9c)).
 
 
