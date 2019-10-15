@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.5.1](https://github.com/pawamoy/aria2p/releases/tag/v0.5.1) ([compare](https://github.com/pawamoy/aria2p/compare/v0.5.0...v0.5.1)) - 2019-10-15
+
+### Fixed
+- Fix interface exit (oops) ([ca4adc5](https://github.com/pawamoy/aria2p/commit/ca4adc5a8c3d195131f65b6799fd9d3b7eb4491b)).
+
+
 ## [v0.5.0](https://github.com/pawamoy/aria2p/releases/tag/v0.5.0) ([compare](https://github.com/pawamoy/aria2p/compare/v0.4.0...v0.5.0)) - 2019-10-15
 
 ### BREAKING CHANGES
