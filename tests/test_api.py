@@ -3,7 +3,7 @@ import threading
 import time
 from pathlib import Path
 
-from aria2p import API, Client, Download
+from aria2p import API, Client, Download, File
 
 from . import (
     BUNSENLABS_MAGNET,
@@ -161,6 +161,39 @@ def test_remove_method():
         assert server.api.remove(downloads) == [True for _ in downloads]
         downloads = server.api.get_downloads()
         assert not downloads
+
+
+def test_remove_files_method():
+    with Aria2Server(port=7131, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
+        download = server.api.get_downloads()[0]
+        while not download.is_complete:
+            time.sleep(0.1)
+            download.update()
+        assert server.api.remove([download], files=True)
+        for file in download.root_files_paths:
+            assert not file.exists()
+
+
+def test_remove_files_not_complete():
+    with Aria2Server(port=7132, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+        downloads = server.api.get_downloads()
+        assert server.api.remove(downloads, files=True)
+        for download in downloads:
+            for file in download.root_files_paths:
+                assert file.exists()
+
+
+def test_remove_files_tree():
+    with Aria2Server(port=1, run=False) as server:
+        directory = server.tmp_dir / "some-directory"
+        directory.mkdir()
+
+        class _Download:
+            is_complete = True
+            root_files_paths = [directory]
+
+        assert server.api.remove_files([_Download])
+        assert not directory.exists()
 
 
 def test_remove_all_method():
