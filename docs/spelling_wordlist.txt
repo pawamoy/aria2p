@@ -54,6 +54,7 @@ epoll
 errorCode
 errored
 errorMessage
+escdelay
 execnet
 extlinks
 falloc
@@ -92,6 +93,7 @@ gnutls
 gzipped
 hostname
 html
+htop
 http
 https
 imagesize
@@ -128,6 +130,7 @@ netinet
 netrc
 nofile
 norecursedirs
+npyscreen
 ntfs
 num
 numActive
@@ -163,7 +166,9 @@ pycodestyle
 pyenchant
 pyenv
 pyflakes
+pygcurse
 pygments
+pylint
 pyparsing
 pypi
 pyproject
@@ -223,10 +228,12 @@ trunc
 txt
 ulimit
 unicast
+unicurses
 unpause
 unpauseAll
 unpaused
 unregister
+unselect
 unselected
 uploadLength
 uploadSpeed
@@ -234,6 +241,7 @@ uri
 URI
 uris
 url
+urwid
 usr
 utf
 Utils
