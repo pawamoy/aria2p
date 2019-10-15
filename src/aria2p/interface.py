@@ -390,7 +390,7 @@ class Interface:
                             # avoid crashing the interface if exceptions occur
                             try:
                                 self.process_event(event)
-                            except Exception as error:
+                            except Exception:  # nosec
                                 pass  # TODO: display error in status bar
                             event = screen.get_event()
 
