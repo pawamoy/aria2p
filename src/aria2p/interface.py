@@ -390,6 +390,8 @@ class Interface:
                             # avoid crashing the interface if exceptions occur while processing an event
                             try:
                                 self.process_event(event)
+                            except Exit:
+                                return True
                             except Exception as error:
                                 # TODO: display error in status bar
                                 logger.exception(error)
@@ -416,8 +418,6 @@ class Interface:
                         # sleep and increment frame
                         time.sleep(self.sleep)
                         self.frame = (self.frame + 1) % self.frames
-        except Exit:
-            return True
         except Exception as error:
             logger.exception(error)
             return False
