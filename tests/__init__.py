@@ -126,12 +126,15 @@ class _Aria2Server:
 
 
 class Aria2Server:
-    def __init__(self, port=None, config=None, session=None, secret=""):
+    def __init__(self, port=None, config=None, session=None, secret="", run=True):
+        self.run = run
         self.server = _Aria2Server(port, config, session, secret)
 
     def __enter__(self):
-        self.server.start()
+        if self.run:
+            self.server.start()
         return self.server
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.server.destroy()
+        if self.run:
+            self.server.destroy()
