@@ -387,7 +387,11 @@ class Interface:
                         # otherwise the reactivity is slowed down a lot with fast inputs
                         event = screen.get_event()
                         while event:
-                            self.process_event(event)
+                            # avoid crashing the interface if exceptions occur
+                            try:
+                                self.process_event(event)
+                            except Exception as error:
+                                pass  # TODO: display error in status bar
                             event = screen.get_event()
 
                         # time to update data and rows
@@ -572,7 +576,9 @@ class Interface:
             self.last_remove_choice = self.side_focused
             self.state = self.State.MAIN
             self.x_offset = 0
-            self.refresh = True
+
+            # force complete refresh
+            self.frame = 0
 
         elif event.key_code in Keys.MOVE_UP:
             if self.side_focused > 0:
