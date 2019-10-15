@@ -387,11 +387,12 @@ class Interface:
                         # otherwise the reactivity is slowed down a lot with fast inputs
                         event = screen.get_event()
                         while event:
-                            # avoid crashing the interface if exceptions occur
+                            # avoid crashing the interface if exceptions occur while processing an event
                             try:
                                 self.process_event(event)
-                            except Exception:  # nosec
-                                pass  # TODO: display error in status bar
+                            except Exception as error:
+                                # TODO: display error in status bar
+                                logger.exception(error)
                             event = screen.get_event()
 
                         # time to update data and rows
@@ -418,7 +419,7 @@ class Interface:
         except Exit:
             return True
         except Exception as error:
-            logger.exception(f"Exception: {error}")
+            logger.exception(error)
             return False
 
     def update_select_sort_rows(self):
