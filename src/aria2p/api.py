@@ -339,30 +339,41 @@ class API:
 
         for download in downloads:
             if download.is_complete or download.is_removed or download.has_failed:
-                result.append(self.purge([download])[0])
-                continue
-            try:
-                removed_gid = remove_func(download.gid)
-            except ClientException as error:
-                logger.debug(f"Failed to remove download {download.gid}")
-                logger.opt(exception=True).trace(error)
-                result.append(error)
-            else:
-                result.append(True)
+                logger.debug(f"Try to remove download result {download.gid}")
                 try:
                     self.client.remove_download_result(download.gid)
-                except ClientException as error2:
-                    logger.debug(f"Failed to remove download result {download.gid}")
-                    logger.opt(exception=True).trace(error2)
-                if removed_gid != download.gid:
-                    logger.debug(f"Removed download GID#{removed_gid} is different than download GID#{download.gid}")
+                except ClientException as error:
+                    logger.exception(error)
+                    result.append(error)
+                else:
+                    logger.success(f"Removed download result {download.gid}")
+                    result.append(True)
+            else:
+                logger.debug(f"Try to remove download {download.gid}")
+                try:
+                    removed_gid = remove_func(download.gid)
+                except ClientException as error:
+                    logger.exception(error)
+                    result.append(error)
+                else:
+                    logger.success(f"Removed download {download.gid}")
+                    result.append(True)
                     try:
-                        self.client.remove_download_result(removed_gid)
+                        self.client.remove_download_result(download.gid)
                     except ClientException as error2:
-                        logger.debug(f"Failed to remove download result {removed_gid}")
+                        logger.debug(f"Failed to remove download result {download.gid}")
                         logger.opt(exception=True).trace(error2)
-                if files:
-                    self.remove_files([download], force=force)
+                    if removed_gid != download.gid:
+                        logger.debug(
+                            f"Removed download GID#{removed_gid} is different than download GID#{download.gid}"
+                        )
+                        try:
+                            self.client.remove_download_result(removed_gid)
+                        except ClientException as error2:
+                            logger.debug(f"Failed to remove download result {removed_gid}")
+                            logger.opt(exception=True).trace(error2)
+            if files and result[-1]:
+                self.remove_files([download], force=force)
 
         return result
 
