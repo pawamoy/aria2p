@@ -610,7 +610,10 @@ class API:
         for download in downloads:
             if download.is_complete or force:
                 for path in download.root_files_paths:
-                    shutil.rmtree(str(path))
+                    if path.is_dir():
+                        shutil.rmtree(str(path))
+                    else:
+                        path.unlink()
                 results.append(True)
             else:
                 results.append(False)
