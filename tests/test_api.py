@@ -3,7 +3,7 @@ import threading
 import time
 from pathlib import Path
 
-from aria2p import API, Client, Download, File
+from aria2p import API, Client, Download
 
 from . import (
     BUNSENLABS_MAGNET,
