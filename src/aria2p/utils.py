@@ -5,6 +5,7 @@ This module contains simple utility classes and functions.
 """
 import signal
 
+import pkg_resources
 from loguru import logger
 
 
@@ -35,6 +36,15 @@ class SignalHandler:
         """Mark this instance as 'triggered' (a specified signal was received)."""
         logger.debug(f"Signal handler: caught signal {signal.Signals(signum).name} ({signum})")
         self.triggered = True
+
+
+class Version:
+    def __init__(self, version_string):
+        self.version_string = version_string
+        self.major, self.minor, self.patch = (int(v) for v in version_string.split("."))
+
+    def __str__(self):
+        return self.version_string
 
 
 def human_readable_timedelta(value, precision=0):
@@ -104,3 +114,12 @@ def bool_to_str(value):
     if value is False:
         return "false"
     return value
+
+
+def get_version():
+    try:
+        distribution = pkg_resources.get_distribution("aria2p")
+    except pkg_resources.DistributionNotFound:
+        return Version("0.0.0")
+    else:
+        return Version(distribution.version)
