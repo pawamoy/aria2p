@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.5.0](https://github.com/pawamoy/aria2p/releases/tag/v0.5.0) ([compare](https://github.com/pawamoy/aria2p/compare/v0.4.0...v0.5.0)) - 2019-10-15
+
+### BREAKING CHANGES
+- Commands finishing with `-all` were removed. Use their equivalent with the `-a` or `--all` option.
+  Example: `aria2p pause-all` becomes `aria2p pause --all`.
+
+### Added
+- Add log path global option ([7103e0b](https://github.com/pawamoy/aria2p/commit/7103e0b32656e8209d6c4c6d3f3f95f41eb75148)).
+
+### Fixed
+- Interface does not crash anymore when trying to remove a completed/failed download ([157e137](https://github.com/pawamoy/aria2p/commit/157e137730e49c4e290e34371dfbd5fc464491db)).
+  See issue [GH-31](https://github.com/pawamoy/aria2p/issues/31).
+- Run extra arguments-checks for aliases as well ([cb70dae](https://github.com/pawamoy/aria2p/commit/cb70dae023997d3b2df789bb101678936a56fe31)).
+  See issue [GH-15](https://github.com/pawamoy/aria2p/issues/15).
+
+
 ## [v0.4.0](https://github.com/pawamoy/aria2p/releases/tag/v0.4.0) ([compare](https://github.com/pawamoy/aria2p/compare/v0.3.0...v0.4.0)) - 2019-10-13
 
 ### Added
@@ -24,6 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Fix API pause_all and resume_all methods ([0bf2209](https://github.com/pawamoy/aria2p/commit/0bf2209553e138387d2597900f2a182275bd0fa5)).
+  See issue [GH-24](https://github.com/pawamoy/aria2p/issues/24).
 
 
 ## [v0.2.5](https://github.com/pawamoy/aria2p/releases/tag/v0.2.5) ([compare](https://github.com/pawamoy/aria2p/compare/v0.2.4...v0.2.5)) - 2019-08-09
