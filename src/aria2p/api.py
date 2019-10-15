@@ -373,7 +373,7 @@ class API:
                             logger.debug(f"Failed to remove download result {removed_gid}")
                             logger.opt(exception=True).trace(error2)
             if files and result[-1]:
-                self.remove_files([download], force=force)
+                self.remove_files([download], force=True)
 
         return result
 
