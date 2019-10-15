@@ -81,15 +81,12 @@ def main(args=None):
         "add-metalink": subcommand_add_metalink,
         "pause": subcommand_pause,
         "stop": subcommand_pause,  # alias for pause
-        "pause-all": subcommand_pause_all,
         "resume": subcommand_resume,
         "start": subcommand_resume,  # alias for resume
-        "resume-all": subcommand_resume_all,
         "remove": subcommand_remove,
         "rm": subcommand_remove,  # alias for remove
         "del": subcommand_remove,  # alias for remove
         "delete": subcommand_remove,  # alias for remove
-        "remove-all": subcommand_remove_all,
         "purge": subcommand_purge,
         "clear": subcommand_purge,  # alias for purge
         "autopurge": subcommand_autopurge,
@@ -122,13 +119,6 @@ def check_args(parser, args):
             subparser[args.subcommand].error("the following arguments are required: gids or --all")
         elif args.do_all and args.gids:
             subparser[args.subcommand].error("argument -a/--all: not allowed with arguments gids")
-    elif (args.subcommand or "").endswith("-all"):
-        print(
-            f"Deprecation warning: command '{args.subcommand}' is deprecated "
-            f"in favor of '{args.subcommand[:-4]} --all', "
-            f"and will be removed in version 0.5.0.",
-            file=sys.stderr,
-        )
 
 
 def get_parser():
@@ -450,22 +440,6 @@ def subcommand_pause(api: API, gids=None, do_all=False, force=False):
     return 1
 
 
-def subcommand_pause_all(api: API, force=False):
-    """
-    Pause all subcommand.
-
-    Args:
-        api (API): the API instance to use.
-        force (bool): force pause or not (see API.pause_all).
-
-    Returns:
-        int: 0 if all success, 1 if one failure.
-    """
-    if api.pause_all(force=force):
-        return 0
-    return 1
-
-
 def subcommand_resume(api: API, gids=None, do_all=False):
     """
     Resume subcommand.
@@ -490,21 +464,6 @@ def subcommand_resume(api: API, gids=None, do_all=False):
     for item in result:
         if isinstance(item, ClientException):
             print(item, file=sys.stderr)
-    return 1
-
-
-def subcommand_resume_all(api: API):
-    """
-    Resume all subcommand.
-
-    Args:
-        api (API): the API instance to use.
-
-    Returns:
-        int: 0 if all success, 1 if one failure.
-    """
-    if api.resume_all():
-        return 0
     return 1
 
 
@@ -533,22 +492,6 @@ def subcommand_remove(api: API, gids=None, do_all=False, force=False):
     for item in result:
         if isinstance(item, ClientException):
             print(item, file=sys.stderr)
-    return 1
-
-
-def subcommand_remove_all(api: API, force=False):
-    """
-    Remove all subcommand.
-
-    Args:
-        api (API): the API instance to use.
-        force (bool): force pause or not (see API.remove_all).
-
-    Returns:
-        int: 0 if all success, 1 if one failure.
-    """
-    if api.remove_all(force=force):
-        return 0
     return 1
 
 

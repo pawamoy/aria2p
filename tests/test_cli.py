@@ -202,11 +202,6 @@ def test_remove_all_subcommand():
         assert cli.subcommand_remove(server.api, do_all=True) == 0
 
 
-# def test_remove_all_subcommand_fails():
-#     with Aria2Server(port=7523) as server:
-#         assert cli.subcommand_remove_all(server.api) == 0
-
-
 def test_purge_subcommand():
     with Aria2Server(port=7524, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
         while not server.api.get_download("2089b05ecca3d829").is_complete:
@@ -231,11 +226,6 @@ def test_purge_all_subcommand():
 def test_autopurge_subcommand():
     with Aria2Server(port=7527, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
         assert cli.subcommand_autopurge(server.api) == 0
-
-
-# def test_purge_all_subcommand_fails():
-#     with Aria2Server(port=7528) as server:
-#         assert cli.subcommand_purge_all(server.api) == 0
 
 
 def test_listen_subcommand(capsys):
