@@ -435,9 +435,6 @@ class Interface:
         Args:
             event (KeyboardEvent/MouseEvent): The event to process.
         """
-        if event is None:
-            return
-
         if isinstance(event, KeyboardEvent):
             self.process_keyboard_event(event)
 
