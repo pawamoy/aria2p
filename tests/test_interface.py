@@ -3,6 +3,8 @@ from asciimatics.screen import Screen
 
 from aria2p import interface as tui
 
+from . import Aria2Server
+
 
 class Event:
     RESIZE = 1
@@ -10,7 +12,7 @@ class Event:
     PASS_N_TICKS = 3
 
 
-def get_interface(patcher, events=None, append_q=True):
+def get_interface(patcher, api=None, events=None, append_q=True):
     if not events:
         events = []
 
@@ -25,11 +27,11 @@ def get_interface(patcher, events=None, append_q=True):
             pass
 
     patcher.setattr(tui, "ManagedScreen", MockedManagedScreen)
-    return tui.Interface()
+    return tui.Interface(api=api)
 
 
-def run_interface(patcher, events=None, append_q=True):
-    interface = get_interface(patcher, events, append_q)
+def run_interface(patcher, api=None, events=None, append_q=True):
+    interface = get_interface(patcher, api, events, append_q)
     interface.run()
     return interface
 
@@ -86,28 +88,35 @@ def test_run(monkeypatch):
 
 
 def test_resize(monkeypatch):
-    interface = run_interface(monkeypatch, [Event.RESIZE])
-    # assert screen was renewed
-    assert not interface.screen.has_resized()
+    with Aria2Server(port=7600) as server:
+        interface = run_interface(monkeypatch, server.api, events=[Event.RESIZE])
+        # assert screen was renewed
+        assert not interface.screen.has_resized()
 
 
 def test_frames_plus_n(monkeypatch):
-    n = 10
-    interface = run_interface(monkeypatch, [Event.PASS_N_FRAMES, tui.Interface.frames + n - 1])
-    assert interface.frame == n
+    with Aria2Server(port=7601) as server:
+        n = 10
+        interface = run_interface(monkeypatch, server.api, events=[Event.PASS_N_FRAMES, tui.Interface.frames + n - 1])
+        assert interface.frame == n
 
 
 def test_change_sort(monkeypatch):
-    interface = run_interface(monkeypatch, [Event.PASS_N_FRAMES, 10, KeyboardEvent(ord("<")), Event.PASS_N_TICKS, 1])
-    assert interface.sort == tui.Interface.sort - 1
+    with Aria2Server(port=7602) as server:
+        interface = run_interface(
+            monkeypatch, server.api, events=[Event.PASS_N_FRAMES, 10, KeyboardEvent(ord("<")), Event.PASS_N_TICKS, 1]
+        )
+        assert interface.sort == tui.Interface.sort - 1
 
 
 def test_move_focus(monkeypatch):
-    interface = run_interface(
-        monkeypatch,
-        [KeyboardEvent(Screen.KEY_UP), Event.PASS_N_TICKS, 1]
-        + [KeyboardEvent(Screen.KEY_DOWN)] * 5
-        + [Event.PASS_N_TICKS, 1]
-        + [KeyboardEvent(Screen.KEY_UP)] * 20,
-    )
-    assert interface.focused == 0
+    with Aria2Server(port=7603) as server:
+        interface = run_interface(
+            monkeypatch,
+            server.api,
+            events=[KeyboardEvent(Screen.KEY_UP), Event.PASS_N_TICKS, 1]
+            + [KeyboardEvent(Screen.KEY_DOWN)] * 5
+            + [Event.PASS_N_TICKS, 1]
+            + [KeyboardEvent(Screen.KEY_UP)] * 20,
+        )
+        assert interface.focused == 0
