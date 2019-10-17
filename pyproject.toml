@@ -21,9 +21,9 @@ include = [
 [tool.poetry.dependencies]
 python = "^3.6"
 requests = "*"
-loguru = "^0.2.5"
-websocket_client = "^0.56.0"
-asciimatics = "^1.11"
+loguru = "*"
+websocket_client = "*"
+asciimatics = "*"
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.5"
@@ -31,7 +31,7 @@ black = { version = "*", allows-prereleases = true }
 flake8 = "^3.6"
 ipython = "^7.2"
 isort = { version = "^4.3", extras = ["pyproject"] }
-jinja2-cli = { git = "https://github.com/mattrobenolt/jinja2-cli.git" }
+jinja2-cli = "^0.7.0"
 pytest = "^4.3"
 pytest-cov = "^2.6"
 pytest-sugar = "^0.9.2"
