@@ -561,14 +561,16 @@ class Download:
         Returns an instance of :class:`~aria2p.downloads.Download`.
         """
         if not self._following:
-            try:
-                self._following = self.api.get_download(self.following_id)
-            except ClientException as error:
-                logger.warning(
-                    f"Can't find download with GID {self.following_id}, try to update download {self.gid} ({id(self)}"
-                )
-                logger.opt(exception=True).trace(error)
-                self._following = None
+            following_id = self.following_id
+            if following_id:
+                try:
+                    self._following = self.api.get_download(following_id)
+                except ClientException as error:
+                    logger.warning(
+                        f"Can't find download with GID {following_id}, try to update download {self.gid} ({id(self)}"
+                    )
+                    logger.opt(exception=True).trace(error)
+                    self._following = None
         return self._following
 
     @property
@@ -590,14 +592,16 @@ class Download:
         Returns an instance of :class:`~aria2p.downloads.Download`.
         """
         if not self._belongs_to:
-            try:
-                self._belongs_to = self.api.get_download(self.belongs_to_id)
-            except ClientException as error:
-                logger.warning(
-                    f"Can't find download with GID {self.belongs_to_id}, try to update download {self.gid} ({id(self)}"
-                )
-                logger.opt(exception=True).trace(error)
-                self._belongs_to = None
+            belongs_to_id = self.belongs_to_id
+            if belongs_to_id:
+                try:
+                    self._belongs_to = self.api.get_download(belongs_to_id)
+                except ClientException as error:
+                    logger.warning(
+                        f"Can't find download with GID {belongs_to_id}, try to update download {self.gid} ({id(self)})"
+                    )
+                    logger.opt(exception=True).trace(error)
+                    self._belongs_to = None
         return self._belongs_to
 
     @property
