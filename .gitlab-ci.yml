@@ -61,6 +61,11 @@ check-safety:
     - poetry install -vv
     - poetry --version
   script: poetry run pytest -v
+  artifacts:
+    paths:
+      - tests/logs
+    when: on_failure
+    expire_in: 1 week
 
 python3.6:
   <<: *test
@@ -74,4 +79,3 @@ python3.8:
   <<: *test
   image: python:3.8-rc
   allow_failure: true
-
