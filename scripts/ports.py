@@ -1,9 +1,9 @@
 import re
 import sys
+from collections import defaultdict
 from os import listdir
 from os.path import isfile, join
 from pathlib import Path
-from collections import defaultdict
 
 
 def get_ports():
@@ -61,9 +61,7 @@ def next_unused(port):
 
 
 if __name__ == "__main__":
-    blacklisted_ports = {
-        7616: "Used by TCP/UDP"
-    }
+    blacklisted_ports = {7616: "Used by TCP/UDP"}
     used_ports = get_ports()
     unused_ports = get_unused(used_ports)
     args = sys.argv

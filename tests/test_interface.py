@@ -351,14 +351,7 @@ def test_remember_last_remove(monkeypatch):
         interface = run_interface(
             monkeypatch,
             server.api,
-            events=[
-                Event.pass_frame,
-                Event.delete,
-                Event.down,
-                Event.enter,
-                Event.delete,
-                Event.esc,
-            ],
+            events=[Event.pass_frame, Event.delete, Event.down, Event.enter, Event.delete, Event.esc],
         )
     assert interface.last_remove_choice == 1
     assert interface.side_focused == 1
