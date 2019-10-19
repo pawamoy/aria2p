@@ -315,11 +315,11 @@ def test_toggle_resume_pause(monkeypatch):
             sort=7,
         )
 
-    time.sleep(0.5)
-    interface.data[0].update()
-    assert interface.data[0].is_active
-    interface.data[1].update()
-    assert interface.data[1].is_paused
+        time.sleep(0.5)
+        interface.data[0].update()
+        assert interface.data[0].is_active
+        interface.data[1].update()
+        assert interface.data[1].is_paused
 
 
 def test_priority(monkeypatch):
@@ -347,11 +347,18 @@ def test_sort_edges(monkeypatch):
 
 
 def test_remember_last_remove(monkeypatch):
-    with Aria2Server(port=7616, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+    with Aria2Server(port=7621, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
         interface = run_interface(
             monkeypatch,
             server.api,
-            events=[Event.pass_frame, Event.delete, Event.down, Event.enter, Event.delete, Event.esc],
+            events=[
+                Event.pass_frame,
+                Event.delete,
+                Event.down,
+                Event.enter,
+                Event.delete,
+                Event.esc,
+            ],
         )
     assert interface.last_remove_choice == 1
     assert interface.side_focused == 1
