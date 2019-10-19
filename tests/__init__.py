@@ -64,6 +64,8 @@ class _Aria2Server:
                     stream.write("\n".join(session))
                 command.append(f"--input-file={session_path}")
             else:
+                if not session.exists():
+                    raise ValueError(f"no such session: {session}")
                 command.append(f"--input-file={session}")
         if secret:
             command.append(f"--rpc-secret={secret}")
