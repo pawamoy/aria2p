@@ -526,12 +526,17 @@ class Interface:
             self.refresh = True
 
         elif event.key_code in Keys.REMOVE_ASK:
+            logger.debug("Triggered removal")
+            logger.debug(f"self.focused = {self.focused}")
+            logger.debug(f"len(self.data) = {len(self.data)}")
             if self.follow_focused():
                 self.state = self.State.REMOVE_ASK
                 self.x_offset = self.width_remove_ask() + 1
                 if self.last_remove_choice is not None:
                     self.side_focused = self.last_remove_choice
                 self.refresh = True
+            else:
+                logger.debug("Could not focus download")
 
         elif event.key_code in Keys.TOGGLE_EXPAND_COLLAPSE:
             pass  # TODO
@@ -569,14 +574,18 @@ class Interface:
 
     def process_keyboard_event_remove_ask(self, event):
         if event.key_code in Keys.CANCEL:
+            logger.debug("Canceling removal")
             self.state = self.State.MAIN
             self.x_offset = 0
             self.refresh = True
 
         elif event.key_code in Keys.ENTER:
+            logger.debug("Validate removal")
             if self.follow:
                 self.remove_ask_rows[self.side_focused][1](self.follow)
                 self.follow = None
+            else:
+                logger.debug("No download was targeted, not removing")
             self.last_remove_choice = self.side_focused
             self.state = self.State.MAIN
             self.x_offset = 0
@@ -587,11 +596,13 @@ class Interface:
         elif event.key_code in Keys.MOVE_UP:
             if self.side_focused > 0:
                 self.side_focused -= 1
+                logger.debug(f"Moving side focus up: {self.side_focused}")
                 self.refresh = True
 
         elif event.key_code in Keys.MOVE_DOWN:
             if self.side_focused < len(self.remove_ask_rows) - 1:
                 self.side_focused += 1
+                logger.debug(f"Moving side focus down: {self.side_focused}")
                 self.refresh = True
 
     def process_keyboard_event_select_sort(self, event):
