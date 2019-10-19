@@ -56,7 +56,7 @@ check-safety:  ## Check for vulnerabilities in dependencies using safety.
 
 .PHONY: check-ports
 check-ports:  ## Check if the ports used in the tests are all unique.
-	scripts/check-ports.sh
+	poetry run python scripts/ports.py check
 
 .PHONY: check-pylint
 check-pylint:  ## Check for code smells using pylint.
