@@ -52,6 +52,7 @@ check-safety:
 
 .test-template: &test
   stage: tests
+  coverage: '/TOTAL.*\s(\d+\.\d+\%)/'
   before_script:
     - apt-get update
     - apt-get install -y python-enchant
