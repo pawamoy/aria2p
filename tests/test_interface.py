@@ -315,7 +315,10 @@ def test_toggle_resume_pause(monkeypatch):
             sort=7,
         )
 
+    time.sleep(0.5)
+    interface.data[0].update()
     assert interface.data[0].is_active
+    interface.data[1].update()
     assert interface.data[1].is_paused
 
 
