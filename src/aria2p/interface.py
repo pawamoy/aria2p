@@ -450,6 +450,7 @@ class Interface:
         if event.key_code in Keys.MOVE_UP:
             if self.focused > 0:
                 self.focused -= 1
+                logger.debug(f"Move focus up: {self.focused}")
                 if self.focused < self.row_offset:
                     self.row_offset = self.focused
                 elif self.focused >= self.row_offset + (self.height - 1):
@@ -461,6 +462,7 @@ class Interface:
         elif event.key_code in Keys.MOVE_DOWN:
             if self.focused < len(self.rows) - 1:
                 self.focused += 1
+                logger.debug(f"Move focus down: {self.focused}")
                 if self.focused - self.row_offset >= (self.height - 1):
                     self.row_offset = self.focused + 1 - (self.height - 1)
                 self.follow = None
@@ -485,8 +487,10 @@ class Interface:
         elif event.key_code in Keys.TOGGLE_RESUME_PAUSE:
             download = self.data[self.focused]
             if download.is_active or download.is_waiting:
+                logger.debug(f"Pausing download {download.gid}")
                 download.pause()
             elif download.is_paused:
+                logger.debug(f"Resuming download {download.gid}")
                 download.resume()
 
         elif event.key_code in Keys.PRIORITY_UP:
@@ -806,7 +810,7 @@ class Interface:
         for i, bound in enumerate(self.bounds):
             if bound[0] <= x <= bound[1]:
                 return i
-        raise ValueError
+        raise ValueError("clicked outside of boundaries")
 
     def set_screen(self, screen):
         """Set the screen object, its scroller wrapper, width, height, and columns bounds."""
