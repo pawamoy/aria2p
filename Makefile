@@ -96,4 +96,6 @@ clean: clean-tests  ## Delete temporary files.
 
 .PHONY: test
 test: check-ports clean-tests  ## Run the tests using pytest.
-	poetry run pytest -nauto 2>/dev/null
+	poetry run pytest -nauto -k "$(K)" 2>/dev/null
+	-poetry run coverage html --rcfile=coverage.ini
+	-poetry run coverage json --rcfile=coverage.ini
