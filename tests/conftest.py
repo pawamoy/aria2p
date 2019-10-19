@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import pytest
@@ -41,4 +42,4 @@ def gitlab_logs(request):
     log_path /= name
     if log_path.exists():
         log_path.unlink()
-    enable_logger(sink=log_path, level="TRACE")
+    enable_logger(sink=log_path, level=os.environ.get("PYTEST_LOG_LEVEL", "TRACE"))
