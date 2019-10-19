@@ -144,8 +144,6 @@ class HorizontalScroll:
         Returns:
             int: The number of characters actually printed.
         """
-        logger.debug(f"Printing following text with offset={self.scroll}")
-        logger.debug(text)
         if self.scroll == 0:
             if isinstance(palette, list):
                 self.screen.paint(text, x, y, colour_map=palette)
@@ -163,9 +161,6 @@ class HorizontalScroll:
                 else:
                     self.screen.print_at(new_text, x, y, *palette)
                 self.scroll = 0
-            elif text_length == self.scroll:
-                self.scroll = 0
-                written = 0
             else:
                 self.scroll -= text_length
                 written = 0
@@ -372,6 +367,7 @@ class Interface:
             # outer loop to support screen resize
             while True:
                 with ManagedScreen() as screen:
+                    logger.debug(f"Created new screen {screen}")
                     self.set_screen(screen)
                     self.frame = 0
                     # break (and re-enter) when screen has been resized
@@ -386,25 +382,30 @@ class Interface:
                         # process all events before refreshing screen,
                         # otherwise the reactivity is slowed down a lot with fast inputs
                         event = screen.get_event()
+                        logger.debug(f"Got event {event}")
                         while event:
                             # avoid crashing the interface if exceptions occur while processing an event
                             try:
                                 self.process_event(event)
                             except Exit:
+                                logger.debug(f"Received exit command")
                                 return True
                             except Exception as error:
                                 # TODO: display error in status bar
                                 logger.exception(error)
                             event = screen.get_event()
+                            logger.debug(f"Got event {event}")
 
                         # time to update data and rows
                         if self.frame == 0:
+                            logger.debug(f"Tick! Updating data and rows")
                             self.update_data()
                             self.update_rows()
                             self.refresh = True
 
                         # time to refresh the screen
                         if self.refresh:
+                            logger.debug(f"Refresh! Printing text")
                             # sort if needed, unless it was just done at frame 0 when updating
                             if (self.sort, self.reverse) != previous_sort and self.frame != 0:
                                 self.sort_data()
@@ -418,6 +419,7 @@ class Interface:
                         # sleep and increment frame
                         time.sleep(self.sleep)
                         self.frame = (self.frame + 1) % self.frames
+                    logger.debug("Screen has resized")
         except Exception as error:
             logger.exception(error)
             return False
