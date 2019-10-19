@@ -61,6 +61,7 @@ check-safety:
     - poetry config settings.virtualenvs.in-project true
     - poetry install -vv
     - poetry --version
+    - aria2c --version
   script: poetry run pytest -v
   artifacts:
     paths:

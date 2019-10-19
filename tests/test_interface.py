@@ -299,27 +299,25 @@ def test_setup(monkeypatch):
 
 
 def test_toggle_resume_pause(monkeypatch):
-    with Aria2Server(port=7613, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+    with Aria2Server(port=7613, session=SESSIONS_DIR / "big-download.txt") as server:
         interface = run_interface(
             monkeypatch,
             server.api,
             events=[
                 Event.pass_frame,
                 Event.space,
-                Event.down,
-                Event.space,
+                Event.pass_tick,
                 Event.pass_tick,
                 Event.space,
                 Event.pass_tick,
+                Event.pass_tick,
+                Event.space,
             ],
-            sort=7,
         )
 
         time.sleep(0.5)
         interface.data[0].update()
-        assert interface.data[0].is_active
-        interface.data[1].update()
-        assert interface.data[1].is_paused
+    assert interface.data[0].is_paused
 
 
 def test_priority(monkeypatch):
