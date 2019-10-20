@@ -65,8 +65,8 @@ def test_parser_no_error(mocked_function):
         assert mocked_function.called
 
 
-@patch("aria2p.cli.subcommand_show")
-def test_main_no_command_defaults_to_show(mocked_function):
+@patch("aria2p.cli.subcommand_top")
+def test_main_no_command_defaults_to_top(mocked_function):
     with Aria2Server(port=7500) as server:
         cli.main(["-p", str(server.port)])
         assert mocked_function.called
@@ -113,17 +113,17 @@ def test_call_subcommand_with_no_params():
 
 def test_add_magnet_subcommand():
     with Aria2Server(port=7507) as server:
-        assert cli.subcommand_add_magnet(server.api, BUNSENLABS_MAGNET) == 0
+        assert cli.subcommand_add_magnets(server.api, [BUNSENLABS_MAGNET]) == 0
 
 
 def test_add_torrent_subcommand():
     with Aria2Server(port=7508) as server:
-        assert cli.subcommand_add_torrent(server.api, TESTS_DATA_DIR / "bunsenlabs-helium-4.iso.torrent") == 0
+        assert cli.subcommand_add_torrents(server.api, [TESTS_DATA_DIR / "bunsenlabs-helium-4.iso.torrent"]) == 0
 
 
 def test_add_metalink_subcommand():
     with Aria2Server(port=7509) as server:
-        assert cli.subcommand_add_metalink(server.api, TESTS_DATA_DIR / "debian.metalink") == 0
+        assert cli.subcommand_add_metalinks(server.api, [TESTS_DATA_DIR / "debian.metalink"]) == 0
 
 
 def test_pause_subcommand(capsys):

@@ -76,9 +76,13 @@ def main(args=None):
         "show": subcommand_show,
         "top": subcommand_top,
         "call": subcommand_call,
-        "add-magnet": subcommand_add_magnet,
-        "add-torrent": subcommand_add_torrent,
-        "add-metalink": subcommand_add_metalink,
+        "add": subcommand_add,
+        "add-magnet": subcommand_add_magnets,
+        "add-magnets": subcommand_add_magnets,
+        "add-torrent": subcommand_add_torrents,
+        "add-torrents": subcommand_add_torrents,
+        "add-metalink": subcommand_add_metalinks,
+        "add-metalinks": subcommand_add_metalinks,
         "pause": subcommand_pause,
         "stop": subcommand_pause,  # alias for pause
         "resume": subcommand_resume,
@@ -158,18 +162,16 @@ def get_parser():
         sub.add_argument("-h", "--help", action="help", help=subcommand_help)
         return sub
 
-    add_magnet_parser = subparser("add-magnet", "Add a download with a Magnet URI.")
-    add_metalink_parser = subparser("add-metalink", "Add a download with a Metalink file.")
-    add_torrent_parser = subparser("add-torrent", "Add a download with a torrent file.")
+    add_parser = subparser("add", "Add downloads with URIs/Magnets/torrents/Metalinks.")
+    add_magnets_parser = subparser("add-magnets", "Add downloads with Magnet URIs.", aliases=["add-magnet"])
+    add_metalinks_parser = subparser("add-metalinks", "Add downloads with Metalink files.", aliases=["add-metalink"])
+    add_torrents_parser = subparser("add-torrents", "Add downloads with torrent files.", aliases=["add-torrent"])
     subparser("autopurge", "Automatically purge completed/removed/failed downloads.", aliases=["autoclear"])
     call_parser = subparser("call", "Call a remote method through the JSON-RPC client.")
     pause_parser = subparser("pause", "Pause downloads.", aliases=["stop"])
-    pause_all_parser = subparser("pause-all", "Pause all downloads.")
     purge_parser = subparser("purge", "Purge downloads.", aliases=["clear"])
     remove_parser = subparser("remove", "Remove downloads.", aliases=["rm", "del", "delete"])
-    remove_all_parser = subparser("remove-all", "Remove all downloads.")
     resume_parser = subparser("resume", "Resume downloads.", aliases=["start"])
-    subparser("resume-all", "Resume all downloads.")
     subparser("show", "Show the download progression.")
     subparser("top", "Launch the top-like interactive interface.")
     listen_parser = subparser("listen", "Listen to notifications.")
@@ -194,24 +196,22 @@ def get_parser():
         help="Parameters as a JSON string. You should always wrap it at least once in an array '[]'.",
     )
 
+    # ========= ADD PARSER ========= #
+    add_parser.add_argument("uris", nargs="+", help="The URIs/file-paths to add.")
+
     # ========= ADD MAGNET PARSER ========= #
-    add_magnet_parser.add_argument("uri", help="The magnet URI to use.")
+    add_magnets_parser.add_argument("uris", nargs="+", help="The magnet URIs to add.")
 
     # ========= ADD TORRENT PARSER ========= #
-    add_torrent_parser.add_argument("torrent_file", help="The path to the torrent file.")
+    add_torrents_parser.add_argument("torrent_files", nargs="+", help="The paths to the torrent files.")
 
     # ========= ADD METALINK PARSER ========= #
-    add_metalink_parser.add_argument("metalink_file", help="The path to the metalink file.")
+    add_metalinks_parser.add_argument("metalink_files", nargs="+", help="The paths to the metalink files.")
 
     # ========= PAUSE PARSER ========= #
     pause_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to pause.")
     pause_parser.add_argument("-a", "--all", action="store_true", dest="do_all", help="Pause all the downloads.")
     pause_parser.add_argument(
-        "-f", "--force", dest="force", action="store_true", help="Pause without contacting servers first."
-    )
-
-    # ========= PAUSE ALL PARSER ========= #
-    pause_all_parser.add_argument(
         "-f", "--force", dest="force", action="store_true", help="Pause without contacting servers first."
     )
 
@@ -223,11 +223,6 @@ def get_parser():
     remove_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to remove.")
     remove_parser.add_argument("-a", "--all", action="store_true", dest="do_all", help="Remove all the downloads.")
     remove_parser.add_argument(
-        "-f", "--force", dest="force", action="store_true", help="Remove without contacting servers first."
-    )
-
-    # ========= REMOVE ALL PARSER ========= #
-    remove_all_parser.add_argument(
         "-f", "--force", dest="force", action="store_true", help="Remove without contacting servers first."
     )
 
@@ -358,52 +353,92 @@ def get_method(name, default=None):
     return methods.get(name, default)
 
 
-def subcommand_add_magnet(api, uri):
+def subcommand_add(api, uris):
     """
     Add magnet subcommand.
 
     Args:
         api (API): the API instance to use.
-        uri (str): the URI of the magnet.
+        uris (list of str): the URIs or file-paths to add.
 
     Returns:
         int: always 0.
     """
-    new_download = api.add_magnet(uri)
-    print(f"Created download {new_download.gid}")
+    ok = True
+
+    for uri in uris:
+        path = Path(uri)
+
+        if path.exists():
+            if path.suffix == ".torrent":
+                new_downloads = [api.add_torrent(path)]
+            elif path.suffix == ".metalink":
+                new_downloads = api.add_metalink(path)
+            else:
+                print(f"Cannot determine type of file {path}", file=sys.stderr)
+                print(f"  Known extensions are .torrent and .metalink", file=sys.stderr)
+                ok = False
+                continue
+        elif uri.startswith("magnet:?"):
+            new_downloads = [api.add_magnet(uri)]
+        else:
+            new_downloads = [api.add_uris([uri])]
+
+        for new_download in new_downloads:
+            print(f"Created download {new_download.gid}")
+
+    return 0 if ok else 1
+
+
+def subcommand_add_magnets(api, uris):
+    """
+    Add magnet subcommand.
+
+    Args:
+        api (API): the API instance to use.
+        uris (list of str): the URIs of the magnets.
+
+    Returns:
+        int: always 0.
+    """
+    for uri in uris:
+        new_download = api.add_magnet(uri)
+        print(f"Created download {new_download.gid}")
     return 0
 
 
-def subcommand_add_torrent(api, torrent_file):
+def subcommand_add_torrents(api, torrent_files):
     """
     Add torrent subcommand.
 
     Args:
         api (API): the API instance to use.
-        torrent_file (str): the path to the torrent file.
+        torrent_files (list of str): the paths to the torrent files.
 
     Returns:
         int: always 0.
     """
-    new_download = api.add_torrent(torrent_file)
-    print(f"Created download {new_download.gid}")
+    for torrent_file in torrent_files:
+        new_download = api.add_torrent(torrent_file)
+        print(f"Created download {new_download.gid}")
     return 0
 
 
-def subcommand_add_metalink(api: API, metalink_file):
+def subcommand_add_metalinks(api: API, metalink_files):
     """
     Add metalink subcommand.
 
     Args:
         api (API): the API instance to use.
-        metalink_file (str): the path to the metalink file.
+        metalink_files (list of str): the paths to the metalink files.
 
     Returns:
         int: always 0.
     """
-    new_downloads = api.add_metalink(metalink_file)
-    for download in new_downloads:
-        print(f"Created download {download.gid}")
+    for metalink_file in metalink_files:
+        new_downloads = api.add_metalink(metalink_file)
+        for download in new_downloads:
+            print(f"Created download {download.gid}")
     return 0
 
 
@@ -425,6 +460,8 @@ def subcommand_pause(api: API, gids=None, do_all=False, force=False):
             return 0
         return 1
 
+    # FIXME: could break if API.resume needs more info than just gid
+    # See how we do that in subcommand_remove
     downloads = [Download(api, {"gid": gid}) for gid in gids]
     result = api.pause(downloads, force=force)
     if all(result):
@@ -452,6 +489,8 @@ def subcommand_resume(api: API, gids=None, do_all=False):
             return 0
         return 1
 
+    # FIXME: could break if API.resume needs more info than just gid
+    # See how we do that in subcommand_remove
     downloads = [Download(api, {"gid": gid}) for gid in gids]
     result = api.resume(downloads)
     if all(result):
@@ -480,10 +519,19 @@ def subcommand_remove(api: API, gids=None, do_all=False, force=False):
             return 0
         return 1
 
-    downloads = [Download(api, {"gid": gid}) for gid in gids]
+    ok = True
+    downloads = []
+
+    for gid in gids:
+        try:
+            downloads.append(api.get_download(gid))
+        except ClientException as error:
+            print(str(error), file=sys.stderr)
+            ok = False
+
     result = api.remove(downloads, force=force)
     if all(result):
-        return 0
+        return 0 if ok else 1
     for item in result:
         if isinstance(item, ClientException):
             print(item, file=sys.stderr)
@@ -592,3 +640,19 @@ def subcommand_listen(api: API, callbacks_module=None, event_types=None, timeout
 
     api.listen_to_notifications(timeout=timeout, handle_signals=True, threaded=False, **callbacks_kwargs)
     return 0
+
+
+def _changed_name(name, func):
+    def _new_func(*args, **kwargs):
+        logger.warning(
+            f"Deprecation warning: function {name} was renamed {name}s in version 0.6.0,"
+            f"and will be removed in version 0.9.0."
+        )
+        return func(*args, **kwargs)
+
+    return _new_func
+
+
+subcommand_add_magnet = _changed_name("subcommand_add_magnet", subcommand_add_magnets)
+subcommand_add_torrent = _changed_name("subcommand_add_torrent", subcommand_add_torrents)
+subcommand_add_metalink = _changed_name("subcommand_add_metalink", subcommand_add_metalinks)

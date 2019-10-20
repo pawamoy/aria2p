@@ -7,7 +7,7 @@ from aria2p.cli import get_parser
 
 parser = get_parser()
 
-aliases = ["autoclear", "clear", "rm", "del", "delete", "start", "stop"]
+aliases = ["add-magnet", "add-metalink", "add-torrent", "autoclear", "clear", "rm", "del", "delete", "start", "stop"]
 
 output = {"main_usage": parser.format_help(), "commands": []}
 
