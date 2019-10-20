@@ -317,7 +317,7 @@ class API:
         """
         return self.client.change_position(download.gid, 0, "POS_END")
 
-    def remove(self, downloads, force=False, files=False):
+    def remove(self, downloads, force=False, files=False, clean=True):
         """
         Remove the given downloads from the list.
 
@@ -325,6 +325,7 @@ class API:
             downloads (list of :class:`~aria2p.downloads.Download`): the list of downloads to remove.
             force (bool): whether to force the removal or not.
             files (bool): whether to remove downloads files as well.
+            clean (bool): whether to remove the aria2 control file as well.
 
         Returns:
             list of bool: Success or failure of the operation for each given download.
@@ -372,6 +373,16 @@ class API:
                         except ClientException as error2:
                             logger.debug(f"Failed to remove download result {removed_gid}")
                             logger.opt(exception=True).trace(error2)
+
+            if clean:
+                # FUTURE: use missing_ok parameter on Python 3.8
+                try:
+                    download.control_file_path.unlink()
+                except FileNotFoundError:
+                    logger.debug(f"aria2 control file {download.control_file_path} was not found")
+                else:
+                    logger.debug(f"Removed control file {download.control_file_path}")
+
             if files and result[-1]:
                 self.remove_files([download], force=True)
 
