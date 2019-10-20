@@ -75,7 +75,7 @@ lint: run-black run-isort  ## Run linting tools on the code.
 
 .PHONY: load-queue
 load-queue:  ## Load fixture downloads in the queue.
-	while read -r m; do poetry run aria2p add-magnet "$$m"; done < tests/data/linux_magnets
+	poetry run aria2p add-magnets -f tests/data/linux_magnets
 
 .PHONY: clear-queue
 clear-queue:  ## Remove all downloads from the queue.
