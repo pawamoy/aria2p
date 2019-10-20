@@ -19,6 +19,8 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
 
 Command-line tool and Python library to interact with an [`aria2c`][1] daemon process through JSON-RPC.
 
+![demo](demo.svg)
+
 To avoid confusion:
 - [*aria2*][1] is a lightweight multi-protocol & multi-source, cross platform download utility operated in command-line.
 It supports HTTP/HTTPS, FTP, SFTP, BitTorrent and Metalink.
@@ -153,12 +155,15 @@ Commands:
   Solution: `aria2c` needs to be up and running first.
 
 ## Support
-To support me as an open-source software author, or to support this project particularly,
-consider donating or supporting through one of these platforms:
-- [Beerpay](https://beerpay.io/pawamoy/aria2p): aria2p
-- [Ko-fi](https://www.ko-fi.com/pawamoy): pawamoy
-- [Liberapay](https://liberapay.com/pawamoy/): pawamoy
-- [Patreon](https://www.patreon.com/pawamoy): pawamoy
-- [Paypal](https://www.paypal.me/pawamoy): pawamoy
+To support this project,
+consider donating through one of the following platforms:
+- [Beerpay](https://beerpay.io/pawamoy/aria2p)
+
+To support me as an open-source software author,
+consider donating or be a supporter through one of the following platforms:
+- [Ko-fi](https://www.ko-fi.com/pawamoy)
+- [Liberapay](https://liberapay.com/pawamoy/)
+- [Patreon](https://www.patreon.com/pawamoy)
+- [Paypal](https://www.paypal.me/pawamoy)
 
 Thank you!

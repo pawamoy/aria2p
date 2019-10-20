@@ -9,6 +9,13 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
 [![documentation](https://img.shields.io/readthedocs/aria2p.svg?style=flat)](https://aria2p.readthedocs.io/en/latest/index.html)
 [![pypi version](https://img.shields.io/pypi/v/aria2p.svg)](https://pypi.org/project/aria2p/)
 [![Gitter](https://badges.gitter.im/aria2p/community.svg)](https://gitter.im/aria2p/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+<br>
+[![beerpay](https://img.shields.io/badge/support-Beerpay-cc88b4.svg?style=flat)](https://beerpay.io/pawamoy/aria2p)
+[![kofi](https://img.shields.io/badge/support-Ko--fi-995555.svg?style=flat)](https://www.ko-fi.com/pawamoy)
+[![liberapay](https://img.shields.io/badge/support-Liberapay-yellow.svg?style=flat)](https://liberapay.com/pawamoy/)
+[![patreon](https://img.shields.io/badge/support-Patreon-FF6952.svg?style=flat)](https://www.patreon.com/pawamoy)
+[![paypal](https://img.shields.io/badge/donate-PayPal-blue.svg?style=flat)](https://www.paypal.me/pawamoy)
+
 
 Command-line tool and Python library to interact with an [`aria2c`][1] daemon process through JSON-RPC.
 
@@ -33,6 +40,15 @@ More information about how to configure `aria2c` to run as a daemon with RPC mod
 can be found in the [Configuration section][conf doc] of the documentation.
 
 [conf doc]: https://aria2p.readthedocs.io/en/latest/configuration.html
+
+**Table of contents**
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage as a library](#usage-as-a-library)
+- [Usage on the command line](#usage-command-line)
+- [Troubleshoot](#troubleshoot)
+- [Support](#support)
+
 
 ## Requirements
 `aria2p` requires Python 3.6 or above.
@@ -122,97 +138,68 @@ Global options:
                         Secret token to use to connect to the remote server.
   -L {TRACE,DEBUG,INFO,SUCCESS,WARNING,ERROR,CRITICAL}, --log-level {TRACE,DEBUG,INFO,SUCCESS,WARNING,ERROR,CRITICAL}
                         Log level to use
+  -P LOG_PATH, --log-path LOG_PATH
+                        Log path to use. Can be a directory or a file.
 
 Commands:
-
-    add-magnet          Add a download with a Magnet URI.
-    add-metalink        Add a download with a Metalink file.
-    add-torrent         Add a download with a torrent file.
+  
+    add                 Add downloads with URIs/Magnets/torrents/Metalinks.
+    add-magnets (add-magnet)
+                        Add downloads with Magnet URIs.
+    add-metalinks (add-metalink)
+                        Add downloads with Metalink files.
+    add-torrents (add-torrent)
+                        Add downloads with torrent files.
     autopurge (autoclear)
                         Automatically purge completed/removed/failed
                         downloads.
     call                Call a remote method through the JSON-RPC client.
     pause (stop)        Pause downloads.
-    pause-all           Pause all downloads.
     purge (clear)       Purge downloads.
     remove (rm, del, delete)
                         Remove downloads.
-    remove-all          Remove all downloads.
     resume (start)      Resume downloads.
-    resume-all          Resume all downloads.
     show                Show the download progression.
     top                 Launch the top-like interactive interface.
     listen              Listen to notifications.
 
 ```
 
-Calling `aria2p` without any arguments will by default call the `show` command,
-which displays the list of current downloads:
-```
-GID  STATUS  PROGRESS  DOWN_SPEED  UP_SPEED  ETA  NAME
-```
-
-There is no interactive mode yet,
-but you can use `watch` combined with the `show` subcommand
-to see how the downloads progress:
-
-```bash
-watch -t -n1 aria2p show
-```
+Calling `aria2p` without any arguments will by default call the `top` command,
+which is a console interactive interface.
 
 Commands:
 
-- [`add-magnet`](#add-magnet)
-- [`add-metalink`](#add-metalink)
-- [`add-torrent`](#add-torrent)
+- [`add`](#add)
+- [`add-magnets`](#add-magnets)
+- [`add-metalinks`](#add-metalinks)
+- [`add-torrents`](#add-torrents)
 - [`autopurge`](#autopurge)
 - [`call`](#call)
+- [`listen`](#listen)
 - [`pause`](#pause)
-- [`pause-all`](#pause-all)
 - [`purge`](#purge)
 - [`remove`](#remove)
-- [`remove-all`](#remove-all)
 - [`resume`](#resume)
-- [`resume-all`](#resume-all)
 - [`show`](#show)
 - [`top`](#top)
-- [`listen`](#listen)
-
-**Warning:** commands ending with `-all` are deprecated. Please use their equivalent with the `-a` or `--all` option
-(e.g. instead of `pause-all`, use `pause -a`). These commands will be removed in version 0.5.0.
 
 
 ---
 
-### `add-magnet`
+### `add`
 ```
-usage: aria2p add-magnet [-h] uri
+usage: aria2p add [-h] [-f FROM_FILE] [uris [uris ...]]
 
-Add a download with a Magnet URI.
+Add downloads with URIs/Magnets/torrents/Metalinks.
 
 positional arguments:
-  uri         The magnet URI to use.
+  uris                  The URIs/file-paths to add.
 
 optional arguments:
-  -h, --help  Show this help message and exit.
-
-```
-
-
-
----
-
-### `add-metalink`
-```
-usage: aria2p add-metalink [-h] metalink_file
-
-Add a download with a Metalink file.
-
-positional arguments:
-  metalink_file  The path to the metalink file.
-
-optional arguments:
-  -h, --help     Show this help message and exit.
+  -h, --help            Show this help message and exit.
+  -f FROM_FILE, --from-file FROM_FILE
+                        Load URIs from a file.
 
 ```
 
@@ -220,17 +207,61 @@ optional arguments:
 
 ---
 
-### `add-torrent`
+### `add-magnets`
 ```
-usage: aria2p add-torrent [-h] torrent_file
+usage: aria2p add-magnets [-h] [-f FROM_FILE] [uris [uris ...]]
 
-Add a download with a torrent file.
+Add downloads with Magnet URIs.
 
 positional arguments:
-  torrent_file  The path to the torrent file.
+  uris                  The magnet URIs to add.
 
 optional arguments:
-  -h, --help    Show this help message and exit.
+  -h, --help            Show this help message and exit.
+  -f FROM_FILE, --from-file FROM_FILE
+                        Load URIs from a file.
+
+```
+
+
+
+---
+
+### `add-metalinks`
+```
+usage: aria2p add-metalinks [-h] [-f FROM_FILE]
+                            [metalink_files [metalink_files ...]]
+
+Add downloads with Metalink files.
+
+positional arguments:
+  metalink_files        The paths to the metalink files.
+
+optional arguments:
+  -h, --help            Show this help message and exit.
+  -f FROM_FILE, --from-file FROM_FILE
+                        Load file paths from a file.
+
+```
+
+
+
+---
+
+### `add-torrents`
+```
+usage: aria2p add-torrents [-h] [-f FROM_FILE]
+                           [torrent_files [torrent_files ...]]
+
+Add downloads with torrent files.
+
+positional arguments:
+  torrent_files         The paths to the torrent files.
+
+optional arguments:
+  -h, --help            Show this help message and exit.
+  -f FROM_FILE, --from-file FROM_FILE
+                        Load file paths from a file.
 
 ```
 
@@ -366,6 +397,37 @@ $ aria2p call purge_download_result
 
 ---
 
+### `listen`
+```
+usage: aria2p listen [-h] [-c CALLBACKS_MODULE] [-t TIMEOUT]
+                     [event_types [event_types ...]]
+
+Listen to notifications.
+
+positional arguments:
+  event_types           The types of notifications to process: start, pause,
+                        stop, error, complete or btcomplete. Example: aria2p
+                        listen error btcomplete. Useful if you want to spawn
+                        multiple specialized aria2p listener, for example one
+                        for each type of notification, but still want to use
+                        only one callback file.
+
+optional arguments:
+  -h, --help            Show this help message and exit.
+  -c CALLBACKS_MODULE, --callbacks-module CALLBACKS_MODULE
+                        Path to the Python module defining your notifications
+                        callbacks.
+  -t TIMEOUT, --timeout TIMEOUT
+                        Timeout in seconds to use when waiting for data over
+                        the WebSocket at each iteration. Use small values for
+                        faster reactivity when stopping to listen.
+
+```
+
+
+
+---
+
 ### `pause`
 ```
 usage: aria2p pause [-h] [-a] [-f] [gids [gids ...]]
@@ -378,22 +440,6 @@ positional arguments:
 optional arguments:
   -h, --help   Show this help message and exit.
   -a, --all    Pause all the downloads.
-  -f, --force  Pause without contacting servers first.
-
-```
-
-
-
----
-
-### `pause-all`
-```
-usage: aria2p pause-all [-h] [-f]
-
-Pause all downloads.
-
-optional arguments:
-  -h, --help   Show this help message and exit.
   -f, --force  Pause without contacting servers first.
 
 ```
@@ -441,22 +487,6 @@ optional arguments:
 
 ---
 
-### `remove-all`
-```
-usage: aria2p remove-all [-h] [-f]
-
-Remove all downloads.
-
-optional arguments:
-  -h, --help   Show this help message and exit.
-  -f, --force  Remove without contacting servers first.
-
-```
-
-
-
----
-
 ### `resume`
 ```
 usage: aria2p resume [-h] [-a] [gids [gids ...]]
@@ -469,21 +499,6 @@ positional arguments:
 optional arguments:
   -h, --help  Show this help message and exit.
   -a, --all   Resume all the downloads.
-
-```
-
-
-
----
-
-### `resume-all`
-```
-usage: aria2p resume-all [-h]
-
-Resume all downloads.
-
-optional arguments:
-  -h, --help  Show this help message and exit.
 
 ```
 
@@ -519,37 +534,6 @@ optional arguments:
 
 
 
----
-
-### `listen`
-```
-usage: aria2p listen [-h] [-c CALLBACKS_MODULE] [-t TIMEOUT]
-                     [event_types [event_types ...]]
-
-Listen to notifications.
-
-positional arguments:
-  event_types           The types of notifications to process: start, pause,
-                        stop, error, complete or btcomplete. Example: aria2p
-                        listen error btcomplete. Useful if you want to spawn
-                        multiple specialized aria2p listener, for example one
-                        for each type of notification, but still want to use
-                        only one callback file.
-
-optional arguments:
-  -h, --help            Show this help message and exit.
-  -c CALLBACKS_MODULE, --callbacks-module CALLBACKS_MODULE
-                        Path to the Python module defining your notifications
-                        callbacks.
-  -t TIMEOUT, --timeout TIMEOUT
-                        Timeout in seconds to use when waiting for data over
-                        the WebSocket at each iteration. Use small values for
-                        faster reactivity when stopping to listen.
-
-```
-
-
-
 
 ## Troubleshoot
 - Error outputs like below when using `aria2p` as a Python library:
@@ -559,3 +543,17 @@ optional arguments:
   ```
 
   Solution: `aria2c` needs to be up and running first.
+
+## Support
+To support this project,
+consider donating through one of the following platforms:
+- [Beerpay](https://beerpay.io/pawamoy/aria2p)
+
+To support me as an open-source software author,
+consider donating or be a supporter through one of the following platforms:
+- [Ko-fi](https://www.ko-fi.com/pawamoy)
+- [Liberapay](https://liberapay.com/pawamoy/)
+- [Patreon](https://www.patreon.com/pawamoy)
+- [Paypal](https://www.paypal.me/pawamoy)
+
+Thank you!

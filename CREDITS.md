@@ -8,6 +8,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`asciimatics`](https://github.com/peterbrittain/asciimatics) |
 [`bandit`](https://bandit.readthedocs.io/en/latest/) |
 [`black`](https://github.com/ambv/black) |
+[`coverage`](https://github.com/nedbat/coveragepy) |
 [`flake8`](https://gitlab.com/pycqa/flake8) |
 [`ipython`](https://ipython.org) |
 [`isort`](https://github.com/timothycrosley/isort) |
@@ -30,7 +31,6 @@ These projects were used to build `aria2p`. **Thank you!**
 
 ### Indirect dependencies
 [`alabaster`](https://alabaster.readthedocs.io) |
-[`ansimarkup`](https://github.com/gvalkov/python-ansimarkup) |
 [`apipkg`](https://github.com/pytest-dev/apipkg) |
 [`appdirs`](http://github.com/ActiveState/appdirs) |
 [`appnope`](http://github.com/minrk/appnope) |
@@ -39,13 +39,11 @@ These projects were used to build `aria2p`. **Thank you!**
 [`attrs`](https://www.attrs.org/) |
 [`Babel`](http://babel.pocoo.org/) |
 [`backcall`](https://github.com/takluyver/backcall) |
-[`better-exceptions-fork`](https://github.com/delgan/better-exceptions) |
 [`certifi`](https://certifi.io/) |
 [`chardet`](https://github.com/chardet/chardet) |
 [`Click`](https://palletsprojects.com/p/click/) |
 [`colorama`](https://github.com/tartley/colorama) |
 [![`commonmark`](https://www.vectorlogo.zone/logos/commonmark/commonmark-ar21.svg)](https://github.com/rtfd/commonmark.py) |
-[`coverage`](https://github.com/nedbat/coveragepy) |
 [`decorator`](https://github.com/micheles/decorator) |
 [`docutils`](http://docutils.sourceforge.net/) |
 [`dparse`](https://github.com/jayfk/dparse) |
@@ -96,6 +94,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`urllib3`](https://urllib3.readthedocs.io/) |
 [`wcwidth`](https://github.com/jquast/wcwidth) |
 [`websocket-client`](https://github.com/websocket-client/websocket-client.git) |
+[`win32-setctime`](https://github.com/Delgan/win32-setctime) |
 [`wrapt`](https://github.com/GrahamDumpleton/wrapt) |
 [`zipp`](https://github.com/jaraco/zipp)
 
