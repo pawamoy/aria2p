@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.6.0](https://github.com/pawamoy/aria2p/releases/tag/v0.6.0) ([compare](https://github.com/pawamoy/aria2p/compare/v0.5.2...v0.6.0)) - 2019-10-20
+
+### BREAKING CHANGES
+- Default command when calling `aria2p` without arguments is now `top` instead of `show`.
+
+### Added
+- Add command "add", and allow multiple parameters for "add-" commands ([12f8667](https://github.com/pawamoy/aria2p/commit/12f866722ed20a90dcbaaf6627240974d29e3557)).
+- Add `-f, --from-file FILE` option to `add` commands ([63a137d](https://github.com/pawamoy/aria2p/commit/63a137dc51ee85ccfe461dd9c2be1c5a54a03c87)).
+- Add a clean parameter to API.remove to delete aria2 control file ([d4b9a51](https://github.com/pawamoy/aria2p/commit/d4b9a512134832f89d538df9d0d6cc2b6c81050c)).
+
+### Changed
+- Commands add-magnet, add-torrent and add-metalink are now called add-magnets, add-torrents and add-metalinks.
+  Previous names are added as aliases to maintain backward compatibility.
+  
+### Deprecated
+- Functions `cli.subcommand_add_magnet`, `cli.subcommand_add_torrent` or `cli.subcommand_add_metalink`
+  are deprecated in favor of their pluralized names,
+  `cli.subcommand_add_magnets`, `cli.subcommand_add_torrents` or `cli.subcommand_add_metalinks`,
+  and will be removed in version 0.9.0.
+
+### Fixed
+- Always force remove files when removing download ([7283a15](https://github.com/pawamoy/aria2p/commit/7283a15cbea37e01403c2b7a56208cae1bfa57e7)).
+- Don't try to fetch download when GID is None ([8970385](https://github.com/pawamoy/aria2p/commit/89703859f1a4d8aa3fefe8097f1390155f74395d)).
+
+
 ## [v0.5.2](https://github.com/pawamoy/aria2p/releases/tag/v0.5.2) ([compare](https://github.com/pawamoy/aria2p/compare/v0.5.1...v0.5.2)) - 2019-10-15
 
 ### Fixed
