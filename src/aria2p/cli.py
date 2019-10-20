@@ -72,7 +72,7 @@ def main(args=None):
         return 2
 
     subcommands = {
-        None: subcommand_show,
+        None: subcommand_top,
         "show": subcommand_show,
         "top": subcommand_top,
         "call": subcommand_call,
@@ -98,11 +98,6 @@ def main(args=None):
 
     if subcommand:
         logger.debug("Running subcommand " + subcommand)
-    else:
-        print(
-            "Future change warning: starting at version 0.6, the default command will be 'top' instead of 'show'.",
-            file=sys.stderr,
-        )
     try:
         return subcommands.get(subcommand)(api, **kwargs)
     except ClientException as error:

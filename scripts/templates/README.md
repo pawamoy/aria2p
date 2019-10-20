@@ -9,6 +9,13 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
 [![documentation](https://img.shields.io/readthedocs/aria2p.svg?style=flat)](https://aria2p.readthedocs.io/en/latest/index.html)
 [![pypi version](https://img.shields.io/pypi/v/aria2p.svg)](https://pypi.org/project/aria2p/)
 [![Gitter](https://badges.gitter.im/aria2p/community.svg)](https://gitter.im/aria2p/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+<br>
+[![beerpay](https://img.shields.io/badge/support-Beerpay-cc88b4.svg?style=flat)](https://beerpay.io/pawamoy/aria2p)
+[![kofi](https://img.shields.io/badge/support-Ko--fi-995555.svg?style=flat)](https://www.ko-fi.com/pawamoy)
+[![liberapay](https://img.shields.io/badge/support-Liberapay-yellow.svg?style=flat)](https://liberapay.com/pawamoy/)
+[![patreon](https://img.shields.io/badge/support-Patreon-FF6952.svg?style=flat)](https://www.patreon.com/pawamoy)
+[![paypal](https://img.shields.io/badge/donate-PayPal-blue.svg?style=flat)](https://www.paypal.me/pawamoy)
+
 
 Command-line tool and Python library to interact with an [`aria2c`][1] daemon process through JSON-RPC.
 
@@ -31,6 +38,15 @@ More information about how to configure `aria2c` to run as a daemon with RPC mod
 can be found in the [Configuration section][conf doc] of the documentation.
 
 [conf doc]: https://aria2p.readthedocs.io/en/latest/configuration.html
+
+**Table of contents**
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage as a library](#usage-as-a-library)
+- [Usage on the command line](#usage-command-line)
+- [Troubleshoot](#troubleshoot)
+- [Support](#support)
+
 
 ## Requirements
 `aria2p` requires Python 3.6 or above.
@@ -109,26 +125,12 @@ download = aria2.add_magnet(magnet_uri)
 {{ main_usage }}
 ```
 
-Calling `aria2p` without any arguments will by default call the `show` command,
-which displays the list of current downloads:
-```
-GID  STATUS  PROGRESS  DOWN_SPEED  UP_SPEED  ETA  NAME
-```
-
-There is no interactive mode yet,
-but you can use `watch` combined with the `show` subcommand
-to see how the downloads progress:
-
-```bash
-watch -t -n1 aria2p show
-```
+Calling `aria2p` without any arguments will by default call the `top` command,
+which is a console interactive interface.
 
 Commands:
 {% for command in commands %}
 - [`{{ command.name }}`](#{{ command.name }}){% endfor %}
-
-**Warning:** commands ending with `-all` are deprecated. Please use their equivalent with the `-a` or `--all` option
-(e.g. instead of `pause-all`, use `pause -a`). These commands will be removed in version 0.5.0.
 
 {% for command in commands %}
 ---
@@ -149,3 +151,14 @@ Commands:
   ```
 
   Solution: `aria2c` needs to be up and running first.
+
+## Support
+To support me as an open-source software author, or to support this project particularly,
+consider donating or supporting through one of these platforms:
+- [Beerpay](https://beerpay.io/pawamoy/aria2p): aria2p
+- [Ko-fi](https://www.ko-fi.com/pawamoy): pawamoy
+- [Liberapay](https://liberapay.com/pawamoy/): pawamoy
+- [Patreon](https://www.patreon.com/pawamoy): pawamoy
+- [Paypal](https://www.paypal.me/pawamoy): pawamoy
+
+Thank you!
