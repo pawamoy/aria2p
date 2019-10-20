@@ -118,6 +118,15 @@ def check_args(parser, args):
             subparser[args.subcommand].error("the following arguments are required: gids or --all")
         elif args.do_all and args.gids:
             subparser[args.subcommand].error("argument -a/--all: not allowed with arguments gids")
+    elif args.subcommand in ("add", "add-magnet", "add-magnets"):
+        if not args.uris and not args.from_file:
+            subparser[args.subcommand].error("the following arguments are required: uris or -f FILE")
+    elif args.subcommand in ("add-torrent", "add-torrents"):
+        if not args.torrent_files and not args.from_file:
+            subparser[args.subcommand].error("the following arguments are required: torrent_files or -f FILE")
+    elif args.subcommand in ("add-metalink", "add-metalinks"):
+        if not args.metalink_files and not args.from_file:
+            subparser[args.subcommand].error("the following arguments are required: metalink_files or -f FILE")
 
 
 def get_parser():
@@ -197,16 +206,20 @@ def get_parser():
     )
 
     # ========= ADD PARSER ========= #
-    add_parser.add_argument("uris", nargs="+", help="The URIs/file-paths to add.")
+    add_parser.add_argument("uris", nargs="*", help="The URIs/file-paths to add.")
+    add_parser.add_argument("-f", "--from-file", dest="from_file", help="Load URIs from a file.")
 
     # ========= ADD MAGNET PARSER ========= #
-    add_magnets_parser.add_argument("uris", nargs="+", help="The magnet URIs to add.")
+    add_magnets_parser.add_argument("uris", nargs="*", help="The magnet URIs to add.")
+    add_magnets_parser.add_argument("-f", "--from-file", dest="from_file", help="Load URIs from a file.")
 
     # ========= ADD TORRENT PARSER ========= #
-    add_torrents_parser.add_argument("torrent_files", nargs="+", help="The paths to the torrent files.")
+    add_torrents_parser.add_argument("torrent_files", nargs="*", help="The paths to the torrent files.")
+    add_torrents_parser.add_argument("-f", "--from-file", dest="from_file", help="Load file paths from a file.")
 
     # ========= ADD METALINK PARSER ========= #
-    add_metalinks_parser.add_argument("metalink_files", nargs="+", help="The paths to the metalink files.")
+    add_metalinks_parser.add_argument("metalink_files", nargs="*", help="The paths to the metalink files.")
+    add_metalinks_parser.add_argument("-f", "--from-file", dest="from_file", help="Load file paths from a file.")
 
     # ========= PAUSE PARSER ========= #
     pause_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to pause.")
@@ -353,18 +366,33 @@ def get_method(name, default=None):
     return methods.get(name, default)
 
 
-def subcommand_add(api, uris):
+def read_lines(path):
+    with Path(path).open() as stream:
+        return stream.readlines()
+
+
+def subcommand_add(api, uris=None, from_file=None):
     """
     Add magnet subcommand.
 
     Args:
         api (API): the API instance to use.
         uris (list of str): the URIs or file-paths to add.
+        from_file (str): path to the file to read uris from.
 
     Returns:
         int: always 0.
     """
     ok = True
+
+    if not uris:
+        uris = []
+    if from_file:
+        try:
+            uris.extend(read_lines(from_file))
+        except OSError:
+            print(f"Cannot open file: {from_file}", file=sys.stderr)
+            ok = False
 
     for uri in uris:
         path = Path(uri)
@@ -390,56 +418,92 @@ def subcommand_add(api, uris):
     return 0 if ok else 1
 
 
-def subcommand_add_magnets(api, uris):
+def subcommand_add_magnets(api, uris=None, from_file=None):
     """
     Add magnet subcommand.
 
     Args:
         api (API): the API instance to use.
         uris (list of str): the URIs of the magnets.
+        from_file (str): path to the file to read uris from.
 
     Returns:
         int: always 0.
     """
+    ok = True
+
+    if not uris:
+        uris = []
+    if from_file:
+        try:
+            uris.extend(read_lines(from_file))
+        except OSError:
+            print(f"Cannot open file: {from_file}", file=sys.stderr)
+            ok = False
+
     for uri in uris:
         new_download = api.add_magnet(uri)
         print(f"Created download {new_download.gid}")
-    return 0
+    return 0 if ok else 1
 
 
-def subcommand_add_torrents(api, torrent_files):
+def subcommand_add_torrents(api, torrent_files=None, from_file=None):
     """
     Add torrent subcommand.
 
     Args:
         api (API): the API instance to use.
         torrent_files (list of str): the paths to the torrent files.
+        from_file (str): path to the file to read torrent files paths from.
 
     Returns:
         int: always 0.
     """
+    ok = True
+
+    if not torrent_files:
+        torrent_files = []
+    if from_file:
+        try:
+            torrent_files.extend(read_lines(from_file))
+        except OSError:
+            print(f"Cannot open file: {from_file}", file=sys.stderr)
+            ok = False
+
     for torrent_file in torrent_files:
         new_download = api.add_torrent(torrent_file)
         print(f"Created download {new_download.gid}")
-    return 0
+    return 0 if ok else 1
 
 
-def subcommand_add_metalinks(api: API, metalink_files):
+def subcommand_add_metalinks(api: API, metalink_files=None, from_file=None):
     """
     Add metalink subcommand.
 
     Args:
         api (API): the API instance to use.
         metalink_files (list of str): the paths to the metalink files.
+        from_file (str): path to the file to metalink files paths from.
 
     Returns:
         int: always 0.
     """
+    ok = True
+
+    if not metalink_files:
+        metalink_files = []
+    if from_file:
+        try:
+            metalink_files.extend(read_lines(from_file))
+        except OSError:
+            print(f"Cannot open file: {from_file}", file=sys.stderr)
+            ok = False
+
     for metalink_file in metalink_files:
         new_downloads = api.add_metalink(metalink_file)
         for download in new_downloads:
             print(f"Created download {download.gid}")
-    return 0
+    return 0 if ok else 1
 
 
 def subcommand_pause(api: API, gids=None, do_all=False, force=False):
