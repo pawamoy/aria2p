@@ -19,5 +19,6 @@ for subparser_action in subparser_actions:
             continue
         output["commands"].append({"name": choice, "usage": subparser.format_help()})
 
+output["commands"] = list(sorted(output["commands"], key=lambda c: c["name"]))
 json_output = json.dumps(output)
 print(json_output)
