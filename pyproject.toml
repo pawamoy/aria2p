@@ -45,6 +45,7 @@ sphinx = "^1.8"
 sphinxcontrib-spelling = "^4.2"
 sphinx-rtd-theme = "^0.4.2"
 toml = "^0.10.0"
+cruft = "^1.1"
 
 [tool.poetry.scripts]
 aria2p = "aria2p.cli:main"
