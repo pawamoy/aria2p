@@ -13,12 +13,7 @@ copyright = "{0}, {1}".format(year, author)
 version = release = metadata["version"]
 master_doc = "index"
 
-extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.napoleon",
-    "sphinx.ext.viewcode",
-    "recommonmark",
-]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon", "sphinx.ext.viewcode", "recommonmark"]
 
 # Auto-documentation directives in RST files
 autodoc_default_options = {"members": None, "special-members": "__init__", "exclude-members": "__weakref__"}
