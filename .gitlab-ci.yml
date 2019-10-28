@@ -42,11 +42,9 @@ check-bandit:
 check-safety:
   <<: *quality
   before_script:
-    - apt-get update
-    - apt-get install -y python-enchant
     - pip install poetry
     - poetry config settings.virtualenvs.in-project true
-    - poetry install -vv
+    - poetry install -vv --no-dev
     - poetry --version
   script: make check-safety
 
