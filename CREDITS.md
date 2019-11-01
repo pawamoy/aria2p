@@ -7,7 +7,7 @@ These projects were used to build `aria2p`. **Thank you!**
 ### Direct dependencies
 [`asciimatics`](https://github.com/peterbrittain/asciimatics) |
 [`bandit`](https://bandit.readthedocs.io/en/latest/) |
-[`black`](https://github.com/ambv/black) |
+[`black`](https://github.com/psf/black) |
 [`coverage`](https://github.com/nedbat/coveragepy) |
 [`flake8`](https://gitlab.com/pycqa/flake8) |
 [`ipython`](https://ipython.org) |
@@ -25,7 +25,6 @@ These projects were used to build `aria2p`. **Thank you!**
 [`safety`](https://github.com/pyupio/safety) |
 [`Sphinx`](http://sphinx-doc.org/) |
 [`sphinx-rtd-theme`](https://github.com/rtfd/sphinx_rtd_theme/) |
-[`sphinxcontrib-spelling`](https://github.com/sphinx-contrib/spelling) |
 [`toml`](https://github.com/uiri/toml) |
 [`websocket_client`](https://github.com/websocket-client/websocket-client.git)
 
@@ -64,6 +63,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`more-itertools`](https://github.com/erikrose/more-itertools) |
 [`packaging`](https://github.com/pypa/packaging) |
 [`parso`](https://github.com/davidhalter/parso) |
+[`pathspec`](https://github.com/cpburnz/python-path-specification) |
 [`pbr`](https://docs.openstack.org/pbr/latest/) |
 [`pexpect`](https://pexpect.readthedocs.io/) |
 [`pickleshare`](https://github.com/pickleshare/pickleshare) |
@@ -73,7 +73,6 @@ These projects were used to build `aria2p`. **Thank you!**
 [`ptyprocess`](https://github.com/pexpect/ptyprocess) |
 [`py`](http://py.readthedocs.io/) |
 [`pycodestyle`](https://pycodestyle.readthedocs.io/) |
-[`pyenchant`](https://pythonhosted.org/pyenchant/) |
 [`pyfiglet`](https://github.com/pwaller/pyfiglet) |
 [`pyflakes`](https://github.com/PyCQA/pyflakes) |
 [`Pygments`](http://pygments.org/) |
@@ -83,6 +82,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`pytz`](http://pythonhosted.org/pytz) |
 [`pywin32`](https://github.com/mhammond/pywin32) |
 [`PyYAML`](https://github.com/yaml/pyyaml) |
+[`regex`](https://bitbucket.org/mrabarnett/mrab-regex) |
 [`six`](https://github.com/benjaminp/six) |
 [`smmap2`](https://github.com/gitpython-developers/smmap) |
 [`snowballstemmer`](https://github.com/snowballstem/snowball) |
