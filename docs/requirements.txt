@@ -1,5 +1,4 @@
 sphinx
 sphinx-rtd-theme
-sphinxcontrib-spelling
 toml
 recommonmark>=0.6.0

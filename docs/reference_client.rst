@@ -21,11 +21,3 @@ Notification
 
 .. autoclass:: aria2p.client.Notification
     :members:
-
-
-.. spelling::
-
-   bt
-   de
-   ip
-   pos

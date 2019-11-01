@@ -10,3 +10,4 @@ tests/logs/
 !tests/tmp/.gitkeep
 pip-wheel-metadata/
 .pytest_cache/
+*.spec

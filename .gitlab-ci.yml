@@ -1,3 +1,5 @@
+# Global
+
 variables:
     PIP_CACHE_DIR: "${CI_PROJECT_DIR}/.cache/pip"
 
@@ -11,61 +13,58 @@ stages:
   - quality
   - tests
 
-.quality-template: &quality
-  image: python:3.6
-  stage: quality
+# Jobs templates
 
-check-black:
-  <<: *quality
-  before_script:
-    - pip install black
-  script: black --check src/ tests/
-
-check-isort:
-  <<: *quality
-  before_script:
-    - pip install isort[pyproject]
-  script: isort -c -rc src/ tests/
-
-check-flake8:
-  <<: *quality
-  before_script:
-    - pip install flake8
-  script: flake8 src/ tests/
-
-check-bandit:
-  <<: *quality
-  before_script:
-    - pip install bandit
-  script: bandit -r src/
-
-check-safety:
-  <<: *quality
-  before_script:
-    - pip install poetry
-    - poetry config settings.virtualenvs.in-project true
-    - poetry install -vv --no-dev
-    - poetry --version
-  script: make check-safety
-
-.test-template: &test
-  stage: tests
-  coverage: '/TOTAL.*\s(\d+\.\d+\%)/'
+.install-deps-template: &install-deps
   before_script:
     - apt-get update
-    - apt-get install -y python-enchant
     - apt-get install -y aria2
     - pip install poetry
     - poetry config settings.virtualenvs.in-project true
     - poetry install -vv
     - poetry --version
     - aria2c --version
-  script: poetry run pytest -v
+
+.quality-template: &quality
+  <<: *install-deps
+  image: python:3.6
+  stage: quality
+
+
+.test-template: &test
+  <<: *install-deps
+  stage: tests
+  coverage: '/TOTAL.*\s(\d+\.\d+\%)/'
+  script: make test
   artifacts:
     paths:
       - tests/logs
     when: on_failure
     expire_in: 1 week
+
+# Quality jobs
+
+check-bandit:
+  <<: *quality
+  script: make check-bandit
+
+check-black:
+  <<: *quality
+  script: make check-black
+
+check-flake8:
+  <<: *quality
+  script: make check-flake8
+
+check-isort:
+  <<: *quality
+  script: make check-isort
+
+check-safety:
+  <<: *quality
+  script: make check-safety
+
+# Tests jobs
 
 python3.6:
   <<: *test
@@ -77,5 +76,4 @@ python3.7:
 
 python3.8:
   <<: *test
-  image: python:3.8-rc
-  allow_failure: true
+  image: python:3.8
