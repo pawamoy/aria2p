@@ -46,7 +46,7 @@ class _Aria2Server:
 
         # create the command used to launch an aria2c process
         command = [
-            "/usr/bin/aria2c",
+            "aria2c",
             f"--dir={self.tmp_dir}",
             "--file-allocation=none",
             "--quiet",
