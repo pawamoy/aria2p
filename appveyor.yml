@@ -1,0 +1,22 @@
+environment:
+
+  matrix:
+
+    # For Python versions available on Appveyor, see
+    # https://www.appveyor.com/docs/windows-images-software/\#python
+
+    - PYTHON: "C:\\Python36-x64"
+    - PYTHON: "C:\\Python37-x64"
+
+install:
+  - choco install aria2
+  - "%PYTHON%\\python.exe -m pip install poetry"
+  - "%PYTHON%\\python.exe -m poetry config settings.virtualenvs.in-project true"
+  - "%PYTHON%\\python.exe -m poetry install -vv"
+  - "%PYTHON%\\python.exe -m poetry --version"
+  - aria2c --version
+
+build: off
+
+test_script:
+  - "%PYTHON%\\python.exe -m poetry run pytest -nauto"
