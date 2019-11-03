@@ -19,4 +19,8 @@ install:
 build: off
 
 test_script:
-  - "%PYTHON%\\python.exe -m poetry run pytest -nauto"
+  - "%PYTHON%\\python.exe -m poetry run pytest -p no:xdist -p no:sugar -v -k %K%"
+
+artifacts:
+  - path: tests/logs
+    name: logs
