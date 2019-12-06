@@ -33,6 +33,7 @@ flake8 = "^3.6"
 ipython = "^7.2"
 isort = { version = "^4.3", extras = ["pyproject"] }
 jinja2-cli = "^0.7.0"
+pyinstaller = "^3.5"
 pylint = { git = "https://github.com/PyCQA/pylint" }
 pytest = "^4.3"
 pytest-cov = "^2.8"

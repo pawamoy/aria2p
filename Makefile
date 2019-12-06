@@ -6,6 +6,10 @@ PY_SRC := src/ tests/ scripts/*.py docs/conf.py
 build:  ## Build sdist and wheel.
 	poetry build
 
+.PHONY: bundle
+bundle:  ## Build one-file executable.
+	poetry run bash -c 'pyinstaller -F -n aria2p -p $$VIRTUAL_ENV/lib/python3.6/site-packages src/aria2p/__main__.py'
+
 .PHONY: clean
 clean: clean-tests  ## Delete temporary files.
 	@rm -rf build 2>/dev/null
