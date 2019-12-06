@@ -11,3 +11,4 @@ tests/logs/
 pip-wheel-metadata/
 .pytest_cache/
 *.spec
+.python-version
