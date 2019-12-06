@@ -9,13 +9,7 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
 [![documentation](https://img.shields.io/readthedocs/aria2p.svg?style=flat)](https://aria2p.readthedocs.io/en/latest/index.html)
 [![pypi version](https://img.shields.io/pypi/v/aria2p.svg)](https://pypi.org/project/aria2p/)
 [![Gitter](https://badges.gitter.im/aria2p/community.svg)](https://gitter.im/aria2p/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-<br>
-[![beerpay](https://img.shields.io/badge/support-Beerpay-cc88b4.svg?style=flat)](https://beerpay.io/pawamoy/aria2p)
-[![kofi](https://img.shields.io/badge/support-Ko--fi-995555.svg?style=flat)](https://www.ko-fi.com/pawamoy)
-[![liberapay](https://img.shields.io/badge/support-Liberapay-yellow.svg?style=flat)](https://liberapay.com/pawamoy/)
-[![patreon](https://img.shields.io/badge/support-Patreon-FF6952.svg?style=flat)](https://www.patreon.com/pawamoy)
-[![paypal](https://img.shields.io/badge/donate-PayPal-blue.svg?style=flat)](https://www.paypal.me/pawamoy)
-
+[![beerpay](https://img.shields.io/badge/sponsor-or%20donate-blue.svg?style=flat)](#support)
 
 Command-line tool and Python library to interact with an [`aria2c`][1] daemon process through JSON-RPC.
 
