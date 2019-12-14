@@ -51,17 +51,16 @@ def test_parser_error_when_no_gid_and_no_all_option(capsys):
         ("pause", ["stop"]),
         ("remove", ["rm", "del", "delete"]),
         ("resume", ["start"]),
-        ("purge", ["clear"]),
     ]:
         assert_func(command, command)
         for alias in aliases:
             assert_func(command, alias)
 
 
-@patch("aria2p.cli.subcommand_purge")
+@patch("aria2p.cli.subcommand_remove")
 def test_parser_no_error(mocked_function):
     with Aria2Server(port=7550) as server:
-        cli.main(["-p", str(server.port), "purge", "-a"])
+        cli.main(["-p", str(server.port), "remove", "-a"])
         assert mocked_function.called
 
 
@@ -200,27 +199,6 @@ def test_remove_subcommand_one_failure(capsys):
 def test_remove_all_subcommand():
     with Aria2Server(port=7522) as server:
         assert cli.subcommand_remove(server.api, do_all=True) == 0
-
-
-def test_purge_subcommand():
-    with Aria2Server(port=7524, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
-        while not server.api.get_download("2089b05ecca3d829").is_complete:
-            time.sleep(0.2)
-        assert cli.subcommand_purge(server.api, ["2089b05ecca3d829"]) == 0
-
-
-def test_purge_subcommand_one_failure(capsys):
-    with Aria2Server(port=7525, session=SESSIONS_DIR / "small-file-and-paused-file.txt") as server:
-        while not server.api.get_download("2089b05ecca3d829").is_complete:
-            time.sleep(0.2)
-        assert cli.subcommand_purge(server.api, ["2089b05ecca3d829", "208a3d8299b05ecc"]) == 1
-        lines = err_lines(capsys)
-        assert lines[1] == "Could not remove download result of GID#208a3d8299b05ecc"
-
-
-def test_purge_all_subcommand():
-    with Aria2Server(port=7526) as server:
-        assert cli.subcommand_purge(server.api, do_all=True) == 0
 
 
 def test_autopurge_subcommand():
