@@ -23,7 +23,7 @@ python = "^3.6"
 requests = "*"
 loguru = "*"
 websocket_client = "*"
-asciimatics = "*"
+asciimatics = { version = "*", optional = true }
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.5"
@@ -45,6 +45,9 @@ safety = "^1.8"
 sphinx = "^1.8"
 sphinx-rtd-theme = "^0.4.2"
 toml = "^0.10.0"
+
+[tool.poetry.extras]
+tui = ["asciimatics"]
 
 [tool.poetry.scripts]
 aria2p = "aria2p.cli:main"
