@@ -493,43 +493,6 @@ class API:
             logger.warning("Future change warning: API method 'autopurge' will be renamed 'purge' in version 0.9.0.")
         return self.client.purge_download_result()
 
-    def purge(self, downloads):
-        """
-        Purge given downloads from the queue.
-
-        Returns:
-            list of bool: Success or failure of the operation for each download.
-        """
-        # TODO: batch/multicall candidate
-        logger.warning(
-            "Deprecation warning: API method 'purge' is deprecated in favor of method 'remove', "
-            "and will be removed in version 0.7.0."
-        )
-        result = []
-
-        for download in downloads:
-            try:
-                self.client.remove_download_result(download.gid)
-            except ClientException as error:
-                logger.exception(error)
-                result.append(error)
-            else:
-                result.append(True)
-
-        return result
-
-    def purge_all(self):
-        """
-        Purge all downloads from the list.
-
-        Returns:
-            bool: Success or failure of the operation to purge all downloads.
-        """
-        logger.warning(
-            "Deprecation warning: API method 'purge_all' is deprecated, and will be removed in version 0.7.0."
-        )
-        return all(self.purge(self.get_downloads()))
-
     def get_options(self, downloads):
         """
         Get options for each of the given downloads.
