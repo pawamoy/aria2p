@@ -91,8 +91,6 @@ def main(args=None):
         "rm": subcommand_remove,  # alias for remove
         "del": subcommand_remove,  # alias for remove
         "delete": subcommand_remove,  # alias for remove
-        "purge": subcommand_purge,
-        "clear": subcommand_purge,  # alias for purge
         "autopurge": subcommand_autopurge,
         "autoclear": subcommand_autopurge,  # alias for autopurge
         "listen": subcommand_listen,
@@ -178,7 +176,6 @@ def get_parser():
     subparser("autopurge", "Automatically purge completed/removed/failed downloads.", aliases=["autoclear"])
     call_parser = subparser("call", "Call a remote method through the JSON-RPC client.")
     pause_parser = subparser("pause", "Pause downloads.", aliases=["stop"])
-    purge_parser = subparser("purge", "Purge downloads.", aliases=["clear"])
     remove_parser = subparser("remove", "Remove downloads.", aliases=["rm", "del", "delete"])
     resume_parser = subparser("resume", "Resume downloads.", aliases=["start"])
     subparser("show", "Show the download progression.")
@@ -238,10 +235,6 @@ def get_parser():
     remove_parser.add_argument(
         "-f", "--force", dest="force", action="store_true", help="Remove without contacting servers first."
     )
-
-    # ========= PURGE PARSER ========= #
-    purge_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to purge.")
-    purge_parser.add_argument("-a", "--all", action="store_true", dest="do_all", help="Purge all the downloads.")
 
     # ========= LISTEN PARSER ========= #
     listen_parser.add_argument(
@@ -596,38 +589,6 @@ def subcommand_remove(api: API, gids=None, do_all=False, force=False):
     result = api.remove(downloads, force=force)
     if all(result):
         return 0 if ok else 1
-    for item in result:
-        if isinstance(item, ClientException):
-            print(item, file=sys.stderr)
-    return 1
-
-
-def subcommand_purge(api: API, gids=None, do_all=False):
-    """
-    Purge subcommand.
-
-    Args:
-        api (API): the API instance to use.
-        gids (list of str): the GIDs of the downloads to purge.
-        do_all (bool): pause all downloads if True.
-
-    Returns:
-        int: 0 if all success, 1 if one failure.
-    """
-    print(
-        "Deprecation warning: command 'purge' is deprecated in favor of command 'remove', "
-        "and will be removed in version 0.7.0.",
-        file=sys.stderr,
-    )
-    if do_all:
-        if api.purge_all():
-            return 0
-        return 1
-
-    downloads = [Download(api, {"gid": gid}) for gid in gids]
-    result = api.purge(downloads)
-    if all(result):
-        return 0
     for item in result:
         if isinstance(item, ClientException):
             print(item, file=sys.stderr)
