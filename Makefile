@@ -102,7 +102,7 @@ setup:  ## Setup the project with poetry.
 	if ! command -v poetry; then \
 	  command -v pipx && pipx install poetry || curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python; \
 	fi
-	poetry install
+	poetry install -E tui
 
 .PHONY: test
 test: check-ports clean-tests  ## Run the tests using pytest.
