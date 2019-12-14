@@ -89,7 +89,7 @@ python3.6 -m pip install --user pipx
 pipx install --python python3.6 aria2p[tui]
 ```
 
-The `tui` extra is needed for the interactive interface. If don't need the interface (for example when you are
+The `tui` extra is needed for the interactive interface. If you don't need the interface (for example when you are
 writing a Python package with a dependency to aria2p), simply install `aria2p` without any extra.
 
 ## Usage (as a library)
