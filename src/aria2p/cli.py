@@ -36,7 +36,6 @@ except ImportError:
     Interface = None
 
 
-
 # ============ MAIN FUNCTION ============ #
 def main(args=None):
     """The main function, which is executed when you type ``aria2p`` or ``python -m aria2p``."""
