@@ -28,8 +28,13 @@ from aria2p import Download, enable_logger
 
 from .api import API
 from .client import DEFAULT_HOST, DEFAULT_PORT, Client, ClientException
-from .interface import Interface
 from .utils import get_version
+
+try:
+    from .interface import Interface
+except ImportError:
+    Interface = None
+
 
 
 # ============ MAIN FUNCTION ============ #
@@ -313,6 +318,12 @@ def subcommand_top(api):
     Returns:
         int: always 0.
     """
+    if Interface is None:
+        print(
+            "The top-interface dependencies are not installed. Try running `pip install aria2p[tui]` to install them.",
+            file=sys.stderr,
+        )
+        return 1
     interface = Interface(api)
     success = interface.run()
     return 0 if success else 1

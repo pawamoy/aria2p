@@ -71,6 +71,14 @@ def test_main_no_command_defaults_to_top(mocked_function):
         assert mocked_function.called
 
 
+def test_no_interface_deps_print_error(monkeypatch, capsys):
+    monkeypatch.setattr(cli, "Interface", None)
+    with Aria2Server(port=7523) as server:
+        cli.main(["-p", str(server.port)])
+        line = first_err_line(capsys)
+        assert "aria2p[tui]" in line
+
+
 def test_main_show_subcommand(capsys):
     with Aria2Server(port=7501) as server:
         cli.main(["-p", str(server.port), "show"])
