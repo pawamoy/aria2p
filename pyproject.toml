@@ -27,8 +27,8 @@ asciimatics = { version = "*", optional = true }
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.5"
-black = { version = "*", allows-prereleases = true }
-coverage = { version = "=5.0a8", allows-prereleases = true }
+black = { version = "*", allow-prereleases = true }
+coverage = { version = "=5.0a8", allow-prereleases = true }
 flake8 = "^3.6"
 ipython = "^7.2"
 isort = { version = "^4.3", extras = ["pyproject"] }
