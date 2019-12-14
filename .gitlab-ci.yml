@@ -21,7 +21,7 @@ stages:
     - apt-get install -y aria2
     - pip install poetry
     - poetry config settings.virtualenvs.in-project true
-    - poetry install -vv
+    - poetry install -vv -E tui
     - poetry --version
     - aria2c --version
 
