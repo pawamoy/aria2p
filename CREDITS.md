@@ -14,6 +14,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`isort`](https://github.com/timothycrosley/isort) |
 [`jinja2-cli`](https://github.com/mattrobenolt/jinja2-cli) |
 [`loguru`](https://github.com/Delgan/loguru) |
+[`PyInstaller`](http://www.pyinstaller.org) |
 [`pylint`](https://github.com/PyCQA/pylint) |
 [`pytest`](https://docs.pytest.org/en/latest/) |
 [`pytest-cov`](https://github.com/pytest-dev/pytest-cov) |
@@ -29,7 +30,9 @@ These projects were used to build `aria2p`. **Thank you!**
 [`websocket_client`](https://github.com/websocket-client/websocket-client.git)
 
 ### Indirect dependencies
+[`aiocontextvars`](https://github.com/fantix/aiocontextvars) |
 [`alabaster`](https://alabaster.readthedocs.io) |
+[`altgraph`](https://altgraph.readthedocs.io) |
 [`apipkg`](https://github.com/pytest-dev/apipkg) |
 [`appdirs`](http://github.com/ActiveState/appdirs) |
 [`appnope`](http://github.com/minrk/appnope) |
@@ -43,6 +46,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`Click`](https://palletsprojects.com/p/click/) |
 [`colorama`](https://github.com/tartley/colorama) |
 [![`commonmark`](https://www.vectorlogo.zone/logos/commonmark/commonmark-ar21.svg)](https://github.com/rtfd/commonmark.py) |
+[`contextvars`](http://github.com/MagicStack/contextvars) |
 [`decorator`](https://github.com/micheles/decorator) |
 [`docutils`](http://docutils.sourceforge.net/) |
 [`dparse`](https://github.com/jayfk/dparse) |
@@ -53,6 +57,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`GitPython`](https://github.com/gitpython-developers/GitPython) |
 [`idna`](https://github.com/kjd/idna) |
 [`imagesize`](https://github.com/shibukawa/imagesize_py) |
+[`immutables`](https://github.com/MagicStack/immutables) |
 [`importlib-metadata`](http://importlib-metadata.readthedocs.io/) |
 [`ipython-genutils`](http://ipython.org) |
 [`jedi`](https://github.com/davidhalter/jedi) |
@@ -69,7 +74,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`pickleshare`](https://github.com/pickleshare/pickleshare) |
 [`Pillow`](http://python-pillow.org) |
 [`pluggy`](https://github.com/pytest-dev/pluggy) |
-[`prompt-toolkit`](https://github.com/jonathanslenders/python-prompt-toolkit) |
+[`prompt-toolkit`](https://github.com/prompt-toolkit/python-prompt-toolkit) |
 [`ptyprocess`](https://github.com/pexpect/ptyprocess) |
 [`py`](http://py.readthedocs.io/) |
 [`pycodestyle`](https://pycodestyle.readthedocs.io/) |

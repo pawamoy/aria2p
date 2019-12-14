@@ -9,7 +9,7 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
 [![documentation](https://img.shields.io/readthedocs/aria2p.svg?style=flat)](https://aria2p.readthedocs.io/en/latest/index.html)
 [![pypi version](https://img.shields.io/pypi/v/aria2p.svg)](https://pypi.org/project/aria2p/)
 [![Gitter](https://badges.gitter.im/aria2p/community.svg)](https://gitter.im/aria2p/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![beerpay](https://img.shields.io/badge/sponsor-or%20donate-blue.svg?style=flat)](#support)
+[![support](https://img.shields.io/badge/sponsor-or%20donate-blue.svg?style=flat)](#support)
 
 Command-line tool and Python library to interact with an [`aria2c`][1] daemon process through JSON-RPC.
 
@@ -149,7 +149,6 @@ Commands:
                         downloads.
     call                Call a remote method through the JSON-RPC client.
     pause (stop)        Pause downloads.
-    purge (clear)       Purge downloads.
     remove (rm, del, delete)
                         Remove downloads.
     resume (start)      Resume downloads.
@@ -172,7 +171,6 @@ Commands:
 - [`call`](#call)
 - [`listen`](#listen)
 - [`pause`](#pause)
-- [`purge`](#purge)
 - [`remove`](#remove)
 - [`resume`](#resume)
 - [`show`](#show)
@@ -442,25 +440,6 @@ optional arguments:
 
 ---
 
-### `purge`
-```
-usage: aria2p purge [-h] [-a] [gids [gids ...]]
-
-Purge downloads.
-
-positional arguments:
-  gids        The GIDs of the downloads to purge.
-
-optional arguments:
-  -h, --help  Show this help message and exit.
-  -a, --all   Purge all the downloads.
-
-```
-
-
-
----
-
 ### `remove`
 ```
 usage: aria2p remove [-h] [-a] [-f] [gids [gids ...]]
@@ -545,6 +524,7 @@ consider donating through one of the following platforms:
 
 To support me as an open-source software author,
 consider donating or be a supporter through one of the following platforms:
+- [GitHub](https://github.com/sponsors/pawamoy)
 - [Ko-fi](https://www.ko-fi.com/pawamoy)
 - [Liberapay](https://liberapay.com/pawamoy/)
 - [Patreon](https://www.patreon.com/pawamoy)
