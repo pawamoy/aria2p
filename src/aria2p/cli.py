@@ -402,7 +402,14 @@ def subcommand_add(api: API, uris: List[str] = None, from_file: str = None) -> i
     for uri in uris:
         path = Path(uri)
 
-        if path.exists():
+        # On Windows, path.exists() generates an OSError when path is an URI
+        # See https://github.com/pawamoy/aria2p/issues/41
+        try:
+            path_exists = path.exists()
+        except OSError:
+            path_exists = False
+
+        if path_exists:
             if path.suffix == ".torrent":
                 new_downloads = [api.add_torrent(path)]
             elif path.suffix == ".metalink":
