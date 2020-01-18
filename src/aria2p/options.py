@@ -2,8 +2,8 @@
 This module defines the Options class, which holds information retrieved with the ``get_option`` or
 ``get_global_option`` methods of the client.
 """
-
 from copy import deepcopy
+from typing import Callable, GenericMeta, List, Union
 
 from .utils import bool_or_value, bool_to_str
 
@@ -12,7 +12,7 @@ class Options:
     """
     This class holds information retrieved with the ``get_option`` or ``get_global_option`` methods of the client.
 
-    Instances are given a reference to an :class:`~aria2p.api.API` instance to be able to change their values both
+    Instances are given a reference to an [`API`][aria2p.api.API] instance to be able to change their values both
     locally and remotely, by using the API client and calling remote methods to change options.
 
     The options are available with the same names, using underscores instead of dashes, except for "continue"
@@ -20,14 +20,14 @@ class Options:
     "max-concurrent-downloads" is used like ``options.max_concurrent_downloads = 5``.
     """
 
-    def __init__(self, api, struct, download=None):
+    def __init__(self, api: "aria2p.api.API", struct: dict, download: "aria2p.downloads.Download" = None):
         """
         Initialization method.
 
-        Args:
-            api (:class:`~aria2p.api.API`): the reference to an :class:`api.API` instance.
-            struct (dict): a dictionary Python object returned by the JSON-RPC client.
-            download (:class:`~aria2p.downloads.Download`): an optional ``Download`` object
+        Parameters:
+            api: the reference to an [`API`][aria2p.api.API] instance.
+            struct: a dictionary Python object returned by the JSON-RPC client.
+            download: an optional [`Download`][aria2p.downloads.Download] object
               to inform about the owner, or None to tell they are global options.
         """
         self.api = api
@@ -43,32 +43,32 @@ class Options:
         """Return a copy of the struct dictionary of this Options object."""
         return deepcopy(self._struct)
 
-    def get(self, item, cls=None):
+    def get(self, item: str, cls: Union[GenericMeta, Callable] = None) -> Union[str, int, bool, float, None]:
         """
         Get the value of an option given its name.
 
-        Args:
-            item (str): the name of the option (example: "input-file").
-            cls (class or function): pass the value through this class/function to change its type.
+        Parameters:
+            item: the name of the option (example: "input-file").
+            cls: pass the value through this class/function to change its type.
 
         Returns:
-            obj: the option value.
+            The option value.
         """
         value = self._struct.get(item)
         if cls is not None and value is not None:
             return cls(value)
         return value
 
-    def set(self, key, value):
+    def set(self, key: str, value: Union[str, int, float, bool]) -> bool:
         """
         Set the value of an option given its name.
 
-        Args:
-            key (str): the name of the option (example: "input-file").
+        Parameters:
+            key: the name of the option (example: "input-file").
             value: the value to set.
 
         Returns:
-            bool: True if the value was successfully set, False otherwise.
+            True if the value was successfully set, False otherwise.
         """
         if not isinstance(value, str):
             value = str(value)
@@ -82,7 +82,7 @@ class Options:
 
     # Basic Options
     @property
-    def dir(self):
+    def dir(self) -> str:
         """
         The directory to store the downloaded file.
 
@@ -96,7 +96,7 @@ class Options:
         self.set("dir", value)
 
     @property
-    def input_file(self):
+    def input_file(self) -> str:
         """
         Downloads the URIs listed in FILE.
 
@@ -116,7 +116,7 @@ class Options:
         self.set("input-file", value)
 
     @property
-    def log(self):
+    def log(self) -> str:
         """
         The file name of the log file.
 
@@ -133,7 +133,7 @@ class Options:
         self.set("log", value)
 
     @property
-    def max_concurrent_downloads(self):
+    def max_concurrent_downloads(self) -> int:
         """
         Set the maximum number of parallel downloads for every queue item.
 
@@ -149,7 +149,7 @@ class Options:
         self.set("max-concurrent-downloads", value)
 
     @property
-    def check_integrity(self):
+    def check_integrity(self) -> bool:
         """
         Check file integrity by validating piece hashes or a hash of entire file.
 
@@ -169,7 +169,7 @@ class Options:
         self.set("check-integrity", bool_to_str(value))
 
     @property
-    def continue_downloads(self):
+    def continue_downloads(self) -> bool:
         """
         Continue downloading a partially downloaded file.
 
@@ -187,7 +187,7 @@ class Options:
 
     # HTTP/FTP/SFTP Options
     @property
-    def all_proxy(self):
+    def all_proxy(self) -> str:
         """
         Use a proxy server for all protocols.
 
@@ -220,7 +220,7 @@ class Options:
         self.set("all-proxy", value)
 
     @property
-    def all_proxy_passwd(self):
+    def all_proxy_passwd(self) -> str:
         """
         Set password for --all-proxy option.
 
@@ -234,7 +234,7 @@ class Options:
         self.set("all-proxy-passwd", value)
 
     @property
-    def all_proxy_user(self):
+    def all_proxy_user(self) -> str:
         """
         Set user for --all-proxy option.
 
@@ -248,7 +248,7 @@ class Options:
         self.set("all-proxy-user", value)
 
     @property
-    def checksum(self):
+    def checksum(self) -> str:
         """
         Set checksum (<TYPE>=<DIGEST>).
 
@@ -266,7 +266,7 @@ class Options:
         self.set("checksum", value)
 
     @property
-    def connect_timeout(self):
+    def connect_timeout(self) -> int:
         """
         Set the connect timeout in seconds to establish connection to HTTP/FTP/proxy server.
 
@@ -283,7 +283,7 @@ class Options:
         self.set("connect-timeout", value)
 
     @property
-    def dry_run(self):
+    def dry_run(self) -> bool:
         """
         If true is given, aria2 just checks whether the remote file is available and doesn't download data.
 
@@ -300,7 +300,7 @@ class Options:
         self.set("dry-run", bool_to_str(value))
 
     @property
-    def lowest_speed_limit(self):
+    def lowest_speed_limit(self) -> int:
         """
         Close connection if download speed is lower than or equal to this value(bytes per sec).
 
@@ -317,7 +317,7 @@ class Options:
         self.set("lowest-speed-limit", value)
 
     @property
-    def max_connection_per_server(self):
+    def max_connection_per_server(self) -> int:
         """
         The maximum number of connections to one server for each download.
 
@@ -333,7 +333,7 @@ class Options:
         self.set("max-connection-per-server", value)
 
     @property
-    def max_file_not_found(self):
+    def max_file_not_found(self) -> int:
         """
         If aria2 receives "file not found" status from the remote HTTP/FTP servers NUM times without getting a single
         byte, then force the download to fail.
@@ -353,7 +353,7 @@ class Options:
         self.set("max-file-not-found", value)
 
     @property
-    def max_tries(self):
+    def max_tries(self) -> int:
         """
         Set number of tries.
 
@@ -369,7 +369,7 @@ class Options:
         self.set("max-tries", value)
 
     @property
-    def min_split_size(self):
+    def min_split_size(self) -> int:
         """
         aria2 does not split less than 2*SIZE byte range.
 
@@ -388,14 +388,14 @@ class Options:
         self.set("min-split-size", value)
 
     @property
-    def netrc_path(self):
+    def netrc_path(self) -> str:
         """
         Specify the path to the netrc file.
 
         Default: $(HOME)/.netrc.
 
         NOTE:
-           Permission of the .netrc file must be 600. Otherwise, the file will be ignored.
+            Permission of the .netrc file must be 600. Otherwise, the file will be ignored.
 
         Returns:
             str
@@ -407,7 +407,7 @@ class Options:
         self.set("netrc-path", value)
 
     @property
-    def no_netrc(self):
+    def no_netrc(self) -> bool:
         """
         Disable netrc support.
 
@@ -428,7 +428,7 @@ class Options:
         self.set("no-netrc", bool_to_str(value))
 
     @property
-    def no_proxy(self):
+    def no_proxy(self) -> str:
         """
         Specify a comma separated list of host names, domains and network addresses with or without a subnet mask
         where no proxy should be used.
@@ -448,7 +448,7 @@ class Options:
         self.set("no-proxy", value)
 
     @property
-    def out(self):
+    def out(self) -> str:
         """
         The file name of the downloaded file.
 
@@ -474,7 +474,7 @@ class Options:
         self.set("out", value)
 
     @property
-    def proxy_method(self):
+    def proxy_method(self) -> str:
         """
         Set the method to use in proxy request.
 
@@ -490,7 +490,7 @@ class Options:
         self.set("proxy-method", value)
 
     @property
-    def remote_time(self):
+    def remote_time(self) -> bool:
         """
         Retrieve timestamp of the remote file from the remote HTTP/FTP server and if it is available, apply it to the
         local file.
@@ -507,7 +507,7 @@ class Options:
         self.set("remote-time", bool_to_str(value))
 
     @property
-    def reuse_uri(self):
+    def reuse_uri(self) -> bool:
         """
         Reuse already used URIs if no unused URIs are left.
 
@@ -523,7 +523,7 @@ class Options:
         self.set("reuse-uri", bool_to_str(value))
 
     @property
-    def retry_wait(self):
+    def retry_wait(self) -> int:
         """
         Set the seconds to wait between retries.
 
@@ -539,7 +539,7 @@ class Options:
         self.set("retry-wait", value)
 
     @property
-    def server_stat_of(self):
+    def server_stat_of(self) -> str:
         """
         Specify the file name to which performance profile of the servers is saved.
 
@@ -556,7 +556,7 @@ class Options:
         self.set("server-stat-of", value)
 
     @property
-    def server_stat_if(self):
+    def server_stat_if(self) -> str:
         """
         Specify the file name to load performance profile of the servers.
 
@@ -573,7 +573,7 @@ class Options:
         self.set("server-stat-if", value)
 
     @property
-    def server_stat_timeout(self):
+    def server_stat_timeout(self) -> int:
         """
         Specifies timeout in seconds to invalidate performance profile of the servers since the last contact to
         them.
@@ -590,7 +590,7 @@ class Options:
         self.set("server-stat-timeout", value)
 
     @property
-    def split(self):
+    def split(self) -> int:
         """
         Download a file using N connections.
 
@@ -614,7 +614,7 @@ class Options:
         self.set("split", value)
 
     @property
-    def stream_piece_selector(self):
+    def stream_piece_selector(self) -> str:
         """
         Specify piece selection algorithm used in HTTP/FTP download.
 
@@ -640,7 +640,7 @@ class Options:
         self.set("stream-piece-selector", value)
 
     @property
-    def timeout(self):
+    def timeout(self) -> int:
         """
         Set timeout in seconds.
 
@@ -656,7 +656,7 @@ class Options:
         self.set("timeout", value)
 
     @property
-    def uri_selector(self):
+    def uri_selector(self) -> str:
         """
         Specify URI selection algorithm.
 
@@ -680,7 +680,7 @@ class Options:
 
     # HTTP Specific Options
     @property
-    def ca_certificate(self):
+    def ca_certificate(self) -> str:
         """
         Use the certificate authorities in FILE to verify the peers.
 
@@ -706,7 +706,7 @@ class Options:
         self.set("ca-certificate", value)
 
     @property
-    def certificate(self):
+    def certificate(self) -> str:
         """
         Use the client certificate in FILE.
 
@@ -718,7 +718,7 @@ class Options:
         When using PEM, you have to specify the private key via --private-key as well.
 
         NOTE:
-           WinTLS does not support PEM files at the moment. Users have to use PKCS12 files.
+            WinTLS does not support PEM files at the moment. Users have to use PKCS12 files.
 
         NOTE:
             AppleTLS users should use the KeyChain Access utility to import the client certificate and get the SHA-1
@@ -735,7 +735,7 @@ class Options:
         self.set("certificate", value)
 
     @property
-    def check_certificate(self):
+    def check_certificate(self) -> bool:
         """
         Verify the peer using certificates specified in --ca-certificate option.
 
@@ -751,7 +751,7 @@ class Options:
         self.set("check-certificate", bool_to_str(value))
 
     @property
-    def http_accept_gzip(self):
+    def http_accept_gzip(self) -> bool:
         """
         Send Accept: deflate, gzip request header and inflate response if remote server responds with
         Content-Encoding:  gzip or Content-Encoding:  deflate.
@@ -772,7 +772,7 @@ class Options:
         self.set("http-accept-gzip", bool_to_str(value))
 
     @property
-    def http_auth_challenge(self):
+    def http_auth_challenge(self) -> bool:
         """
         Send HTTP authorization header only when it is requested by the server.
 
@@ -790,7 +790,7 @@ class Options:
         self.set("http-auth-challenge", bool_to_str(value))
 
     @property
-    def http_no_cache(self):
+    def http_no_cache(self) -> bool:
         """
         Send Cache-Control:  no-cache and Pragma:  no-cache header to avoid cached content.
 
@@ -807,7 +807,7 @@ class Options:
         self.set("http-no-cache", bool_to_str(value))
 
     @property
-    def http_user(self):
+    def http_user(self) -> str:
         """
         Set HTTP user. This affects all URIs.
 
@@ -821,7 +821,7 @@ class Options:
         self.set("http-user", value)
 
     @property
-    def http_passwd(self):
+    def http_passwd(self) -> str:
         """
         Set HTTP password. This affects all URIs.
 
@@ -835,7 +835,7 @@ class Options:
         self.set("http-passwd", value)
 
     @property
-    def http_proxy(self):
+    def http_proxy(self) -> str:
         """
         Use a proxy server for HTTP.
 
@@ -852,7 +852,7 @@ class Options:
         self.set("http-proxy", value)
 
     @property
-    def http_proxy_passwd(self):
+    def http_proxy_passwd(self) -> str:
         """
         Set password for --http-proxy.
 
@@ -866,7 +866,7 @@ class Options:
         self.set("http-proxy-passwd", value)
 
     @property
-    def http_proxy_user(self):
+    def http_proxy_user(self) -> str:
         """
         Set user for --http-proxy.
 
@@ -880,7 +880,7 @@ class Options:
         self.set("http-proxy-user", value)
 
     @property
-    def https_proxy(self):
+    def https_proxy(self) -> str:
         """
         Use a proxy server for HTTPS.
 
@@ -897,7 +897,7 @@ class Options:
         self.set("https-proxy", value)
 
     @property
-    def https_proxy_passwd(self):
+    def https_proxy_passwd(self) -> str:
         """
         Set password for --https-proxy.
 
@@ -911,7 +911,7 @@ class Options:
         self.set("https-proxy-passwd", value)
 
     @property
-    def https_proxy_user(self):
+    def https_proxy_user(self) -> str:
         """
         Set user for --https-proxy.
 
@@ -925,7 +925,7 @@ class Options:
         self.set("https-proxy-user", value)
 
     @property
-    def private_key(self):
+    def private_key(self) -> str:
         """
         Use the private key in FILE.
 
@@ -942,7 +942,7 @@ class Options:
         self.set("private-key", value)
 
     @property
-    def referer(self):
+    def referer(self) -> str:
         """
         Set an http referrer (Referer).
 
@@ -959,7 +959,7 @@ class Options:
         self.set("referer", value)
 
     @property
-    def enable_http_keep_alive(self):
+    def enable_http_keep_alive(self) -> bool:
         """
         Enable HTTP/1.1 persistent connection.
 
@@ -975,14 +975,14 @@ class Options:
         self.set("enable-http-keep-alive", bool_to_str(value))
 
     @property
-    def enable_http_pipelining(self):
+    def enable_http_pipelining(self) -> bool:
         """
         Enable HTTP/1.1 pipelining.
 
         Default: false.
 
         NOTE:
-           In performance perspective, there is usually no advantage to enable this option.
+            In performance perspective, there is usually no advantage to enable this option.
 
         Returns:
             bool
@@ -994,7 +994,7 @@ class Options:
         self.set("enable-http-pipelining", bool_to_str(value))
 
     @property
-    def header(self):
+    def header(self) -> str:
         """
         Append HEADER to HTTP request header.
 
@@ -1012,7 +1012,7 @@ class Options:
         self.set("header", value)
 
     @property
-    def load_cookies(self):
+    def load_cookies(self) -> str:
         """
         Load Cookies from FILE using the Firefox3 format (SQLite3), Chromium/Google Chrome (SQLite3) and the
         Mozilla/Firefox(1.x/2.x)/Netscape format.
@@ -1031,7 +1031,7 @@ class Options:
         self.set("load-cookies", value)
 
     @property
-    def save_cookies(self):
+    def save_cookies(self) -> str:
         """
         Save Cookies to FILE in Mozilla/Firefox(1.x/2.x)/ Netscape format.
 
@@ -1048,7 +1048,7 @@ class Options:
         self.set("save-cookies", value)
 
     @property
-    def use_head(self):
+    def use_head(self) -> bool:
         """
         Use HEAD method for the first request to the HTTP server.
 
@@ -1064,7 +1064,7 @@ class Options:
         self.set("use-head", bool_to_str(value))
 
     @property
-    def user_agent(self):
+    def user_agent(self) -> str:
         """
         Set user agent for HTTP(S) downloads.
 
@@ -1081,7 +1081,7 @@ class Options:
 
     # FTP/SFTP Specific Options
     @property
-    def ftp_user(self):
+    def ftp_user(self) -> str:
         """
         Set FTP user. This affects all URIs.
 
@@ -1097,7 +1097,7 @@ class Options:
         self.set("ftp-user", value)
 
     @property
-    def ftp_passwd(self):
+    def ftp_passwd(self) -> str:
         """
         Set FTP password. This affects all URIs.
 
@@ -1115,14 +1115,14 @@ class Options:
         self.set("ftp-passwd", value)
 
     @property
-    def ftp_pasv(self):
+    def ftp_pasv(self) -> bool:
         """
         Use the passive mode in FTP.
 
         If false is given, the active mode will be used. Default: true.
 
         NOTE:
-           This option is ignored for SFTP transfer.
+            This option is ignored for SFTP transfer.
 
         Returns:
             bool
@@ -1134,7 +1134,7 @@ class Options:
         self.set("ftp-pasv", bool_to_str(value))
 
     @property
-    def ftp_proxy(self):
+    def ftp_proxy(self) -> str:
         """
         Use a proxy server for FTP.
 
@@ -1151,7 +1151,7 @@ class Options:
         self.set("ftp-proxy", value)
 
     @property
-    def ftp_proxy_passwd(self):
+    def ftp_proxy_passwd(self) -> str:
         """
         Set password for --ftp-proxy option.
 
@@ -1165,7 +1165,7 @@ class Options:
         self.set("ftp-proxy-passwd", value)
 
     @property
-    def ftp_proxy_user(self):
+    def ftp_proxy_user(self) -> str:
         """
         Set user for --ftp-proxy option.
 
@@ -1179,14 +1179,14 @@ class Options:
         self.set("ftp-proxy-user", value)
 
     @property
-    def ftp_type(self):
+    def ftp_type(self) -> str:
         """
         Set FTP transfer type.
 
         TYPE is either binary or ascii. Default: binary.
 
         NOTE:
-           This option is ignored for SFTP transfer.
+            This option is ignored for SFTP transfer.
 
         Returns:
             str
@@ -1198,7 +1198,7 @@ class Options:
         self.set("ftp-type", value)
 
     @property
-    def ftp_reuse_connection(self):
+    def ftp_reuse_connection(self) -> bool:
         """
         Reuse connection in FTP.
 
@@ -1214,7 +1214,7 @@ class Options:
         self.set("ftp-reuse-connection", bool_to_str(value))
 
     @property
-    def ssh_host_key_md(self):
+    def ssh_host_key_md(self) -> str:
         """
         Set checksum for SSH host public key (<TYPE>=<DIGEST>).
 
@@ -1233,7 +1233,7 @@ class Options:
 
     # BitTorrent/Metalink Options
     @property
-    def select_file(self):
+    def select_file(self) -> str:
         """
         Set file to download by specifying its index.
 
@@ -1256,7 +1256,7 @@ class Options:
         self.set("select-file", value)
 
     @property
-    def show_files(self):
+    def show_files(self) -> bool:
         """
         Print file listing of ".torrent", ".meta4" and ".metalink" file and exit.
 
@@ -1273,7 +1273,7 @@ class Options:
 
     # BitTorrent Specific Options
     @property
-    def bt_detach_seed_only(self):
+    def bt_detach_seed_only(self) -> bool:
         """
         Exclude seed only downloads when counting concurrent active downloads (See -j option).
 
@@ -1292,7 +1292,7 @@ class Options:
         self.set("bt-detach-seed-only", bool_to_str(value))
 
     @property
-    def bt_enable_hook_after_hash_check(self):
+    def bt_enable_hook_after_hash_check(self) -> bool:
         """
         Allow hook command invocation after hash check (see -V option) in BitTorrent download.
 
@@ -1309,7 +1309,7 @@ class Options:
         self.set("bt_enable_hook_after_hash_check", bool_to_str(value))
 
     @property
-    def bt_enable_lpd(self):
+    def bt_enable_lpd(self) -> bool:
         """
         Enable Local Peer Discovery.
 
@@ -1326,7 +1326,7 @@ class Options:
         self.set("bt-enable-lpd", bool_to_str(value))
 
     @property
-    def bt_exclude_tracker(self):
+    def bt_exclude_tracker(self) -> List[str]:
         """
         Comma separated list of BitTorrent tracker's announce URI to remove.
 
@@ -1343,7 +1343,7 @@ class Options:
         self.set("bt-exclude-tracker", value)
 
     @property
-    def bt_external_ip(self):
+    def bt_external_ip(self) -> str:
         """
         Specify the external IP address to use in BitTorrent download and DHT.
 
@@ -1361,7 +1361,7 @@ class Options:
         self.set("bt-external-ip", value)
 
     @property
-    def bt_force_encryption(self):
+    def bt_force_encryption(self) -> bool:
         """
         Requires BitTorrent message payload encryption with arc4.
 
@@ -1379,7 +1379,7 @@ class Options:
         self.set("bt-force-encryption", bool_to_str(value))
 
     @property
-    def bt_hash_check_seed(self):
+    def bt_hash_check_seed(self) -> bool:
         """
         If true is given, after hash check using --check-integrity option and file is complete, continue to seed
         file.
@@ -1397,7 +1397,7 @@ class Options:
         self.set("bt-hash-check-seed", bool_to_str(value))
 
     @property
-    def bt_lpd_interface(self):
+    def bt_lpd_interface(self) -> str:
         """
         Use given interface for Local Peer Discovery.
 
@@ -1414,7 +1414,7 @@ class Options:
         self.set("bt-lpd-interface", value)
 
     @property
-    def bt_max_open_files(self):
+    def bt_max_open_files(self) -> int:
         """
         Specify maximum number of files to open in multi-file BitTorrent/Metalink download globally.
 
@@ -1430,7 +1430,7 @@ class Options:
         self.set("bt-max-open-files", value)
 
     @property
-    def bt_max_peers(self):
+    def bt_max_peers(self) -> int:
         """
         Specify the maximum number of peers per torrent. 0 means unlimited.
 
@@ -1446,7 +1446,7 @@ class Options:
         self.set("bt-max-peers", value)
 
     @property
-    def bt_metadata_only(self):
+    def bt_metadata_only(self) -> bool:
         """
         Download meta data only.
 
@@ -1463,7 +1463,7 @@ class Options:
         self.set("bt-metadata-only", bool_to_str(value))
 
     @property
-    def bt_min_crypto_level(self):
+    def bt_min_crypto_level(self) -> str:
         """
         Set minimum level of encryption method (plain/arc4).
 
@@ -1480,7 +1480,7 @@ class Options:
         self.set("bt-min-crypto-level", value)
 
     @property
-    def bt_prioritize_piece(self):
+    def bt_prioritize_piece(self) -> str:
         """
         Try to download first and last pieces of each file first (head[=<SIZE>],tail[=<SIZE>]).
 
@@ -1500,7 +1500,7 @@ class Options:
         self.set("bt-prioritize-piece", value)
 
     @property
-    def bt_remove_unselected_file(self):
+    def bt_remove_unselected_file(self) -> bool:
         """
         Removes the unselected files when download is completed in BitTorrent.
 
@@ -1517,7 +1517,7 @@ class Options:
         self.set("bt-remove-unselected-file", bool_to_str(value))
 
     @property
-    def bt_require_crypto(self):
+    def bt_require_crypto(self) -> bool:
         """
         If true is given, aria2 doesn't accept and establish connection with legacy BitTorrent handshake
         (\19BitTorrent protocol).
@@ -1534,7 +1534,7 @@ class Options:
         self.set("bt-require-crypto", bool_to_str(value))
 
     @property
-    def bt_request_peer_speed_limit(self):
+    def bt_request_peer_speed_limit(self) -> int:
         """
         If the whole download speed of every torrent is lower than SPEED, aria2 temporarily increases the number
         of peers to try for more download speed.
@@ -1552,7 +1552,7 @@ class Options:
         self.set("bt-request-peer-speed-limit", value)
 
     @property
-    def bt_save_metadata(self):
+    def bt_save_metadata(self) -> bool:
         """
         Save meta data as ".torrent" file.
 
@@ -1570,7 +1570,7 @@ class Options:
         self.set("bt-save-metadata", bool_to_str(value))
 
     @property
-    def bt_seed_unverified(self):
+    def bt_seed_unverified(self) -> bool:
         """
         Seed previously downloaded files without verifying piece hashes.
 
@@ -1586,7 +1586,7 @@ class Options:
         self.set("bt-seed-unverified", bool_to_str(value))
 
     @property
-    def bt_stop_timeout(self):
+    def bt_stop_timeout(self) -> int:
         """
         Stop BitTorrent download if download speed is 0 in consecutive SEC seconds.
 
@@ -1602,7 +1602,7 @@ class Options:
         self.set("bt-stop-timeout", value)
 
     @property
-    def bt_tracker(self):
+    def bt_tracker(self) -> List[str]:
         """
         Comma separated list of additional BitTorrent tracker's announce URI.
 
@@ -1619,7 +1619,7 @@ class Options:
         self.set("bt-tracker", value)
 
     @property
-    def bt_tracker_connect_timeout(self):
+    def bt_tracker_connect_timeout(self) -> int:
         """
         Set the connect timeout in seconds to establish connection to tracker.
 
@@ -1636,7 +1636,7 @@ class Options:
         self.set("bt-tracker-connect-timeout", value)
 
     @property
-    def bt_tracker_interval(self):
+    def bt_tracker_interval(self) -> int:
         """
         Set the interval in seconds between tracker requests.
 
@@ -1654,7 +1654,7 @@ class Options:
         self.set("bt-tracker-interval", value)
 
     @property
-    def bt_tracker_timeout(self):
+    def bt_tracker_timeout(self) -> int:
         """
         Set timeout in seconds.
 
@@ -1670,7 +1670,7 @@ class Options:
         self.set("bt-tracker-timeout", value)
 
     @property
-    def dht_entry_point(self):
+    def dht_entry_point(self) -> str:
         """
         Set host and port as an entry point to IPv4 DHT network (<HOST>:<PORT>).
 
@@ -1684,7 +1684,7 @@ class Options:
         self.set("dht-entry-point", value)
 
     @property
-    def dht_entry_point6(self):
+    def dht_entry_point6(self) -> str:
         """
         Set host and port as an entry point to IPv6 DHT network (<HOST>:<PORT>).
 
@@ -1698,7 +1698,7 @@ class Options:
         self.set("dht-entry-point6", value)
 
     @property
-    def dht_file_path(self):
+    def dht_file_path(self) -> str:
         """
         Change the IPv4 DHT routing table file to PATH.
 
@@ -1714,7 +1714,7 @@ class Options:
         self.set("dht-file-path", value)
 
     @property
-    def dht_file_path6(self):
+    def dht_file_path6(self) -> str:
         """
         Change the IPv6 DHT routing table file to PATH.
 
@@ -1730,7 +1730,7 @@ class Options:
         self.set("dht-file-path6", value)
 
     @property
-    def dht_listen_addr6(self):
+    def dht_listen_addr6(self) -> str:
         """
         Specify address to bind socket for IPv6 DHT.
 
@@ -1746,7 +1746,7 @@ class Options:
         self.set("dht-listen-addr6", value)
 
     @property
-    def dht_listen_port(self):
+    def dht_listen_port(self) -> str:
         """
         Set UDP listening port used by DHT(IPv4, IPv6) and UDP tracker.
 
@@ -1754,7 +1754,7 @@ class Options:
         6881-6999. , and - can be used together. Default: 6881-6999.
 
         NOTE:
-           Make sure that the specified ports are open for incoming UDP traffic.
+            Make sure that the specified ports are open for incoming UDP traffic.
 
         Returns:
             str
@@ -1766,7 +1766,7 @@ class Options:
         self.set("dht-listen-port", value)
 
     @property
-    def dht_message_timeout(self):
+    def dht_message_timeout(self) -> int:
         """
         Set timeout in seconds.
 
@@ -1782,7 +1782,7 @@ class Options:
         self.set("dht-message-timeout", value)
 
     @property
-    def enable_dht(self):
+    def enable_dht(self) -> bool:
         """
         Enable IPv4 DHT functionality.
 
@@ -1799,7 +1799,7 @@ class Options:
         self.set("enable-dht", bool_to_str(value))
 
     @property
-    def enable_dht6(self):
+    def enable_dht6(self) -> bool:
         """
         Enable IPv6 DHT functionality.
 
@@ -1816,7 +1816,7 @@ class Options:
         self.set("enable-dht6", bool_to_str(value))
 
     @property
-    def enable_peer_exchange(self):
+    def enable_peer_exchange(self) -> bool:
         """
         Enable Peer Exchange extension.
 
@@ -1833,7 +1833,7 @@ class Options:
         self.set("enable-peer-exchange", bool_to_str(value))
 
     @property
-    def follow_torrent(self):
+    def follow_torrent(self) -> str:
         """
         If true or mem is specified, when a file whose suffix is .torrent or content type is application/x-bittorrent
         is downloaded, aria2 parses it as a torrent file and downloads files mentioned in it.
@@ -1852,7 +1852,7 @@ class Options:
         self.set("follow-torrent", value)
 
     @property
-    def index_out(self):
+    def index_out(self) -> str:
         """
         Set file path for file with index=INDEX (<INDEX>=<PATH>).
 
@@ -1870,7 +1870,7 @@ class Options:
         self.set("index-out", value)
 
     @property
-    def listen_port(self):
+    def listen_port(self) -> str:
         """
         Set TCP port number for BitTorrent downloads.
 
@@ -1878,7 +1878,7 @@ class Options:
         6881-6999. , and - can be used together: 6881-6889, 6999. Default: 6881-6999
 
         NOTE:
-           Make sure that the specified ports are open for incoming TCP traffic.
+            Make sure that the specified ports are open for incoming TCP traffic.
 
         Returns:
             str
@@ -1890,7 +1890,7 @@ class Options:
         self.set("listen-port", value)
 
     @property
-    def max_overall_upload_limit(self):
+    def max_overall_upload_limit(self) -> int:
         """
         Set max overall upload speed in bytes/sec.
 
@@ -1907,7 +1907,7 @@ class Options:
         self.set("max-overall-upload-limit", value)
 
     @property
-    def max_upload_limit(self):
+    def max_upload_limit(self) -> int:
         """
         Set max upload speed per each torrent in bytes/sec.
 
@@ -1924,7 +1924,7 @@ class Options:
         self.set("max-upload-limit", value)
 
     @property
-    def peer_id_prefix(self):
+    def peer_id_prefix(self) -> str:
         """
         Specify the prefix of peer ID.
 
@@ -1944,7 +1944,7 @@ class Options:
         self.set("peer-id-prefix", value)
 
     @property
-    def seed_ratio(self):
+    def seed_ratio(self) -> float:
         """
         Specify share ratio.
 
@@ -1963,14 +1963,14 @@ class Options:
         self.set("seed-ratio", value)
 
     @property
-    def seed_time(self):
+    def seed_time(self) -> float:
         """
         Specify seeding time in (fractional) minutes.
 
         Also see the --seed-ratio option.
 
         NOTE:
-           Specifying --seed-time=0 disables seeding after download completed.
+            Specifying --seed-time=0 disables seeding after download completed.
 
         Returns:
             float
@@ -1982,7 +1982,7 @@ class Options:
         self.set("seed-time", value)
 
     @property
-    def torrent_file(self):
+    def torrent_file(self) -> str:
         """
         The path to the ".torrent" file.
 
@@ -1999,7 +1999,7 @@ class Options:
 
     # Metalink Specific Options
     @property
-    def follow_metalink(self):
+    def follow_metalink(self) -> str:
         """
         If true or mem is specified, when a file whose suffix is .meta4 or .metalink or content type of
         application/metalink4+xml or application/metalink+xml is downloaded, aria2 parses it as a metalink file and
@@ -2019,7 +2019,7 @@ class Options:
         self.set("follow-metalink", value)
 
     @property
-    def metalink_base_uri(self):
+    def metalink_base_uri(self) -> str:
         """
         Specify base URI to resolve relative URI in metalink:url and metalink:metaurl element in a metalink file
         stored in local disk.
@@ -2036,7 +2036,7 @@ class Options:
         self.set("metalink-base-uri", value)
 
     @property
-    def metalink_file(self):
+    def metalink_file(self) -> str:
         """
         The file path to ".meta4" and ".metalink" file.
 
@@ -2053,7 +2053,7 @@ class Options:
         self.set("metalink-file", value)
 
     @property
-    def metalink_language(self):
+    def metalink_language(self) -> str:
         """
         The language of the file to download.
 
@@ -2067,7 +2067,7 @@ class Options:
         self.set("metalink-language", value)
 
     @property
-    def metalink_location(self):
+    def metalink_location(self) -> List[str]:
         """
         The location of the preferred server.
 
@@ -2083,7 +2083,7 @@ class Options:
         self.set("metalink-location", value)
 
     @property
-    def metalink_os(self):
+    def metalink_os(self) -> str:
         """
         The operating system of the file to download.
 
@@ -2097,7 +2097,7 @@ class Options:
         self.set("metalink-os", value)
 
     @property
-    def metalink_version(self):
+    def metalink_version(self) -> str:
         """
         The version of the file to download.
 
@@ -2111,7 +2111,7 @@ class Options:
         self.set("metalink-version", value)
 
     @property
-    def metalink_preferred_protocol(self):
+    def metalink_preferred_protocol(self) -> str:
         """
         Specify preferred protocol.
 
@@ -2127,7 +2127,7 @@ class Options:
         self.set("metalink-preferred-protocol", value)
 
     @property
-    def metalink_enable_unique_protocol(self):
+    def metalink_enable_unique_protocol(self) -> bool:
         """
         If true is given and several protocols are available for a mirror in a metalink file, aria2 uses one of them.
 
@@ -2144,7 +2144,7 @@ class Options:
 
     # RPC Options
     @property
-    def enable_rpc(self):
+    def enable_rpc(self) -> bool:
         """
         Enable JSON-RPC/XML-RPC server.
 
@@ -2161,7 +2161,7 @@ class Options:
         self.set("enable-rpc", bool_to_str(value))
 
     @property
-    def pause(self):
+    def pause(self) -> bool:
         """
         Pause download after added.
 
@@ -2177,7 +2177,7 @@ class Options:
         self.set("pause", bool_to_str(value))
 
     @property
-    def pause_metadata(self):
+    def pause_metadata(self) -> bool:
         """
         Pause downloads created as a result of metadata download.
 
@@ -2196,7 +2196,7 @@ class Options:
         self.set("pause-metadata", bool_to_str(value))
 
     @property
-    def rpc_allow_origin_all(self):
+    def rpc_allow_origin_all(self) -> bool:
         """
         Add Access-Control-Allow-Origin header field with value * to the RPC response.
 
@@ -2212,7 +2212,7 @@ class Options:
         self.set("rpc-allow-origin-all", bool_to_str(value))
 
     @property
-    def rpc_certificate(self):
+    def rpc_certificate(self) -> str:
         """
         Use the certificate in FILE for RPC server.
 
@@ -2225,7 +2225,7 @@ class Options:
         to enable encryption.
 
         NOTE:
-           WinTLS does not support PEM files at the moment. Users have to use PKCS12 files.
+            WinTLS does not support PEM files at the moment. Users have to use PKCS12 files.
 
         NOTE:
             AppleTLS users should use the KeyChain Access utility to first generate a self-signed SSL-Server
@@ -2243,7 +2243,7 @@ class Options:
         self.set("rpc-certificate", value)
 
     @property
-    def rpc_listen_all(self):
+    def rpc_listen_all(self) -> bool:
         """
         Listen incoming JSON-RPC/XML-RPC requests on all network interfaces.
 
@@ -2259,7 +2259,7 @@ class Options:
         self.set("rpc-listen-all", bool_to_str(value))
 
     @property
-    def rpc_listen_port(self):
+    def rpc_listen_port(self) -> int:
         """
         Specify a port number for JSON-RPC/XML-RPC server to listen to.
 
@@ -2275,7 +2275,7 @@ class Options:
         self.set("rpc-listen-port", value)
 
     @property
-    def rpc_max_request_size(self):
+    def rpc_max_request_size(self) -> str:
         """
         Set max size of JSON-RPC/XML-RPC request in bytes.
 
@@ -2291,7 +2291,7 @@ class Options:
         self.set("rpc-max-request-size", value)
 
     @property
-    def rpc_passwd(self):
+    def rpc_passwd(self) -> str:
         """
         Set JSON-RPC/XML-RPC password.
 
@@ -2309,7 +2309,7 @@ class Options:
         self.set("rpc-passwd", value)
 
     @property
-    def rpc_private_key(self):
+    def rpc_private_key(self) -> str:
         """
         Use the private key in FILE for RPC server.
 
@@ -2326,7 +2326,7 @@ class Options:
         self.set("rpc-private-key", value)
 
     @property
-    def rpc_save_upload_metadata(self):
+    def rpc_save_upload_metadata(self) -> bool:
         """
         Save the uploaded torrent or metalink meta data in the directory specified by --dir option.
 
@@ -2344,7 +2344,7 @@ class Options:
         self.set("rpc-save-upload-metadata", bool_to_str(value))
 
     @property
-    def rpc_secret(self):
+    def rpc_secret(self) -> str:
         """
         Set RPC secret authorization token.
 
@@ -2360,7 +2360,7 @@ class Options:
         self.set("rpc-secret", value)
 
     @property
-    def rpc_secure(self):
+    def rpc_secure(self) -> bool:
         """
         RPC transport will be encrypted by SSL/TLS.
 
@@ -2377,7 +2377,7 @@ class Options:
         self.set("rpc-secure", bool_to_str(value))
 
     @property
-    def rpc_user(self):
+    def rpc_user(self) -> str:
         """
         Set JSON-RPC/XML-RPC user.
 
@@ -2396,7 +2396,7 @@ class Options:
 
     # Advanced Options
     @property
-    def allow_overwrite(self):
+    def allow_overwrite(self) -> bool:
         """
         Restart download from scratch if the corresponding control file doesn't exist.
 
@@ -2412,7 +2412,7 @@ class Options:
         self.set("allow-overwrite", bool_to_str(value))
 
     @property
-    def allow_piece_length_change(self):
+    def allow_piece_length_change(self) -> bool:
         """
         If false is given, aria2 aborts download when a piece length is different from one in a control file.
 
@@ -2428,7 +2428,7 @@ class Options:
         self.set("allow-piece-length-change", bool_to_str(value))
 
     @property
-    def always_resume(self):
+    def always_resume(self) -> bool:
         """
         Always resume download.
 
@@ -2447,7 +2447,7 @@ class Options:
         self.set("always-resume", bool_to_str(value))
 
     @property
-    def async_dns(self):
+    def async_dns(self) -> bool:
         """
         Enable asynchronous DNS.
 
@@ -2463,7 +2463,7 @@ class Options:
         self.set("async-dns", bool_to_str(value))
 
     @property
-    def async_dns_server(self):
+    def async_dns_server(self) -> List[str]:
         """
         Comma separated list of DNS server address used in asynchronous DNS resolver.
 
@@ -2482,7 +2482,7 @@ class Options:
         self.set("async-dns-server", value)
 
     @property
-    def auto_file_renaming(self):
+    def auto_file_renaming(self) -> bool:
         """
         Rename file name if the same file already exists.
 
@@ -2499,7 +2499,7 @@ class Options:
         self.set("auto-file-renaming", bool_to_str(value))
 
     @property
-    def auto_save_interval(self):
+    def auto_save_interval(self) -> int:
         r"""
         Save a control file (\*.aria2) every SEC seconds.
 
@@ -2516,7 +2516,7 @@ class Options:
         self.set("auto-save-interval", value)
 
     @property
-    def conditional_get(self):
+    def conditional_get(self) -> bool:
         """
         Download file only when the local file is older than remote file.
 
@@ -2536,7 +2536,7 @@ class Options:
         self.set("conditional-get", bool_to_str(value))
 
     @property
-    def conf_path(self):
+    def conf_path(self) -> str:
         """
         Change the configuration file path to PATH.
 
@@ -2552,7 +2552,7 @@ class Options:
         self.set("conf-path", value)
 
     @property
-    def console_log_level(self):
+    def console_log_level(self) -> str:
         """
         Set log level to output to console.
 
@@ -2568,7 +2568,7 @@ class Options:
         self.set("console-log-level", value)
 
     @property
-    def daemon(self):
+    def daemon(self) -> bool:
         """
         Run as daemon.
 
@@ -2585,7 +2585,7 @@ class Options:
         self.set("daemon", bool_to_str(value))
 
     @property
-    def deferred_input(self):
+    def deferred_input(self) -> bool:
         """
         If true is given, aria2 does not read all URIs and options from file specified by --input-file option at
         startup, but it reads one by one when it needs later.
@@ -2594,7 +2594,7 @@ class Options:
         all URIs and options at startup. Default: false.
 
         WARNING:
-           --deferred-input option will be disabled when --save-session is used together.
+            --deferred-input option will be disabled when --save-session is used together.
 
         Returns:
             bool
@@ -2606,7 +2606,7 @@ class Options:
         self.set("deferred-input", bool_to_str(value))
 
     @property
-    def disable_ipv6(self):
+    def disable_ipv6(self) -> bool:
         """
         Disable IPv6.
 
@@ -2622,7 +2622,7 @@ class Options:
         self.set("disable-ipv6", bool_to_str(value))
 
     @property
-    def disk_cache(self):
+    def disk_cache(self) -> int:
         """
         Enable disk cache.
 
@@ -2642,7 +2642,7 @@ class Options:
         self.set("disk-cache", value)
 
     @property
-    def download_result(self):
+    def download_result(self) -> str:
         """
         This option changes the way Download Results is formatted.
 
@@ -2661,7 +2661,7 @@ class Options:
         self.set("download-result", value)
 
     @property
-    def dscp(self):
+    def dscp(self) -> str:
         """
         Set DSCP value in outgoing IP packets of BitTorrent traffic for QoS.
 
@@ -2680,7 +2680,7 @@ class Options:
         self.set("dscp", value)
 
     @property
-    def rlimit_nofile(self):
+    def rlimit_nofile(self) -> int:
         """
         Set the soft limit of open file descriptors.
 
@@ -2706,7 +2706,7 @@ class Options:
         self.set("rlimit-nofile", value)
 
     @property
-    def enable_color(self):
+    def enable_color(self) -> bool:
         """
         Enable color output for a terminal.
 
@@ -2722,7 +2722,7 @@ class Options:
         self.set("enable-color", bool_to_str(value))
 
     @property
-    def enable_mmap(self):
+    def enable_mmap(self) -> bool:
         """
         Map files into memory.
 
@@ -2738,7 +2738,7 @@ class Options:
         self.set("enable-mmap", bool_to_str(value))
 
     @property
-    def event_poll(self):
+    def event_poll(self) -> str:
         r"""
         Specify the method for polling events.
 
@@ -2757,7 +2757,7 @@ class Options:
         self.set("event-poll", value)
 
     @property
-    def file_allocation(self):
+    def file_allocation(self) -> str:
         """
         Specify file allocation method.
 
@@ -2797,7 +2797,7 @@ class Options:
         self.set("file-allocation", value)
 
     @property
-    def force_save(self):
+    def force_save(self) -> bool:
         """
         Save download with --save-session option even if the download is completed or removed.
 
@@ -2814,7 +2814,7 @@ class Options:
         self.set("force-save", bool_to_str(value))
 
     @property
-    def save_not_found(self):
+    def save_not_found(self) -> bool:
         """
         Save download with --save-session option even if the file was not found on the server.
 
@@ -2830,7 +2830,7 @@ class Options:
         self.set("save-not-found", bool_to_str(value))
 
     @property
-    def gid(self):
+    def gid(self) -> str:
         """
         Set GID manually.
 
@@ -2850,7 +2850,7 @@ class Options:
         self.set("gid", value)
 
     @property
-    def hash_check_only(self):
+    def hash_check_only(self) -> bool:
         """
         If true is given, after hash check using --check-integrity option, abort download whether or not download
         is complete.
@@ -2867,7 +2867,7 @@ class Options:
         self.set("hash-check-only", bool_to_str(value))
 
     @property
-    def human_readable(self):
+    def human_readable(self) -> bool:
         """
         Print sizes and speed in human readable format (e.g., 1.2Ki, 3.4Mi) in the console readout.
 
@@ -2883,7 +2883,7 @@ class Options:
         self.set("human-readable", bool_to_str(value))
 
     @property
-    def interface(self):
+    def interface(self) -> str:
         """
         Bind sockets to given interface.
 
@@ -2904,7 +2904,7 @@ class Options:
         self.set("interface", value)
 
     @property
-    def keep_unfinished_download_result(self):
+    def keep_unfinished_download_result(self) -> bool:
         """
         Keep unfinished download results even if doing so exceeds --max-download-result.
 
@@ -2922,7 +2922,7 @@ class Options:
         self.set("keep_unfinished_download_result", bool_to_str(value))
 
     @property
-    def max_download_result(self):
+    def max_download_result(self) -> int:
         """
         Set maximum number of download result kept in memory.
 
@@ -2943,7 +2943,7 @@ class Options:
         self.set("max-download-result", value)
 
     @property
-    def max_mmap_limit(self):
+    def max_mmap_limit(self) -> int:
         """
         Set the maximum file size to enable mmap (see --enable-mmap option).
 
@@ -2961,7 +2961,7 @@ class Options:
         self.set("max-mmap-limit", value)
 
     @property
-    def max_resume_failure_tries(self):
+    def max_resume_failure_tries(self) -> int:
         """
         When used with --always-resume=false, aria2 downloads file from scratch when aria2 detects N number of
         URIs that does not support resume.
@@ -2979,7 +2979,7 @@ class Options:
         self.set("max-resume-failure-tries", value)
 
     @property
-    def min_tls_version(self):
+    def min_tls_version(self) -> str:
         """
         Specify minimum SSL/TLS version to enable.
 
@@ -2995,7 +2995,7 @@ class Options:
         self.set("min-tls-version", value)
 
     @property
-    def multiple_interface(self):
+    def multiple_interface(self) -> List[str]:
         """
         Comma separated list of interfaces to bind sockets to.
 
@@ -3013,7 +3013,7 @@ class Options:
         self.set("multiple-interface", value)
 
     @property
-    def log_level(self):
+    def log_level(self) -> str:
         """
         Set log level to output.
 
@@ -3029,7 +3029,7 @@ class Options:
         self.set("log-level", value)
 
     @property
-    def on_bt_download_complete(self):
+    def on_bt_download_complete(self) -> str:
         """
         For BitTorrent, a command specified in --on-download-complete is called after download completed and
         seeding is over.
@@ -3047,7 +3047,7 @@ class Options:
         self.set("on-bt-download-complete", value)
 
     @property
-    def on_download_complete(self):
+    def on_download_complete(self) -> str:
         """
         Set the command to be executed after download completed.
 
@@ -3064,7 +3064,7 @@ class Options:
         self.set("on-download-complete", value)
 
     @property
-    def on_download_error(self):
+    def on_download_error(self) -> str:
         """
         Set the command to be executed after download aborted due to error.
 
@@ -3081,7 +3081,7 @@ class Options:
         self.set("on-download-error", value)
 
     @property
-    def on_download_pause(self):
+    def on_download_pause(self) -> str:
         """
         Set the command to be executed after download was paused.
 
@@ -3097,7 +3097,7 @@ class Options:
         self.set("on-download-pause", value)
 
     @property
-    def on_download_start(self):
+    def on_download_start(self) -> str:
         """
         Set the command to be executed after download got started.
 
@@ -3113,7 +3113,7 @@ class Options:
         self.set("on-download-start", value)
 
     @property
-    def on_download_stop(self):
+    def on_download_stop(self) -> str:
         """
         Set the command to be executed after download stopped.
 
@@ -3131,9 +3131,9 @@ class Options:
         self.set("on-download-stop", value)
 
     @property
-    def optimize_concurrent_downloads(self):
+    def optimize_concurrent_downloads(self) -> str:
         """
-        Optimizes the number of concurrent downloads according to the bandwidth available (true|false|<A>:<B>).
+        Optimizes the number of concurrent downloads according to the bandwidth available (`true|false|<A>:<B>`).
 
         aria2 uses the download speed observed in the previous downloads to adapt the number of downloads launched in
         parallel according to the rule N = A + B Log10(speed in Mbps). The coefficients A and B can be customized in
@@ -3152,7 +3152,7 @@ class Options:
         self.set("optimize-concurrent-downloads", value)
 
     @property
-    def piece_length(self):
+    def piece_length(self) -> str:
         """
         Set a piece length for HTTP/FTP downloads.
 
@@ -3173,7 +3173,7 @@ class Options:
         self.set("piece-length", value)
 
     @property
-    def show_console_readout(self):
+    def show_console_readout(self) -> bool:
         """
         Show console readout.
 
@@ -3189,7 +3189,7 @@ class Options:
         self.set("show-console-readout", bool_to_str(value))
 
     @property
-    def stderr(self):
+    def stderr(self) -> bool:
         """
         Redirect all console output that would be otherwise printed in stdout to stderr.
 
@@ -3205,7 +3205,7 @@ class Options:
         self.set("stderr", bool_to_str(value))
 
     @property
-    def summary_interval(self):
+    def summary_interval(self) -> int:
         """
         Set interval in seconds to output download progress summary.
 
@@ -3221,7 +3221,7 @@ class Options:
         self.set("summary-interval", value)
 
     @property
-    def force_sequential(self):
+    def force_sequential(self) -> bool:
         """
         Fetch URIs in the command-line sequentially and download each URI in a separate session, like the usual
         command-line download utilities.
@@ -3238,7 +3238,7 @@ class Options:
         self.set("force-sequential", bool_to_str(value))
 
     @property
-    def max_overall_download_limit(self):
+    def max_overall_download_limit(self) -> int:
         """
         Set max overall download speed in bytes/sec.
 
@@ -3255,7 +3255,7 @@ class Options:
         self.set("max-overall-download-limit", value)
 
     @property
-    def max_download_limit(self):
+    def max_download_limit(self) -> int:
         """
         Set max download speed per each download in bytes/sec.
 
@@ -3272,7 +3272,7 @@ class Options:
         self.set("max-download-limit", value)
 
     @property
-    def no_conf(self):
+    def no_conf(self) -> bool:
         """
         Disable loading aria2.conf file.
 
@@ -3286,7 +3286,7 @@ class Options:
         self.set("no-conf", bool_to_str(value))
 
     @property
-    def no_file_allocation_limit(self):
+    def no_file_allocation_limit(self) -> int:
         """
         No file allocation is made for files whose size is smaller than SIZE.
 
@@ -3302,7 +3302,7 @@ class Options:
         self.set("no-file-allocation-limit", value)
 
     @property
-    def parameterized_uri(self):
+    def parameterized_uri(self) -> bool:
         """
         Enable parameterized URI support.
 
@@ -3320,7 +3320,7 @@ class Options:
         self.set("parameterized-uri", bool_to_str(value))
 
     @property
-    def quiet(self):
+    def quiet(self) -> bool:
         """
         Make aria2 quiet (no console output).
 
@@ -3336,7 +3336,7 @@ class Options:
         self.set("quiet", bool_to_str(value))
 
     @property
-    def realtime_chunk_checksum(self):
+    def realtime_chunk_checksum(self) -> bool:
         """
         Validate chunk of data by calculating checksum while downloading a file if chunk checksums are provided.
 
@@ -3352,7 +3352,7 @@ class Options:
         self.set("realtime-chunk-checksum", bool_to_str(value))
 
     @property
-    def remove_control_file(self):
+    def remove_control_file(self) -> bool:
         """
         Remove control file before download.
 
@@ -3369,7 +3369,7 @@ class Options:
         self.set("remove-control-file", bool_to_str(value))
 
     @property
-    def save_session(self):
+    def save_session(self) -> str:
         """
         Save error/unfinished downloads to FILE on exit.
 
@@ -3383,19 +3383,19 @@ class Options:
             Normally, GID of the download itself is saved. But some downloads use meta data (e.g., BitTorrent and
             Metalink). In this case, there are some restrictions.
 
-           magnet URI, and followed by torrent download:
+            magnet URI, and followed by torrent download:
                 GID of BitTorrent meta data download is saved.
 
-           URI to torrent file, and followed by torrent download:
+            URI to torrent file, and followed by torrent download:
                 GID of torrent file download is saved.
 
-           URI to metalink file, and followed by file downloads described in metalink file:
+            URI to metalink file, and followed by file downloads described in metalink file:
                 GID of metalink file download is saved.
 
-           local torrent file:
+            local torrent file:
                 GID of torrent download is saved.
 
-           local metalink file:
+            local metalink file:
                 Any meaningful GID is not saved.
 
         Returns:
@@ -3408,7 +3408,7 @@ class Options:
         self.set("save-session", value)
 
     @property
-    def save_session_interval(self):
+    def save_session_interval(self) -> int:
         """
         Save error/unfinished downloads to a file specified by --save-session option every SEC seconds.
 
@@ -3424,7 +3424,7 @@ class Options:
         self.set("save-session-interval", value)
 
     @property
-    def socket_recv_buffer_size(self):
+    def socket_recv_buffer_size(self) -> int:
         """
         Set the maximum socket receive buffer in bytes.
 
@@ -3441,7 +3441,7 @@ class Options:
         self.set("socket-recv-buffer-size", value)
 
     @property
-    def stop(self):
+    def stop(self) -> int:
         """
         Stop application after SEC seconds has passed.
 
@@ -3457,7 +3457,7 @@ class Options:
         self.set("stop", value)
 
     @property
-    def stop_with_process(self):
+    def stop_with_process(self) -> int:
         """
         Stop application when process PID is not running.
 
@@ -3474,7 +3474,7 @@ class Options:
         self.set("stop-with-process", value)
 
     @property
-    def truncate_console_readout(self):
+    def truncate_console_readout(self) -> bool:
         """
         Truncate console readout to fit in a single line.
 

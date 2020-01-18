@@ -19,7 +19,9 @@ import argparse
 import importlib.util
 import json
 import sys
+from collections import namedtuple
 from pathlib import Path
+from typing import Any, List, Optional, Union
 
 import requests
 from loguru import logger
@@ -37,7 +39,7 @@ except ImportError:
 
 
 # ============ MAIN FUNCTION ============ #
-def main(args=None):
+def main(args: Optional[List[str]] = None) -> int:
     """The main function, which is executed when you type ``aria2p`` or ``python -m aria2p``."""
 
     parser = get_parser()
@@ -111,7 +113,7 @@ def main(args=None):
         return error.code
 
 
-def check_args(parser, args):
+def check_args(parser: argparse.ArgumentParser, args: namedtuple) -> None:
     """Additional checks for command line arguments."""
     subparser = [action for action in parser._actions if isinstance(action, argparse._SubParsersAction)][0].choices
 
@@ -131,7 +133,7 @@ def check_args(parser, args):
             subparser[args.subcommand].error("the following arguments are required: metalink_files or -f FILE")
 
 
-def get_parser():
+def get_parser() -> argparse.ArgumentParser:
     """Return a parser for the command-line options and arguments."""
     usage = "%(prog)s [GLOBAL_OPTS...] COMMAND [COMMAND_OPTS...]"
     description = "Command-line tool and Python library to interact with an `aria2c` daemon process through JSON-RPC."
@@ -168,7 +170,7 @@ def get_parser():
     # ========= SUBPARSERS ========= #
     subparsers = parser.add_subparsers(dest="subcommand", title="Commands", metavar="", prog="aria2p")
 
-    def subparser(command, text, **kwargs):
+    def subparser(command: str, text: str, **kwargs) -> argparse.ArgumentParser:
         sub = subparsers.add_parser(command, add_help=False, help=text, description=text, **kwargs)
         sub.add_argument("-h", "--help", action="help", help=subcommand_help)
         return sub
@@ -271,12 +273,12 @@ def get_parser():
 
 
 # ============ SUBCOMMANDS ============ #
-def subcommand_show(api):
+def subcommand_show(api: API) -> int:
     """
     Show subcommand.
 
-    Args:
-        api (API): the API instance to use.
+    Parameters:
+        api: the API instance to use.
 
     Returns:
         int: always 0.
@@ -307,12 +309,12 @@ def subcommand_show(api):
     return 0
 
 
-def subcommand_top(api):
+def subcommand_top(api: API) -> int:
     """
     Top subcommand.
 
-    Args:
-        api (API): the API instance to use.
+    Parameters:
+        api: the API instance to use.
 
     Returns:
         int: always 0.
@@ -328,14 +330,14 @@ def subcommand_top(api):
     return 0 if success else 1
 
 
-def subcommand_call(api, method, params):
+def subcommand_call(api: API, method: str, params: Union[str, List[str]]) -> int:
     """
     Call subcommand.
 
-    Args:
-        api (API): the API instance to use.
-        method (str): name of the method to call.
-        params (str / list of str): parameters to use when calling method.
+    Parameters:
+        api: the API instance to use.
+        method: name of the method to call.
+        params: parameters to use when calling method.
 
     Returns:
         int: always 0.
@@ -357,7 +359,7 @@ def subcommand_call(api, method, params):
     return 0
 
 
-def get_method(name, default=None):
+def get_method(name: str, default: Any = None) -> str:
     """Return the actual aria2 method name from a differently formatted name."""
     methods = {}
     for method in Client.METHODS:
@@ -369,22 +371,22 @@ def get_method(name, default=None):
     return methods.get(name, default)
 
 
-def read_lines(path):
+def read_lines(path: str) -> List[str]:
     with Path(path).open() as stream:
         return stream.readlines()
 
 
-def subcommand_add(api, uris=None, from_file=None):
+def subcommand_add(api: API, uris: List[str] = None, from_file: str = None) -> int:
     """
     Add magnet subcommand.
 
-    Args:
-        api (API): the API instance to use.
-        uris (list of str): the URIs or file-paths to add.
-        from_file (str): path to the file to read uris from.
+    Parameters:
+        api: the API instance to use.
+        uris: the URIs or file-paths to add.
+        from_file: path to the file to read uris from.
 
     Returns:
-        int: always 0.
+        int: 0 if OK else 1.
     """
     ok = True
 
@@ -421,14 +423,14 @@ def subcommand_add(api, uris=None, from_file=None):
     return 0 if ok else 1
 
 
-def subcommand_add_magnets(api, uris=None, from_file=None):
+def subcommand_add_magnets(api: API, uris: List[str] = None, from_file: str = None) -> int:
     """
     Add magnet subcommand.
 
-    Args:
-        api (API): the API instance to use.
-        uris (list of str): the URIs of the magnets.
-        from_file (str): path to the file to read uris from.
+    Parameters:
+        api: the API instance to use.
+        uris: the URIs of the magnets.
+        from_file: path to the file to read uris from.
 
     Returns:
         int: always 0.
@@ -450,14 +452,14 @@ def subcommand_add_magnets(api, uris=None, from_file=None):
     return 0 if ok else 1
 
 
-def subcommand_add_torrents(api, torrent_files=None, from_file=None):
+def subcommand_add_torrents(api: API, torrent_files: List[str] = None, from_file: str = None) -> int:
     """
     Add torrent subcommand.
 
-    Args:
-        api (API): the API instance to use.
-        torrent_files (list of str): the paths to the torrent files.
-        from_file (str): path to the file to read torrent files paths from.
+    Parameters:
+        api: the API instance to use.
+        torrent_files: the paths to the torrent files.
+        from_file: path to the file to read torrent files paths from.
 
     Returns:
         int: always 0.
@@ -479,17 +481,17 @@ def subcommand_add_torrents(api, torrent_files=None, from_file=None):
     return 0 if ok else 1
 
 
-def subcommand_add_metalinks(api: API, metalink_files=None, from_file=None):
+def subcommand_add_metalinks(api: API, metalink_files: List[str] = None, from_file: str = None) -> int:
     """
     Add metalink subcommand.
 
-    Args:
-        api (API): the API instance to use.
-        metalink_files (list of str): the paths to the metalink files.
-        from_file (str): path to the file to metalink files paths from.
+    Parameters:
+        api: the API instance to use.
+        metalink_files: the paths to the metalink files.
+        from_file: path to the file to metalink files paths from.
 
     Returns:
-        int: always 0.
+        int: 0 if OK else 1.
     """
     ok = True
 
@@ -509,15 +511,15 @@ def subcommand_add_metalinks(api: API, metalink_files=None, from_file=None):
     return 0 if ok else 1
 
 
-def subcommand_pause(api: API, gids=None, do_all=False, force=False):
+def subcommand_pause(api: API, gids: List[str] = None, do_all: bool = False, force: bool = False) -> int:
     """
     Pause subcommand.
 
-    Args:
-        api (API): the API instance to use.
-        gids (list of str): the GIDs of the downloads to pause.
-        do_all (bool): pause all downloads if True.
-        force (bool): force pause or not (see API.pause).
+    Parameters:
+        api: the API instance to use.
+        gids: the GIDs of the downloads to pause.
+        do_all: pause all downloads if True.
+        force: force pause or not (see API.pause).
 
     Returns:
         int: 0 if all success, 1 if one failure.
@@ -539,14 +541,14 @@ def subcommand_pause(api: API, gids=None, do_all=False, force=False):
     return 1
 
 
-def subcommand_resume(api: API, gids=None, do_all=False):
+def subcommand_resume(api: API, gids: List[str] = None, do_all: bool = False) -> int:
     """
     Resume subcommand.
 
-    Args:
-        api (API): the API instance to use.
-        gids (list of str): the GIDs of the downloads to resume.
-        do_all (bool): pause all downloads if True.
+    Parameters:
+        api: the API instance to use.
+        gids: the GIDs of the downloads to resume.
+        do_all: pause all downloads if True.
 
     Returns:
         int: 0 if all success, 1 if one failure.
@@ -568,15 +570,15 @@ def subcommand_resume(api: API, gids=None, do_all=False):
     return 1
 
 
-def subcommand_remove(api: API, gids=None, do_all=False, force=False):
+def subcommand_remove(api: API, gids: List[str] = None, do_all: bool = False, force: bool = False) -> int:
     """
     Remove subcommand.
 
-    Args:
-        api (API): the API instance to use.
-        gids (list of str): the GIDs of the downloads to remove.
-        do_all (bool): pause all downloads if True.
-        force (bool): force pause or not (see API.remove).
+    Parameters:
+        api: the API instance to use.
+        gids: the GIDs of the downloads to remove.
+        do_all: pause all downloads if True.
+        force: force pause or not (see API.remove).
 
     Returns:
         int: 0 if all success, 1 if one failure.
@@ -605,12 +607,12 @@ def subcommand_remove(api: API, gids=None, do_all=False, force=False):
     return 1
 
 
-def subcommand_autopurge(api: API):
+def subcommand_autopurge(api: API) -> int:
     """
     Autopurge subcommand.
 
-    Args:
-        api (API): the API instance to use.
+    Parameters:
+        api: the API instance to use.
 
     Returns:
         int: 0 if all success, 1 if one failure.
@@ -627,15 +629,17 @@ def subcommand_autopurge(api: API):
     return 1
 
 
-def subcommand_listen(api: API, callbacks_module=None, event_types=None, timeout=5):
+def subcommand_listen(
+    api: API, callbacks_module: Union[str, Path] = None, event_types: List[str] = None, timeout: int = 5
+) -> int:
     """
     Listen subcommand.
 
-    Args:
-        api (API): the API instance to use.
-        callbacks_module (Path/str): the path to the module to import, containing the callbacks as functions.
-        event_types (list of str): the event types to process.
-        timeout (float/int): the timeout to pass to the WebSocket connection, in seconds.
+    Parameters:
+        api: the API instance to use.
+        callbacks_module: the path to the module to import, containing the callbacks as functions.
+        event_types: the event types to process.
+        timeout: the timeout to pass to the WebSocket connection, in seconds.
 
     Returns:
         int: always 0.

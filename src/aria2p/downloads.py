@@ -4,6 +4,7 @@ torrent files, files and downloads in aria2c.
 """
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import List, Union
 
 from loguru import logger
 
@@ -14,12 +15,12 @@ from .utils import bool_or_value, human_readable_bytes, human_readable_timedelta
 class BitTorrent:
     """Information retrieved from a torrent file."""
 
-    def __init__(self, struct):
+    def __init__(self, struct: dict) -> None:
         """
         Initialization method.
 
         Args:
-            struct (dict): a dictionary Python object returned by the JSON-RPC client.
+            struct: a dictionary Python object returned by the JSON-RPC client.
         """
         self._struct = struct or {}
 
@@ -76,12 +77,12 @@ class BitTorrent:
 class File:
     """Information about a download's file."""
 
-    def __init__(self, struct):
+    def __init__(self, struct: dict) -> None:
         """
         Initialization method.
 
-        Args:
-            struct (dict): a dictionary Python object returned by the JSON-RPC client.
+        Parameters:
+            struct: a dictionary Python object returned by the JSON-RPC client.
         """
         self._struct = struct or {}
 
@@ -111,15 +112,15 @@ class File:
         """File size in bytes."""
         return int(self._struct.get("length"))
 
-    def length_string(self, human_readable=True):
+    def length_string(self, human_readable: bool = True) -> str:
         """
         Return the length as string.
 
-        Args:
-            human_readable (bool): return in human readable format or not.
+        Parameters:
+            human_readable: return in human readable format or not.
 
         Returns:
-            str: the length string.
+            The length string.
         """
         if human_readable:
             return human_readable_bytes(self.length, delim=" ")
@@ -136,15 +137,15 @@ class File:
         """
         return int(self._struct.get("completedLength"))
 
-    def completed_length_string(self, human_readable=True):
+    def completed_length_string(self, human_readable: bool = True) -> str:
         """
         Return the completed length as string.
 
-        Args:
-            human_readable (bool): return in human readable format or not.
+        Parameters:
+            human_readable: return in human readable format or not.
 
         Returns:
-            str: the completed length string.
+            The completed length string.
         """
         if human_readable:
             return human_readable_bytes(self.completed_length, delim=" ")
@@ -173,13 +174,13 @@ class File:
 class Download:
     """Class containing all information about a download, as retrieved with the client."""
 
-    def __init__(self, api, struct):
+    def __init__(self, api: "aria2p.api.API", struct: dict) -> None:
         """
         Initialization method.
 
-        Args:
-            api (:class:`~aria2p.api.API`): the reference to an :class:`~aria2p.api.API` instance.
-            struct (dict): a dictionary Python object returned by the JSON-RPC client.
+        Parameters:
+            api: the reference to an [`API`][aria2p.api.API] instance.
+            struct: a dictionary Python object returned by the JSON-RPC client.
         """
         self.api = api
         self._struct = struct or {}
@@ -198,7 +199,7 @@ class Download:
     def __eq__(self, other):
         return self.gid == other.gid
 
-    def update(self):
+    def update(self) -> None:
         """Method to update the internal values of the download with more recent values."""
         self._struct = self.api.client.tell_status(self.gid)
 
@@ -251,6 +252,7 @@ class Download:
         but rather entire directories at once when possible.
 
         Examples:
+
             # download dir is /a/b.
             >>> self.files
             ["/a/b/c/1.txt", "/a/b/c/2.txt", "/a/b/3.txt"]
@@ -279,7 +281,7 @@ class Download:
         """
         Options specific to this download.
 
-        The returned object is an instance of :class:`~aria2p.options.Options`.
+        The returned object is an instance of [`Options`][aria2p.options.Options].
         """
         if not self._options:
             self.update_options()
@@ -343,15 +345,15 @@ class Download:
         """Total length of the download in bytes."""
         return int(self._struct.get("totalLength"))
 
-    def total_length_string(self, human_readable=True):
+    def total_length_string(self, human_readable: bool = True) -> str:
         """
         Return the total length as string.
 
-        Args:
-            human_readable (bool): return in human readable format or not.
+        Parameters:
+            human_readable: return in human readable format or not.
 
         Returns:
-            str: the total length string.
+            The total length string.
         """
         if human_readable:
             return human_readable_bytes(self.total_length, delim=" ")
@@ -362,15 +364,15 @@ class Download:
         """Completed length of the download in bytes."""
         return int(self._struct.get("completedLength"))
 
-    def completed_length_string(self, human_readable=True):
+    def completed_length_string(self, human_readable: bool = True) -> str:
         """
         Return the completed length as string.
 
-        Args:
-            human_readable (bool): return in human readable format or not.
+        Parameters:
+            human_readable: return in human readable format or not.
 
         Returns:
-            str: the completed length string.
+            The completed length string.
         """
         if human_readable:
             return human_readable_bytes(self.completed_length, delim=" ")
@@ -381,15 +383,15 @@ class Download:
         """Uploaded length of the download in bytes."""
         return int(self._struct.get("uploadLength"))
 
-    def upload_length_string(self, human_readable=True):
+    def upload_length_string(self, human_readable: bool = True) -> str:
         """
         Return the upload length as string.
 
-        Args:
-            human_readable (bool): return in human readable format or not.
+        Parameters:
+            human_readable: return in human readable format or not.
 
         Returns:
-            str: the upload length string.
+            The upload length string.
         """
         if human_readable:
             return human_readable_bytes(self.upload_length, delim=" ")
@@ -411,15 +413,15 @@ class Download:
         """Download speed of this download measured in bytes/sec."""
         return int(self._struct.get("downloadSpeed"))
 
-    def download_speed_string(self, human_readable=True):
+    def download_speed_string(self, human_readable: bool = True) -> str:
         """
         Return the download speed as string.
 
-        Args:
-            human_readable (bool): return in human readable format or not.
+        Parameters:
+            human_readable: return in human readable format or not.
 
         Returns:
-            str: the download speed string.
+            The download speed string.
         """
         if human_readable:
             return human_readable_bytes(self.download_speed, delim=" ", postfix="/s")
@@ -430,15 +432,15 @@ class Download:
         """Upload speed of this download measured in bytes/sec."""
         return int(self._struct.get("uploadSpeed"))
 
-    def upload_speed_string(self, human_readable=True):
+    def upload_speed_string(self, human_readable: bool = True) -> str:
         """
         Return the upload speed as string.
 
-        Args:
-            human_readable (bool): return in human readable format or not.
+        Parameters:
+            human_readable: return in human readable format or not.
 
         Returns:
-            str: the upload speed string.
+            The upload speed string.
         """
         if human_readable:
             return human_readable_bytes(self.upload_speed, delim=" ", postfix="/s")
@@ -476,15 +478,15 @@ class Download:
         """Piece length in bytes."""
         return int(self._struct.get("pieceLength"))
 
-    def piece_length_string(self, human_readable=True):
+    def piece_length_string(self, human_readable: bool = True) -> str:
         """
         Return the piece length as string.
 
-        Args:
-            human_readable (bool): return in human readable format or not.
+        Parameters:
+            human_readable: return in human readable format or not.
 
         Returns:
-            str: the piece length string.
+            The piece length string.
         """
         if human_readable:
             return human_readable_bytes(self.piece_length, delim=" ")
@@ -531,7 +533,7 @@ class Download:
         """
         List of downloads generated as the result of this download.
 
-        Returns a list of instances of :class:`~aria2p.downloads.Download`.
+        Returns a list of instances of [`Download`][aria2p.downloads.Download].
         """
         if self._followed_by is None:
             result = []
@@ -558,7 +560,7 @@ class Download:
         """
         The download this download is following.
 
-        Returns an instance of :class:`~aria2p.downloads.Download`.
+        Returns an instance of [`Download`][aria2p.downloads.Download].
         """
         if not self._following:
             following_id = self.following_id
@@ -589,7 +591,7 @@ class Download:
         """
         Parent download.
 
-        Returns an instance of :class:`~aria2p.downloads.Download`.
+        Returns an instance of [`Download`][aria2p.downloads.Download].
         """
         if not self._belongs_to:
             belongs_to_id = self.belongs_to_id
@@ -632,7 +634,7 @@ class Download:
         return self._bittorrent
 
     @property
-    def verified_length(self):
+    def verified_length(self) -> int:
         """
         The number of verified number of bytes while the files are being hash checked.
 
@@ -640,15 +642,15 @@ class Download:
         """
         return int(self._struct.get("verifiedLength", 0))
 
-    def verified_length_string(self, human_readable=True):
+    def verified_length_string(self, human_readable: bool = True) -> str:
         """
         Return the verified length as string.
 
-        Args:
-            human_readable (bool): return in human readable format or not.
+        Parameters:
+            human_readable: return in human readable format or not.
 
         Returns:
-            str: the verified length string.
+            The verified length string.
         """
         if human_readable:
             return human_readable_bytes(self.verified_length, delim=" ")
@@ -664,27 +666,27 @@ class Download:
         return bool_or_value(self._struct.get("verifyIntegrityPending"))
 
     @property
-    def progress(self):
+    def progress(self) -> float:
         """Return the progress of the download as float."""
         try:
             return self.completed_length / self.total_length * 100
         except ZeroDivisionError:
             return 0.0
 
-    def progress_string(self, digits=2):
+    def progress_string(self, digits: int = 2) -> str:
         """
         Return the progress percentage as string.
 
-        Args:
-            digits (int): number of decimal digits to use.
+        Parameters:
+            digits: number of decimal digits to use.
 
         Returns:
-            str: the progress percentage.
+            The progress percentage.
         """
         return f"{self.progress:.{digits}f}%"
 
     @property
-    def eta(self):
+    def eta(self) -> timedelta:
         """
         Return the Estimated Time of Arrival (a timedelta).
 
@@ -694,7 +696,7 @@ class Download:
         except ZeroDivisionError:
             return timedelta.max
 
-    def eta_string(self, precision=0):
+    def eta_string(self, precision: int = 0) -> str:
         """Return the Estimated Time of Arrival as a string."""
         eta = self.eta
 
@@ -703,78 +705,78 @@ class Download:
 
         return human_readable_timedelta(eta, precision=precision)
 
-    def move(self, pos):
+    def move(self, pos: int) -> int:
         """
         Move the download in the queue, relatively.
 
-        Args:
-            pos (int): number of times to move.
+        Parameters:
+            pos: number of times to move.
 
         Returns:
-            int: The new position of the download.
+            The new position of the download.
         """
         return self.api.move(self, pos)
 
-    def move_to(self, pos):
+    def move_to(self, pos: int) -> int:
         """
         Move the download in the queue, absolutely.
 
-        Args:
-            pos (int): the absolute position in the queue to take.
+        Parameters:
+            pos: the absolute position in the queue to take.
 
         Returns:
-            int: The new position of the download.
+            The new position of the download.
         """
         return self.api.move_to(self, pos)
 
-    def move_up(self, pos=1):
+    def move_up(self, pos: int = 1) -> int:
         """
         Move the download up in the queue.
 
-        Args:
-            pos (int): number of times to move up.
+        Parameters:
+            pos: number of times to move up.
 
         Returns:
-            int: The new position of the download.
+            The new position of the download.
         """
         return self.api.move_up(self, pos)
 
-    def move_down(self, pos=1):
+    def move_down(self, pos: int = 1) -> int:
         """
         Move the download down in the queue.
 
-        Args:
-            pos (int): number of times to move down.
+        Parameters:
+            pos: number of times to move down.
 
         Returns:
-            int: The new position of the download.
+            The new position of the download.
         """
         return self.api.move_down(self, pos)
 
-    def move_to_top(self):
+    def move_to_top(self) -> int:
         """
         Move the download to the top of the queue.
 
         Returns:
-            int: The new position of the download.
+            The new position of the download.
         """
         return self.api.move_to_top(self)
 
-    def move_to_bottom(self):
+    def move_to_bottom(self) -> int:
         """
         Move the download to the bottom of the queue.
 
         Returns:
-            int: The new position of the download.
+            The new position of the download.
         """
         return self.api.move_to_bottom(self)
 
-    def remove(self, force=False, files=False):
+    def remove(self, force: bool = False, files: bool = False) -> bool:
         """
         Remove the download from the queue (even if active).
 
         Returns:
-            bool: always True (raises exception otherwise).
+            Always True (raises exception otherwise).
 
         Raises:
             ClientException: when removal failed.
@@ -784,12 +786,12 @@ class Download:
             raise result
         return result
 
-    def pause(self, force=False):
+    def pause(self, force: bool = False) -> bool:
         """
         Pause the download.
 
         Returns:
-            bool: always True (raises exception otherwise).
+            Always True (raises exception otherwise).
 
         Raises:
             ClientException: when pausing failed.
@@ -799,12 +801,12 @@ class Download:
             raise result
         return result
 
-    def resume(self):
+    def resume(self) -> bool:
         """
         Resume the download.
 
         Returns:
-            bool: always True (raises exception otherwise).
+            Always True (raises exception otherwise).
 
         Raises:
             ClientException: when resuming failed.
@@ -814,32 +816,32 @@ class Download:
             raise result
         return result
 
-    def purge(self):
+    def purge(self) -> bool:
         """Purge itself from the results."""
         return self.api.purge([self])[0]
 
-    def move_files(self, to_directory, force=False):
+    def move_files(self, to_directory: Union[str, Path], force: bool = False) -> List[bool]:
         """
         Move downloaded files to another directory.
 
-        Args:
-            to_directory (str/Path): the target directory to move files to.
-            force (bool): whether to move files even if download is not complete.
+        Parameters:
+            to_directory: the target directory to move files to.
+            force: whether to move files even if download is not complete.
 
         Returns:
-            list of bool: Success or failure of the operation for each given download.
+            Success or failure of the operation for each given download.
         """
         return self.api.move_files([self], to_directory, force)[0]
 
-    def copy_files(self, to_directory, force=False):
+    def copy_files(self, to_directory: Union[str, Path], force: bool = False) -> List[bool]:
         """
         Copy downloaded files to another directory.
 
-        Args:
-            to_directory (str/Path): the target directory to copy files into.
-            force (bool): whether to move files even if download is not complete.
+        Parameters:
+            to_directory: the target directory to copy files into.
+            force: whether to move files even if download is not complete.
 
         Returns:
-            list of bool: Success or failure of the operation for each given download.
+            Success or failure of the operation for each given download.
         """
         return self.api.copy_files([self], to_directory, force)[0]

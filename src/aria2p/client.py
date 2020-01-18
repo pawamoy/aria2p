@@ -4,6 +4,7 @@ process through the JSON-RPC protocol.
 """
 
 import json
+from typing import Any, Callable, List, Tuple, Union
 
 import requests
 import websocket
@@ -45,11 +46,13 @@ NOTIFICATION_TYPES = [
     NOTIFICATION_BT_COMPLETE,
 ]
 
+CALL_RETURN_TYPE = Union[dict, list, str, int]
+
 
 class ClientException(Exception):
     """An exception specific to JSON-RPC errors."""
 
-    def __init__(self, code, message):
+    def __init__(self, code: int, message: str) -> None:
         super().__init__()
         if code in JSONRPC_CODES:
             message = f"{JSONRPC_CODES[code]}\n{message}"
@@ -75,19 +78,19 @@ class Client:
     Each method offered by the aria2c process is implemented in this class, in snake_case instead of camelCase
     (example: add_uri instead of addUri).
 
-    The class defines a ``METHODS`` variable which contains the names of the available methods.
+    The class defines a `METHODS` variable which contains the names of the available methods.
 
     The class is instantiated using an address and port, and optionally a secret token. The token is never passed
     as a method argument.
 
     The class provides utility methods:
 
-        - call, which performs a JSON-RPC call for a single method;
-        - batch_call, which performs a JSON-RPC call for a list of methods;
-        - multicall2, which is an equivalent of multicall, but easier to use;
-        - post, which is responsible for actually sending a payload to the remote process using a POST request;
-        - get_payload, which is used to build payloads;
-        - get_params, which is used to build list of parameters.
+    - call, which performs a JSON-RPC call for a single method;
+    - batch_call, which performs a JSON-RPC call for a list of methods;
+    - multicall2, which is an equivalent of multicall, but easier to use;
+    - post, which is responsible for actually sending a payload to the remote process using a POST request;
+    - get_payload, which is used to build payloads;
+    - get_params, which is used to build list of parameters.
     """
 
     ADD_URI = "aria2.addUri"
@@ -166,14 +169,14 @@ class Client:
         LIST_NOTIFICATIONS,
     ]
 
-    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT, secret=""):  # nosec
+    def __init__(self, host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, secret: str = "") -> None:  # nosec
         """
         Initialization method.
 
-        Args:
-            host (str): the remote process address.
-            port (int): the remote process port.
-            secret (str): the secret token.
+        Parameters:
+            host: the remote process address.
+            port: the remote process port.
+            secret: the secret token.
         """
         host = host.rstrip("/")
 
@@ -189,25 +192,27 @@ class Client:
         return f"Client(host='{self.host}', port={self.port}, secret='********')"
 
     @property
-    def server(self):
+    def server(self) -> str:
         """Property to return the full remote process / server address."""
         return f"{self.host}:{self.port}/jsonrpc"
 
     @property
-    def ws_server(self):
+    def ws_server(self) -> str:
         """Property to return the full WebSocket remote server address."""
         return f"ws{self.host[4:]}:{self.port}/jsonrpc"
 
     # utils
-    def call(self, method, params=None, msg_id=None, insert_secret=True):
+    def call(
+        self, method: str, params: List[str] = None, msg_id: Union[int, str] = None, insert_secret: bool = True
+    ) -> CALL_RETURN_TYPE:
         """
         Call a single JSON-RPC method.
 
-        Args:
-            method (str): the method name. You can use the constant defined in :class:`~aria2p.client.Client`.
-            params (list): a list of parameters.
-            msg_id (int/str): the ID of the call, sent back with the server's answer.
-            insert_secret (bool): whether to insert the secret token in the parameters or not.
+        Parameters:
+            method: the method name. You can use the constant defined in [`Client`][aria2p.client.Client].
+            params: a list of parameters.
+            msg_id: the ID of the call, sent back with the server's answer.
+            insert_secret: whether to insert the secret token in the parameters or not.
 
         Returns:
             The answer from the server, as a Python object (dict / list / str / int).
@@ -223,25 +228,27 @@ class Client:
 
         return self.res_or_raise(self.post(self.get_payload(method, params, msg_id=msg_id)))
 
-    def batch_call(self, calls, insert_secret=True):
+    def batch_call(
+        self, calls: List[Tuple[str, List[str], Union[str, int]]], insert_secret: bool = True
+    ) -> List[CALL_RETURN_TYPE]:
         """
         Call multiple methods in one request.
 
         A batch call is simply a list of full payloads, sent at once to the remote process. The differences with a
         multicall are:
 
-            - multicall is a special "system" method, whereas batch_call is simply the concatenation of several methods
-            - multicall payloads define the "jsonrpc" and "id" keys only once, whereas these keys are repeated in
-              each part of the batch_call payload
-            - as a result of the previous line, you must pass different IDs to the batch_call methods, whereas the
-              ID in multicall is optional
+        - multicall is a special "system" method, whereas batch_call is simply the concatenation of several methods
+        - multicall payloads define the "jsonrpc" and "id" keys only once, whereas these keys are repeated in
+          each part of the batch_call payload
+        - as a result of the previous line, you must pass different IDs to the batch_call methods, whereas the
+          ID in multicall is optional
 
-        Args:
-            calls (list): a list of tuples composed of method name, parameters and ID.
-            insert_secret (bool): whether to insert the secret token in the parameters or not.
+        Parameters:
+            calls: a list of tuples composed of method name, parameters and ID.
+            insert_secret: whether to insert the secret token in the parameters or not.
 
         Returns:
-            list: the results for each call in the batch.
+            The results for each call in the batch.
         """
         payloads = []
 
@@ -257,7 +264,7 @@ class Client:
 
         return [self.res_or_raise(resp) for resp in responses]
 
-    def multicall2(self, calls, insert_secret=True):
+    def multicall2(self, calls: List[Tuple[str, List[str]]], insert_secret: bool = True) -> CALL_RETURN_TYPE:
         """
         An method equivalent to multicall, but with a simplified usage.
 
@@ -266,16 +273,12 @@ class Client:
 
         With a classic multicall, you would write your params like:
 
-        .. code:: python
-
             [
                 {"methodName": client.REMOVE, "params": ["2089b05ecca3d829"]},
                 {"methodName": client.REMOVE, "params": ["2fa07b6e85c40205"]},
             ]
 
         With multicall2, you can reduce the verbosity:
-
-        .. code:: python
 
             [
                 (client.REMOVE, ["2089b05ecca3d829"]),
@@ -286,12 +289,12 @@ class Client:
             multicall2 is not part of the JSON-RPC protocol specification.
             It is implemented here as a simple convenience method.
 
-        Args:
-            calls (list): list of tuples composed of method name and parameters.
-            insert_secret (bool): whether to insert the secret token in the parameters or not.
+        Parameters:
+            calls: list of tuples composed of method name and parameters.
+            insert_secret: whether to insert the secret token in the parameters or not.
 
         Returns:
-            obj: The answer from the server, as a Python object (dict / list / str / int).
+            The answer from the server, as a Python object (dict / list / str / int).
         """
         multicall_params = []
 
@@ -305,14 +308,14 @@ class Client:
 
         return self.res_or_raise(self.post(payload))
 
-    def post(self, payload):
+    def post(self, payload: dict) -> dict:
         """
         Send a POST request to the server.
 
         The response is a JSON string, which we then load as a Python object.
 
-        Args:
-            payload (dict): the payload / data to send to the remote process. It contains the following key-value pairs:
+        Parameters:
+            payload: the payload / data to send to the remote process. It contains the following key-value pairs:
                 "jsonrpc": "2.0", "method": method, "id": id, "params": params (optional).
 
         Returns:
@@ -321,50 +324,52 @@ class Client:
         return requests.post(self.server, data=payload).json()
 
     @staticmethod
-    def response_as_exception(response):
+    def response_as_exception(response: dict) -> ClientException:
         """
-        Transform the response as a :class:`~aria2p.client.ClientException` instance and return it.
+        Transform the response as a [`ClientException`][aria2p.client.ClientException] instance and return it.
 
-        Args:
-            response (dict): a response sent by the server.
+        Parameters:
+            response: a response sent by the server.
 
         Returns:
-            An instance of the :class:`~aria2p.client.ClientException` class.
+            An instance of the [`ClientException`][aria2p.client.ClientException] class.
         """
         return ClientException(response["error"]["code"], response["error"]["message"])
 
     @staticmethod
-    def res_or_raise(response):
+    def res_or_raise(response: dict) -> CALL_RETURN_TYPE:
         """
         Return the result of the response, or raise an error with code and message.
 
-        Args:
-            response (dict): a response sent by the server.
+        Parameters:
+            response: a response sent by the server.
 
         Returns:
             The "result" value of the response.
 
         Raises:
             ClientException: when the response contains an error (client/server error).
-                See the :class:`~aria2p.client.ClientException` class.
+                See the [`ClientException`][aria2p.client.ClientException] class.
         """
         if "error" in response:
             raise Client.response_as_exception(response)
         return response["result"]
 
     @staticmethod
-    def get_payload(method, params=None, msg_id=None, as_json=True):
+    def get_payload(
+        method, params: List[Any] = None, msg_id: Union[int, str] = None, as_json: bool = True
+    ) -> Union[str, dict]:
         """
         Build a payload.
 
-        Args:
-            method (str): the method name. You can use the constant defined in :class:`~aria2p.client.Client`.
-            params (list): the list of parameters.
-            msg_id (int/str): the ID of the call, sent back with the server's answer.
-            as_json (bool): whether to return the payload as a JSON-string or Python dictionary.
+        Parameters:
+            method: the method name. You can use the constant defined in [`Client`][aria2p.client.Client].
+            params: the list of parameters.
+            msg_id: the ID of the call, sent back with the server's answer.
+            as_json: whether to return the payload as a JSON-string or Python dictionary.
 
         Returns:
-            str/dict: The payload as a JSON string or as Python dictionary.
+            The payload as a JSON string or as Python dictionary.
         """
         payload = {"jsonrpc": "2.0", "method": method}
 
@@ -379,22 +384,22 @@ class Client:
         return json.dumps(payload) if as_json else payload
 
     @staticmethod
-    def get_params(*args):
+    def get_params(*args: Any) -> list:
         """
         Build the list of parameters.
 
         This method simply removes the ``None`` values from the given arguments.
 
-        Args:
-            *args: list of parameters.
+        Parameters:
+            args: list of parameters.
 
         Returns:
-            list: A new list, with ``None`` values filtered out.
+            A new list, with ``None`` values filtered out.
         """
         return [p for p in args if p is not None]
 
     # aria2
-    def add_uri(self, uris, options=None, position=None):
+    def add_uri(self, uris: List[str], options: dict = None, position: int = None):
         """
         aria2.addUri([secret], uris[, options[, position]])
 
@@ -1643,15 +1648,15 @@ class Client:
     # notifications
     def listen_to_notifications(
         self,
-        on_download_start=None,
-        on_download_pause=None,
-        on_download_stop=None,
-        on_download_complete=None,
-        on_download_error=None,
-        on_bt_download_complete=None,
-        timeout=5,
-        handle_signals=True,
-    ):
+        on_download_start: Callable = None,
+        on_download_pause: Callable = None,
+        on_download_stop: Callable = None,
+        on_download_complete: Callable = None,
+        on_download_error: Callable = None,
+        on_bt_download_complete: Callable = None,
+        timeout: int = 5,
+        handle_signals: bool = True,
+    ) -> None:
         """
         Start listening to aria2 notifications via WebSocket.
 
@@ -1659,18 +1664,18 @@ class Client:
         It accepts callbacks as arguments, which are functions accepting one parameter called "gid", for each type
         of notification.
 
-        Stop listening to notifications with the :meth:`~aria2p.client.Client.stop_listening` method.
+        Stop listening to notifications with the [`stop_listening`][aria2p.client.Client.stop_listening] method.
 
-        Args:
-            on_download_start (func): Callback for the ``aria2.onDownloadStart`` event.
-            on_download_pause (func): Callback for the ``aria2.onDownloadPause`` event.
-            on_download_stop (func): Callback for the ``aria2.onDownloadStop`` event.
-            on_download_complete (func): Callback for the ``aria2.onDownloadComplete`` event.
-            on_download_error (func): Callback for the ``aria2.onDownloadError`` event.
-            on_bt_download_complete (func): Callback for the ``aria2.onBtDownloadComplete`` event.
-            timeout (int): Timeout when waiting for data to be received. Use a small value for faster reactivity
+        Parameters:
+            on_download_start: Callback for the ``aria2.onDownloadStart`` event.
+            on_download_pause: Callback for the ``aria2.onDownloadPause`` event.
+            on_download_stop: Callback for the ``aria2.onDownloadStop`` event.
+            on_download_complete: Callback for the ``aria2.onDownloadComplete`` event.
+            on_download_error: Callback for the ``aria2.onDownloadError`` event.
+            on_bt_download_complete: Callback for the ``aria2.onBtDownloadComplete`` event.
+            timeout: Timeout when waiting for data to be received. Use a small value for faster reactivity
                 when stopping to listen. Default is 5 seconds.
-            handle_signals (bool): Whether to add signal handlers to gracefully stop the loop on SIGTERM and SIGINT.
+            handle_signals: Whether to add signal handlers to gracefully stop the loop on SIGTERM and SIGINT.
         """
         self.listening = True
         ws_server = self.ws_server
@@ -1723,12 +1728,12 @@ class Client:
         logger.debug(f"Notifications ({ws_server}): closing WebSocket")
         socket.close()
 
-    def stop_listening(self):
+    def stop_listening(self) -> None:
         """
         Stop listening to notifications.
 
         Although this method returns instantly, the actual listening loop can take some time to break out,
-        depending on the timeout that was given to :meth:`~aria2p.client.Client.listen_to_notifications`.
+        depending on the timeout that was given to [`Client.listen_to_notifications`][aria2p.client.Client.listen_to_notifications].
         """
         self.listening = False
 
@@ -1741,28 +1746,28 @@ class Notification:
     message received from the server through a WebSocket, or to raise a ClientException if the message is invalid.
     """
 
-    def __init__(self, event_type, gid):
+    def __init__(self, event_type: str, gid: str) -> None:
         """
         Initialization method.
 
-        Args:
-            event_type (str): The notification type. Possible types are available in the NOTIFICATION_TYPES variable.
-            gid (str): The GID of the download related to the notification.
+        Parameters:
+            event_type: The notification type. Possible types are available in the NOTIFICATION_TYPES variable.
+            gid: The GID of the download related to the notification.
         """
 
         self.type = event_type
         self.gid = gid
 
     @staticmethod
-    def get_or_raise(message):
+    def get_or_raise(message: dict) -> "Notification":
         """
         Static method to raise a ClientException when the message is invalid or return a Notification instance.
 
-        Args:
-            message (dict): The JSON-loaded message received over WebSocket.
+        Parameters:
+            message: The JSON-loaded message received over WebSocket.
 
         Returns:
-            Notification: a Notification instance if the message is valid.
+            A Notification instance if the message is valid.
 
         Raises:
             ClientException: when the message contains an error.
@@ -1772,16 +1777,16 @@ class Notification:
         return Notification.from_message(message)
 
     @staticmethod
-    def from_message(message):
+    def from_message(message: dict) -> "Notification":
         """
         Static method to return an instance of Notification.
 
         This method expects a valid message (not containing errors).
 
-        Args:
-            message (dict): A valid message received over WebSocket.
+        Parameters:
+            message: A valid message received over WebSocket.
 
         Returns:
-            Notification: a Notification instance.
+            A Notification instance.
         """
         return Notification(event_type=message["method"], gid=message["params"][0]["gid"])

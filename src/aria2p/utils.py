@@ -4,6 +4,8 @@ Utils module.
 This module contains simple utility classes and functions.
 """
 import signal
+from datetime import timedelta
+from typing import List
 
 import pkg_resources
 from loguru import logger
@@ -12,12 +14,12 @@ from loguru import logger
 class SignalHandler:
     """A helper class to handle signals."""
 
-    def __init__(self, signals):
+    def __init__(self, signals: List[str]) -> None:
         """
         Initialization method.
 
         Args:
-            signals (list of str): List of signals names as found in the ``signal`` module (example: SIGTERM).
+            signals: List of signals names as found in the ``signal`` module (example: SIGTERM).
         """
         logger.debug("Signal handler: handling signals " + ", ".join(signals))
         self.triggered = False
@@ -32,13 +34,15 @@ class SignalHandler:
         return self.triggered
 
     # pylint: disable=unused-argument
-    def trigger(self, signum, frame):
+    def trigger(self, signum, frame) -> None:
         """Mark this instance as 'triggered' (a specified signal was received)."""
         logger.debug(f"Signal handler: caught signal {signal.Signals(signum).name} ({signum})")
         self.triggered = True
 
 
 class Version:
+    """Helper class to manipulate version numbers."""
+
     def __init__(self, version_string):
         self.version_string = version_string
         self.major, self.minor, self.patch = (int(v) for v in version_string.split("."))
@@ -47,7 +51,7 @@ class Version:
         return self.version_string
 
 
-def human_readable_timedelta(value, precision=0):
+def human_readable_timedelta(value: timedelta, precision: int = 0) -> str:
     """Return a human-readable time delta as a string."""
     pieces = []
 
@@ -75,18 +79,18 @@ def human_readable_timedelta(value, precision=0):
     return "".join(pieces[:precision])
 
 
-def human_readable_bytes(value, digits=2, delim="", postfix=""):
+def human_readable_bytes(value: int, digits: int = 2, delim: str = "", postfix: str = "") -> str:
     """
     Return a human-readable bytes value as a string.
 
-    Args:
-        value (int): the bytes value.
-        digits (int): how many decimal digits to use.
-        delim (str): string to add between value and unit.
-        postfix (str): string to add at the end.
+    Parameters:
+        value: the bytes value.
+        digits: how many decimal digits to use.
+        delim: string to add between value and unit.
+        postfix: string to add at the end.
 
     Returns:
-        str: the human-readable version of the bytes.
+        The human-readable version of the bytes.
     """
     chosen_unit = "B"
     for unit in ("KiB", "MiB", "GiB", "TiB"):
