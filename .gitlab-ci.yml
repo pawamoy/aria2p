@@ -51,6 +51,7 @@ stages:
     - chmod 700 ~/.ssh
     - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
     - eval $(ssh-agent -s)
+    - chmod 400 "$GITHUB_DEPLOY_KEY"
     - ssh-add "$GITHUB_DEPLOY_KEY"
     - git config --global user.email "pawamoy@pm.me"
     - git config --global user.name "GitLab CI"
