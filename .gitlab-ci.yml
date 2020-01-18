@@ -12,6 +12,7 @@ cache:
 stages:
   - quality
   - tests
+  - deploy
 
 # Jobs templates
 
@@ -30,7 +31,6 @@ stages:
   image: python:3.6
   stage: quality
 
-
 .test-template: &test
   <<: *install-deps
   stage: tests
@@ -42,6 +42,19 @@ stages:
     when: on_failure
     expire_in: 1 week
 
+.deploy-template: &deploy
+  <<: *install-deps
+  image: python:3.6
+  stage: deploy
+  before_script:
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
+    - eval $(ssh-agent -s)
+    - ssh-add "$GITHUB_DEPLOY_KEY"
+    - git config --global user.email "pawamoy@pm.me"
+    - git config --global user.name "GitLab CI"
+
 # Quality jobs
 
 check-bandit:
@@ -51,6 +64,10 @@ check-bandit:
 check-black:
   <<: *quality
   script: make check-black
+
+check-docs:
+  <<: *quality
+  script: make docs
 
 check-flake8:
   <<: *quality
@@ -83,3 +100,8 @@ python3.8:
   <<: *test
   image: python:3.8
 
+# Deploy jobs
+
+deploy-docs:
+  <<: *deploy
+  script: make docs-deploy
