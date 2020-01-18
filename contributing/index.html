@@ -537,7 +537,7 @@
 <p>Every little bit helps, and credit will always be given.</p>
 <h2 id="types-of-contributions">Types of Contributions<a class="headerlink" href="#types-of-contributions" title="Permanent link">&para;</a></h2>
 <h3 id="bug-reports-feature-requests-and-feedback">Bug Reports, Feature Requests, and Feedback<a class="headerlink" href="#bug-reports-feature-requests-and-feedback" title="Permanent link">&para;</a></h3>
-<p>Create a new <a href="https://github.com/pawamoy/aria2p/issues/new">GitHub issue</a> or <a href="https://gitlab.com/pawamoy/aria2p/issues/new">GitLab issue</a>! Try to be as descriptive as possible.</p>
+<p>Create a new <a href="https://github.com/pawamoy/aria2p/issues/new">GitHub issue</a>! Try to be as descriptive as possible.</p>
 <h3 id="bug-fixes-new-features-and-documentation">Bug Fixes, New Features and Documentation<a class="headerlink" href="#bug-fixes-new-features-and-documentation" title="Permanent link">&para;</a></h3>
 <p>This project is developed using <a href="https://github.com/sdispater/poetry"><code>poetry</code></a>.
 Follow the recommended installation method:</p>
@@ -545,28 +545,31 @@ Follow the recommended installation method:</p>
 </pre></div>
 
 <ol>
-<li>Fork the repository <a href="https://github.com/pawamoy/aria2p">on GitHub</a> or <a href="https://gitlab.com/pawamoy/aria2p">on GitLab</a>;</li>
+<li>Fork the repository <a href="https://github.com/pawamoy/aria2p">on GitHub</a>;</li>
 <li>Clone it on your machine;</li>
 <li>Go into the directory, and run <code>poetry install</code> to setup the development environment;</li>
 <li>Create a new branch with <code>git checkout -b bug-fix-or-feature-name</code>;</li>
 <li>Code!</li>
-<li><strong>Write tests. Run them all.</strong> The commands to run the tests are:
-   <div class="codehilite"><pre><span></span>poetry run pytest  <span class="c1"># to run all tests sequentially</span>
+<li>
+<p><strong>Write tests. Run them all.</strong> The commands to run the tests are:</p>
+<div class="codehilite"><pre><span></span>poetry run pytest  <span class="c1"># to run all tests sequentially</span>
 poetry run pytest -v  <span class="c1"># to print one test per line</span>
 poetry run pytest -n <span class="m">4</span>  <span class="c1"># to run tests in parallel (4 workers)</span>
 poetry run pytest tests/test_api.py  <span class="c1"># to run tests in a specific file</span>
-</pre></div></li>
-</ol>
+</pre></div>
+
 <p><code>pytest</code> provides the <code>-k</code> option to select tests based on their names:</p>
 <div class="codehilite"><pre><span></span>poetry run pytest -k <span class="s2">&quot;api and remove&quot;</span>
 poetry run pytest -k <span class="s2">&quot;utils or stats&quot;</span>
 </pre></div>
 
 <p>See the <a href="https://docs.pytest.org/en/latest/example/markers.html#using-k-expr-to-select-tests-based-on-their-name">documentation for the <code>-k</code> option</a> for more examples.</p>
-<ol>
-<li>When the tests pass, commit;</li>
+</li>
+<li>
+<p>When the tests pass, commit;</p>
+</li>
 <li>Push;</li>
-<li>...and finally, create a new <a href="https://github.com/pawamoy/aria2p/compare">pull request</a> / <a href="https://gitlab.com/pawamoy/aria2p/compare">merge request</a>!
+<li>...and finally, create a new <a href="https://github.com/pawamoy/aria2p/compare">pull request</a>!
    Make sure to follow the guidelines.</li>
 </ol>
 <h2 id="mergepull-request-guidelines">Merge/Pull Request Guidelines<a class="headerlink" href="#mergepull-request-guidelines" title="Permanent link">&para;</a></h2>
