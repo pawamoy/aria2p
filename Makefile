@@ -49,7 +49,7 @@ help:  ## Print this help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
 
 .PHONY: check
-check: check-bandit check-black check-flake8 check-isort check-safety check-ports  ## Check it all!
+check: check-bandit check-black check-flake8 check-isort check-safety check-ports docs  ## Check it all!
 
 .PHONY: check-bandit
 check-bandit:  ## Check for security warnings in code using bandit.
