@@ -1,0 +1,43 @@
+site_name: aria2p
+site_description: Command-line tool and Python library to interact with an aria2c daemon process through JSON-RPC.
+site_url: https://aria2p.github.io/
+repo_url: https://github.com/pawamoy/aria2p
+repo_name: pawamoy/aria2p
+
+nav:
+  - Overview: "index.md"
+  - Usage: "usage.md"
+  - Reference:
+    - api.py: "reference/api.md"
+    - cli.py: "reference/cli.md"
+    - client.py: "reference/client.md"
+    - downloads.py: "reference/downloads.md"
+    - options.py: "reference/options.md"
+    - stats.py: "reference/stats.md"
+    - utils.py: "reference/utils.md"
+  - Contributing: "contributing.md"
+  - Code of Conduct: "code_of_conduct.md"
+  - Changelog: "changelog.md"
+  - Credits: "credits.md"
+
+theme:
+  name: "material"
+
+extra_css:
+  - custom.css
+
+
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+
+plugins:
+  - search
+  - mkdocstrings:
+      watch:
+        - src/aria2p
+

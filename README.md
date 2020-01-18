@@ -13,9 +13,10 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
 
 Command-line tool and Python library to interact with an [`aria2c`][1] daemon process through JSON-RPC.
 
-![demo](demo.svg)
+![demo](https://user-images.githubusercontent.com/3999221/72664104-41658180-39fa-11ea-838e-022ed29d8c0b.gif)
 
 To avoid confusion:
+
 - [*aria2*][1] is a lightweight multi-protocol & multi-source, cross platform download utility operated in command-line.
 It supports HTTP/HTTPS, FTP, SFTP, BitTorrent and Metalink.
 - `aria2c` is the name of the command-line executable provided by *aria2*. It can act as a daemon.
@@ -36,6 +37,7 @@ can be found in the [Configuration section][conf doc] of the documentation.
 [conf doc]: https://aria2p.readthedocs.io/en/latest/configuration.html
 
 **Table of contents**
+
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage as a library](#usage-as-a-library)
@@ -78,11 +80,13 @@ sudo apt-get install aria2
 
 ## Installation
 With `pip`:
+
 ```bash
 python3.6 -m pip install aria2p[tui]
 ```
 
 With [`pipx`](https://github.com/pipxproject/pipx):
+
 ```bash
 python3.6 -m pip install --user pipx
 
@@ -95,6 +99,7 @@ writing a Python package with a dependency to aria2p), simply install `aria2p` w
 ## Usage (as a library)
 **This library is still a work in progress. More examples will be added later.
 In the meantime, you can read the [Reference section](https://aria2p.readthedocs.io/en/latest/reference.html) on the official documentation.**
+
 ```python
 import aria2p
 
@@ -120,6 +125,7 @@ download = aria2.add_magnet(magnet_uri)
 ```
 
 ## Usage (command-line)
+
 ```
 usage: aria2p [GLOBAL_OPTS...] COMMAND [COMMAND_OPTS...]
 
@@ -166,6 +172,7 @@ which is a console interactive interface.
 
 Commands:
 
+
 - [`add`](#add)
 - [`add-magnets`](#add-magnets)
 - [`add-metalinks`](#add-metalinks)
@@ -183,6 +190,7 @@ Commands:
 ---
 
 ### `add`
+
 ```
 usage: aria2p add [-h] [-f FROM_FILE] [uris [uris ...]]
 
@@ -203,6 +211,7 @@ optional arguments:
 ---
 
 ### `add-magnets`
+
 ```
 usage: aria2p add-magnets [-h] [-f FROM_FILE] [uris [uris ...]]
 
@@ -223,6 +232,7 @@ optional arguments:
 ---
 
 ### `add-metalinks`
+
 ```
 usage: aria2p add-metalinks [-h] [-f FROM_FILE]
                             [metalink_files [metalink_files ...]]
@@ -244,6 +254,7 @@ optional arguments:
 ---
 
 ### `add-torrents`
+
 ```
 usage: aria2p add-torrents [-h] [-f FROM_FILE]
                            [torrent_files [torrent_files ...]]
@@ -265,6 +276,7 @@ optional arguments:
 ---
 
 ### `autopurge`
+
 ```
 usage: aria2p autopurge [-h]
 
@@ -280,6 +292,7 @@ optional arguments:
 ---
 
 ### `call`
+
 ```
 usage: aria2p call [-h] [-P PARAMS [PARAMS ...] | -J PARAMS] method
 
@@ -393,6 +406,7 @@ $ aria2p call purge_download_result
 ---
 
 ### `listen`
+
 ```
 usage: aria2p listen [-h] [-c CALLBACKS_MODULE] [-t TIMEOUT]
                      [event_types [event_types ...]]
@@ -424,6 +438,7 @@ optional arguments:
 ---
 
 ### `pause`
+
 ```
 usage: aria2p pause [-h] [-a] [-f] [gids [gids ...]]
 
@@ -444,6 +459,7 @@ optional arguments:
 ---
 
 ### `remove`
+
 ```
 usage: aria2p remove [-h] [-a] [-f] [gids [gids ...]]
 
@@ -464,6 +480,7 @@ optional arguments:
 ---
 
 ### `resume`
+
 ```
 usage: aria2p resume [-h] [-a] [gids [gids ...]]
 
@@ -483,6 +500,7 @@ optional arguments:
 ---
 
 ### `show`
+
 ```
 usage: aria2p show [-h]
 
@@ -498,6 +516,7 @@ optional arguments:
 ---
 
 ### `top`
+
 ```
 usage: aria2p top [-h]
 
@@ -512,6 +531,7 @@ optional arguments:
 
 
 ## Troubleshoot
+
 - Error outputs like below when using `aria2p` as a Python library:
 
   ```
@@ -523,10 +543,12 @@ optional arguments:
 ## Support
 To support this project,
 consider donating through one of the following platforms:
+
 - [Beerpay](https://beerpay.io/pawamoy/aria2p)
 
 To support me as an open-source software author,
-consider donating or be a supporter through one of the following platforms:
+consider donating or be a supporter through one of the following platforms
+
 - [GitHub](https://github.com/sponsors/pawamoy)
 - [Ko-fi](https://www.ko-fi.com/pawamoy)
 - [Liberapay](https://liberapay.com/pawamoy/)

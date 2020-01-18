@@ -13,9 +13,10 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
 
 Command-line tool and Python library to interact with an [`aria2c`][1] daemon process through JSON-RPC.
 
-![demo](demo.svg)
+![demo](https://user-images.githubusercontent.com/3999221/72664104-41658180-39fa-11ea-838e-022ed29d8c0b.gif)
 
 To avoid confusion:
+
 - [*aria2*][1] is a lightweight multi-protocol & multi-source, cross platform download utility operated in command-line.
 It supports HTTP/HTTPS, FTP, SFTP, BitTorrent and Metalink.
 - `aria2c` is the name of the command-line executable provided by *aria2*. It can act as a daemon.
@@ -36,6 +37,7 @@ can be found in the [Configuration section][conf doc] of the documentation.
 [conf doc]: https://aria2p.readthedocs.io/en/latest/configuration.html
 
 **Table of contents**
+
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage as a library](#usage-as-a-library)
@@ -78,11 +80,13 @@ sudo apt-get install aria2
 
 ## Installation
 With `pip`:
+
 ```bash
 python3.6 -m pip install aria2p[tui]
 ```
 
 With [`pipx`](https://github.com/pipxproject/pipx):
+
 ```bash
 python3.6 -m pip install --user pipx
 
@@ -95,6 +99,7 @@ writing a Python package with a dependency to aria2p), simply install `aria2p` w
 ## Usage (as a library)
 **This library is still a work in progress. More examples will be added later.
 In the meantime, you can read the [Reference section](https://aria2p.readthedocs.io/en/latest/reference.html) on the official documentation.**
+
 ```python
 import aria2p
 
@@ -120,6 +125,7 @@ download = aria2.add_magnet(magnet_uri)
 ```
 
 ## Usage (command-line)
+
 ```
 {{ main_usage }}
 ```
@@ -128,6 +134,7 @@ Calling `aria2p` without any arguments will by default call the `top` command,
 which is a console interactive interface.
 
 Commands:
+
 {% for command in commands %}
 - [`{{ command.name }}`](#{{ command.name }}){% endfor %}
 
@@ -135,6 +142,7 @@ Commands:
 ---
 
 ### `{{ command.name }}`
+
 ```
 {{ command.usage }}
 ```
@@ -143,6 +151,7 @@ Commands:
 {% endfor %}
 
 ## Troubleshoot
+
 - Error outputs like below when using `aria2p` as a Python library:
 
   ```
@@ -154,10 +163,12 @@ Commands:
 ## Support
 To support this project,
 consider donating through one of the following platforms:
+
 - [Beerpay](https://beerpay.io/pawamoy/aria2p)
 
 To support me as an open-source software author,
-consider donating or be a supporter through one of the following platforms:
+consider donating or be a supporter through one of the following platforms
+
 - [GitHub](https://github.com/sponsors/pawamoy)
 - [Ko-fi](https://www.ko-fi.com/pawamoy)
 - [Liberapay](https://liberapay.com/pawamoy/)

@@ -1,7 +1,7 @@
 # Credits
 These projects were used to build `aria2p`. **Thank you!**
 
-[![`python`](https://www.vectorlogo.zone/logos/python/python-ar21.svg)](https://www.python.org/) |
+[`python`](https://www.python.org/) |
 [`poetry`](https://poetry.eustace.io/)
 
 ### Direct dependencies
@@ -14,24 +14,23 @@ These projects were used to build `aria2p`. **Thank you!**
 [`isort`](https://github.com/timothycrosley/isort) |
 [`jinja2-cli`](https://github.com/mattrobenolt/jinja2-cli) |
 [`loguru`](https://github.com/Delgan/loguru) |
+[`mkdocs`](https://www.mkdocs.org) |
+[`mkdocs-material`](https://squidfunk.github.io/mkdocs-material/) |
+[`mkdocstrings`](https://gitlab.com/pawamoy/mkdocstrings) |
 [`PyInstaller`](http://www.pyinstaller.org) |
 [`pylint`](https://github.com/PyCQA/pylint) |
 [`pytest`](https://docs.pytest.org/en/latest/) |
 [`pytest-cov`](https://github.com/pytest-dev/pytest-cov) |
 [`pytest-sugar`](http://pivotfinland.com/pytest-sugar/) |
 [`pytest-xdist`](https://github.com/pytest-dev/pytest-xdist) |
-[`recommonmark`](https://github.com/rtfd/recommonmark) |
 [`requests`](http://python-requests.org) |
 [`responses`](https://github.com/getsentry/responses) |
 [`safety`](https://github.com/pyupio/safety) |
-[`Sphinx`](http://sphinx-doc.org/) |
-[`sphinx-rtd-theme`](https://github.com/rtfd/sphinx_rtd_theme/) |
 [`toml`](https://github.com/uiri/toml) |
 [`websocket_client`](https://github.com/websocket-client/websocket-client.git)
 
 ### Indirect dependencies
 [`aiocontextvars`](https://github.com/fantix/aiocontextvars) |
-[`alabaster`](https://alabaster.readthedocs.io) |
 [`altgraph`](https://altgraph.readthedocs.io) |
 [`apipkg`](https://github.com/pytest-dev/apipkg) |
 [`appdirs`](http://github.com/ActiveState/appdirs) |
@@ -39,37 +38,39 @@ These projects were used to build `aria2p`. **Thank you!**
 [`astroid`](https://github.com/PyCQA/astroid) |
 [`atomicwrites`](https://github.com/untitaker/python-atomicwrites) |
 [`attrs`](https://www.attrs.org/) |
-[`Babel`](http://babel.pocoo.org/) |
 [`backcall`](https://github.com/takluyver/backcall) |
 [`certifi`](https://certifi.io/) |
 [`chardet`](https://github.com/chardet/chardet) |
 [`Click`](https://palletsprojects.com/p/click/) |
 [`colorama`](https://github.com/tartley/colorama) |
-[![`commonmark`](https://www.vectorlogo.zone/logos/commonmark/commonmark-ar21.svg)](https://github.com/rtfd/commonmark.py) |
 [`contextvars`](http://github.com/MagicStack/contextvars) |
 [`decorator`](https://github.com/micheles/decorator) |
-[`docutils`](http://docutils.sourceforge.net/) |
 [`dparse`](https://github.com/jayfk/dparse) |
 [`entrypoints`](https://github.com/takluyver/entrypoints) |
 [`execnet`](https://execnet.readthedocs.io/en/latest/) |
 [`future`](https://python-future.org) |
 [`gitdb2`](https://github.com/gitpython-developers/gitdb) |
 [`GitPython`](https://github.com/gitpython-developers/GitPython) |
+[`htmlmin`](https://htmlmin.readthedocs.io/en/latest/) |
 [`idna`](https://github.com/kjd/idna) |
-[`imagesize`](https://github.com/shibukawa/imagesize_py) |
 [`immutables`](https://github.com/MagicStack/immutables) |
 [`importlib-metadata`](http://importlib-metadata.readthedocs.io/) |
 [`ipython-genutils`](http://ipython.org) |
 [`jedi`](https://github.com/davidhalter/jedi) |
-[![`Jinja2`](https://www.vectorlogo.zone/logos/pocoo_jinja/pocoo_jinja-ar21.svg)](https://palletsprojects.com/p/jinja/) |
+[`Jinja2`](https://palletsprojects.com/p/jinja/) |
+[`jsmin`](https://github.com/tikitu/jsmin/) |
 [`lazy-object-proxy`](https://github.com/ionelmc/python-lazy-object-proxy) |
+[`livereload`](https://github.com/lepture/python-livereload) |
+[`Markdown`](https://Python-Markdown.github.io/) |
 [`MarkupSafe`](https://palletsprojects.com/p/markupsafe/) |
 [`mccabe`](https://github.com/pycqa/mccabe) |
+[`mkdocs-minify-plugin`](https://github.com/byrnereese/mkdocs-minify-plugin) |
 [`more-itertools`](https://github.com/erikrose/more-itertools) |
 [`packaging`](https://github.com/pypa/packaging) |
 [`parso`](https://github.com/davidhalter/parso) |
 [`pathspec`](https://github.com/cpburnz/python-path-specification) |
 [`pbr`](https://docs.openstack.org/pbr/latest/) |
+[`pep562`](https://github.com/facelessuser/pep562) |
 [`pexpect`](https://pexpect.readthedocs.io/) |
 [`pickleshare`](https://github.com/pickleshare/pickleshare) |
 [`Pillow`](http://python-pillow.org) |
@@ -81,19 +82,18 @@ These projects were used to build `aria2p`. **Thank you!**
 [`pyfiglet`](https://github.com/pwaller/pyfiglet) |
 [`pyflakes`](https://github.com/PyCQA/pyflakes) |
 [`Pygments`](http://pygments.org/) |
+[`pymdown-extensions`](https://github.com/facelessuser/pymdown-extensions) |
 [`pyparsing`](https://github.com/pyparsing/pyparsing/) |
 [`pypiwin32`](https://pypi.org/project/pypiwin32/) |
 [`pytest-forked`](https://github.com/pytest-dev/pytest-forked) |
-[`pytz`](http://pythonhosted.org/pytz) |
 [`pywin32`](https://github.com/mhammond/pywin32) |
 [`PyYAML`](https://github.com/yaml/pyyaml) |
 [`regex`](https://bitbucket.org/mrabarnett/mrab-regex) |
 [`six`](https://github.com/benjaminp/six) |
 [`smmap2`](https://github.com/gitpython-developers/smmap) |
-[`snowballstemmer`](https://github.com/snowballstem/snowball) |
-[`sphinxcontrib-websupport`](http://sphinx-doc.org/) |
 [`stevedore`](https://docs.openstack.org/stevedore/latest/) |
 [`termcolor`](http://pypi.python.org/pypi/termcolor) |
+[`tornado`](http://www.tornadoweb.org/) |
 [`traitlets`](http://ipython.org) |
 [`typed-ast`](https://github.com/python/typed_ast) |
 [`urllib3`](https://urllib3.readthedocs.io/) |
@@ -105,5 +105,3 @@ These projects were used to build `aria2p`. **Thank you!**
 
 **[More credits from the author](http://pawamoy.github.io/credits/)**
  
-*See one of your project without the logo? Make sure it's available on [VectorLogoZone](https://www.vectorlogo.zone/)
-([GitHub repo](https://github.com/VectorLogoZone/vectorlogozone)) and open an issue or send a pull/merge request!*
