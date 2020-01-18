@@ -34,7 +34,15 @@ credits:  ## Regenerate CREDITS.md.
 
 .PHONY: docs
 docs:  ## Build the documentation locally.
-	poetry run sphinx-build -E -b html docs build/docs
+	poetry run mkdocs build
+
+.PHONY: docs-serve
+docs-serve:  ## Serve the documentation locally, on localhost:8000.
+	poetry run mkdocs serve
+
+.PHONY: docs-deploy
+docs-deploy:  ## Deploy the documentation on GitHub pages.
+	poetry run mkdocs gh-deploy
 
 .PHONY: help
 help:  ## Print this help.
@@ -102,7 +110,7 @@ setup:  ## Setup the project with poetry.
 	if ! command -v poetry; then \
 	  command -v pipx && pipx install poetry || curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python; \
 	fi
-	poetry install -E tui
+	poetry install -vE tui
 
 .PHONY: test
 test: check-ports clean-tests  ## Run the tests using pytest.
