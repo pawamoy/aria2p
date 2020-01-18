@@ -5,6 +5,8 @@ This module defines the Options class, which holds information retrieved with th
 from copy import deepcopy
 from typing import Callable, GenericMeta, List, Union
 
+import aria2p
+
 from .utils import bool_or_value, bool_to_str
 
 

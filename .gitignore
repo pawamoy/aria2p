@@ -14,3 +14,4 @@ pip-wheel-metadata/
 .python-version
 site/
 demo.gif
+.mypy_cache/

@@ -36,6 +36,7 @@ jinja2-cli = "^0.7.0"
 mkdocs = "^1.0.4"
 mkdocstrings = "^0.7.0"
 mkdocs-material = "^4.6.0"
+mypy = "^0.761"
 pyinstaller = "^3.5"
 pylint = { git = "https://github.com/PyCQA/pylint" }
 pytest = "^4.3"

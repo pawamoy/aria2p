@@ -8,6 +8,8 @@ from typing import List, Union
 
 from loguru import logger
 
+import aria2p
+
 from .client import ClientException
 from .utils import bool_or_value, human_readable_bytes, human_readable_timedelta
 
