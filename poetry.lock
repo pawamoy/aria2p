@@ -275,6 +275,17 @@ version = "0.18.2"
 
 [[package]]
 category = "dev"
+description = "Automatic Changelog generator using Jinja2 templates."
+name = "git-changelog"
+optional = false
+python-versions = ">=3.6,<4.0"
+version = "0.2.0"
+
+[package.dependencies]
+Jinja2 = ">=2.10,<3.0"
+
+[[package]]
+category = "dev"
 description = "Git Object Database"
 name = "gitdb2"
 optional = false
@@ -1135,7 +1146,7 @@ testing = ["pathlib2", "contextlib2", "unittest2"]
 tui = ["asciimatics"]
 
 [metadata]
-content-hash = "693e686e204e588da9a00aaef9f498d7018bd354f5d9b13394224a7f24e6a933"
+content-hash = "1e1bde2b8f97410e241d8e3f6186519c8cc8e6a160824aa566d1f8cf56483ff9"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -1266,6 +1277,10 @@ flake8 = [
 ]
 future = [
     {file = "future-0.18.2.tar.gz", hash = "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"},
+]
+git-changelog = [
+    {file = "git-changelog-0.2.0.tar.gz", hash = "sha256:a38a22af622d414afb2e9ecd21570d284e957757025ffd4c238d3fbb744326b0"},
+    {file = "git_changelog-0.2.0-py3-none-any.whl", hash = "sha256:549925004b061638aaa52f4c7a7f8e4fcefe34a9f21fa7d112d58c66579d08b9"},
 ]
 gitdb2 = [
     {file = "gitdb2-2.0.6-py2.py3-none-any.whl", hash = "sha256:96bbb507d765a7f51eb802554a9cfe194a174582f772e0d89f4e87288c288b7b"},

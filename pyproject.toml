@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "aria2p"
-version = "0.7.0"
+version = "0.7.1"
 description = "Command-line tool and library to interact with an aria2c daemon process with JSON-RPC."
 authors = ["Timothée Mazzucotelli <pawamoy@pm.me>"]
 license = "ISC"
@@ -30,6 +30,7 @@ bandit = "^1.5"
 black = { version = "*", allow-prereleases = true }
 coverage = "^5.0"
 flake8 = "^3.6"
+git-changelog = "^0.2.0"
 ipython = "^7.2"
 isort = { version = "^4.3", extras = ["pyproject"] }
 jinja2-cli = "^0.7.0"
