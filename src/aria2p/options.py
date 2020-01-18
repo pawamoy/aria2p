@@ -3,11 +3,18 @@ This module defines the Options class, which holds information retrieved with th
 ``get_global_option`` methods of the client.
 """
 from copy import deepcopy
-from typing import Callable, GenericMeta, List, Union
+from typing import Callable, List, Union
 
 import aria2p
 
 from .utils import bool_or_value, bool_to_str
+
+try:
+    from typing import GenericMeta  # python 3.6
+except ImportError:
+    # in 3.7, GenericMeta doesn't exist but we don't need it
+    class GenericMeta(type):
+        pass
 
 
 class Options:
