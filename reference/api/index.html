@@ -1,0 +1,3585 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+        <meta name="description" content="Command-line tool and Python library to interact with an aria2c daemon process through JSON-RPC.">
+      
+      
+        <link rel="canonical" href="https://aria2p.github.io/reference/api/">
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.6.0">
+    
+    
+      
+        <title>api.py - aria2p</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.1b62728e.css">
+      
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.268332fc.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+    
+      <link rel="stylesheet" href="../../custom.css">
+    
+    
+      
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#aria2p.api.API" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://aria2p.github.io/" title="aria2p" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              aria2p
+            </span>
+            <span class="md-header-nav__topic">
+              
+                api.py
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/pawamoy/aria2p/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    pawamoy/aria2p
+  </div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="https://aria2p.github.io/" title="aria2p" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    aria2p
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/pawamoy/aria2p/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    pawamoy/aria2p
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../usage/" title="Usage" class="md-nav__link">
+      Usage
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+    
+    <label class="md-nav__link" for="nav-3">
+      Reference
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Reference
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        api.py
+      </label>
+    
+    <a href="./" title="api.py" class="md-nav__link md-nav__link--active">
+      api.py
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#aria2p.api.API" class="md-nav__link">
+    API
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.add_magnet" class="md-nav__link">
+    add_magnet()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.add_metalink" class="md-nav__link">
+    add_metalink()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.add_torrent" class="md-nav__link">
+    add_torrent()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.add_uris" class="md-nav__link">
+    add_uris()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.autopurge" class="md-nav__link">
+    autopurge()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.copy_files" class="md-nav__link">
+    copy_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.get_download" class="md-nav__link">
+    get_download()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.get_downloads" class="md-nav__link">
+    get_downloads()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.get_global_options" class="md-nav__link">
+    get_global_options()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.get_options" class="md-nav__link">
+    get_options()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.get_stats" class="md-nav__link">
+    get_stats()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.listen_to_notifications" class="md-nav__link">
+    listen_to_notifications()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.move" class="md-nav__link">
+    move()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.move_down" class="md-nav__link">
+    move_down()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.move_files" class="md-nav__link">
+    move_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.move_to" class="md-nav__link">
+    move_to()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.move_to_bottom" class="md-nav__link">
+    move_to_bottom()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.move_to_top" class="md-nav__link">
+    move_to_top()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.move_up" class="md-nav__link">
+    move_up()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.pause" class="md-nav__link">
+    pause()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.pause_all" class="md-nav__link">
+    pause_all()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.remove" class="md-nav__link">
+    remove()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.remove_all" class="md-nav__link">
+    remove_all()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.remove_files" class="md-nav__link">
+    remove_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.resume" class="md-nav__link">
+    resume()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.resume_all" class="md-nav__link">
+    resume_all()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.search" class="md-nav__link">
+    search()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.set_global_options" class="md-nav__link">
+    set_global_options()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.set_options" class="md-nav__link">
+    set_options()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.stop_listening" class="md-nav__link">
+    stop_listening()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../cli/" title="cli.py" class="md-nav__link">
+      cli.py
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../client/" title="client.py" class="md-nav__link">
+      client.py
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../downloads/" title="downloads.py" class="md-nav__link">
+      downloads.py
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../options/" title="options.py" class="md-nav__link">
+      options.py
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../stats/" title="stats.py" class="md-nav__link">
+      stats.py
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../utils/" title="utils.py" class="md-nav__link">
+      utils.py
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../contributing/" title="Contributing" class="md-nav__link">
+      Contributing
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../code_of_conduct/" title="Code of Conduct" class="md-nav__link">
+      Code of Conduct
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../changelog/" title="Changelog" class="md-nav__link">
+      Changelog
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../credits/" title="Credits" class="md-nav__link">
+      Credits
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#aria2p.api.API" class="md-nav__link">
+    API
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.add_magnet" class="md-nav__link">
+    add_magnet()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.add_metalink" class="md-nav__link">
+    add_metalink()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.add_torrent" class="md-nav__link">
+    add_torrent()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.add_uris" class="md-nav__link">
+    add_uris()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.autopurge" class="md-nav__link">
+    autopurge()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.copy_files" class="md-nav__link">
+    copy_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.get_download" class="md-nav__link">
+    get_download()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.get_downloads" class="md-nav__link">
+    get_downloads()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.get_global_options" class="md-nav__link">
+    get_global_options()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.get_options" class="md-nav__link">
+    get_options()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.get_stats" class="md-nav__link">
+    get_stats()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.listen_to_notifications" class="md-nav__link">
+    listen_to_notifications()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.move" class="md-nav__link">
+    move()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.move_down" class="md-nav__link">
+    move_down()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.move_files" class="md-nav__link">
+    move_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.move_to" class="md-nav__link">
+    move_to()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.move_to_bottom" class="md-nav__link">
+    move_to_bottom()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.move_to_top" class="md-nav__link">
+    move_to_top()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.move_up" class="md-nav__link">
+    move_up()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.pause" class="md-nav__link">
+    pause()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.pause_all" class="md-nav__link">
+    pause_all()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.remove" class="md-nav__link">
+    remove()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.remove_all" class="md-nav__link">
+    remove_all()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.remove_files" class="md-nav__link">
+    remove_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.resume" class="md-nav__link">
+    resume()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.resume_all" class="md-nav__link">
+    resume_all()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.search" class="md-nav__link">
+    search()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.set_global_options" class="md-nav__link">
+    set_global_options()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.set_options" class="md-nav__link">
+    set_options()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aria2p.api.API.stop_listening" class="md-nav__link">
+    stop_listening()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/pawamoy/aria2p/edit/master/docs/reference/api.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                  <h1>api.py</h1>
+                
+                <p>This module defines the API class, which makes use of a JSON-RPC client to provide higher-level methods to
+interact easily with a remote aria2c process.</p>
+<h2 id="aria2p.api.API"><code class="codehilite"><span class="n">API</span></code><a class="headerlink" href="#aria2p.api.API" title="Permanent link">&para;</a></h2>
+<div class="autodoc">
+<p>A class providing high-level methods to interact with a remote aria2c process.</p>
+<p>This class is instantiated with a reference to a <a href="/reference/client/#aria2p.client.Client"><code>Client</code></a> instance. It then uses this client
+to call remote procedures, or remote methods. While the client methods reflect exactly what aria2c is providing
+through JSON-RPC, this class's methods allow for easier / faster control of the remote process. It also
+wraps the information the client retrieves in Python object, like <a href="/reference/downloads/#aria2p.downloads.Download"><code>Download</code></a>,
+allowing for even more Pythonic interactions, without worrying about payloads, responses, JSON, etc..</p>
+<h3 id="aria2p.api.API.__init__"><code class="codehilite"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.__init__" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">Client</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialization method.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            client: an instance of the [aria2p.client.Client][] class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">listener</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Initialization method.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>client</code></td>
+<td><code>Client</code></td>
+<td>an instance of the <a href="/reference/client/#aria2p.client.Client">aria2p.client.Client</a> class.</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.add_magnet"><code class="codehilite"><span class="n">add_magnet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">magnet_uri</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.add_magnet" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">add_magnet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">magnet_uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Options</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Download</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a download with a Magnet URI.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            magnet_uri: the Magnet URI.</span>
+<span class="sd">            options: an instance of the [`Options`][aria2p.options.Options] class or a dictionary</span>
+<span class="sd">              containing aria2c options to create the download with.</span>
+<span class="sd">            position: the position where to insert the new download in the queue. Start at 0 (top).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The newly created download object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">):</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get_struct</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span>
+
+        <span class="n">gid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">add_uri</span><span class="p">([</span><span class="n">magnet_uri</span><span class="p">],</span> <span class="n">client_options</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_download</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Add a download with a Magnet URI.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>magnet_uri</code></td>
+<td><code>str</code></td>
+<td>the Magnet URI.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td><code>Union[aria2p.options.Options, dict]</code></td>
+<td>an instance of the <a href="/reference/options/#aria2p.options.Options"><code>Options</code></a> class or a dictionary containing aria2c options to create the download with.</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>position</code></td>
+<td><code>int</code></td>
+<td>the position where to insert the new download in the queue. Start at 0 (top).</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Download</code></td>
+<td>The newly created download object.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.add_metalink"><code class="codehilite"><span class="n">add_metalink</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metalink_file_path</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.add_metalink" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">add_metalink</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">metalink_file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">options</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Options</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a download with a Metalink file.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            metalink_file_path: the path to the Metalink file.</span>
+<span class="sd">            options: an instance of the [`Options`][aria2p.options.Options] class or a dictionary</span>
+<span class="sd">              containing aria2c options to create the download with.</span>
+<span class="sd">            position: the position where to insert the new download in the queue. Start at 0 (top).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The newly created download objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">):</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get_struct</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">metalink_file_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="n">metalink_contents</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">encoded_contents</span> <span class="o">=</span> <span class="n">b64encode</span><span class="p">(</span><span class="n">metalink_contents</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span>
+
+        <span class="n">gids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">add_metalink</span><span class="p">(</span><span class="n">encoded_contents</span><span class="p">,</span> <span class="n">client_options</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_downloads</span><span class="p">(</span><span class="n">gids</span><span class="p">)</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Add a download with a Metalink file.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>metalink_file_path</code></td>
+<td><code>Union[str, pathlib.Path]</code></td>
+<td>the path to the Metalink file.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td><code>Union[aria2p.options.Options, dict]</code></td>
+<td>an instance of the <a href="/reference/options/#aria2p.options.Options"><code>Options</code></a> class or a dictionary containing aria2c options to create the download with.</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>position</code></td>
+<td><code>int</code></td>
+<td>the position where to insert the new download in the queue. Start at 0 (top).</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List[aria2p.downloads.Download]</code></td>
+<td>The newly created download objects.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.add_torrent"><code class="codehilite"><span class="n">add_torrent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">torrent_file_path</span><span class="p">,</span> <span class="n">uris</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.add_torrent" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">add_torrent</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">torrent_file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
+        <span class="n">uris</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Options</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Download</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a download with a torrent file (usually .torrent extension).</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            torrent_file_path: the path to the torrent file.</span>
+<span class="sd">            uris: a list of URIs used for Web-seeding.</span>
+<span class="sd">            options: an instance of the [`Options`][aria2p.options.Options] class or a dictionary</span>
+<span class="sd">              containing aria2c options to create the download with.</span>
+<span class="sd">            position: the position where to insert the new download in the queue. Start at 0 (top).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The newly created download object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">uris</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">uris</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">):</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get_struct</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">torrent_file_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="n">torrent_contents</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">encoded_contents</span> <span class="o">=</span> <span class="n">b64encode</span><span class="p">(</span><span class="n">torrent_contents</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span>
+
+        <span class="n">gid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">add_torrent</span><span class="p">(</span><span class="n">encoded_contents</span><span class="p">,</span> <span class="n">uris</span><span class="p">,</span> <span class="n">client_options</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_download</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Add a download with a torrent file (usually .torrent extension).</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>torrent_file_path</code></td>
+<td><code>Union[str, pathlib.Path]</code></td>
+<td>the path to the torrent file.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>uris</code></td>
+<td><code>List[str]</code></td>
+<td>a list of URIs used for Web-seeding.</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td><code>Union[aria2p.options.Options, dict]</code></td>
+<td>an instance of the <a href="/reference/options/#aria2p.options.Options"><code>Options</code></a> class or a dictionary containing aria2c options to create the download with.</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>position</code></td>
+<td><code>int</code></td>
+<td>the position where to insert the new download in the queue. Start at 0 (top).</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Download</code></td>
+<td>The newly created download object.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.add_uris"><code class="codehilite"><span class="n">add_uris</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uris</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.add_uris" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">add_uris</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">uris</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Options</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Download</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a download with a URL (or more).</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            uris: a list of URIs that point to the same resource.</span>
+<span class="sd">            options: an instance of the ``Options`` class or a dictionary</span>
+<span class="sd">              containing aria2c options to create the download with.</span>
+<span class="sd">            position: the position where to insert the new download in the queue. Start at 0 (top).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The newly created download object.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">):</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get_struct</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span>
+
+        <span class="n">gid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">add_uri</span><span class="p">(</span><span class="n">uris</span><span class="p">,</span> <span class="n">client_options</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_download</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Add a download with a URL (or more).</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>uris</code></td>
+<td><code>List[str]</code></td>
+<td>a list of URIs that point to the same resource.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td><code>Optional[Union[aria2p.options.Options, dict]]</code></td>
+<td>an instance of the <code>Options</code> class or a dictionary containing aria2c options to create the download with.</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>position</code></td>
+<td><code>Optional[int]</code></td>
+<td>the position where to insert the new download in the queue. Start at 0 (top).</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Download</code></td>
+<td>The newly created download object.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.autopurge"><code class="codehilite"><span class="n">autopurge</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.autopurge" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">autopurge</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Purge completed, removed or failed downloads from the queue.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">get_version</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">major</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="mi">9</span> <span class="o">&gt;</span> <span class="n">version</span><span class="o">.</span><span class="n">minor</span> <span class="o">&gt;=</span> <span class="mi">7</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Future change warning: API method &#39;autopurge&#39; will be renamed &#39;purge&#39; in version 0.9.0.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">purge_download_result</span><span class="p">()</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Purge completed, removed or failed downloads from the queue.</p>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bool</code></td>
+<td>Success or failure of the operation.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.copy_files"><code class="codehilite"><span class="n">copy_files</span><span class="p">(</span><span class="n">downloads</span><span class="p">,</span> <span class="n">to_directory</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code> <em>(staticmethod)</em><a class="headerlink" href="#aria2p.api.API.copy_files" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">copy_files</span><span class="p">(</span><span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">],</span> <span class="n">to_directory</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy downloaded files to another directory.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            downloads:  the list of downloads for which to move files.</span>
+<span class="sd">            to_directory: the target directory to copy files into.</span>
+<span class="sd">            force: whether to move files even if download is not complete.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_directory</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">to_directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">to_directory</span><span class="p">)</span>
+
+        <span class="c1"># raises FileExistsError when target is already a file</span>
+        <span class="n">to_directory</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">download</span><span class="o">.</span><span class="n">is_complete</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">download</span><span class="o">.</span><span class="n">root_files_paths</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+                        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">to_directory</span> <span class="o">/</span> <span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                    <span class="k">elif</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">to_directory</span><span class="p">))</span>
+
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Copy downloaded files to another directory.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>downloads</code></td>
+<td><code>List[aria2p.downloads.Download]</code></td>
+<td>the list of downloads for which to move files.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>to_directory</code></td>
+<td><code>Union[str, pathlib.Path]</code></td>
+<td>the target directory to copy files into.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>force</code></td>
+<td><code>bool</code></td>
+<td>whether to move files even if download is not complete.</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List[bool]</code></td>
+<td>Success or failure of the operation for each given download.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.get_download"><code class="codehilite"><span class="n">get_download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.get_download" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Download</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a [`Download`][aria2p.downloads.Download] object thanks to its GID.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            gid: the GID of the download to get.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The retrieved download object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">tell_status</span><span class="p">(</span><span class="n">gid</span><span class="p">))</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Get a <a href="/reference/downloads/#aria2p.downloads.Download"><code>Download</code></a> object thanks to its GID.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gid</code></td>
+<td><code>str</code></td>
+<td>the GID of the download to get.</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Download</code></td>
+<td>The retrieved download object.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.get_downloads"><code class="codehilite"><span class="n">get_downloads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gids</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.get_downloads" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_downloads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a list of [`Download`][aria2p.downloads.Download] object thanks to their GIDs.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            gids: the GIDs of the downloads to get. If None, return all the downloads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The retrieved download objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">downloads</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">gids</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">gid</span> <span class="ow">in</span> <span class="n">gids</span><span class="p">:</span>
+                <span class="n">downloads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">tell_status</span><span class="p">(</span><span class="n">gid</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">structs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">structs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">tell_active</span><span class="p">())</span>
+            <span class="n">structs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">tell_waiting</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+            <span class="n">structs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">tell_stopped</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+            <span class="n">downloads</span> <span class="o">=</span> <span class="p">[</span><span class="n">Download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">struct</span><span class="p">)</span> <span class="k">for</span> <span class="n">struct</span> <span class="ow">in</span> <span class="n">structs</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">downloads</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Get a list of <a href="/reference/downloads/#aria2p.downloads.Download"><code>Download</code></a> object thanks to their GIDs.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gids</code></td>
+<td><code>List[str]</code></td>
+<td>the GIDs of the downloads to get. If None, return all the downloads.</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List[aria2p.downloads.Download]</code></td>
+<td>The retrieved download objects.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.get_global_options"><code class="codehilite"><span class="n">get_global_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.get_global_options" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>525
+526
+527
+528
+529
+530
+531
+532</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_global_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Options</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the global options.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The global aria2c options.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_global_option</span><span class="p">())</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Get the global options.</p>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Options</code></td>
+<td>The global aria2c options.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.get_options"><code class="codehilite"><span class="n">get_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">downloads</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.get_options" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Options</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get options for each of the given downloads.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            downloads: the list of downloads to get the options of.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Options object for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: batch/multicall candidate</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">),</span> <span class="n">download</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">options</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Get options for each of the given downloads.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>downloads</code></td>
+<td><code>List[aria2p.downloads.Download]</code></td>
+<td>the list of downloads to get the options of.</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List[aria2p.options.Options]</code></td>
+<td>Options object for each given download.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.get_stats"><code class="codehilite"><span class="n">get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.get_stats" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>575
+576
+577
+578
+579
+580
+581
+582</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Stats</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the stats of the remote aria2c process.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            stats: the global stats returned by the remote process.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Stats</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_global_stat</span><span class="p">())</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Get the stats of the remote aria2c process.</p>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Stats</code></td>
+<td>stats: the global stats returned by the remote process.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.listen_to_notifications"><code class="codehilite"><span class="n">listen_to_notifications</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threaded</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.listen_to_notifications" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">listen_to_notifications</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threaded</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start listening to aria2 notifications via WebSocket.</span>
+
+<span class="sd">        This method differs from [`Client.listen_to_notifications`][aria2p.client.Client.listen_to_notifications]</span>
+<span class="sd">        in that it expects callbacks accepting two arguments, ``api`` and ``gid``, instead of only ``gid``.</span>
+<span class="sd">        Accepting ``api`` allows to use the high-level methods of the [`API`][aria2p.api.API] class.</span>
+
+<span class="sd">        Stop listening to notifications with the [`API.stop_listening`][aria2p.api.API.stop_listening] method.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            threaded: Whether to start the listening loop in a thread or not (non-blocking or blocking).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">closure</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">gid</span><span class="p">:</span> <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">))</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">listen_to_notifications</span><span class="p">(</span>
+                <span class="o">**</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">closure</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;on_&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">threaded</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;handle_signals&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">listener</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">run</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">run</span><span class="p">()</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Start listening to aria2 notifications via WebSocket.</p>
+<p>This method differs from <a href="/reference/client/#aria2p.client.Client.listen_to_notifications"><code>Client.listen_to_notifications</code></a>
+in that it expects callbacks accepting two arguments, <code>api</code> and <code>gid</code>, instead of only <code>gid</code>.
+Accepting <code>api</code> allows to use the high-level methods of the <a href="/reference/api/#aria2p.api.API"><code>API</code></a> class.</p>
+<p>Stop listening to notifications with the <a href="/reference/api/#aria2p.api.API.stop_listening"><code>API.stop_listening</code></a> method.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>threaded</code></td>
+<td><code>bool</code></td>
+<td>Whether to start the listening loop in a thread or not (non-blocking or blocking).</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.move"><code class="codehilite"><span class="n">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.move" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">:</span> <span class="n">Download</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move a download in the queue, relatively to its current position.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            download: the download object to move.</span>
+<span class="sd">            pos: the relative position (1 to move down, -1 to move up, -2 to move up two times, etc.).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_position</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="s2">&quot;POS_CUR&quot;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Move a download in the queue, relatively to its current position.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>download</code></td>
+<td><code>Download</code></td>
+<td>the download object to move.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>pos</code></td>
+<td><code>int</code></td>
+<td>the relative position (1 to move down, -1 to move up, -2 to move up two times, etc.).</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int</code></td>
+<td>The new position of the download.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.move_down"><code class="codehilite"><span class="n">move_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.move_down" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">move_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">:</span> <span class="n">Download</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move a download down in the queue.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            download: the download object to move.</span>
+<span class="sd">            pos: number of times to move down. With negative values, will move up (use move or move_up instead).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_position</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="s2">&quot;POS_CUR&quot;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Move a download down in the queue.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>download</code></td>
+<td><code>Download</code></td>
+<td>the download object to move.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>pos</code></td>
+<td><code>int</code></td>
+<td>number of times to move down. With negative values, will move up (use move or move_up instead).</td>
+<td><code>1</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int</code></td>
+<td>The new position of the download.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.move_files"><code class="codehilite"><span class="n">move_files</span><span class="p">(</span><span class="n">downloads</span><span class="p">,</span> <span class="n">to_directory</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code> <em>(staticmethod)</em><a class="headerlink" href="#aria2p.api.API.move_files" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">move_files</span><span class="p">(</span><span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">],</span> <span class="n">to_directory</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move downloaded files to another directory.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            downloads:  the list of downloads for which to move files.</span>
+<span class="sd">            to_directory: the target directory to move files to.</span>
+<span class="sd">            force: whether to move files even if download is not complete.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_directory</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">to_directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">to_directory</span><span class="p">)</span>
+
+        <span class="c1"># raises FileExistsError when target is already a file</span>
+        <span class="n">to_directory</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">download</span><span class="o">.</span><span class="n">is_complete</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">download</span><span class="o">.</span><span class="n">root_files_paths</span><span class="p">:</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">to_directory</span><span class="p">))</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Move downloaded files to another directory.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>downloads</code></td>
+<td><code>List[aria2p.downloads.Download]</code></td>
+<td>the list of downloads for which to move files.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>to_directory</code></td>
+<td><code>Union[str, pathlib.Path]</code></td>
+<td>the target directory to move files to.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>force</code></td>
+<td><code>bool</code></td>
+<td>whether to move files even if download is not complete.</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List[bool]</code></td>
+<td>Success or failure of the operation for each given download.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.move_to"><code class="codehilite"><span class="n">move_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.move_to" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">move_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">:</span> <span class="n">Download</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move a download in the queue, with absolute positioning.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            download: the download object to move.</span>
+<span class="sd">            pos: the absolute position in the queue where to move the download. 0 for top, -1 for bottom.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">how</span> <span class="o">=</span> <span class="s2">&quot;POS_END&quot;</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="o">-</span><span class="n">pos</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">how</span> <span class="o">=</span> <span class="s2">&quot;POS_SET&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_position</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">how</span><span class="p">)</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Move a download in the queue, with absolute positioning.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>download</code></td>
+<td><code>Download</code></td>
+<td>the download object to move.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>pos</code></td>
+<td><code>int</code></td>
+<td>the absolute position in the queue where to move the download. 0 for top, -1 for bottom.</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int</code></td>
+<td>The new position of the download.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.move_to_bottom"><code class="codehilite"><span class="n">move_to_bottom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.move_to_bottom" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">move_to_bottom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">:</span> <span class="n">Download</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move a download to the bottom of the queue.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            download: the download object to move.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_position</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;POS_END&quot;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Move a download to the bottom of the queue.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>download</code></td>
+<td><code>Download</code></td>
+<td>the download object to move.</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int</code></td>
+<td>The new position of the download.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.move_to_top"><code class="codehilite"><span class="n">move_to_top</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.move_to_top" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">move_to_top</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">:</span> <span class="n">Download</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move a download to the top of the queue.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            download: the download object to move.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_position</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;POS_SET&quot;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Move a download to the top of the queue.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>download</code></td>
+<td><code>Download</code></td>
+<td>the download object to move.</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int</code></td>
+<td>The new position of the download.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.move_up"><code class="codehilite"><span class="n">move_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.move_up" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">move_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">:</span> <span class="n">Download</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move a download up in the queue.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            download: the download object to move.</span>
+<span class="sd">            pos: number of times to move up. With negative values, will move down (use move or move_down instead).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_position</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="o">-</span><span class="n">pos</span><span class="p">,</span> <span class="s2">&quot;POS_CUR&quot;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Move a download up in the queue.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>download</code></td>
+<td><code>Download</code></td>
+<td>the download object to move.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>pos</code></td>
+<td><code>int</code></td>
+<td>number of times to move up. With negative values, will move down (use move or move_down instead).</td>
+<td><code>1</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int</code></td>
+<td>The new position of the download.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.pause"><code class="codehilite"><span class="n">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">downloads</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.pause" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">],</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove the given downloads from the list.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            downloads: the list of downloads to remove.</span>
+<span class="sd">            force: whether to pause immediately without contacting servers or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: batch/multicall candidate</span>
+        <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
+            <span class="n">pause_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">force_pause</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pause_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">pause</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pause_func</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to pause download </span><span class="si">{download.gid}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Remove the given downloads from the list.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>downloads</code></td>
+<td><code>List[aria2p.downloads.Download]</code></td>
+<td>the list of downloads to remove.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>force</code></td>
+<td><code>bool</code></td>
+<td>whether to pause immediately without contacting servers or not.</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List[bool]</code></td>
+<td>Success or failure of the operation for each given download.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.pause_all"><code class="codehilite"><span class="n">pause_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.pause_all" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">pause_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove the given downloads from the list.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            force: whether to pause immediately without contacting servers or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation to pause all downloads.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
+            <span class="n">pause_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">force_pause_all</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pause_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">pause_all</span>
+        <span class="k">return</span> <span class="n">pause_func</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;OK&quot;</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Remove the given downloads from the list.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>force</code></td>
+<td><code>bool</code></td>
+<td>whether to pause immediately without contacting servers or not.</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bool</code></td>
+<td>Success or failure of the operation to pause all downloads.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.remove"><code class="codehilite"><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">downloads</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.remove" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">],</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">clean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove the given downloads from the list.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            downloads: the list of downloads to remove.</span>
+<span class="sd">            force: whether to force the removal or not.</span>
+<span class="sd">            files: whether to remove downloads files as well.</span>
+<span class="sd">            clean: whether to remove the aria2 control file as well.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: batch/multicall candidate</span>
+        <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
+            <span class="n">remove_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">force_remove</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">remove_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">remove</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">download</span><span class="o">.</span><span class="n">is_complete</span> <span class="ow">or</span> <span class="n">download</span><span class="o">.</span><span class="n">is_removed</span> <span class="ow">or</span> <span class="n">download</span><span class="o">.</span><span class="n">has_failed</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Try to remove download result </span><span class="si">{download.gid}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">remove_download_result</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removed download result </span><span class="si">{download.gid}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Try to remove download </span><span class="si">{download.gid}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">removed_gid</span> <span class="o">=</span> <span class="n">remove_func</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removed download </span><span class="si">{download.gid}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">remove_download_result</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error2</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to remove download result </span><span class="si">{download.gid}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">error2</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">removed_gid</span> <span class="o">!=</span> <span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Removed download GID#</span><span class="si">{removed_gid}</span><span class="s2"> is different than download GID#</span><span class="si">{download.gid}</span><span class="s2">&quot;</span>
+                        <span class="p">)</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">remove_download_result</span><span class="p">(</span><span class="n">removed_gid</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error2</span><span class="p">:</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to remove download result </span><span class="si">{removed_gid}</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">error2</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">clean</span><span class="p">:</span>
+                <span class="c1"># FUTURE: use missing_ok parameter on Python 3.8</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">download</span><span class="o">.</span><span class="n">control_file_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;aria2 control file </span><span class="si">{download.control_file_path}</span><span class="s2"> was not found&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removed control file </span><span class="si">{download.control_file_path}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">files</span> <span class="ow">and</span> <span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove_files</span><span class="p">([</span><span class="n">download</span><span class="p">],</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Remove the given downloads from the list.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>downloads</code></td>
+<td><code>List[aria2p.downloads.Download]</code></td>
+<td>the list of downloads to remove.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>force</code></td>
+<td><code>bool</code></td>
+<td>whether to force the removal or not.</td>
+<td><code>False</code></td>
+</tr>
+<tr>
+<td><code>files</code></td>
+<td><code>bool</code></td>
+<td>whether to remove downloads files as well.</td>
+<td><code>False</code></td>
+</tr>
+<tr>
+<td><code>clean</code></td>
+<td><code>bool</code></td>
+<td>whether to remove the aria2 control file as well.</td>
+<td><code>True</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List[bool]</code></td>
+<td>Success or failure of the operation for each given download.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.remove_all"><code class="codehilite"><span class="n">remove_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.remove_all" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">remove_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove all downloads from the list.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            force: whether to force the removal or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation to remove all downloads.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_downloads</span><span class="p">(),</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">))</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Remove all downloads from the list.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>force</code></td>
+<td><code>bool</code></td>
+<td>whether to force the removal or not.</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bool</code></td>
+<td>Success or failure of the operation to remove all downloads.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.remove_files"><code class="codehilite"><span class="n">remove_files</span><span class="p">(</span><span class="n">downloads</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code> <em>(staticmethod)</em><a class="headerlink" href="#aria2p.api.API.remove_files" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">remove_files</span><span class="p">(</span><span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">],</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove downloaded files.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            downloads:  the list of downloads for which to remove files.</span>
+<span class="sd">            force: whether to remove files even if download is not complete.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">download</span><span class="o">.</span><span class="n">is_complete</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">download</span><span class="o">.</span><span class="n">root_files_paths</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+                        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Remove downloaded files.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>downloads</code></td>
+<td><code>List[aria2p.downloads.Download]</code></td>
+<td>the list of downloads for which to remove files.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>force</code></td>
+<td><code>bool</code></td>
+<td>whether to remove files even if download is not complete.</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List[bool]</code></td>
+<td>Success or failure of the operation for each given download.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.resume"><code class="codehilite"><span class="n">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">downloads</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.resume" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resume (unpause) the given downloads.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            downloads: the list of downloads to resume.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: batch/multicall candidate</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">unpause</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to resume download </span><span class="si">{download.gid}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Resume (unpause) the given downloads.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>downloads</code></td>
+<td><code>List[aria2p.downloads.Download]</code></td>
+<td>the list of downloads to resume.</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List[bool]</code></td>
+<td>Success or failure of the operation for each given download.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.resume_all"><code class="codehilite"><span class="n">resume_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.resume_all" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>488
+489
+490
+491
+492
+493
+494
+495</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">resume_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resume (unpause) all downloads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation to resume all downloads.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">unpause_all</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;OK&quot;</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Resume (unpause) all downloads.</p>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bool</code></td>
+<td>Success or failure of the operation to resume all downloads.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.search"><code class="codehilite"><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patterns</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.search" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patterns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Not implemented.</span>
+
+<span class="sd">        Search and return [`Download`][aria2p.options.Download] objects based on multiple patterns.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            patterns: the patterns used to filter the download list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The download objects matching the patterns.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># gid</span>
+        <span class="c1"># status</span>
+        <span class="c1"># totalLength</span>
+        <span class="c1"># completedLength</span>
+        <span class="c1"># uploadLength</span>
+        <span class="c1"># bitfield</span>
+        <span class="c1"># downloadSpeed</span>
+        <span class="c1"># uploadSpeed</span>
+        <span class="c1"># infoHash</span>
+        <span class="c1"># numSeeders</span>
+        <span class="c1"># seeder</span>
+        <span class="c1"># pieceLength</span>
+        <span class="c1"># numPieces</span>
+        <span class="c1"># connections</span>
+        <span class="c1"># errorCode</span>
+        <span class="c1"># errorMessage</span>
+        <span class="c1"># followedBy</span>
+        <span class="c1"># following</span>
+        <span class="c1"># belongsTo</span>
+        <span class="c1"># dir</span>
+        <span class="c1"># files</span>
+        <span class="c1"># bittorrent</span>
+        <span class="c1">#        announceList</span>
+        <span class="c1">#        comment</span>
+        <span class="c1">#        creationDate</span>
+        <span class="c1">#        mode</span>
+        <span class="c1">#        info</span>
+        <span class="c1">#               name</span>
+        <span class="c1"># verifiedLength</span>
+        <span class="c1"># verifyIntegrityPending</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Not implemented.</p>
+<p>Search and return [<code>Download</code>][aria2p.options.Download] objects based on multiple patterns.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>patterns</code></td>
+<td><code>List[str]</code></td>
+<td>the patterns used to filter the download list.</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List[aria2p.downloads.Download]</code></td>
+<td>The download objects matching the patterns.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.set_global_options"><code class="codehilite"><span class="n">set_global_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.set_global_options" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">set_global_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Options</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set global options.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            options: an instance of the [`Options`][aria2p.options.Options] class or a dictionary</span>
+<span class="sd">              containing aria2c options to create the download with.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for changing global options.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">):</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get_struct</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_global_option</span><span class="p">(</span><span class="n">client_options</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;OK&quot;</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Set global options.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>options</code></td>
+<td><code>Union[aria2p.options.Options, dict]</code></td>
+<td>an instance of the <a href="/reference/options/#aria2p.options.Options"><code>Options</code></a> class or a dictionary containing aria2c options to create the download with.</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bool</code></td>
+<td>Success or failure of the operation for changing global options.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.set_options"><code class="codehilite"><span class="n">set_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">downloads</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.set_options" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">set_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Options</span><span class="p">,</span> <span class="nb">dict</span><span class="p">],</span> <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set options for specific downloads.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            options: an instance of the [`Options`][aria2p.options.Options] class or a dictionary</span>
+<span class="sd">              containing aria2c options to create the download with.</span>
+<span class="sd">            downloads: the list of downloads to set the options for.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for changing options for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">):</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get_struct</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span>
+
+        <span class="c1"># TODO: batch/multicall candidate</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_option</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="n">client_options</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;OK&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Set options for specific downloads.</p>
+<p><strong>Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>options</code></td>
+<td><code>Union[aria2p.options.Options, dict]</code></td>
+<td>an instance of the <a href="/reference/options/#aria2p.options.Options"><code>Options</code></a> class or a dictionary containing aria2c options to create the download with.</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>downloads</code></td>
+<td><code>List[aria2p.downloads.Download]</code></td>
+<td>the list of downloads to set the options for.</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>List[bool]</code></td>
+<td>Success or failure of the operation for changing options for each given download.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="aria2p.api.API.stop_listening"><code class="codehilite"><span class="n">stop_listening</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code><a class="headerlink" href="#aria2p.api.API.stop_listening" title="Permanent link">&para;</a></h3>
+<div class="autodoc">
+<details class="note"><summary>Show source code in aria2p/api.py</summary><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>700
+701
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">stop_listening</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stop listening to notifications.</span>
+
+<span class="sd">        If the listening loop was threaded, this method will wait for the thread to finish.</span>
+<span class="sd">        The time it takes for the thread to finish will depend on the timeout given while calling</span>
+<span class="sd">        [`listen_to_notifications`][aria2p.api.API.listen_to_notifications].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">stop_listening</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">listener</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</td></tr></table>
+
+</details>
+<p>Stop listening to notifications.</p>
+<p>If the listening loop was threaded, this method will wait for the thread to finish.
+The time it takes for the thread to finish will depend on the timeout given while calling
+<a href="/reference/api/#aria2p.api.API.listen_to_notifications"><code>listen_to_notifications</code></a>.</p>
+</div>
+</div>
+                
+                  
+                
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../../usage/" title="Usage" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Usage
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../cli/" title="cli.py" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                cli.py
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.808e90bb.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:"../.."}})</script>
+      
+    
+  </body>
+</html>
