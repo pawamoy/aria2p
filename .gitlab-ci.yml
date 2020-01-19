@@ -47,12 +47,16 @@ stages:
   image: python:3.6
   stage: deploy
   before_script:
+    - pip install poetry
+    - poetry config virtualenvs.in-project true
+    - poetry install -vv -E tui
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
     - eval $(ssh-agent -s)
     - chmod 400 "$GITHUB_DEPLOY_KEY"
     - ssh-add "$GITHUB_DEPLOY_KEY"
+    - git remote add github git@github.com:pawamoy/aria2p
     - git config --global user.email "pawamoy@pm.me"
     - git config --global user.name "GitLab CI"
 
@@ -105,4 +109,4 @@ python3.8:
 
 deploy-docs:
   <<: *deploy
-  script: make docs-deploy
+  script: make docs-deploy-from-ci

@@ -44,6 +44,10 @@ docs-serve:  ## Serve the documentation locally, on localhost:8000.
 docs-deploy:  ## Deploy the documentation on GitHub pages.
 	poetry run mkdocs gh-deploy
 
+.PHONY: docs-deploy-from-ci
+docs-deploy-from-ci:  ## Deploy the documentation on GitHub pages from GitLab CI.
+	poetry run mkdocs gh-deploy -r github
+
 .PHONY: help
 help:  ## Print this help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
@@ -112,7 +116,12 @@ readme:  ## Regenerate README.md.
 .PHONY: setup
 setup:  ## Setup the project with poetry.
 	if ! command -v poetry; then \
-	  command -v pipx && pipx install poetry || curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python; \
+	  if [ -n "$GITLAB_CI" ]; then \
+	    pip install poetry; \
+	  else \
+	    command -v pipx && pipx install poetry || \
+	      curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python; \
+	  fi; \
 	fi
 	poetry install -vE tui
 
