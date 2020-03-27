@@ -1,773 +1,461 @@
 
+<!DOCTYPE html>
 
-
-
-<!doctype html>
-<html lang="en" class="no-js">
-  <head>
-    
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
-      <meta http-equiv="x-ua-compatible" content="ie=edge">
-      
-        <meta name="description" content="Command-line tool and Python library to interact with an aria2c daemon process through JSON-RPC.">
-      
-      
-        <link rel="canonical" href="https://aria2p.github.io/">
-      
-      
-      
-        <meta name="lang:clipboard.copy" content="Copy to clipboard">
-      
-        <meta name="lang:clipboard.copied" content="Copied to clipboard">
-      
-        <meta name="lang:search.language" content="en">
-      
-        <meta name="lang:search.pipeline.stopwords" content="True">
-      
-        <meta name="lang:search.pipeline.trimmer" content="True">
-      
-        <meta name="lang:search.result.none" content="No matching documents">
-      
-        <meta name="lang:search.result.one" content="1 matching document">
-      
-        <meta name="lang:search.result.other" content="# matching documents">
-      
-        <meta name="lang:search.tokenizer" content="[\s\-]+">
-      
-      <link rel="shortcut icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.6.0">
-    
-    
-      
-        <title>aria2p</title>
-      
-    
-    
-      <link rel="stylesheet" href="assets/stylesheets/application.1b62728e.css">
-      
-      
-    
-    
-      <script src="assets/javascripts/modernizr.268332fc.js"></script>
-    
-    
-      
-        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
-      
-    
-    <link rel="stylesheet" href="assets/fonts/material-icons.css">
-    
-    
-      <link rel="stylesheet" href="custom.css">
-    
-    
-      
-    
-    
-  </head>
-  
-    <body dir="ltr">
-  
-    <svg class="md-svg">
-      <defs>
-        
-        
-          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-        
-      </defs>
-    </svg>
-    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
-    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
-    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-    
-      <a href="#aria2p" tabindex="1" class="md-skip">
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<meta content="Command-line tool and Python library to interact with an aria2c daemon process through JSON-RPC." name="description"/>
+<link href="https://pawamoy.github.io/aria2p/" rel="canonical"/>
+<meta content="Copy to clipboard" name="lang:clipboard.copy"/>
+<meta content="Copied to clipboard" name="lang:clipboard.copied"/>
+<meta content="en" name="lang:search.language"/>
+<meta content="True" name="lang:search.pipeline.stopwords"/>
+<meta content="True" name="lang:search.pipeline.trimmer"/>
+<meta content="No matching documents" name="lang:search.result.none"/>
+<meta content="1 matching document" name="lang:search.result.one"/>
+<meta content="# matching documents" name="lang:search.result.other"/>
+<meta content="[\s\-]+" name="lang:search.tokenizer"/>
+<link href="assets/images/favicon.png" rel="shortcut icon"/>
+<meta content="mkdocs-1.1, mkdocs-material-4.6.3" name="generator"/>
+<title>aria2p</title>
+<link href="assets/stylesheets/application.adb8469c.css" rel="stylesheet"/>
+<script src="assets/javascripts/modernizr.86422ebf.js"></script>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
+<style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+<link href="assets/fonts/material-icons.css" rel="stylesheet"/>
+<link href="custom.css" rel="stylesheet"/>
+</head>
+<body dir="ltr">
+<svg class="md-svg">
+<defs>
+<svg height="448" id="__github" viewbox="0 0 416 448" width="416" xmlns="http://www.w3.org/2000/svg"><path d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z" fill="currentColor"></path></svg>
+</defs>
+</svg>
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+<a class="md-skip" href="#aria2p" tabindex="0">
         Skip to content
       </a>
-    
-    
-      <header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid">
-    <div class="md-flex">
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="https://aria2p.github.io/" title="aria2p" class="md-header-nav__button md-logo">
-          
-            <i class="md-icon"></i>
-          
-        </a>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
-      </div>
-      <div class="md-flex__cell md-flex__cell--stretch">
-        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          
-            <span class="md-header-nav__topic">
+<header class="md-header" data-md-component="header">
+<nav class="md-header-nav md-grid">
+<div class="md-flex">
+<div class="md-flex__cell md-flex__cell--shrink">
+<a aria-label="aria2p" class="md-header-nav__button md-logo" href="https://pawamoy.github.io/aria2p" title="aria2p">
+<i class="md-icon"></i>
+</a>
+</div>
+<div class="md-flex__cell md-flex__cell--shrink">
+<label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+</div>
+<div class="md-flex__cell md-flex__cell--stretch">
+<div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+<span class="md-header-nav__topic">
               aria2p
             </span>
-            <span class="md-header-nav__topic">
+<span class="md-header-nav__topic">
               
                 Overview
               
             </span>
-          
-        </div>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        
-          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
-          
+</div>
+</div>
+<div class="md-flex__cell md-flex__cell--shrink">
+<label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
 <div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
-      <label class="md-icon md-search__icon" for="__search"></label>
-      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
-        &#xE5CD;
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="query" data-md-state="active" name="query" placeholder="Search" spellcheck="false" type="text"/>
+<label class="md-icon md-search__icon" for="__search"></label>
+<button class="md-icon md-search__icon" data-md-component="reset" tabindex="-1" type="reset">
+        
       </button>
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
-          <div class="md-search-result__meta">
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="result">
+<div class="md-search-result__meta">
             Type to start searching
           </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+<ol class="md-search-result__list"></ol>
 </div>
-        
-      </div>
-      
-        <div class="md-flex__cell md-flex__cell--shrink">
-          <div class="md-header-nav__source">
-            
-
-
-  
-
-<a href="https://github.com/pawamoy/aria2p/" title="Go to repository" class="md-source" data-md-source="github">
-  
-    <div class="md-source__icon">
-      <svg viewBox="0 0 24 24" width="24" height="24">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
-    </div>
-  
-  <div class="md-source__repository">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-flex__cell md-flex__cell--shrink">
+<div class="md-header-nav__source">
+<a class="md-source" data-md-source="github" href="https://github.com/pawamoy/aria2p/" title="Go to repository">
+<div class="md-source__icon">
+<svg height="24" viewbox="0 0 24 24" width="24">
+<use height="24" width="24" xlink:href="#__github"></use>
+</svg>
+</div>
+<div class="md-source__repository">
     pawamoy/aria2p
   </div>
 </a>
-          </div>
-        </div>
-      
-    </div>
-  </nav>
+</div>
+</div>
+</div>
+</nav>
 </header>
-    
-    <div class="md-container">
-      
-        
-      
-      
-      <main class="md-main" role="main">
-        <div class="md-main__inner md-grid" data-md-component="container">
-          
-            
-              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    <nav class="md-nav md-nav--primary" data-md-level="0">
-  <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="https://aria2p.github.io/" title="aria2p" class="md-nav__button md-logo">
-      
-        <i class="md-icon"></i>
-      
-    </a>
+<div class="md-container">
+<main class="md-main" role="main">
+<div class="md-main__inner md-grid" data-md-component="container">
+<div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title md-nav__title--site" for="__drawer">
+<a class="md-nav__button md-logo" href="https://pawamoy.github.io/aria2p" title="aria2p">
+<i class="md-icon"></i>
+</a>
     aria2p
   </label>
-  
-    <div class="md-nav__source">
-      
-
-
-  
-
-<a href="https://github.com/pawamoy/aria2p/" title="Go to repository" class="md-source" data-md-source="github">
-  
-    <div class="md-source__icon">
-      <svg viewBox="0 0 24 24" width="24" height="24">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
-    </div>
-  
-  <div class="md-source__repository">
+<div class="md-nav__source">
+<a class="md-source" data-md-source="github" href="https://github.com/pawamoy/aria2p/" title="Go to repository">
+<div class="md-source__icon">
+<svg height="24" viewbox="0 0 24 24" width="24">
+<use height="24" width="24" xlink:href="#__github"></use>
+</svg>
+</div>
+<div class="md-source__repository">
     pawamoy/aria2p
   </div>
 </a>
-    </div>
-  
-  <ul class="md-nav__list" data-md-scrollfix>
-    
-      
-      
-      
-
-  
-
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-toggle md-nav__toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
         Overview
       </label>
-    
-    <a href="." title="Overview" class="md-nav__link md-nav__link--active">
+<a class="md-nav__link md-nav__link--active" href="." title="Overview">
       Overview
     </a>
-    
-      
 <nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
+<label class="md-nav__title" for="__toc">Table of contents</label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#requirements">
     Requirements
   </a>
-  
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#installation">
     Installation
   </a>
-  
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#usage-as-a-library" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#usage-as-a-library">
     Usage (as a library)
   </a>
-  
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#usage-command-line" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#usage-command-line">
     Usage (command-line)
   </a>
-  
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#add" class="md-nav__link">
+<nav class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#add">
     add
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#add-magnets" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#add-magnets">
     add-magnets
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#add-metalinks" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#add-metalinks">
     add-metalinks
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#add-torrents" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#add-torrents">
     add-torrents
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#autopurge" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#autopurge">
     autopurge
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#call" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#call">
     call
   </a>
-  
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+<nav class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#examples">
     Examples
   </a>
-  
 </li>
-        
-      </ul>
-    </nav>
-  
+</ul>
+</nav>
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#listen" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#listen">
     listen
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pause" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pause">
     pause
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#remove" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#remove">
     remove
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#resume" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#resume">
     resume
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#show" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#show">
     show
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#top" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#top">
     top
   </a>
-  
 </li>
-        
-      </ul>
-    </nav>
-  
+</ul>
+</nav>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshoot" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#troubleshoot">
     Troubleshoot
   </a>
-  
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#support" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#support">
     Support
   </a>
-  
 </li>
-      
-      
-      
-      
-      
-    </ul>
-  
+</ul>
 </nav>
-    
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="usage/" title="Usage" class="md-nav__link">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="usage/" title="Usage">
       Usage
     </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item md-nav__item--nested">
-    
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
-    
-    <label class="md-nav__link" for="nav-3">
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" id="nav-3" type="checkbox"/>
+<label class="md-nav__link" for="nav-3">
       Reference
     </label>
-    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-3">
+<nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+<label class="md-nav__title" for="nav-3">
         Reference
       </label>
-      <ul class="md-nav__list" data-md-scrollfix>
-        
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="reference/api/" title="api.py" class="md-nav__link">
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="reference/api/" title="api.py">
       api.py
     </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="reference/cli/" title="cli.py" class="md-nav__link">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="reference/cli/" title="cli.py">
       cli.py
     </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="reference/client/" title="client.py" class="md-nav__link">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="reference/client/" title="client.py">
       client.py
     </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="reference/downloads/" title="downloads.py" class="md-nav__link">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="reference/downloads/" title="downloads.py">
       downloads.py
     </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="reference/options/" title="options.py" class="md-nav__link">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="reference/options/" title="options.py">
       options.py
     </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="reference/stats/" title="stats.py" class="md-nav__link">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="reference/stats/" title="stats.py">
       stats.py
     </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="reference/utils/" title="utils.py" class="md-nav__link">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="reference/utils/" title="utils.py">
       utils.py
     </a>
-  </li>
-
-        
-      </ul>
-    </nav>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="contributing/" title="Contributing" class="md-nav__link">
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="contributing/" title="Contributing">
       Contributing
     </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="code_of_conduct/" title="Code of Conduct" class="md-nav__link">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="code_of_conduct/" title="Code of Conduct">
       Code of Conduct
     </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="changelog/" title="Changelog" class="md-nav__link">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="changelog/" title="Changelog">
       Changelog
     </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="credits/" title="Credits" class="md-nav__link">
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="credits/" title="Credits">
       Credits
     </a>
-  </li>
-
-    
-  </ul>
+</li>
+</ul>
 </nav>
-                  </div>
-                </div>
-              </div>
-            
-            
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
 <nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
+<label class="md-nav__title" for="__toc">Table of contents</label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#requirements">
     Requirements
   </a>
-  
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#installation">
     Installation
   </a>
-  
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#usage-as-a-library" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#usage-as-a-library">
     Usage (as a library)
   </a>
-  
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#usage-command-line" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#usage-command-line">
     Usage (command-line)
   </a>
-  
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#add" class="md-nav__link">
+<nav class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#add">
     add
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#add-magnets" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#add-magnets">
     add-magnets
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#add-metalinks" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#add-metalinks">
     add-metalinks
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#add-torrents" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#add-torrents">
     add-torrents
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#autopurge" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#autopurge">
     autopurge
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#call" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#call">
     call
   </a>
-  
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+<nav class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#examples">
     Examples
   </a>
-  
 </li>
-        
-      </ul>
-    </nav>
-  
+</ul>
+</nav>
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#listen" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#listen">
     listen
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pause" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pause">
     pause
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#remove" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#remove">
     remove
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#resume" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#resume">
     resume
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#show" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#show">
     show
   </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#top" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#top">
     top
   </a>
-  
 </li>
-        
-      </ul>
-    </nav>
-  
+</ul>
+</nav>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshoot" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#troubleshoot">
     Troubleshoot
   </a>
-  
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#support" class="md-nav__link">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#support">
     Support
   </a>
-  
 </li>
-      
-      
-      
-      
-      
-    </ul>
-  
+</ul>
 </nav>
-                  </div>
-                </div>
-              </div>
-            
-          
-          <div class="md-content">
-            <article class="md-content__inner md-typeset">
-              
-                
-                  <a href="https://github.com/pawamoy/aria2p/edit/master/docs/index.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
-                
-                
-                <!--
+</div>
+</div>
+</div>
+<div class="md-content">
+<article class="md-content__inner md-typeset">
+<a class="md-icon md-content__icon" href="https://github.com/pawamoy/aria2p/edit/master/docs/index.md" title="Edit this page"></a>
+<!--
 IMPORTANT: This file is generated from the template at 'scripts/templates/README.md'.
            Please update the template instead of this file.
 -->
-
-<h1 id="aria2p">aria2p<a class="headerlink" href="#aria2p" title="Permanent link">&para;</a></h1>
-<p><a href="https://gitlab.com/pawamoy/aria2p/commits/master"><img alt="pipeline status" src="https://gitlab.com/pawamoy/aria2p/badges/master/pipeline.svg" /></a>
-<a href="https://gitlab.com/pawamoy/aria2p/commits/master"><img alt="coverage report" src="https://gitlab.com/pawamoy/aria2p/badges/master/coverage.svg" /></a>
-<a href="https://aria2p.readthedocs.io/en/latest/index.html"><img alt="documentation" src="https://img.shields.io/readthedocs/aria2p.svg?style=flat" /></a>
-<a href="https://pypi.org/project/aria2p/"><img alt="pypi version" src="https://img.shields.io/pypi/v/aria2p.svg" /></a>
-<a href="https://gitter.im/aria2p/community?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge"><img alt="Gitter" src="https://badges.gitter.im/aria2p/community.svg" /></a>
-<a href="#support"><img alt="support" src="https://img.shields.io/badge/sponsor-or%20donate-blue.svg?style=flat" /></a></p>
+<h1 id="aria2p">aria2p<a class="headerlink" href="#aria2p" title="Permanent link">¶</a></h1>
+<p><a href="https://gitlab.com/pawamoy/aria2p/commits/master"><img alt="pipeline status" src="https://gitlab.com/pawamoy/aria2p/badges/master/pipeline.svg"/></a>
+<a href="https://gitlab.com/pawamoy/aria2p/commits/master"><img alt="coverage report" src="https://gitlab.com/pawamoy/aria2p/badges/master/coverage.svg"/></a>
+<a href="https://pawamoy.github.io/aria2p/"><img alt="documentation" src="https://img.shields.io/badge/docs-mkdocs%20material-blue.svg?style=flat"/></a>
+<a href="https://pypi.org/project/aria2p/"><img alt="pypi version" src="https://img.shields.io/pypi/v/aria2p.svg"/></a>
+<a href="https://gitter.im/aria2p/community?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge"><img alt="Gitter" src="https://badges.gitter.im/aria2p/community.svg"/></a>
+<a href="#support"><img alt="support" src="https://img.shields.io/badge/sponsor-or%20donate-blue.svg?style=flat"/></a></p>
 <p>Command-line tool and Python library to interact with an <a href="https://github.com/aria2/aria2"><code>aria2c</code></a> daemon process through JSON-RPC.</p>
-<p><img alt="demo" src="https://user-images.githubusercontent.com/3999221/72664104-41658180-39fa-11ea-838e-022ed29d8c0b.gif" /></p>
+<p><img alt="demo" src="https://user-images.githubusercontent.com/3999221/72664104-41658180-39fa-11ea-838e-022ed29d8c0b.gif"/></p>
 <p>To avoid confusion:</p>
 <ul>
 <li><a href="https://github.com/aria2/aria2"><em>aria2</em></a> is a lightweight multi-protocol &amp; multi-source, cross platform download utility operated in command-line.
@@ -794,55 +482,50 @@ can be found in the <a href="https://aria2p.readthedocs.io/en/latest/configurati
 <li><a href="#troubleshoot">Troubleshoot</a></li>
 <li><a href="#support">Support</a></li>
 </ul>
-<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">¶</a></h2>
 <p><code>aria2p</code> requires Python 3.6 or above.</p>
 <details>
 <summary>To install Python 3.6, I recommend using <a href="https://github.com/pyenv/pyenv"><code>pyenv</code></a>.</summary>
-
-<div class="codehilite"><pre><span></span><span class="c1"># install pyenv</span>
+<div class="codehilite"><pre><span></span><code><span class="c1"># install pyenv</span>
 git clone https://github.com/pyenv/pyenv ~/.pyenv
 
 <span class="c1"># setup pyenv (you should also put these three lines in .bashrc or similar)</span>
-<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/.pyenv/bin:</span><span class="si">${</span><span class="nv">PATH</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="nb">export</span> <span class="nv">PYENV_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/.pyenv&quot;</span>
-<span class="nb">eval</span> <span class="s2">&quot;</span><span class="k">$(</span>pyenv init -<span class="k">)</span><span class="s2">&quot;</span>
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/.pyenv/bin:</span><span class="si">${</span><span class="nv">PATH</span><span class="si">}</span><span class="s2">"</span>
+<span class="nb">export</span> <span class="nv">PYENV_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/.pyenv"</span>
+<span class="nb">eval</span> <span class="s2">"</span><span class="k">$(</span>pyenv init -<span class="k">)</span><span class="s2">"</span>
 
 <span class="c1"># install Python 3.6</span>
 pyenv install <span class="m">3</span>.6.8
 
 <span class="c1"># make it available globally</span>
 pyenv global system <span class="m">3</span>.6.8
-</pre></div>
+</code></pre></div>
 </details>
-
 <p>You must also install <a href="https://github.com/aria2/aria2"><em>aria2</em></a>. On systems with <code>apt-get</code>:</p>
-<div class="codehilite"><pre><span></span>sudo apt-get install aria2
-</pre></div>
-
-<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>sudo apt-get install aria2
+</code></pre></div>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">¶</a></h2>
 <p>With <code>pip</code>:</p>
-<div class="codehilite"><pre><span></span>python3.6 -m pip install aria2p<span class="o">[</span>tui<span class="o">]</span>
-</pre></div>
-
+<div class="codehilite"><pre><span></span><code>python3.6 -m pip install aria2p<span class="o">[</span>tui<span class="o">]</span>
+</code></pre></div>
 <p>With <a href="https://github.com/pipxproject/pipx"><code>pipx</code></a>:</p>
-<div class="codehilite"><pre><span></span>python3.6 -m pip install --user pipx
+<div class="codehilite"><pre><span></span><code>python3.6 -m pip install --user pipx
 
 pipx install --python python3.6 aria2p<span class="o">[</span>tui<span class="o">]</span>
-</pre></div>
-
+</code></pre></div>
 <p>The <code>tui</code> extra is needed for the interactive interface. If you don't need the interface (for example when you are
 writing a Python package with a dependency to aria2p), simply install <code>aria2p</code> without any extra.</p>
-<h2 id="usage-as-a-library">Usage (as a library)<a class="headerlink" href="#usage-as-a-library" title="Permanent link">&para;</a></h2>
+<h2 id="usage-as-a-library">Usage (as a library)<a class="headerlink" href="#usage-as-a-library" title="Permanent link">¶</a></h2>
 <p><strong>This library is still a work in progress. More examples will be added later.
 In the meantime, you can read the <a href="https://aria2p.readthedocs.io/en/latest/reference.html">Reference section</a> on the official documentation.</strong></p>
-<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">aria2p</span>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">aria2p</span>
 
 <span class="c1"># initialization, these are the default values</span>
 <span class="n">aria2</span> <span class="o">=</span> <span class="n">aria2p</span><span class="o">.</span><span class="n">API</span><span class="p">(</span>
     <span class="n">aria2p</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span>
-        <span class="n">host</span><span class="o">=</span><span class="s2">&quot;http://localhost&quot;</span><span class="p">,</span>
+        <span class="n">host</span><span class="o">=</span><span class="s2">"http://localhost"</span><span class="p">,</span>
         <span class="n">port</span><span class="o">=</span><span class="mi">6800</span><span class="p">,</span>
-        <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="n">secret</span><span class="o">=</span><span class="s2">""</span>
     <span class="p">)</span>
 <span class="p">)</span>
 
@@ -853,13 +536,12 @@ In the meantime, you can read the <a href="https://aria2p.readthedocs.io/en/late
     <span class="nb">print</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">download</span><span class="o">.</span><span class="n">download_speed</span><span class="p">)</span>
 
 <span class="c1"># add downloads</span>
-<span class="n">magnet_uri</span> <span class="o">=</span> <span class="s2">&quot;magnet:?xt=urn:...&quot;</span>
+<span class="n">magnet_uri</span> <span class="o">=</span> <span class="s2">"magnet:?xt=urn:..."</span>
 
 <span class="n">download</span> <span class="o">=</span> <span class="n">aria2</span><span class="o">.</span><span class="n">add_magnet</span><span class="p">(</span><span class="n">magnet_uri</span><span class="p">)</span>
-</pre></div>
-
-<h2 id="usage-command-line">Usage (command-line)<a class="headerlink" href="#usage-command-line" title="Permanent link">&para;</a></h2>
-<div class="codehilite"><pre><span></span>usage: aria2p [GLOBAL_OPTS...] COMMAND [COMMAND_OPTS...]
+</code></pre></div>
+<h2 id="usage-command-line">Usage (command-line)<a class="headerlink" href="#usage-command-line" title="Permanent link">¶</a></h2>
+<div class="codehilite"><pre><span></span><code>usage: aria2p [GLOBAL_OPTS...] COMMAND [COMMAND_OPTS...]
 
 Command-line tool and Python library to interact with an `aria2c` daemon
 process through JSON-RPC.
@@ -896,8 +578,7 @@ Commands:
     show                Show the download progression.
     top                 Launch the top-like interactive interface.
     listen              Listen to notifications.
-</pre></div>
-
+</code></pre></div>
 <p>Calling <code>aria2p</code> without any arguments will by default call the <code>top</code> command,
 which is a console interactive interface.</p>
 <p>Commands:</p>
@@ -915,9 +596,9 @@ which is a console interactive interface.</p>
 <li><a href="#show"><code>show</code></a></li>
 <li><a href="#top"><code>top</code></a></li>
 </ul>
-<hr />
-<h3 id="add"><code>add</code><a class="headerlink" href="#add" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span>usage: aria2p add [-h] [-f FROM_FILE] [uris [uris ...]]
+<hr/>
+<h3 id="add"><code>add</code><a class="headerlink" href="#add" title="Permanent link">¶</a></h3>
+<div class="codehilite"><pre><span></span><code>usage: aria2p add [-h] [-f FROM_FILE] [uris [uris ...]]
 
 Add downloads with URIs/Magnets/torrents/Metalinks.
 
@@ -928,11 +609,10 @@ optional arguments:
   -h, --help            Show this help message and exit.
   -f FROM_FILE, --from-file FROM_FILE
                         Load URIs from a file.
-</pre></div>
-
-<hr />
-<h3 id="add-magnets"><code>add-magnets</code><a class="headerlink" href="#add-magnets" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span>usage: aria2p add-magnets [-h] [-f FROM_FILE] [uris [uris ...]]
+</code></pre></div>
+<hr/>
+<h3 id="add-magnets"><code>add-magnets</code><a class="headerlink" href="#add-magnets" title="Permanent link">¶</a></h3>
+<div class="codehilite"><pre><span></span><code>usage: aria2p add-magnets [-h] [-f FROM_FILE] [uris [uris ...]]
 
 Add downloads with Magnet URIs.
 
@@ -943,11 +623,10 @@ optional arguments:
   -h, --help            Show this help message and exit.
   -f FROM_FILE, --from-file FROM_FILE
                         Load URIs from a file.
-</pre></div>
-
-<hr />
-<h3 id="add-metalinks"><code>add-metalinks</code><a class="headerlink" href="#add-metalinks" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span>usage: aria2p add-metalinks [-h] [-f FROM_FILE]
+</code></pre></div>
+<hr/>
+<h3 id="add-metalinks"><code>add-metalinks</code><a class="headerlink" href="#add-metalinks" title="Permanent link">¶</a></h3>
+<div class="codehilite"><pre><span></span><code>usage: aria2p add-metalinks [-h] [-f FROM_FILE]
                             [metalink_files [metalink_files ...]]
 
 Add downloads with Metalink files.
@@ -959,11 +638,10 @@ optional arguments:
   -h, --help            Show this help message and exit.
   -f FROM_FILE, --from-file FROM_FILE
                         Load file paths from a file.
-</pre></div>
-
-<hr />
-<h3 id="add-torrents"><code>add-torrents</code><a class="headerlink" href="#add-torrents" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span>usage: aria2p add-torrents [-h] [-f FROM_FILE]
+</code></pre></div>
+<hr/>
+<h3 id="add-torrents"><code>add-torrents</code><a class="headerlink" href="#add-torrents" title="Permanent link">¶</a></h3>
+<div class="codehilite"><pre><span></span><code>usage: aria2p add-torrents [-h] [-f FROM_FILE]
                            [torrent_files [torrent_files ...]]
 
 Add downloads with torrent files.
@@ -975,28 +653,26 @@ optional arguments:
   -h, --help            Show this help message and exit.
   -f FROM_FILE, --from-file FROM_FILE
                         Load file paths from a file.
-</pre></div>
-
-<hr />
-<h3 id="autopurge"><code>autopurge</code><a class="headerlink" href="#autopurge" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span>usage: aria2p autopurge [-h]
+</code></pre></div>
+<hr/>
+<h3 id="autopurge"><code>autopurge</code><a class="headerlink" href="#autopurge" title="Permanent link">¶</a></h3>
+<div class="codehilite"><pre><span></span><code>usage: aria2p autopurge [-h]
 
 Automatically purge completed/removed/failed downloads.
 
 optional arguments:
   -h, --help  Show this help message and exit.
-</pre></div>
-
-<hr />
-<h3 id="call"><code>call</code><a class="headerlink" href="#call" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span>usage: aria2p call [-h] [-P PARAMS [PARAMS ...] | -J PARAMS] method
+</code></pre></div>
+<hr/>
+<h3 id="call"><code>call</code><a class="headerlink" href="#call" title="Permanent link">¶</a></h3>
+<div class="codehilite"><pre><span></span><code>usage: aria2p call [-h] [-P PARAMS [PARAMS ...] | -J PARAMS] method
 
 Call a remote method through the JSON-RPC client.
 
 positional arguments:
   method                The method to call (case insensitive). Dashes and
                         underscores will be removed so you can use as many as
-                        you want, or none. Prefixes like &#39;aria2.&#39; or &#39;system.&#39;
+                        you want, or none. Prefixes like 'aria2.' or 'system.'
                         are also optional.
 
 optional arguments:
@@ -1005,9 +681,8 @@ optional arguments:
                         Parameters as a list of strings.
   -J PARAMS, --json-params PARAMS
                         Parameters as a JSON string. You should always wrap it
-                        at least once in an array &#39;[]&#39;.
-</pre></div>
-
+                        at least once in an array '[]'.
+</code></pre></div>
 <p>As explained in the help text,
 the <code>method</code> can be the exact method name,
 or just the name without the prefix.
@@ -1022,71 +697,71 @@ It is case-insensitive, and dashes and underscores will be removed.</p>
 - <code>A-d_D-u_R-i</code> (yes it's valid)
 - <code>A---R---I---A---2.a__d__d__u__r__i</code> (I think you got it)
 - and even more ugly forms...</p>
-<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">¶</a></h4>
 <p>List all available methods.
 <em>This example uses <a href="https://github.com/stedolan/jq"><code>jq</code></a>.</em>
-<div class="codehilite"><pre><span></span><span class="gp">$</span> aria2p call listmethods <span class="p">|</span> jq
+<div class="codehilite"><pre><span></span><code><span class="gp">$</span> aria2p call listmethods <span class="p">|</span> jq
 <span class="go">[</span>
-<span class="go">  &quot;aria2.addUri&quot;,</span>
-<span class="go">  &quot;aria2.addTorrent&quot;,</span>
-<span class="go">  &quot;aria2.getPeers&quot;,</span>
-<span class="go">  &quot;aria2.addMetalink&quot;,</span>
-<span class="go">  &quot;aria2.remove&quot;,</span>
-<span class="go">  &quot;aria2.pause&quot;,</span>
-<span class="go">  &quot;aria2.forcePause&quot;,</span>
-<span class="go">  &quot;aria2.pauseAll&quot;,</span>
-<span class="go">  &quot;aria2.forcePauseAll&quot;,</span>
-<span class="go">  &quot;aria2.unpause&quot;,</span>
-<span class="go">  &quot;aria2.unpauseAll&quot;,</span>
-<span class="go">  &quot;aria2.forceRemove&quot;,</span>
-<span class="go">  &quot;aria2.changePosition&quot;,</span>
-<span class="go">  &quot;aria2.tellStatus&quot;,</span>
-<span class="go">  &quot;aria2.getUris&quot;,</span>
-<span class="go">  &quot;aria2.getFiles&quot;,</span>
-<span class="go">  &quot;aria2.getServers&quot;,</span>
-<span class="go">  &quot;aria2.tellActive&quot;,</span>
-<span class="go">  &quot;aria2.tellWaiting&quot;,</span>
-<span class="go">  &quot;aria2.tellStopped&quot;,</span>
-<span class="go">  &quot;aria2.getOption&quot;,</span>
-<span class="go">  &quot;aria2.changeUri&quot;,</span>
-<span class="go">  &quot;aria2.changeOption&quot;,</span>
-<span class="go">  &quot;aria2.getGlobalOption&quot;,</span>
-<span class="go">  &quot;aria2.changeGlobalOption&quot;,</span>
-<span class="go">  &quot;aria2.purgeDownloadResult&quot;,</span>
-<span class="go">  &quot;aria2.removeDownloadResult&quot;,</span>
-<span class="go">  &quot;aria2.getVersion&quot;,</span>
-<span class="go">  &quot;aria2.getSessionInfo&quot;,</span>
-<span class="go">  &quot;aria2.shutdown&quot;,</span>
-<span class="go">  &quot;aria2.forceShutdown&quot;,</span>
-<span class="go">  &quot;aria2.getGlobalStat&quot;,</span>
-<span class="go">  &quot;aria2.saveSession&quot;,</span>
-<span class="go">  &quot;system.multicall&quot;,</span>
-<span class="go">  &quot;system.listMethods&quot;,</span>
-<span class="go">  &quot;system.listNotifications&quot;</span>
+<span class="go">  "aria2.addUri",</span>
+<span class="go">  "aria2.addTorrent",</span>
+<span class="go">  "aria2.getPeers",</span>
+<span class="go">  "aria2.addMetalink",</span>
+<span class="go">  "aria2.remove",</span>
+<span class="go">  "aria2.pause",</span>
+<span class="go">  "aria2.forcePause",</span>
+<span class="go">  "aria2.pauseAll",</span>
+<span class="go">  "aria2.forcePauseAll",</span>
+<span class="go">  "aria2.unpause",</span>
+<span class="go">  "aria2.unpauseAll",</span>
+<span class="go">  "aria2.forceRemove",</span>
+<span class="go">  "aria2.changePosition",</span>
+<span class="go">  "aria2.tellStatus",</span>
+<span class="go">  "aria2.getUris",</span>
+<span class="go">  "aria2.getFiles",</span>
+<span class="go">  "aria2.getServers",</span>
+<span class="go">  "aria2.tellActive",</span>
+<span class="go">  "aria2.tellWaiting",</span>
+<span class="go">  "aria2.tellStopped",</span>
+<span class="go">  "aria2.getOption",</span>
+<span class="go">  "aria2.changeUri",</span>
+<span class="go">  "aria2.changeOption",</span>
+<span class="go">  "aria2.getGlobalOption",</span>
+<span class="go">  "aria2.changeGlobalOption",</span>
+<span class="go">  "aria2.purgeDownloadResult",</span>
+<span class="go">  "aria2.removeDownloadResult",</span>
+<span class="go">  "aria2.getVersion",</span>
+<span class="go">  "aria2.getSessionInfo",</span>
+<span class="go">  "aria2.shutdown",</span>
+<span class="go">  "aria2.forceShutdown",</span>
+<span class="go">  "aria2.getGlobalStat",</span>
+<span class="go">  "aria2.saveSession",</span>
+<span class="go">  "system.multicall",</span>
+<span class="go">  "system.listMethods",</span>
+<span class="go">  "system.listNotifications"</span>
 <span class="go">]</span>
-</pre></div></p>
+</code></pre></div></p>
 <p>List the GIDs (identifiers) of all active downloads.
 <em>Note that we must give the parameters as a JSON string.</em>
-<div class="codehilite"><pre><span></span><span class="gp">$</span> aria2p call tellactive -J <span class="s1">&#39;[[&quot;gid&quot;]]&#39;</span>
-<span class="go">[{&quot;gid&quot;: &quot;b686cad55029d4df&quot;}, {&quot;gid&quot;: &quot;4b39a1ad8fd94e26&quot;}, {&quot;gid&quot;: &quot;9d331cc4b287e5df&quot;}, {&quot;gid&quot;: &quot;8c9de0df753a5195&quot;}]</span>
-</pre></div></p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$</span> aria2p call tellactive -J <span class="s1">'[["gid"]]'</span>
+<span class="go">[{"gid": "b686cad55029d4df"}, {"gid": "4b39a1ad8fd94e26"}, {"gid": "9d331cc4b287e5df"}, {"gid": "8c9de0df753a5195"}]</span>
+</code></pre></div></p>
 <p>Pause a download using its GID.
 <em>Note that when a single string argument is required, it can be passed directly with <code>-P</code>.</em>
-<div class="codehilite"><pre><span></span><span class="gp">$</span> aria2p call pause -P b686cad55029d4df
-<span class="go">&quot;b686cad55029d4df&quot;</span>
-</pre></div></p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$</span> aria2p call pause -P b686cad55029d4df
+<span class="go">"b686cad55029d4df"</span>
+</code></pre></div></p>
 <p>Add a download using magnet URIs.
 <em>This example uses <code>jq -r</code> to remove the quotation marks around the result.</em>
-<div class="codehilite"><pre><span></span><span class="gp">$</span> aria2p call adduri -J <span class="s1">&#39;[[&quot;magnet:?xt=urn:...&quot;]]&#39;</span> <span class="p">|</span> jq -r
+<div class="codehilite"><pre><span></span><code><span class="gp">$</span> aria2p call adduri -J <span class="s1">'[["magnet:?xt=urn:..."]]'</span> <span class="p">|</span> jq -r
 <span class="go">4b39a1ad8fd94e26f</span>
-</pre></div></p>
+</code></pre></div></p>
 <p>Purge download results (remove completed downloads from the list).
-<div class="codehilite"><pre><span></span><span class="gp">$</span> aria2p call purge_download_result
-<span class="go">&quot;OK&quot;</span>
-</pre></div></p>
-<hr />
-<h3 id="listen"><code>listen</code><a class="headerlink" href="#listen" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span>usage: aria2p listen [-h] [-c CALLBACKS_MODULE] [-t TIMEOUT]
+<div class="codehilite"><pre><span></span><code><span class="gp">$</span> aria2p call purge_download_result
+<span class="go">"OK"</span>
+</code></pre></div></p>
+<hr/>
+<h3 id="listen"><code>listen</code><a class="headerlink" href="#listen" title="Permanent link">¶</a></h3>
+<div class="codehilite"><pre><span></span><code>usage: aria2p listen [-h] [-c CALLBACKS_MODULE] [-t TIMEOUT]
                      [event_types [event_types ...]]
 
 Listen to notifications.
@@ -1108,11 +783,10 @@ optional arguments:
                         Timeout in seconds to use when waiting for data over
                         the WebSocket at each iteration. Use small values for
                         faster reactivity when stopping to listen.
-</pre></div>
-
-<hr />
-<h3 id="pause"><code>pause</code><a class="headerlink" href="#pause" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span>usage: aria2p pause [-h] [-a] [-f] [gids [gids ...]]
+</code></pre></div>
+<hr/>
+<h3 id="pause"><code>pause</code><a class="headerlink" href="#pause" title="Permanent link">¶</a></h3>
+<div class="codehilite"><pre><span></span><code>usage: aria2p pause [-h] [-a] [-f] [gids [gids ...]]
 
 Pause downloads.
 
@@ -1123,11 +797,10 @@ optional arguments:
   -h, --help   Show this help message and exit.
   -a, --all    Pause all the downloads.
   -f, --force  Pause without contacting servers first.
-</pre></div>
-
-<hr />
-<h3 id="remove"><code>remove</code><a class="headerlink" href="#remove" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span>usage: aria2p remove [-h] [-a] [-f] [gids [gids ...]]
+</code></pre></div>
+<hr/>
+<h3 id="remove"><code>remove</code><a class="headerlink" href="#remove" title="Permanent link">¶</a></h3>
+<div class="codehilite"><pre><span></span><code>usage: aria2p remove [-h] [-a] [-f] [gids [gids ...]]
 
 Remove downloads.
 
@@ -1138,11 +811,10 @@ optional arguments:
   -h, --help   Show this help message and exit.
   -a, --all    Remove all the downloads.
   -f, --force  Remove without contacting servers first.
-</pre></div>
-
-<hr />
-<h3 id="resume"><code>resume</code><a class="headerlink" href="#resume" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span>usage: aria2p resume [-h] [-a] [gids [gids ...]]
+</code></pre></div>
+<hr/>
+<h3 id="resume"><code>resume</code><a class="headerlink" href="#resume" title="Permanent link">¶</a></h3>
+<div class="codehilite"><pre><span></span><code>usage: aria2p resume [-h] [-a] [gids [gids ...]]
 
 Resume downloads.
 
@@ -1152,37 +824,33 @@ positional arguments:
 optional arguments:
   -h, --help  Show this help message and exit.
   -a, --all   Resume all the downloads.
-</pre></div>
-
-<hr />
-<h3 id="show"><code>show</code><a class="headerlink" href="#show" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span>usage: aria2p show [-h]
+</code></pre></div>
+<hr/>
+<h3 id="show"><code>show</code><a class="headerlink" href="#show" title="Permanent link">¶</a></h3>
+<div class="codehilite"><pre><span></span><code>usage: aria2p show [-h]
 
 Show the download progression.
 
 optional arguments:
   -h, --help  Show this help message and exit.
-</pre></div>
-
-<hr />
-<h3 id="top"><code>top</code><a class="headerlink" href="#top" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span>usage: aria2p top [-h]
+</code></pre></div>
+<hr/>
+<h3 id="top"><code>top</code><a class="headerlink" href="#top" title="Permanent link">¶</a></h3>
+<div class="codehilite"><pre><span></span><code>usage: aria2p top [-h]
 
 Launch the top-like interactive interface.
 
 optional arguments:
   -h, --help  Show this help message and exit.
-</pre></div>
-
-<h2 id="troubleshoot">Troubleshoot<a class="headerlink" href="#troubleshoot" title="Permanent link">&para;</a></h2>
+</code></pre></div>
+<h2 id="troubleshoot">Troubleshoot<a class="headerlink" href="#troubleshoot" title="Permanent link">¶</a></h2>
 <ul>
 <li>Error outputs like below when using <code>aria2p</code> as a Python library:</li>
 </ul>
-<div class="codehilite"><pre><span></span>requests.exceptions.ConnectionError: HTTPConnectionPool(host=&#39;localhost&#39;, port=6800): Max retries exceeded with url: /jsonrpc (Caused by NewConnectionError(&#39;&lt;urllib3.connection.HTTPConnection object at 0x1115b1908&gt;: Failed to establish a new connection: [Errno 61] Connection refused&#39;,))
-</pre></div>
-
+<div class="codehilite"><pre><span></span><code>requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=6800): Max retries exceeded with url: /jsonrpc (Caused by NewConnectionError('&lt;urllib3.connection.HTTPConnection object at 0x1115b1908&gt;: Failed to establish a new connection: [Errno 61] Connection refused',))
+</code></pre></div>
 <p>Solution: <code>aria2c</code> needs to be up and running first.</p>
-<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">&para;</a></h2>
+<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
 <p>To support this project,
 consider donating through one of the following platforms:</p>
 <ul>
@@ -1198,66 +866,43 @@ consider donating or be a supporter through one of the following platforms</p>
 <li><a href="https://www.paypal.me/pawamoy">Paypal</a></li>
 </ul>
 <p>Thank you!</p>
-                
-                  
-                
-                
-              
-              
-                
-
-
-              
-            </article>
-          </div>
-        </div>
-      </main>
-      
-        
+</article>
+</div>
+</div>
+</main>
 <footer class="md-footer">
-  
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-        
-        
-          <a href="usage/" title="Usage" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-              <span class="md-flex__ellipsis">
-                <span class="md-footer-nav__direction">
+<div class="md-footer-nav">
+<nav class="md-footer-nav__inner md-grid">
+<a class="md-flex md-footer-nav__link md-footer-nav__link--next" href="usage/" rel="next" title="Usage">
+<div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+<span class="md-flex__ellipsis">
+<span class="md-footer-nav__direction">
                   Next
                 </span>
                 Usage
               </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink">
-              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
-          </a>
-        
-      </nav>
-    </div>
-  
-  <div class="md-footer-meta md-typeset">
-    <div class="md-footer-meta__inner md-grid">
-      <div class="md-footer-copyright">
+</div>
+<div class="md-flex__cell md-flex__cell--shrink">
+<i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+</div>
+</a>
+</nav>
+</div>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-footer-copyright">
         
         powered by
-        <a href="https://www.mkdocs.org">MkDocs</a>
+        <a href="https://www.mkdocs.org" rel="noopener" target="_blank">MkDocs</a>
         and
-        <a href="https://squidfunk.github.io/mkdocs-material/">
+        <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
           Material for MkDocs</a>
-      </div>
-      
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </footer>
-      
-    </div>
-    
-      <script src="assets/javascripts/application.808e90bb.js"></script>
-      
-      <script>app.initialize({version:"1.0.4",url:{base:"."}})</script>
-      
-    
-  </body>
+</div>
+<script src="assets/javascripts/application.c33a9706.js"></script>
+<script>app.initialize({version:"1.1",url:{base:"."}})</script>
+</body>
 </html>
