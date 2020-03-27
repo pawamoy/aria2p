@@ -213,6 +213,11 @@ class Download:
         self._belongs_to = None
 
     @property
+    def live(self):
+        self.update()
+        return self
+
+    @property
     def name(self):
         """
         The name of the download.
