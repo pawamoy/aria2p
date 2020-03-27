@@ -435,7 +435,7 @@ class Interface:
             with wal_sequences.open("rb") as fd:
                 contents = fd.read()
                 sys.stdout.buffer.write(contents)
-        except Exception:
+        except Exception:  # nosec
             pass
 
     def update_select_sort_rows(self):
