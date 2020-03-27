@@ -17,8 +17,10 @@ This module contains all the code responsible for the HTOP-like interface.
 # pylint: disable=invalid-name
 
 import os
+import sys
 import time
 from collections import defaultdict
+from pathlib import Path
 
 from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import ManagedScreen, Screen
@@ -420,9 +422,21 @@ class Interface:
                         time.sleep(self.sleep)
                         self.frame = (self.frame + 1) % self.frames
                     logger.debug("Screen has resized")
+                    self.post_resize()
         except Exception as error:
             logger.exception(error)
             return False
+
+    def post_resize(self):
+        logger.debug(f"Running post-resize function")
+        logger.debug("Trying to re-apply pywal color theme")
+        wal_sequences = Path.home() / ".cache" / "wal" / "sequences"
+        try:
+            with wal_sequences.open("rb") as fd:
+                contents = fd.read()
+                sys.stdout.buffer.write(contents)
+        except Exception:
+            pass
 
     def update_select_sort_rows(self):
         self.select_sort_rows = self.columns_order
