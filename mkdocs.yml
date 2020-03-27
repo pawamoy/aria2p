@@ -1,6 +1,6 @@
 site_name: aria2p
 site_description: Command-line tool and Python library to interact with an aria2c daemon process through JSON-RPC.
-site_url: https://aria2p.github.io/
+site_url: https://pawamoy.github.io/aria2p
 repo_url: https://github.com/pawamoy/aria2p
 repo_name: pawamoy/aria2p
 
