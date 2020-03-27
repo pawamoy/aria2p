@@ -213,7 +213,8 @@ class Download:
         self._belongs_to = None
 
     @property
-    def live(self):
+    def live(self) -> "Download":
+        """Returns the same object with updated data."""
         self.update()
         return self
 
