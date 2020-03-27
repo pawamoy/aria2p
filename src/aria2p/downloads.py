@@ -48,7 +48,7 @@ class BitTorrent:
         return self._struct.get("comment")
 
     @property
-    def creation_date(self):
+    def creation_date(self) -> datetime:
         """
         The creation time of the torrent.
 
@@ -57,7 +57,7 @@ class BitTorrent:
         return datetime.fromtimestamp(self._struct.get("creationDate"))
 
     @property
-    def mode(self):
+    def mode(self) -> str:
         """
         File mode of the torrent.
 

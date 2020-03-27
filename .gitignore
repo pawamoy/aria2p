@@ -15,3 +15,5 @@ pip-wheel-metadata/
 site/
 demo.gif
 .mypy_cache/
+poetry.lock
+

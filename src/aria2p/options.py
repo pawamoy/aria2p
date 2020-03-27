@@ -259,7 +259,7 @@ class Options:
     @property
     def checksum(self) -> str:
         """
-        Set checksum (<TYPE>=<DIGEST>).
+        Set checksum (`<TYPE>=<DIGEST>`).
 
         TYPE is hash type. The supported hash type is listed in Hash Algorithms in aria2c -v. DIGEST is hex digest.
         For example, setting sha-1 digest looks like this: sha-1=0192ba11326fe2298c8cb4de616f4d4140213838 This option
@@ -383,8 +383,8 @@ class Options:
         aria2 does not split less than 2*SIZE byte range.
 
         For example, let's consider downloading 20MiB file. If SIZE is 10M, aria2 can split file into 2 range [
-        0-10MiB)  and [10MiB-20MiB)  and download it using 2 sources(if --split >= 2, of course). If SIZE is 15M,
-        since 2*15M > 20MiB, aria2 does not split file and download it using 1 source. You can append K or M (1K =
+        0-10MiB)  and [10MiB-20MiB)  and download it using 2 sources(if --split >`= 2, of course). If SIZE is 15M,
+        since 2*15M >` 20MiB, aria2 does not split file and download it using 1 source. You can append K or M (1K =
         1024, 1M = 1024K). Possible Values: 1M -1024M Default: 20M
 
         Returns:
@@ -536,7 +536,7 @@ class Options:
         """
         Set the seconds to wait between retries.
 
-        When SEC > 0, aria2 will retry downloads when the HTTP server returns a 503 response. Default: 0.
+        When SEC >` 0, aria2 will retry downloads when the HTTP server returns a 503 response. Default: 0.
 
         Returns:
             int
@@ -732,7 +732,7 @@ class Options:
         NOTE:
             AppleTLS users should use the KeyChain Access utility to import the client certificate and get the SHA-1
             fingerprint from the Information dialog corresponding to that certificate. To start aria2c use
-            --certificate=<SHA-1>. Alternatively PKCS12 files are also supported. PEM files, however, are not supported.
+            --certificate=`<SHA-1>`. Alternatively PKCS12 files are also supported. PEM files, however, are not supported.
 
         Returns:
             str
@@ -1225,7 +1225,7 @@ class Options:
     @property
     def ssh_host_key_md(self) -> str:
         """
-        Set checksum for SSH host public key (<TYPE>=<DIGEST>).
+        Set checksum for SSH host public key (`<TYPE>=<DIGEST>`).
 
         TYPE is hash type. The supported hash type is sha-1 or md5. DIGEST is hex digest. For example:
         sha-1=b030503d4de4539dc7885e6f0f5e256704edf4c3. This option can be used to validate server's public key when
@@ -1491,12 +1491,12 @@ class Options:
     @property
     def bt_prioritize_piece(self) -> str:
         """
-        Try to download first and last pieces of each file first (head[=<SIZE>],tail[=<SIZE>]).
+        Try to download first and last pieces of each file first (head[=`<SIZE>`],tail[=`<SIZE>`]).
 
         This is useful for previewing files. The argument can contain 2 keywords: head and tail. To include both
         keywords, they must be separated by comma. These keywords can take one parameter, SIZE. For example,
-        if head=<SIZE> is specified, pieces in the range of first SIZE bytes of each file get higher priority.
-        tail=<SIZE> means the range of last SIZE bytes of each file. SIZE can include K or M (1K = 1024, 1M = 1024K).
+        if head=`<SIZE>` is specified, pieces in the range of first SIZE bytes of each file get higher priority.
+        tail=`<SIZE>` means the range of last SIZE bytes of each file. SIZE can include K or M (1K = 1024, 1M = 1024K).
         If SIZE is omitted, SIZE=1M is used.
 
         Returns:
@@ -1529,7 +1529,7 @@ class Options:
     def bt_require_crypto(self) -> bool:
         """
         If true is given, aria2 doesn't accept and establish connection with legacy BitTorrent handshake
-        (\19BitTorrent protocol).
+        (BitTorrent protocol).
 
         Thus aria2 always uses Obfuscation handshake. Default: false.
 
@@ -1681,7 +1681,7 @@ class Options:
     @property
     def dht_entry_point(self) -> str:
         """
-        Set host and port as an entry point to IPv4 DHT network (<HOST>:<PORT>).
+        Set host and port as an entry point to IPv4 DHT network (`<HOST>`:`<PORT>`).
 
         Returns:
             str
@@ -1695,7 +1695,7 @@ class Options:
     @property
     def dht_entry_point6(self) -> str:
         """
-        Set host and port as an entry point to IPv6 DHT network (<HOST>:<PORT>).
+        Set host and port as an entry point to IPv6 DHT network (`<HOST>`:`<PORT>`).
 
         Returns:
             str
@@ -1863,7 +1863,7 @@ class Options:
     @property
     def index_out(self) -> str:
         """
-        Set file path for file with index=INDEX (<INDEX>=<PATH>).
+        Set file path for file with index=INDEX (`<INDEX>=<PATH>`).
 
         You can find the file index using the --show-files option. PATH is a relative path to the path specified in
         --dir option. You can use this option multiple times. Using this option, you can specify the output file
@@ -2239,7 +2239,7 @@ class Options:
         NOTE:
             AppleTLS users should use the KeyChain Access utility to first generate a self-signed SSL-Server
             certificate, e.g. using the wizard, and get the SHA-1 fingerprint from the Information dialog
-            corresponding to that new certificate. To start aria2c with --rpc-secure use --rpc-certificate=<SHA-1>.
+            corresponding to that new certificate. To start aria2c with --rpc-secure use --rpc-certificate=`<SHA-1>`.
             Alternatively PKCS12 files are also supported. PEM files, however, are not supported.
 
         Returns:

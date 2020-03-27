@@ -28,7 +28,7 @@ class API:
     allowing for even more Pythonic interactions, without worrying about payloads, responses, JSON, etc..
     """
 
-    def __init__(self, client: Client = None) -> None:
+    def __init__(self, client=None) -> None:
         """
         Initialization method.
 
@@ -170,7 +170,7 @@ class API:
         """
         Not implemented.
 
-        Search and return [`Download`][aria2p.options.Download] objects based on multiple patterns.
+        Search and return [`Download`][aria2p.downloads.Download] objects based on multiple patterns.
 
         Parameters:
             patterns: the patterns used to filter the download list.

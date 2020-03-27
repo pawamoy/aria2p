@@ -27,19 +27,18 @@ asciimatics = { version = "*", optional = true }
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.5"
-black = { version = "*", allow-prereleases = true }
 coverage = "^5.0"
 flake8 = "^3.6"
 git-changelog = "^0.2.0"
 ipython = "^7.2"
 isort = { version = "^4.3", extras = ["pyproject"] }
 jinja2-cli = "^0.7.0"
-mkdocs = "^1.0.4"
-mkdocstrings = "^0.7.0"
+mkdocs = "^1.1"
+mkdocstrings = "^0.10.0"
 mkdocs-material = "^4.6.0"
 mypy = "^0.761"
 pyinstaller = "^3.5"
-pylint = { git = "https://github.com/PyCQA/pylint" }
+pylint = { git = "https://github.com/PyCQA/pylint.git" }
 pytest = "^4.3"
 pytest-cov = "^2.8"
 pytest-sugar = "^0.9.2"
@@ -47,6 +46,7 @@ pytest-xdist = "^1.26"
 responses = "^0.10.5"
 safety = "^1.8"
 toml = "^0.10.0"
+black = "^19.10b0"
 
 [tool.poetry.extras]
 tui = ["asciimatics"]
