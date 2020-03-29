@@ -208,9 +208,10 @@ class Download:
         self._files = []
         self._name = None
         self._bittorrent = None
-        self._followed_by = []
+        self._followed_by = None
         self._following = None
         self._belongs_to = None
+        self._options = None
 
     @property
     def live(self) -> "Download":

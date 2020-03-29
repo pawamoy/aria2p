@@ -166,7 +166,6 @@ class TestDownloadClass:
         with Aria2Server(port=7400) as server:
             self.download.api = server.api
             assert self.download.followed_by == []
-            assert self.download.followed_by == []
 
     def test_followed_by_ids(self):
         with Aria2Server(port=7401) as server:
