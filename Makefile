@@ -113,6 +113,17 @@ readme:  ## Regenerate README.md.
 	poetry run ./scripts/gen-readme-data.py | \
 		poetry run jinja2 --format=json scripts/templates/README.md - -o README.md
 
+.PHONY: release
+release:  ## Create a new release (commit, tag, push, build, publish, deploy docs).
+	poetry version $(v)
+	git commit -am "chore: Prepare release $(v)"
+	git tag v$(v)
+	git push
+	git push --tags
+	poetry build
+	poetry publish
+	poetry run mkdocs gh-deploy
+
 .PHONY: setup
 setup:  ## Setup the project with poetry.
 	if ! command -v poetry; then \
