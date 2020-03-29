@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.8.1](https://github.com/pawamoy/aria2p/releases/tag/v0.8.1) - 2020-03-29
+
+<small>[Compare with v0.8.0](https://github.com/pawamoy/aria2p/compare/v0.8.0...v0.8.1)</small>
+
+### Fixed
+- Fix download `followed_by` not being reset properly when updating ([19510a7](https://github.com/pawamoy/aria2p/commit/19510a7c4caca85356927f0bbb8e7292d8b1780c)).
+  See [issue #51](https://github.com/pawamoy/aria2p/issues/51).
+
+
 ## [v0.8.0](https://github.com/pawamoy/aria2p/releases/tag/v0.8.0) - 2020-03-27
 
 <small>[Compare with v0.7.1](https://github.com/pawamoy/aria2p/compare/v0.7.1...v0.8.0)</small>
