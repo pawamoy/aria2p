@@ -22,6 +22,7 @@ import time
 from collections import defaultdict
 from pathlib import Path
 
+import requests
 from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import ManagedScreen, Screen
 from loguru import logger
@@ -860,8 +861,11 @@ class Interface:
 
     def update_data(self):
         """Set the interface data and rows contents."""
-        self.data = self.get_data()
-        self.sort_data()
+        try:
+            self.data = self.get_data()
+            self.sort_data()
+        except requests.exceptions.Timeout:
+            logger.debug("Request timeout")
 
     def sort_data(self):
         """Sort data according to interface state."""

@@ -29,7 +29,7 @@ from loguru import logger
 from aria2p import Download, enable_logger
 
 from .api import API
-from .client import DEFAULT_HOST, DEFAULT_PORT, Client, ClientException
+from .client import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_TIMEOUT, Client, ClientException
 from .utils import get_version
 
 try:
@@ -61,7 +61,14 @@ def main(args: Optional[List[str]] = None) -> int:
     check_args(parser, args)
 
     logger.debug("Instantiating API")
-    api = API(Client(host=kwargs.pop("host"), port=kwargs.pop("port"), secret=kwargs.pop("secret")))
+    api = API(
+        Client(
+            host=kwargs.pop("host"),
+            port=kwargs.pop("port"),
+            secret=kwargs.pop("secret"),
+            timeout=kwargs.pop("client_timeout"),
+        )
+    )
 
     logger.info(f"API instantiated: {api!r}")
 
@@ -165,6 +172,14 @@ def get_parser() -> argparse.ArgumentParser:
     )
     global_options.add_argument(
         "-P", "--log-path", dest="log_path", default=None, help="Log path to use. Can be a directory or a file."
+    )
+    global_options.add_argument(
+        "-T",
+        "--client-timeout",
+        dest="client_timeout",
+        default=DEFAULT_TIMEOUT,
+        type=float,
+        help=f"Timeout in seconds for requests to the remote server. Floats supported. Default: {DEFAULT_TIMEOUT}.",
     )
 
     # ========= SUBPARSERS ========= #

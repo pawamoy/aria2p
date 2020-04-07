@@ -15,6 +15,7 @@ from .utils import SignalHandler
 DEFAULT_ID = -1
 DEFAULT_HOST = "http://localhost"
 DEFAULT_PORT = 6800
+DEFAULT_TIMEOUT: float = 60.0
 
 JSONRPC_PARSER_ERROR = -32700
 JSONRPC_INVALID_REQUEST = -32600
@@ -169,7 +170,9 @@ class Client:
         LIST_NOTIFICATIONS,
     ]
 
-    def __init__(self, host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, secret: str = "") -> None:  # nosec
+    def __init__(  # nosec
+        self, host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, secret: str = "", timeout: float = DEFAULT_TIMEOUT,
+    ) -> None:
         """
         Initialization method.
 
@@ -177,12 +180,14 @@ class Client:
             host: the remote process address.
             port: the remote process port.
             secret: the secret token.
+            timeout: the timeout to use for requests towards the remote server.
         """
         host = host.rstrip("/")
 
         self.host = host
         self.port = port
         self.secret = secret
+        self.timeout = timeout
         self.listening = False
 
     def __str__(self):
@@ -321,7 +326,7 @@ class Client:
         Returns:
             The answer from the server, as a Python dictionary.
         """
-        return requests.post(self.server, data=payload).json()
+        return requests.post(self.server, data=payload, timeout=self.timeout).json()
 
     @staticmethod
     def response_as_exception(response: dict) -> ClientException:
