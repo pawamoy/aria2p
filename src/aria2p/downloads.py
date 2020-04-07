@@ -350,6 +350,10 @@ class Download:
         return all(_.is_metadata for _ in self.files)
 
     @property
+    def is_torrent(self):
+        return "bittorrent" in self._struct
+
+    @property
     def total_length(self):
         """Total length of the download in bytes."""
         return int(self._struct.get("totalLength"))

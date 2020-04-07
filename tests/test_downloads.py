@@ -378,6 +378,11 @@ class TestDownloadClass:
     def test_verify_integrity_pending(self):
         assert self.download.verify_integrity_pending is None
 
+    def test_is_torrent(self):
+        assert self.download.is_torrent
+        del self.download._struct["bittorrent"]
+        assert not self.download.is_torrent
+
 
 class TestFileClass:
     def setup_method(self):
