@@ -638,7 +638,7 @@ class Download:
 
         BitTorrent only.
         """
-        if not self._bittorrent:
+        if not self._bittorrent and "bittorrent" in self._struct:
             self._bittorrent = BitTorrent(self._struct.get("bittorrent"))
         return self._bittorrent
 

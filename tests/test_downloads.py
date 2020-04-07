@@ -119,6 +119,11 @@ class TestDownloadClass:
         self.download._struct["bittorrent"] = {"mode": "single"}
         assert self.download.bittorrent.mode is None
 
+        # assert is None when "bittorrent" key is not in struct
+        del self.download._struct["bittorrent"]
+        self.download._bittorrent = None
+        assert self.download.bittorrent is None
+
     def test_completed_length(self):
         assert self.download.completed_length == 889_592_532
 
