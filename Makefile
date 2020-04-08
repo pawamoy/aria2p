@@ -116,7 +116,8 @@ readme:  ## Regenerate README.md.
 .PHONY: release
 release:  ## Create a new release (commit, tag, push, build, publish, deploy docs).
 	poetry version $(v)
-	git commit -am "chore: Prepare release $(v)"
+	git add pyproject.toml CHANGELOG.md
+	git commit -m "chore: Prepare release $(v)"
 	git tag v$(v)
 	git push
 	git push --tags

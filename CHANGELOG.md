@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.9.0](https://github.com/pawamoy/aria2p/releases/tag/v0.9.0) - 2020-04-08
+
+<small>[Compare with v0.8.1](https://github.com/pawamoy/aria2p/compare/v0.8.1...v0.9.0)</small>
+
+### Features
+- Add a timeout to client's requests ([26bb0b6](https://github.com/pawamoy/aria2p/commit/26bb0b67fc02f9e98dd25924cb4a885313fa43ff) by Timothée Mazzucotelli). Related issues/PRs: [#52](https://github.com/pawamoy/aria2p/issues/52)
+- Add the `is_torrent` property to `download` objects. ([0c7760e](https://github.com/pawamoy/aria2p/commit/0c7760e768d1e26ae022d80d5722e923143dca33) by Timothée Mazzucotelli). Related issues/PRs: [#53](https://github.com/pawamoy/aria2p/issues/53)
+- `download.bittorrent` returns `none` if no "bittorrent" key present ([74106fe](https://github.com/pawamoy/aria2p/commit/74106fe82ec4afecdccdf10a1f615ddab9712821) by Timothée Mazzucotelli). Related issues/PRs: [#53](https://github.com/pawamoy/aria2p/issues/53)<br>
+  **BREAKING CHANGE:** this could be a breaking change if your code does not check if `download.bittorrent` is an instance of `BitTorrent` before accessing its attributes.
+
+
 ## [v0.8.1](https://github.com/pawamoy/aria2p/releases/tag/v0.8.1) - 2020-03-29
 
 <small>[Compare with v0.8.0](https://github.com/pawamoy/aria2p/compare/v0.8.0...v0.8.1)</small>

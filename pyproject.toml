@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "aria2p"
-version = "0.8.1"
+version = "0.9.0"
 description = "Command-line tool and library to interact with an aria2c daemon process with JSON-RPC."
 authors = ["Timothée Mazzucotelli <pawamoy@pm.me>"]
 license = "ISC"
