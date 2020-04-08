@@ -353,6 +353,11 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#aria2p.downloads.Download.is_torrent">
+    is_torrent
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#aria2p.downloads.Download.is_waiting">
     is_waiting
   </a>
@@ -839,6 +844,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="#aria2p.downloads.Download.is_removed">
     is_removed
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#aria2p.downloads.Download.is_torrent">
+    is_torrent
   </a>
 </li>
 <li class="md-nav__item">
@@ -1617,6 +1627,19 @@ is_removed        </code>
 </div>
 </div>
 <div class="doc doc-object doc-attribute">
+<h3 class="doc doc-heading" id="aria2p.downloads.Download.is_torrent">
+<code class="highlight">
+is_torrent        </code>
+<span class="doc doc-properties">
+<small class="doc doc-property doc-property-property"><code>property</code></small>
+<small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+</span>
+<a class="headerlink" href="#aria2p.downloads.Download.is_torrent" title="Permanent link">¶</a></h3>
+<div class="doc doc-contents">
+<p>Return true if this download is a torrent.</p>
+</div>
+</div>
+<div class="doc doc-object doc-attribute">
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.is_waiting">
 <code class="highlight">
 is_waiting        </code>
@@ -1988,19 +2011,19 @@ completed_length_string<span class="p">(</span><span class="bp">self</span><span
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>375
-376
-377
-378
-379
-380
-381
+<pre><span></span>381
 382
 383
 384
 385
 386
-387</pre>
+387
+388
+389
+390
+391
+392
+393</pre>
 </div>
 </td>
 <td class="code">
@@ -2085,18 +2108,18 @@ copy_files<span class="p">(</span><span class="bp">self</span><span class="p">,<
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>844
-845
-846
-847
-848
-849
-850
+<pre><span></span>850
 851
 852
 853
 854
-855</pre>
+855
+856
+857
+858
+859
+860
+861</pre>
 </div>
 </td>
 <td class="code">
@@ -2172,19 +2195,19 @@ download_speed_string<span class="p">(</span><span class="bp">self</span><span c
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>424
-425
-426
-427
-428
-429
-430
+<pre><span></span>430
 431
 432
 433
 434
 435
-436</pre>
+436
+437
+438
+439
+440
+441
+442</pre>
 </div>
 </td>
 <td class="code">
@@ -2223,14 +2246,14 @@ eta_string<span class="p">(</span><span class="bp">self</span><span class="p">,<
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>707
-708
-709
-710
-711
-712
-713
-714</pre>
+<pre><span></span>713
+714
+715
+716
+717
+718
+719
+720</pre>
 </div>
 </td>
 <td class="code">
@@ -2302,17 +2325,17 @@ move<span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>716
-717
-718
-719
-720
-721
-722
+<pre><span></span>722
 723
 724
 725
-726</pre>
+726
+727
+728
+729
+730
+731
+732</pre>
 </div>
 </td>
 <td class="code">
@@ -2387,17 +2410,17 @@ move_down<span class="p">(</span><span class="bp">self</span><span class="p">,</
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>752
-753
-754
-755
-756
-757
-758
+<pre><span></span>758
 759
 760
 761
-762</pre>
+762
+763
+764
+765
+766
+767
+768</pre>
 </div>
 </td>
 <td class="code">
@@ -2480,18 +2503,18 @@ move_files<span class="p">(</span><span class="bp">self</span><span class="p">,<
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>831
-832
-833
-834
-835
-836
-837
+<pre><span></span>837
 838
 839
 840
 841
-842</pre>
+842
+843
+844
+845
+846
+847
+848</pre>
 </div>
 </td>
 <td class="code">
@@ -2567,17 +2590,17 @@ move_to<span class="p">(</span><span class="bp">self</span><span class="p">,</sp
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>728
-729
-730
-731
-732
-733
-734
+<pre><span></span>734
 735
 736
 737
-738</pre>
+738
+739
+740
+741
+742
+743
+744</pre>
 </div>
 </td>
 <td class="code">
@@ -2631,14 +2654,14 @@ move_to_bottom<span class="p">(</span><span class="bp">self</span><span class="p
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>773
-774
-775
-776
-777
-778
-779
-780</pre>
+<pre><span></span>779
+780
+781
+782
+783
+784
+785
+786</pre>
 </div>
 </td>
 <td class="code">
@@ -2689,14 +2712,14 @@ move_to_top<span class="p">(</span><span class="bp">self</span><span class="p">)
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>764
-765
-766
-767
-768
-769
-770
-771</pre>
+<pre><span></span>770
+771
+772
+773
+774
+775
+776
+777</pre>
 </div>
 </td>
 <td class="code">
@@ -2768,17 +2791,17 @@ move_up<span class="p">(</span><span class="bp">self</span><span class="p">,</sp
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>740
-741
-742
-743
-744
-745
-746
+<pre><span></span>746
 747
 748
 749
-750</pre>
+750
+751
+752
+753
+754
+755
+756</pre>
 </div>
 </td>
 <td class="code">
@@ -2849,20 +2872,20 @@ pause<span class="p">(</span><span class="bp">self</span><span class="p">,</span
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>797
-798
-799
-800
-801
-802
-803
+<pre><span></span>803
 804
 805
 806
 807
 808
 809
-810</pre>
+810
+811
+812
+813
+814
+815
+816</pre>
 </div>
 </td>
 <td class="code">
@@ -2940,19 +2963,19 @@ piece_length_string<span class="p">(</span><span class="bp">self</span><span cla
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>489
-490
-491
-492
-493
-494
-495
+<pre><span></span>495
 496
 497
 498
 499
 500
-501</pre>
+501
+502
+503
+504
+505
+506
+507</pre>
 </div>
 </td>
 <td class="code">
@@ -3029,17 +3052,17 @@ progress_string<span class="p">(</span><span class="bp">self</span><span class="
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>684
-685
-686
-687
-688
-689
-690
+<pre><span></span>690
 691
 692
 693
-694</pre>
+694
+695
+696
+697
+698
+699
+700</pre>
 </div>
 </td>
 <td class="code">
@@ -3076,9 +3099,9 @@ purge<span class="p">(</span><span class="bp">self</span><span class="p">)</span
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>827
-828
-829</pre>
+<pre><span></span>833
+834
+835</pre>
 </div>
 </td>
 <td class="code">
@@ -3141,20 +3164,20 @@ remove<span class="p">(</span><span class="bp">self</span><span class="p">,</spa
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>782
-783
-784
-785
-786
-787
-788
+<pre><span></span>788
 789
 790
 791
 792
 793
 794
-795</pre>
+795
+796
+797
+798
+799
+800
+801</pre>
 </div>
 </td>
 <td class="code">
@@ -3228,20 +3251,20 @@ resume<span class="p">(</span><span class="bp">self</span><span class="p">)</spa
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>812
-813
-814
-815
-816
-817
-818
+<pre><span></span>818
 819
 820
 821
 822
 823
 824
-825</pre>
+825
+826
+827
+828
+829
+830
+831</pre>
 </div>
 </td>
 <td class="code">
@@ -3319,19 +3342,19 @@ total_length_string<span class="p">(</span><span class="bp">self</span><span cla
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>356
-357
-358
-359
-360
-361
-362
+<pre><span></span>362
 363
 364
 365
 366
 367
-368</pre>
+368
+369
+370
+371
+372
+373
+374</pre>
 </div>
 </td>
 <td class="code">
@@ -3379,7 +3402,8 @@ update<span class="p">(</span><span class="bp">self</span><span class="p">)</spa
 210
 211
 212
-213</pre>
+213
+214</pre>
 </div>
 </td>
 <td class="code">
@@ -3391,9 +3415,10 @@ update<span class="p">(</span><span class="bp">self</span><span class="p">)</spa
     <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_bittorrent</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_followed_by</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_followed_by</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_following</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_belongs_to</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="kc">None</span>
 </code></pre>
 </div>
 </td>
@@ -3415,9 +3440,9 @@ update_options<span class="p">(</span><span class="bp">self</span><span class="p
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>302
-303
-304</pre>
+<pre><span></span>303
+304
+305</pre>
 </div>
 </td>
 <td class="code">
@@ -3484,19 +3509,19 @@ upload_length_string<span class="p">(</span><span class="bp">self</span><span cl
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>394
-395
-396
-397
-398
-399
-400
+<pre><span></span>400
 401
 402
 403
 404
 405
-406</pre>
+406
+407
+408
+409
+410
+411
+412</pre>
 </div>
 </td>
 <td class="code">
@@ -3573,19 +3598,19 @@ upload_speed_string<span class="p">(</span><span class="bp">self</span><span cla
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>443
-444
-445
-446
-447
-448
-449
+<pre><span></span>449
 450
 451
 452
 453
 454
-455</pre>
+455
+456
+457
+458
+459
+460
+461</pre>
 </div>
 </td>
 <td class="code">
@@ -3662,19 +3687,19 @@ verified_length_string<span class="p">(</span><span class="bp">self</span><span 
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>653
-654
-655
-656
-657
-658
-659
+<pre><span></span>659
 660
 661
 662
 663
 664
-665</pre>
+665
+666
+667
+668
+669
+670
+671</pre>
 </div>
 </td>
 <td class="code">

@@ -874,7 +874,7 @@ ws_server: <span class="nb">str</span> </code>
 <div class="doc doc-object doc-method">
 <h3 class="doc doc-heading" id="aria2p.client.Client.__init__">
 <code class="highlight language-python">
-__init__<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">'http://localhost'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6800</span><span class="p">,</span> <span class="n">secret</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span> </code>
+__init__<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">'http://localhost'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6800</span><span class="p">,</span> <span class="n">secret</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">60.0</span><span class="p">)</span> </code>
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-special"><code>special</code></small>
 </span>
@@ -916,6 +916,14 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 </td>
 <td><code>''</code></td>
 </tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>float</code></td>
+<td>
+<p>the timeout to use for requests towards the remote server.</p>
+</td>
+<td><code>60.0</code></td>
+</tr>
 </tbody>
 </table>
 <details class="quote">
@@ -924,8 +932,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>172
-173
+<pre><span></span>173
 174
 175
 176
@@ -938,12 +945,19 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 183
 184
 185
-186</pre>
+186
+187
+188
+189
+190
+191</pre>
 </div>
 </td>
 <td class="code">
 <div class="highlight">
-<pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_HOST</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_PORT</span><span class="p">,</span> <span class="n">secret</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># nosec</span>
+<pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>  <span class="c1"># nosec</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_HOST</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_PORT</span><span class="p">,</span> <span class="n">secret</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_TIMEOUT</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">"""</span>
 <span class="sd">    Initialization method.</span>
 
@@ -951,12 +965,14 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <span class="sd">        host: the remote process address.</span>
 <span class="sd">        port: the remote process port.</span>
 <span class="sd">        secret: the secret token.</span>
+<span class="sd">        timeout: the timeout to use for requests towards the remote server.</span>
 <span class="sd">    """</span>
     <span class="n">host</span> <span class="o">=</span> <span class="n">host</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">secret</span> <span class="o">=</span> <span class="n">secret</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">listening</span> <span class="o">=</span> <span class="kc">False</span>
 </code></pre>
 </div>
@@ -1011,12 +1027,7 @@ the downloads added by this method are not saved by --save-session.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>488
-489
-490
-491
-492
-493
+<pre><span></span>493
 494
 495
 496
@@ -1047,7 +1058,12 @@ the downloads added by this method are not saved by --save-session.</p>
 521
 522
 523
-524</pre>
+524
+525
+526
+527
+528
+529</pre>
 </div>
 </td>
 <td class="code">
@@ -1144,12 +1160,7 @@ the same name already exists, it is overwritten!  If the file cannot be saved su
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>448
-449
-450
-451
-452
-453
+<pre><span></span>453
 454
 455
 456
@@ -1182,7 +1193,12 @@ the same name already exists, it is overwritten!  If the file cannot be saved su
 483
 484
 485
-486</pre>
+486
+487
+488
+489
+490
+491</pre>
 </div>
 </td>
 <td class="code">
@@ -1288,12 +1304,7 @@ method returns the GID of the newly registered download.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>402
-403
-404
-405
-406
-407
+<pre><span></span>407
 408
 409
 410
@@ -1332,7 +1343,12 @@ method returns the GID of the newly registered download.</p>
 443
 444
 445
-446</pre>
+446
+447
+448
+449
+450
+451</pre>
 </div>
 </td>
 <td class="code">
@@ -1458,12 +1474,7 @@ multicall are:</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>231
-232
-233
-234
-235
-236
+<pre><span></span>236
 237
 238
 239
@@ -1492,7 +1503,12 @@ multicall are:</p>
 262
 263
 264
-265</pre>
+265
+266
+267
+268
+269
+270</pre>
 </div>
 </td>
 <td class="code">
@@ -1615,12 +1631,7 @@ call<span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>205
-206
-207
-208
-209
-210
+<pre><span></span>210
 211
 212
 213
@@ -1639,7 +1650,12 @@ call<span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 226
 227
 228
-229</pre>
+229
+230
+231
+232
+233
+234</pre>
 </div>
 </td>
 <td class="code">
@@ -1709,12 +1725,7 @@ returns OK for success.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1287
-1288
-1289
-1290
-1291
-1292
+<pre><span></span>1292
 1293
 1294
 1295
@@ -1748,7 +1759,12 @@ returns OK for success.</p>
 1323
 1324
 1325
-1326</pre>
+1326
+1327
+1328
+1329
+1330
+1331</pre>
 </div>
 </td>
 <td class="code">
@@ -1853,12 +1869,7 @@ itself is managed by aria2, and no user intervention is required):</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1216
-1217
-1218
-1219
-1220
-1221
+<pre><span></span>1221
 1222
 1223
 1224
@@ -1910,7 +1921,12 @@ itself is managed by aria2, and no user intervention is required):</p>
 1270
 1271
 1272
-1273</pre>
+1273
+1274
+1275
+1276
+1277
+1278</pre>
 </div>
 </td>
 <td class="code">
@@ -2024,12 +2040,7 @@ respectively. The response is an integer denoting the resulting position.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1097
-1098
-1099
-1100
-1101
-1102
+<pre><span></span>1102
 1103
 1104
 1105
@@ -2059,7 +2070,12 @@ respectively. The response is an integer denoting the resulting position.</p>
 1129
 1130
 1131
-1132</pre>
+1132
+1133
+1134
+1135
+1136
+1137</pre>
 </div>
 </td>
 <td class="code">
@@ -2155,12 +2171,7 @@ download GID#2089b05ecca3d829.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1134
-1135
-1136
-1137
-1138
-1139
+<pre><span></span>1139
 1140
 1141
 1142
@@ -2193,7 +2204,12 @@ download GID#2089b05ecca3d829.</p>
 1169
 1170
 1171
-1172</pre>
+1172
+1173
+1174
+1175
+1176
+1177</pre>
 </div>
 </td>
 <td class="code">
@@ -2261,15 +2277,15 @@ trackers to unregister the download first.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>584
-585
-586
-587
-588
-589
+<pre><span></span>589
 590
 591
-592</pre>
+592
+593
+594
+595
+596
+597</pre>
 </div>
 </td>
 <td class="code">
@@ -2305,13 +2321,13 @@ force_pause_all<span class="p">(</span><span class="bp">self</span><span class="
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>594
-595
-596
-597
-598
-599
-600</pre>
+<pre><span></span>599
+600
+601
+602
+603
+604
+605</pre>
 </div>
 </td>
 <td class="code">
@@ -2347,15 +2363,15 @@ BitTorrent trackers to unregister the download first.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>555
-556
-557
-558
-559
-560
+<pre><span></span>560
 561
 562
-563</pre>
+563
+564
+565
+566
+567
+568</pre>
 </div>
 </td>
 <td class="code">
@@ -2393,15 +2409,15 @@ returns OK.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1513
-1514
-1515
-1516
-1517
-1518
+<pre><span></span>1518
 1519
 1520
-1521</pre>
+1521
+1522
+1523
+1524
+1525
+1526</pre>
 </div>
 </td>
 <td class="code">
@@ -2487,12 +2503,7 @@ structs which contain following keys. Values are strings.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>851
-852
-853
-854
-855
-856
+<pre><span></span>856
 857
 858
 859
@@ -2547,7 +2558,12 @@ structs which contain following keys. Values are strings.</p>
 908
 909
 910
-911</pre>
+911
+912
+913
+914
+915
+916</pre>
 </div>
 </td>
 <td class="code">
@@ -2639,17 +2655,17 @@ aria2.getOption() method.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1275
-1276
-1277
-1278
-1279
-1280
+<pre><span></span>1280
 1281
 1282
 1283
 1284
-1285</pre>
+1285
+1286
+1287
+1288
+1289
+1290</pre>
 </div>
 </td>
 <td class="code">
@@ -2733,12 +2749,7 @@ struct and contains the following keys. Values are strings.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1328
-1329
-1330
-1331
-1332
-1333
+<pre><span></span>1333
 1334
 1335
 1336
@@ -2789,7 +2800,12 @@ struct and contains the following keys. Values are strings.</p>
 1381
 1382
 1383
-1384</pre>
+1384
+1385
+1386
+1387
+1388
+1389</pre>
 </div>
 </td>
 <td class="code">
@@ -2908,12 +2924,7 @@ default value and have not been set on the command-line, in configuration files 
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1174
-1175
-1176
-1177
-1178
-1179
+<pre><span></span>1179
 1180
 1181
 1182
@@ -2948,7 +2959,12 @@ default value and have not been set on the command-line, in configuration files 
 1211
 1212
 1213
-1214</pre>
+1214
+1215
+1216
+1217
+1218
+1219</pre>
 </div>
 </td>
 <td class="code">
@@ -3057,12 +3073,7 @@ get_params<span class="p">(</span><span class="o">*</span><span class="n">args</
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>386
-387
-388
-389
-390
-391
+<pre><span></span>391
 392
 393
 394
@@ -3070,7 +3081,12 @@ get_params<span class="p">(</span><span class="o">*</span><span class="n">args</
 396
 397
 398
-399</pre>
+399
+400
+401
+402
+403
+404</pre>
 </div>
 </td>
 <td class="code">
@@ -3175,12 +3191,7 @@ get_payload<span class="p">(</span><span class="n">method</span><span class="p">
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>358
-359
-360
-361
-362
-363
+<pre><span></span>363
 364
 365
 366
@@ -3201,7 +3212,12 @@ get_payload<span class="p">(</span><span class="n">method</span><span class="p">
 381
 382
 383
-384</pre>
+384
+385
+386
+387
+388
+389</pre>
 </div>
 </td>
 <td class="code">
@@ -3330,12 +3346,7 @@ only. The response is an array of structs and contains the following keys. Value
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span> 913
- 914
- 915
- 916
- 917
- 918
+<pre><span></span> 918
  919
  920
  921
@@ -3418,7 +3429,12 @@ only. The response is an array of structs and contains the following keys. Value
  998
  999
 1000
-1001</pre>
+1001
+1002
+1003
+1004
+1005
+1006</pre>
 </div>
 </td>
 <td class="code">
@@ -3579,12 +3595,7 @@ response is an array of structs and contains the following keys. Values are stri
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1003
-1004
-1005
-1006
-1007
-1008
+<pre><span></span>1008
 1009
 1010
 1011
@@ -3628,7 +3639,12 @@ response is an array of structs and contains the following keys. Values are stri
 1049
 1050
 1051
-1052</pre>
+1052
+1053
+1054
+1055
+1056
+1057</pre>
 </div>
 </td>
 <td class="code">
@@ -3728,12 +3744,7 @@ get_session_info<span class="p">(</span><span class="bp">self</span><span class=
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1475
-1476
-1477
-1478
-1479
-1480
+<pre><span></span>1480
 1481
 1482
 1483
@@ -3756,7 +3767,12 @@ get_session_info<span class="p">(</span><span class="bp">self</span><span class=
 1500
 1501
 1502
-1503</pre>
+1503
+1504
+1505
+1506
+1507
+1508</pre>
 </div>
 </td>
 <td class="code">
@@ -3840,12 +3856,7 @@ structs and it contains following keys. Values are string.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>815
-816
-817
-818
-819
-820
+<pre><span></span>820
 821
 822
 823
@@ -3874,7 +3885,12 @@ structs and it contains following keys. Values are string.</p>
 846
 847
 848
-849</pre>
+849
+850
+851
+852
+853
+854</pre>
 </div>
 </td>
 <td class="code">
@@ -3980,12 +3996,7 @@ contains following keys.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1423
-1424
-1425
-1426
-1427
-1428
+<pre><span></span>1428
 1429
 1430
 1431
@@ -4030,7 +4041,12 @@ contains following keys.</p>
 1470
 1471
 1472
-1473</pre>
+1473
+1474
+1475
+1476
+1477
+1478</pre>
 </div>
 </td>
 <td class="code">
@@ -4133,12 +4149,7 @@ method names.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1586
-1587
-1588
-1589
-1590
-1591
+<pre><span></span>1591
 1592
 1593
 1594
@@ -4162,7 +4173,12 @@ method names.</p>
 1612
 1613
 1614
-1615</pre>
+1615
+1616
+1617
+1618
+1619
+1620</pre>
 </div>
 </td>
 <td class="code">
@@ -4244,12 +4260,7 @@ notifications names.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1617
-1618
-1619
-1620
-1621
-1622
+<pre><span></span>1622
 1623
 1624
 1625
@@ -4273,7 +4284,12 @@ notifications names.</p>
 1643
 1644
 1645
-1646</pre>
+1646
+1647
+1648
+1649
+1650
+1651</pre>
 </div>
 </td>
 <td class="code">
@@ -4410,12 +4426,7 @@ of notification.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1649
-1650
-1651
-1652
-1653
-1654
+<pre><span></span>1654
 1655
 1656
 1657
@@ -4490,7 +4501,12 @@ of notification.</p>
 1726
 1727
 1728
-1729</pre>
+1729
+1730
+1731
+1732
+1733
+1734</pre>
 </div>
 </td>
 <td class="code">
@@ -4645,12 +4661,7 @@ file.torrent.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1533
-1534
-1535
-1536
-1537
-1538
+<pre><span></span>1538
 1539
 1540
 1541
@@ -4696,7 +4707,12 @@ file.torrent.</p>
 1581
 1582
 1583
-1584</pre>
+1584
+1585
+1586
+1587
+1588
+1589</pre>
 </div>
 </td>
 <td class="code">
@@ -4843,12 +4859,7 @@ It is implemented here as a simple convenience method.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>267
-268
-269
-270
-271
-272
+<pre><span></span>272
 273
 274
 275
@@ -4885,7 +4896,12 @@ It is implemented here as a simple convenience method.</p>
 306
 307
 308
-309</pre>
+309
+310
+311
+312
+313
+314</pre>
 </div>
 </td>
 <td class="code">
@@ -4958,16 +4974,16 @@ method returns GID of paused download.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>565
-566
-567
-568
-569
-570
+<pre><span></span>570
 571
 572
 573
-574</pre>
+574
+575
+576
+577
+578
+579</pre>
 </div>
 </td>
 <td class="code">
@@ -5004,13 +5020,13 @@ pause_all<span class="p">(</span><span class="bp">self</span><span class="p">)</
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>576
-577
-578
-579
-580
-581
-582</pre>
+<pre><span></span>581
+582
+583
+584
+585
+586
+587</pre>
 </div>
 </td>
 <td class="code">
@@ -5082,12 +5098,7 @@ post<span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>311
-312
-313
-314
-315
-316
+<pre><span></span>316
 317
 318
 319
@@ -5095,7 +5106,12 @@ post<span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 321
 322
 323
-324</pre>
+324
+325
+326
+327
+328
+329</pre>
 </div>
 </td>
 <td class="code">
@@ -5113,7 +5129,7 @@ post<span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 <span class="sd">    Returns:</span>
 <span class="sd">        The answer from the server, as a Python dictionary.</span>
 <span class="sd">    """</span>
-    <span class="k">return</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 </code></pre>
 </div>
 </td>
@@ -5136,13 +5152,13 @@ purge_download_result<span class="p">(</span><span class="bp">self</span><span c
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1386
-1387
-1388
-1389
-1390
-1391
-1392</pre>
+<pre><span></span>1391
+1392
+1393
+1394
+1395
+1396
+1397</pre>
 </div>
 </td>
 <td class="code">
@@ -5198,12 +5214,7 @@ removed download.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>526
-527
-528
-529
-530
-531
+<pre><span></span>531
 532
 533
 534
@@ -5225,7 +5236,12 @@ removed download.</p>
 550
 551
 552
-553</pre>
+553
+554
+555
+556
+557
+558</pre>
 </div>
 </td>
 <td class="code">
@@ -5302,12 +5318,7 @@ success.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1394
-1395
-1396
-1397
-1398
-1399
+<pre><span></span>1399
 1400
 1401
 1402
@@ -5329,7 +5340,12 @@ success.</p>
 1418
 1419
 1420
-1421</pre>
+1421
+1422
+1423
+1424
+1425
+1426</pre>
 </div>
 </td>
 <td class="code">
@@ -5441,12 +5457,7 @@ res_or_raise<span class="p">(</span><span class="n">response</span><span class="
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>339
-340
-341
-342
-343
-344
+<pre><span></span>344
 345
 346
 347
@@ -5458,7 +5469,12 @@ res_or_raise<span class="p">(</span><span class="n">response</span><span class="
 353
 354
 355
-356</pre>
+356
+357
+358
+359
+360
+361</pre>
 </div>
 </td>
 <td class="code">
@@ -5543,18 +5559,18 @@ response_as_exception<span class="p">(</span><span class="n">response</span><spa
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>326
-327
-328
-329
-330
-331
+<pre><span></span>331
 332
 333
 334
 335
 336
-337</pre>
+337
+338
+339
+340
+341
+342</pre>
 </div>
 </td>
 <td class="code">
@@ -5594,14 +5610,14 @@ OK if it succeeds.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1523
-1524
-1525
-1526
-1527
-1528
+<pre><span></span>1528
 1529
-1530</pre>
+1530
+1531
+1532
+1533
+1534
+1535</pre>
 </div>
 </td>
 <td class="code">
@@ -5636,13 +5652,13 @@ shutdown<span class="p">(</span><span class="bp">self</span><span class="p">)</s
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1505
-1506
-1507
-1508
-1509
-1510
-1511</pre>
+<pre><span></span>1510
+1511
+1512
+1513
+1514
+1515
+1516</pre>
 </div>
 </td>
 <td class="code">
@@ -5677,14 +5693,14 @@ depending on the timeout that was given to <a href="https://pawamoy.github.io/ar
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1731
-1732
-1733
-1734
-1735
-1736
+<pre><span></span>1736
 1737
-1738</pre>
+1738
+1739
+1740
+1741
+1742
+1743</pre>
 </div>
 </td>
 <td class="code">
@@ -5720,14 +5736,14 @@ by the aria2.tellStatus() method. For the keys parameter, please refer to the ar
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1054
-1055
-1056
-1057
-1058
-1059
+<pre><span></span>1059
 1060
-1061</pre>
+1061
+1062
+1063
+1064
+1065
+1066</pre>
 </div>
 </td>
 <td class="code">
@@ -5930,12 +5946,7 @@ response is a struct and contains following keys. Values are strings.</p>
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>619
-620
-621
-622
-623
-624
+<pre><span></span>624
 625
 626
 627
@@ -6124,7 +6135,12 @@ response is a struct and contains following keys. Values are strings.</p>
 810
 811
 812
-813</pre>
+813
+814
+815
+816
+817
+818</pre>
 </div>
 </td>
 <td class="code">
@@ -6350,19 +6366,19 @@ returned. For the keys parameter, please refer to the aria2.tellStatus() method.
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1083
-1084
-1085
-1086
-1087
-1088
+<pre><span></span>1088
 1089
 1090
 1091
 1092
 1093
 1094
-1095</pre>
+1095
+1096
+1097
+1098
+1099
+1100</pre>
 </div>
 </td>
 <td class="code">
@@ -6410,12 +6426,7 @@ points the download before the last download, and so on. Downloads in the respon
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1063
-1064
-1065
-1066
-1067
-1068
+<pre><span></span>1068
 1069
 1070
 1071
@@ -6428,7 +6439,12 @@ points the download before the last download, and so on. Downloads in the respon
 1078
 1079
 1080
-1081</pre>
+1081
+1082
+1083
+1084
+1085
+1086</pre>
 </div>
 </td>
 <td class="code">
@@ -6475,14 +6491,14 @@ making the download eligible to be restarted. This method returns the GID of the
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>602
-603
-604
-605
-606
-607
+<pre><span></span>607
 608
-609</pre>
+609
+610
+611
+612
+613
+614</pre>
 </div>
 </td>
 <td class="code">
@@ -6517,13 +6533,13 @@ unpause_all<span class="p">(</span><span class="bp">self</span><span class="p">)
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>611
-612
-613
-614
-615
-616
-617</pre>
+<pre><span></span>616
+617
+618
+619
+620
+621
+622</pre>
 </div>
 </td>
 <td class="code">
@@ -6610,17 +6626,17 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1749
-1750
-1751
-1752
-1753
-1754
+<pre><span></span>1754
 1755
 1756
 1757
 1758
-1759</pre>
+1759
+1760
+1761
+1762
+1763
+1764</pre>
 </div>
 </td>
 <td class="code">
@@ -6699,12 +6715,7 @@ from_message<span class="p">(</span><span class="n">message</span><span class="p
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1779
-1780
-1781
-1782
-1783
-1784
+<pre><span></span>1784
 1785
 1786
 1787
@@ -6712,7 +6723,12 @@ from_message<span class="p">(</span><span class="n">message</span><span class="p
 1789
 1790
 1791
-1792</pre>
+1792
+1793
+1794
+1795
+1796
+1797</pre>
 </div>
 </td>
 <td class="code">
@@ -6810,12 +6826,7 @@ get_or_raise<span class="p">(</span><span class="n">message</span><span class="p
 <tr>
 <td class="linenos">
 <div class="linenodiv">
-<pre><span></span>1761
-1762
-1763
-1764
-1765
-1766
+<pre><span></span>1766
 1767
 1768
 1769
@@ -6826,7 +6837,12 @@ get_or_raise<span class="p">(</span><span class="n">message</span><span class="p
 1774
 1775
 1776
-1777</pre>
+1777
+1778
+1779
+1780
+1781
+1782</pre>
 </div>
 </td>
 <td class="code">
