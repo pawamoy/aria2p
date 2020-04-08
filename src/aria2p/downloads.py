@@ -351,6 +351,7 @@ class Download:
 
     @property
     def is_torrent(self):
+        """Return true if this download is a torrent."""
         return "bittorrent" in self._struct
 
     @property
