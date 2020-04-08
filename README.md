@@ -143,6 +143,9 @@ Global options:
                         Log level to use
   -P LOG_PATH, --log-path LOG_PATH
                         Log path to use. Can be a directory or a file.
+  -T CLIENT_TIMEOUT, --client-timeout CLIENT_TIMEOUT
+                        Timeout in seconds for requests to the remote server.
+                        Floats supported. Default: 60.0.
 
 Commands:
   
