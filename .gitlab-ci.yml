@@ -42,24 +42,6 @@ stages:
     when: on_failure
     expire_in: 1 week
 
-.deploy-template: &deploy
-  <<: *install-deps
-  image: python:3.6
-  stage: deploy
-  before_script:
-    - pip install poetry
-    - poetry config virtualenvs.in-project true
-    - poetry install -vv -E tui
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
-    - eval $(ssh-agent -s)
-    - chmod 400 "$GITHUB_DEPLOY_KEY"
-    - ssh-add "$GITHUB_DEPLOY_KEY"
-    - git remote add github git@github.com:pawamoy/aria2p
-    - git config --global user.email "pawamoy@pm.me"
-    - git config --global user.name "GitLab CI"
-
 # Quality jobs
 
 check-bandit:
@@ -105,8 +87,3 @@ python3.8:
   <<: *test
   image: python:3.8
 
-# Deploy jobs
-
-deploy-docs:
-  <<: *deploy
-  script: make docs-deploy-from-ci
