@@ -26,7 +26,7 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
 <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
 <link href="../../assets/fonts/material-icons.css" rel="stylesheet"/>
-<link href="../../custom.css" rel="stylesheet"/>
+<link href="../../css/mkdocstrings.css" rel="stylesheet"/>
 </head>
 <body dir="ltr">
 <svg class="md-svg">
@@ -1123,8 +1123,8 @@
 <a class="md-icon md-content__icon" href="https://github.com/pawamoy/aria2p/edit/master/docs/reference/downloads.md" title="Edit this page"></a>
 <h1>downloads.py</h1>
 <div class="doc doc-object doc-module">
-<h6 class="hidden-toc" href="#aria2p.downloads" id="aria2p.downloads" style="visibility: hidden; width: 0; height: 0;">
-<a class="headerlink" href="#aria2p.downloads" title="Permanent link">¶</a></h6>
+<h2 class="hidden-toc" href="#aria2p.downloads" id="aria2p.downloads" style="visibility: hidden; width: 0; height: 0;">
+<a class="headerlink" href="#aria2p.downloads" title="Permanent link">¤</a></h2>
 <div class="doc doc-contents first">
 <p>This module defines the BitTorrent, File and Download classes, which respectively hold structured information about
 torrent files, files and downloads in aria2c.</p>
@@ -1132,7 +1132,7 @@ torrent files, files and downloads in aria2c.</p>
 <div class="doc doc-object doc-class">
 <h2 class="doc doc-heading" id="aria2p.downloads.BitTorrent">
 <code>BitTorrent</code>
-<a class="headerlink" href="#aria2p.downloads.BitTorrent" title="Permanent link">¶</a></h2>
+<a class="headerlink" href="#aria2p.downloads.BitTorrent" title="Permanent link">¤</a></h2>
 <div class="doc doc-contents">
 <p>Information retrieved from a torrent file.</p>
 <div class="doc doc-children">
@@ -1144,7 +1144,7 @@ announce_list        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.BitTorrent.announce_list" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.BitTorrent.announce_list" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>List of lists of announce URIs.</p>
 <p>If the torrent contains announce and no announce-list, announce is converted to the announce-list format.</p>
@@ -1158,7 +1158,7 @@ comment        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.BitTorrent.comment" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.BitTorrent.comment" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The comment of the torrent.</p>
 <p>comment.utf-8 is used if available.</p>
@@ -1172,7 +1172,7 @@ creation_date: <span class="n">datetime</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.BitTorrent.creation_date" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.BitTorrent.creation_date" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The creation time of the torrent.</p>
 <p>The value is an integer since the epoch, measured in seconds.</p>
@@ -1186,7 +1186,7 @@ info        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.BitTorrent.info" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.BitTorrent.info" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Struct which contains data from Info dictionary.</p>
 <p>It contains following keys:
@@ -1201,7 +1201,7 @@ mode: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.BitTorrent.mode" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.BitTorrent.mode" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>File mode of the torrent.</p>
 <p>The value is either single or multi.</p>
@@ -1214,7 +1214,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-special"><code>special</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.BitTorrent.__init__" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.BitTorrent.__init__" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Initialization method.</p>
 <p><strong>Parameters:</strong></p>
@@ -1278,7 +1278,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <div class="doc doc-object doc-class">
 <h2 class="doc doc-heading" id="aria2p.downloads.Download">
 <code>Download</code>
-<a class="headerlink" href="#aria2p.downloads.Download" title="Permanent link">¶</a></h2>
+<a class="headerlink" href="#aria2p.downloads.Download" title="Permanent link">¤</a></h2>
 <div class="doc doc-contents">
 <p>Class containing all information about a download, as retrieved with the client.</p>
 <div class="doc doc-children">
@@ -1290,7 +1290,7 @@ belongs_to        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.belongs_to" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.belongs_to" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Parent download.</p>
 <p>Returns an instance of <a href="https://pawamoy.github.io/aria2p/reference/downloads/#aria2p.downloads.Download"><code>Download</code></a>.</p>
@@ -1304,7 +1304,7 @@ belongs_to_id        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.belongs_to_id" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.belongs_to_id" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>GID of a parent download.</p>
 <p>Some downloads are a part of another download. For example, if a file in a Metalink has BitTorrent resources,
@@ -1320,7 +1320,7 @@ bitfield        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.bitfield" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.bitfield" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Hexadecimal representation of the download progress.</p>
 <p>The highest bit corresponds to the piece at index 0. Any set bits indicate loaded pieces, while unset bits
@@ -1336,7 +1336,7 @@ bittorrent        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.bittorrent" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.bittorrent" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Struct which contains information retrieved from the .torrent (file).</p>
 <p>BitTorrent only.</p>
@@ -1350,7 +1350,7 @@ completed_length        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.completed_length" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.completed_length" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Completed length of the download in bytes.</p>
 </div>
@@ -1363,7 +1363,7 @@ connections        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.connections" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.connections" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The number of peers/servers aria2 has connected to.</p>
 </div>
@@ -1376,7 +1376,7 @@ control_file_path        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.control_file_path" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.control_file_path" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the path to the aria2 control file for this download.</p>
 </div>
@@ -1389,7 +1389,7 @@ dir        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.dir" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.dir" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Directory to save files.</p>
 </div>
@@ -1402,7 +1402,7 @@ download_speed        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.download_speed" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.download_speed" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Download speed of this download measured in bytes/sec.</p>
 </div>
@@ -1415,7 +1415,7 @@ error_code        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.error_code" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.error_code" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The code of the last error for this item, if any.</p>
 <p>The value is a string. The error codes are defined in the EXIT STATUS section. This value is only available
@@ -1430,7 +1430,7 @@ error_message        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.error_message" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.error_message" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The (hopefully) human readable error message associated to errorCode.</p>
 </div>
@@ -1443,7 +1443,7 @@ eta: <span class="n">timedelta</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.eta" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.eta" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the Estimated Time of Arrival (a timedelta).</p>
 <p>Return timedelta.max if unknown.</p>
@@ -1457,7 +1457,7 @@ files        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.files" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.files" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the list of files.</p>
 <p>The elements of this list are the same structs used in aria2.getFiles() method.</p>
@@ -1471,7 +1471,7 @@ followed_by        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.followed_by" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.followed_by" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>List of downloads generated as the result of this download.</p>
 <p>Returns a list of instances of <a href="https://pawamoy.github.io/aria2p/reference/downloads/#aria2p.downloads.Download"><code>Download</code></a>.</p>
@@ -1485,7 +1485,7 @@ followed_by_ids        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.followed_by_ids" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.followed_by_ids" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>List of GIDs which are generated as the result of this download.</p>
 <p>For example, when aria2 downloads a Metalink file, it generates downloads described in the Metalink (see the
@@ -1501,7 +1501,7 @@ following        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.following" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.following" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The download this download is following.</p>
 <p>Returns an instance of <a href="https://pawamoy.github.io/aria2p/reference/downloads/#aria2p.downloads.Download"><code>Download</code></a>.</p>
@@ -1515,7 +1515,7 @@ following_id        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.following_id" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.following_id" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The reverse link for followedBy.</p>
 <p>A download included in followedBy has this object's GID in its following value.</p>
@@ -1529,7 +1529,7 @@ gid        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.gid" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.gid" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>GID of the download.</p>
 </div>
@@ -1542,7 +1542,7 @@ has_failed        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.has_failed" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.has_failed" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return True if download has errored.</p>
 </div>
@@ -1555,7 +1555,7 @@ info_hash        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.info_hash" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.info_hash" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>InfoHash.</p>
 <p>BitTorrent only.</p>
@@ -1569,7 +1569,7 @@ is_active        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.is_active" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.is_active" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return True if download is active.</p>
 </div>
@@ -1582,7 +1582,7 @@ is_complete        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.is_complete" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.is_complete" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return True if download is complete.</p>
 </div>
@@ -1595,7 +1595,7 @@ is_metadata        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.is_metadata" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.is_metadata" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return True if this download is only composed of metadata, and no actual files.</p>
 </div>
@@ -1608,7 +1608,7 @@ is_paused        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.is_paused" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.is_paused" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return True if download is paused.</p>
 </div>
@@ -1621,7 +1621,7 @@ is_removed        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.is_removed" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.is_removed" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return True if download was removed.</p>
 </div>
@@ -1634,7 +1634,7 @@ is_torrent        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.is_torrent" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.is_torrent" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return true if this download is a torrent.</p>
 </div>
@@ -1647,7 +1647,7 @@ is_waiting        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.is_waiting" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.is_waiting" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return True if download is waiting.</p>
 </div>
@@ -1660,7 +1660,7 @@ live: <span class="n">Download</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.live" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.live" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Returns the same object with updated data.</p>
 </div>
@@ -1673,7 +1673,7 @@ name        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.name" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.name" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The name of the download.</p>
 <p>Name is the name of the file if single-file, first file's directory name if multi-file.</p>
@@ -1687,7 +1687,7 @@ num_pieces        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.num_pieces" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.num_pieces" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The number of pieces.</p>
 </div>
@@ -1700,7 +1700,7 @@ num_seeders        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.num_seeders" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.num_seeders" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The number of seeders aria2 has connected to.</p>
 <p>BitTorrent only.</p>
@@ -1714,7 +1714,7 @@ options        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.options" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.options" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Options specific to this download.</p>
 <p>The returned object is an instance of <a href="https://pawamoy.github.io/aria2p/reference/options/#aria2p.options.Options"><code>Options</code></a>.</p>
@@ -1728,7 +1728,7 @@ piece_length        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.piece_length" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.piece_length" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Piece length in bytes.</p>
 </div>
@@ -1741,7 +1741,7 @@ progress: <span class="nb">float</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.progress" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.progress" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the progress of the download as float.</p>
 </div>
@@ -1754,7 +1754,7 @@ root_files_paths        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.root_files_paths" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.root_files_paths" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the unique set of directories/files for this download.</p>
 <p>Instead of returning all the leaves like self.files,
@@ -1781,7 +1781,7 @@ seeder        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.seeder" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.seeder" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>True if the local endpoint is a seeder, otherwise false.</p>
 <p>BitTorrent only.</p>
@@ -1795,7 +1795,7 @@ status        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.status" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.status" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Status of the download: active, waiting, paused, error, complete or removed.</p>
 </div>
@@ -1808,7 +1808,7 @@ total_length        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.total_length" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.total_length" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Total length of the download in bytes.</p>
 </div>
@@ -1821,7 +1821,7 @@ upload_length        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.upload_length" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.upload_length" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Uploaded length of the download in bytes.</p>
 </div>
@@ -1834,7 +1834,7 @@ upload_speed        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.upload_speed" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.upload_speed" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Upload speed of this download measured in bytes/sec.</p>
 </div>
@@ -1847,7 +1847,7 @@ verified_length: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.verified_length" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.verified_length" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The number of verified number of bytes while the files are being hash checked.</p>
 <p>This key exists only when this download is being hash checked.</p>
@@ -1861,7 +1861,7 @@ verify_integrity_pending        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.verify_integrity_pending" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.verify_integrity_pending" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>True if this download is waiting for the hash check in a queue.</p>
 <p>This key exists only when this download is in the queue.</p>
@@ -1874,7 +1874,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-special"><code>special</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.Download.__init__" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.__init__" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Initialization method.</p>
 <p><strong>Parameters:</strong></p>
@@ -1964,7 +1964,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.completed_length_string">
 <code class="highlight language-python">
 completed_length_string<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.completed_length_string" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.completed_length_string" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the completed length as string.</p>
 <p><strong>Parameters:</strong></p>
@@ -2053,7 +2053,7 @@ completed_length_string<span class="p">(</span><span class="bp">self</span><span
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.copy_files">
 <code class="highlight language-python">
 copy_files<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_directory</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.copy_files" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.copy_files" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Copy downloaded files to another directory.</p>
 <p><strong>Parameters:</strong></p>
@@ -2148,7 +2148,7 @@ copy_files<span class="p">(</span><span class="bp">self</span><span class="p">,<
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.download_speed_string">
 <code class="highlight language-python">
 download_speed_string<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.download_speed_string" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.download_speed_string" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the download speed as string.</p>
 <p><strong>Parameters:</strong></p>
@@ -2237,7 +2237,7 @@ download_speed_string<span class="p">(</span><span class="bp">self</span><span c
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.eta_string">
 <code class="highlight language-python">
 eta_string<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.eta_string" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.eta_string" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the Estimated Time of Arrival as a string.</p>
 <details class="quote">
@@ -2278,7 +2278,7 @@ eta_string<span class="p">(</span><span class="bp">self</span><span class="p">,<
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.move">
 <code class="highlight language-python">
 move<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.move" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.move" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Move the download in the queue, relatively.</p>
 <p><strong>Parameters:</strong></p>
@@ -2363,7 +2363,7 @@ move<span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.move_down">
 <code class="highlight language-python">
 move_down<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.move_down" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.move_down" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Move the download down in the queue.</p>
 <p><strong>Parameters:</strong></p>
@@ -2448,7 +2448,7 @@ move_down<span class="p">(</span><span class="bp">self</span><span class="p">,</
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.move_files">
 <code class="highlight language-python">
 move_files<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_directory</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.move_files" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.move_files" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Move downloaded files to another directory.</p>
 <p><strong>Parameters:</strong></p>
@@ -2543,7 +2543,7 @@ move_files<span class="p">(</span><span class="bp">self</span><span class="p">,<
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.move_to">
 <code class="highlight language-python">
 move_to<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.move_to" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.move_to" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Move the download in the queue, absolutely.</p>
 <p><strong>Parameters:</strong></p>
@@ -2628,7 +2628,7 @@ move_to<span class="p">(</span><span class="bp">self</span><span class="p">,</sp
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.move_to_bottom">
 <code class="highlight language-python">
 move_to_bottom<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.move_to_bottom" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.move_to_bottom" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Move the download to the bottom of the queue.</p>
 <p><strong>Returns:</strong></p>
@@ -2686,7 +2686,7 @@ move_to_bottom<span class="p">(</span><span class="bp">self</span><span class="p
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.move_to_top">
 <code class="highlight language-python">
 move_to_top<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.move_to_top" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.move_to_top" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Move the download to the top of the queue.</p>
 <p><strong>Returns:</strong></p>
@@ -2744,7 +2744,7 @@ move_to_top<span class="p">(</span><span class="bp">self</span><span class="p">)
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.move_up">
 <code class="highlight language-python">
 move_up<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.move_up" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.move_up" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Move the download up in the queue.</p>
 <p><strong>Parameters:</strong></p>
@@ -2829,7 +2829,7 @@ move_up<span class="p">(</span><span class="bp">self</span><span class="p">,</sp
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.pause">
 <code class="highlight language-python">
 pause<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.pause" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.pause" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Pause the download.</p>
 <p><strong>Returns:</strong></p>
@@ -2916,7 +2916,7 @@ pause<span class="p">(</span><span class="bp">self</span><span class="p">,</span
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.piece_length_string">
 <code class="highlight language-python">
 piece_length_string<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.piece_length_string" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.piece_length_string" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the piece length as string.</p>
 <p><strong>Parameters:</strong></p>
@@ -3005,7 +3005,7 @@ piece_length_string<span class="p">(</span><span class="bp">self</span><span cla
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.progress_string">
 <code class="highlight language-python">
 progress_string<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.progress_string" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.progress_string" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the progress percentage as string.</p>
 <p><strong>Parameters:</strong></p>
@@ -3090,7 +3090,7 @@ progress_string<span class="p">(</span><span class="bp">self</span><span class="
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.purge">
 <code class="highlight language-python">
 purge<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.purge" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.purge" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Purge itself from the results.</p>
 <details class="quote">
@@ -3121,7 +3121,7 @@ purge<span class="p">(</span><span class="bp">self</span><span class="p">)</span
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.remove">
 <code class="highlight language-python">
 remove<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.remove" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.remove" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Remove the download from the queue (even if active).</p>
 <p><strong>Returns:</strong></p>
@@ -3208,7 +3208,7 @@ remove<span class="p">(</span><span class="bp">self</span><span class="p">,</spa
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.resume">
 <code class="highlight language-python">
 resume<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.resume" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.resume" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Resume the download.</p>
 <p><strong>Returns:</strong></p>
@@ -3295,7 +3295,7 @@ resume<span class="p">(</span><span class="bp">self</span><span class="p">)</spa
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.total_length_string">
 <code class="highlight language-python">
 total_length_string<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.total_length_string" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.total_length_string" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the total length as string.</p>
 <p><strong>Parameters:</strong></p>
@@ -3384,7 +3384,7 @@ total_length_string<span class="p">(</span><span class="bp">self</span><span cla
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.update">
 <code class="highlight language-python">
 update<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.update" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.update" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Method to update the internal values of the download with more recent values.</p>
 <details class="quote">
@@ -3431,7 +3431,7 @@ update<span class="p">(</span><span class="bp">self</span><span class="p">)</spa
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.update_options">
 <code class="highlight language-python">
 update_options<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.update_options" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.update_options" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Re-fetch the options from the remote.</p>
 <details class="quote">
@@ -3462,7 +3462,7 @@ update_options<span class="p">(</span><span class="bp">self</span><span class="p
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.upload_length_string">
 <code class="highlight language-python">
 upload_length_string<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.upload_length_string" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.upload_length_string" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the upload length as string.</p>
 <p><strong>Parameters:</strong></p>
@@ -3551,7 +3551,7 @@ upload_length_string<span class="p">(</span><span class="bp">self</span><span cl
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.upload_speed_string">
 <code class="highlight language-python">
 upload_speed_string<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.upload_speed_string" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.upload_speed_string" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the upload speed as string.</p>
 <p><strong>Parameters:</strong></p>
@@ -3640,7 +3640,7 @@ upload_speed_string<span class="p">(</span><span class="bp">self</span><span cla
 <h3 class="doc doc-heading" id="aria2p.downloads.Download.verified_length_string">
 <code class="highlight language-python">
 verified_length_string<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.Download.verified_length_string" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.Download.verified_length_string" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the verified length as string.</p>
 <p><strong>Parameters:</strong></p>
@@ -3731,7 +3731,7 @@ verified_length_string<span class="p">(</span><span class="bp">self</span><span 
 <div class="doc doc-object doc-class">
 <h2 class="doc doc-heading" id="aria2p.downloads.File">
 <code>File</code>
-<a class="headerlink" href="#aria2p.downloads.File" title="Permanent link">¶</a></h2>
+<a class="headerlink" href="#aria2p.downloads.File" title="Permanent link">¤</a></h2>
 <div class="doc doc-contents">
 <p>Information about a download's file.</p>
 <div class="doc doc-children">
@@ -3743,7 +3743,7 @@ completed_length        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.File.completed_length" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.File.completed_length" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Completed length of this file in bytes.</p>
 <p>Please note that it is possible that sum of completedLength is less than the completedLength returned by the
@@ -3759,7 +3759,7 @@ index        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.File.index" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.File.index" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Index of the file, starting at 1, in the same order as files appear in the multi-file torrent.</p>
 </div>
@@ -3772,7 +3772,7 @@ is_metadata        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.File.is_metadata" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.File.is_metadata" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return True if this file is aria2 metadata and not an actual file.</p>
 </div>
@@ -3785,7 +3785,7 @@ length        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.File.length" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.File.length" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>File size in bytes.</p>
 </div>
@@ -3798,7 +3798,7 @@ path        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.File.path" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.File.path" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>File path.</p>
 </div>
@@ -3811,7 +3811,7 @@ selected        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.File.selected" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.File.selected" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>True if this file is selected by --select-file option.</p>
 <p>If --select-file is not specified or this is single-file torrent or not a torrent download at all, this value
@@ -3826,7 +3826,7 @@ uris        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.File.uris" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.File.uris" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return a list of URIs for this file.</p>
 <p>The element type is the same struct used in the aria2.getUris() method.</p>
@@ -3839,7 +3839,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-special"><code>special</code></small>
 </span>
-<a class="headerlink" href="#aria2p.downloads.File.__init__" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.File.__init__" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Initialization method.</p>
 <p><strong>Parameters:</strong></p>
@@ -3901,7 +3901,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <h3 class="doc doc-heading" id="aria2p.downloads.File.completed_length_string">
 <code class="highlight language-python">
 completed_length_string<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.File.completed_length_string" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.File.completed_length_string" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the completed length as string.</p>
 <p><strong>Parameters:</strong></p>
@@ -3990,7 +3990,7 @@ completed_length_string<span class="p">(</span><span class="bp">self</span><span
 <h3 class="doc doc-heading" id="aria2p.downloads.File.length_string">
 <code class="highlight language-python">
 length_string<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.downloads.File.length_string" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.downloads.File.length_string" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the length as string.</p>
 <p><strong>Parameters:</strong></p>

@@ -26,7 +26,7 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
 <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
 <link href="../../assets/fonts/material-icons.css" rel="stylesheet"/>
-<link href="../../custom.css" rel="stylesheet"/>
+<link href="../../css/mkdocstrings.css" rel="stylesheet"/>
 </head>
 <body dir="ltr">
 <svg class="md-svg">
@@ -815,8 +815,8 @@
 <a class="md-icon md-content__icon" href="https://github.com/pawamoy/aria2p/edit/master/docs/reference/client.md" title="Edit this page"></a>
 <h1>client.py</h1>
 <div class="doc doc-object doc-module">
-<h6 class="hidden-toc" href="#aria2p.client" id="aria2p.client" style="visibility: hidden; width: 0; height: 0;">
-<a class="headerlink" href="#aria2p.client" title="Permanent link">¶</a></h6>
+<h2 class="hidden-toc" href="#aria2p.client" id="aria2p.client" style="visibility: hidden; width: 0; height: 0;">
+<a class="headerlink" href="#aria2p.client" title="Permanent link">¤</a></h2>
 <div class="doc doc-contents first">
 <p>This module defines the ClientException and Client classes, which are used to communicate with a remote aria2c
 process through the JSON-RPC protocol.</p>
@@ -824,7 +824,7 @@ process through the JSON-RPC protocol.</p>
 <div class="doc doc-object doc-class">
 <h2 class="doc doc-heading" id="aria2p.client.Client">
 <code>Client</code>
-<a class="headerlink" href="#aria2p.client.Client" title="Permanent link">¶</a></h2>
+<a class="headerlink" href="#aria2p.client.Client" title="Permanent link">¤</a></h2>
 <div class="doc doc-contents">
 <p>The JSON-RPC client class.</p>
 <p>In this documentation, all the following terms refer to the same entity, the remote aria2c process:
@@ -853,7 +853,7 @@ server: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.client.Client.server" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.server" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Property to return the full remote process / server address.</p>
 </div>
@@ -866,7 +866,7 @@ ws_server: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.client.Client.ws_server" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.ws_server" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Property to return the full WebSocket remote server address.</p>
 </div>
@@ -878,7 +878,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-special"><code>special</code></small>
 </span>
-<a class="headerlink" href="#aria2p.client.Client.__init__" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.__init__" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Initialization method.</p>
 <p><strong>Parameters:</strong></p>
@@ -986,7 +986,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <h3 class="doc doc-heading" id="aria2p.client.Client.add_metalink">
 <code class="highlight language-python">
 add_metalink<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metalink</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.add_metalink" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.add_metalink" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.addMetalink([secret], metalink[, options[, position]])</p>
 <p>This method adds a Metalink download by uploading a ".metalink" file. metalink is a base64-encoded string
@@ -1117,7 +1117,7 @@ the downloads added by this method are not saved by --save-session.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.add_torrent">
 <code class="highlight language-python">
 add_torrent<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">torrent</span><span class="p">,</span> <span class="n">uris</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.add_torrent" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.add_torrent" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.addTorrent([secret], torrent[, uris[, options[, position]]])</p>
 <p>This method adds a BitTorrent download by uploading a ".torrent" file. If you want to add a BitTorrent
@@ -1254,7 +1254,7 @@ the same name already exists, it is overwritten!  If the file cannot be saved su
 <h3 class="doc doc-heading" id="aria2p.client.Client.add_uri">
 <code class="highlight language-python">
 add_uri<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uris</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.add_uri" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.add_uri" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.addUri([secret], uris[, options[, position]])</p>
 <p>This method adds a new download. uris is an array of HTTP/FTP/SFTP/BitTorrent URIs (strings) pointing to
@@ -1410,7 +1410,7 @@ method returns the GID of the newly registered download.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.batch_call">
 <code class="highlight language-python">
 batch_call<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calls</span><span class="p">,</span> <span class="n">insert_secret</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.batch_call" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.batch_call" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Call multiple methods in one request.</p>
 <p>A batch call is simply a list of full payloads, sent at once to the remote process. The differences with a
@@ -1560,7 +1560,7 @@ multicall are:</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.call">
 <code class="highlight language-python">
 call<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">msg_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">insert_secret</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.call" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.call" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Call a single JSON-RPC method.</p>
 <p><strong>Parameters:</strong></p>
@@ -1697,7 +1697,7 @@ call<span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 <h3 class="doc doc-heading" id="aria2p.client.Client.change_global_option">
 <code class="highlight language-python">
 change_global_option<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.change_global_option" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.change_global_option" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.changeGlobalOption([secret], options)</p>
 <p>This method changes global options dynamically. options is a struct. The following options are available:</p>
@@ -1821,7 +1821,7 @@ returns OK for success.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.change_option">
 <code class="highlight language-python">
 change_option<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.change_option" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.change_option" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.changeOption([secret], gid, options)</p>
 <p>This method changes options of the download denoted by gid (string) dynamically. options is a struct. The
@@ -2001,7 +2001,7 @@ itself is managed by aria2, and no user intervention is required):</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.change_position">
 <code class="highlight language-python">
 change_position<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">how</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.change_position" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.change_position" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.changePosition([secret], gid, pos, how)</p>
 <p>This method changes the position of the download denoted by gid in the queue. pos is an integer. how is
@@ -2128,7 +2128,7 @@ respectively. The response is an integer denoting the resulting position.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.change_uri">
 <code class="highlight language-python">
 change_uri<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">,</span> <span class="n">file_index</span><span class="p">,</span> <span class="n">del_uris</span><span class="p">,</span> <span class="n">add_uris</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.change_uri" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.change_uri" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.changeUri([secret], gid, fileIndex, delUris, addUris[, position])</p>
 <p>This method removes the URIs in delUris from and appends the URIs in addUris to download denoted by gid.
@@ -2265,7 +2265,7 @@ download GID#2089b05ecca3d829.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.force_pause">
 <code class="highlight language-python">
 force_pause<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.force_pause" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.force_pause" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.forcePause([secret], gid)</p>
 <p>This method pauses the download denoted by gid. This method behaves just like aria2.pause() except that this
@@ -2311,7 +2311,7 @@ trackers to unregister the download first.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.force_pause_all">
 <code class="highlight language-python">
 force_pause_all<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.force_pause_all" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.force_pause_all" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.forcePauseAll([secret])</p>
 <p>This method is equal to calling aria2.forcePause() for every active/waiting download. This methods returns OK.</p>
@@ -2351,7 +2351,7 @@ force_pause_all<span class="p">(</span><span class="bp">self</span><span class="
 <h3 class="doc doc-heading" id="aria2p.client.Client.force_remove">
 <code class="highlight language-python">
 force_remove<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.force_remove" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.force_remove" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.forceRemove([secret], gid)</p>
 <p>This method removes the download denoted by gid. This method behaves just like aria2.remove() except
@@ -2397,7 +2397,7 @@ BitTorrent trackers to unregister the download first.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.force_shutdown">
 <code class="highlight language-python">
 force_shutdown<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.force_shutdown" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.force_shutdown" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.forceShutdown([secret])</p>
 <p>This method shuts down aria2(). This method behaves like :func:'aria2.shutdown` without performing any
@@ -2443,7 +2443,7 @@ returns OK.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.get_files">
 <code class="highlight language-python">
 get_files<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.get_files" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.get_files" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.getFiles([secret], gid)</p>
 <p>This method returns the file list of the download denoted by gid (string). The response is an array of
@@ -2641,7 +2641,7 @@ structs which contain following keys. Values are strings.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.get_global_option">
 <code class="highlight language-python">
 get_global_option<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.get_global_option" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.get_global_option" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.getGlobalOption([secret])</p>
 <p>This method returns the global options. The response is a struct. Its keys are the names of options.
@@ -2693,7 +2693,7 @@ aria2.getOption() method.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.get_global_stat">
 <code class="highlight language-python">
 get_global_stat<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.get_global_stat" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.get_global_stat" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.getGlobalStat([secret])</p>
 <p>This method returns global statistics such as the overall download and upload speeds. The response is a
@@ -2879,7 +2879,7 @@ struct and contains the following keys. Values are strings.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.get_option">
 <code class="highlight language-python">
 get_option<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.get_option" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.get_option" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.getOption([secret], gid)</p>
 <p>This method returns options of the download denoted by gid. The response is a struct where keys are the
@@ -3025,7 +3025,7 @@ get_params<span class="p">(</span><span class="o">*</span><span class="n">args</
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
 </span>
-<a class="headerlink" href="#aria2p.client.Client.get_params" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.get_params" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Build the list of parameters.</p>
 <p>This method simply removes the <code>None</code> values from the given arguments.</p>
@@ -3120,7 +3120,7 @@ get_payload<span class="p">(</span><span class="n">method</span><span class="p">
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
 </span>
-<a class="headerlink" href="#aria2p.client.Client.get_payload" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.get_payload" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Build a payload.</p>
 <p><strong>Parameters:</strong></p>
@@ -3261,7 +3261,7 @@ get_payload<span class="p">(</span><span class="n">method</span><span class="p">
 <h3 class="doc doc-heading" id="aria2p.client.Client.get_peers">
 <code class="highlight language-python">
 get_peers<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.get_peers" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.get_peers" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.getPeers([secret], gid)</p>
 <p>This method returns a list peers of the download denoted by gid (string). This method is for BitTorrent
@@ -3540,7 +3540,7 @@ only. The response is an array of structs and contains the following keys. Value
 <h3 class="doc doc-heading" id="aria2p.client.Client.get_servers">
 <code class="highlight language-python">
 get_servers<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.get_servers" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.get_servers" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.getServers([secret], gid)</p>
 <p>This method returns currently connected HTTP(S)/FTP/SFTP servers of the download denoted by gid (string). The
@@ -3711,7 +3711,7 @@ response is an array of structs and contains the following keys. Values are stri
 <h3 class="doc doc-heading" id="aria2p.client.Client.get_session_info">
 <code class="highlight language-python">
 get_session_info<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.get_session_info" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.get_session_info" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.getSessionInfo([secret])</p>
 <p>This method returns session information. The response is a struct and contains following key.</p>
@@ -3818,7 +3818,7 @@ get_session_info<span class="p">(</span><span class="bp">self</span><span class=
 <h3 class="doc doc-heading" id="aria2p.client.Client.get_uris">
 <code class="highlight language-python">
 get_uris<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.get_uris" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.get_uris" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.getUris([secret], gid)</p>
 <p>This method returns the URIs used in the download denoted by gid (string). The response is an array of
@@ -3942,7 +3942,7 @@ structs and it contains following keys. Values are string.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.get_version">
 <code class="highlight language-python">
 get_version<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.get_version" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.get_version" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.getVersion([secret])</p>
 <p>This method returns the version of aria2 and the list of enabled features. The response is a struct and
@@ -4114,7 +4114,7 @@ contains following keys.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.list_methods">
 <code class="highlight language-python">
 list_methods<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.list_methods" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.list_methods" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>system.listMethods()</p>
 <p>This method returns all the available RPC methods in an array of string. Unlike other methods,
@@ -4225,7 +4225,7 @@ method names.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.list_notifications">
 <code class="highlight language-python">
 list_notifications<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.list_notifications" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.list_notifications" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>system.listNotifications()</p>
 <p>This method returns all the available RPC notifications in an array of string. Unlike other methods,
@@ -4336,7 +4336,7 @@ notifications names.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.listen_to_notifications">
 <code class="highlight language-python">
 listen_to_notifications<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_download_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">on_download_pause</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">on_download_stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">on_download_complete</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">on_download_error</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">on_bt_download_complete</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">handle_signals</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.listen_to_notifications" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.listen_to_notifications" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Start listening to aria2 notifications via WebSocket.</p>
 <p>This method opens a WebSocket connection to the server and wait for notifications (or events) to be received.
@@ -4604,7 +4604,7 @@ of notification.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.multicall">
 <code class="highlight language-python">
 multicall<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">methods</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.multicall" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.multicall" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>system.multicall(methods)</p>
 <p>This methods encapsulates multiple method calls in a single request. methods is an array of structs. The
@@ -4781,7 +4781,7 @@ file.torrent.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.multicall2">
 <code class="highlight language-python">
 multicall2<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calls</span><span class="p">,</span> <span class="n">insert_secret</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.multicall2" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.multicall2" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>An method equivalent to multicall, but with a simplified usage.</p>
 <p>Instead of providing dictionaries with "methodName" and "params" keys and values, this method allows you
@@ -4961,7 +4961,7 @@ It is implemented here as a simple convenience method.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.pause">
 <code class="highlight language-python">
 pause<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.pause" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.pause" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.pause([secret], gid)</p>
 <p>This method pauses the download denoted by gid (string). The status of paused download becomes paused. If
@@ -5010,7 +5010,7 @@ method returns GID of paused download.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.pause_all">
 <code class="highlight language-python">
 pause_all<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.pause_all" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.pause_all" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.pauseAll([secret])</p>
 <p>This method is equal to calling aria2.pause() for every active/waiting download. This methods returns OK.</p>
@@ -5050,7 +5050,7 @@ pause_all<span class="p">(</span><span class="bp">self</span><span class="p">)</
 <h3 class="doc doc-heading" id="aria2p.client.Client.post">
 <code class="highlight language-python">
 post<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.post" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.post" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Send a POST request to the server.</p>
 <p>The response is a JSON string, which we then load as a Python object.</p>
@@ -5142,7 +5142,7 @@ post<span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 <h3 class="doc doc-heading" id="aria2p.client.Client.purge_download_result">
 <code class="highlight language-python">
 purge_download_result<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.purge_download_result" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.purge_download_result" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.purgeDownloadResult([secret])</p>
 <p>This method purges completed/error/removed downloads to free memory. This method returns OK.</p>
@@ -5182,7 +5182,7 @@ purge_download_result<span class="p">(</span><span class="bp">self</span><span c
 <h3 class="doc doc-heading" id="aria2p.client.Client.remove">
 <code class="highlight language-python">
 remove<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.remove" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.remove" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.remove([secret], gid)</p>
 <p>This method removes the download denoted by gid (string). If the specified download is in progress,
@@ -5286,7 +5286,7 @@ removed download.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.remove_download_result">
 <code class="highlight language-python">
 remove_download_result<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.remove_download_result" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.remove_download_result" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.removeDownloadResult([secret], gid)</p>
 <p>This method removes a completed/error/removed download denoted by gid from memory. This method returns OK for
@@ -5393,7 +5393,7 @@ res_or_raise<span class="p">(</span><span class="n">response</span><span class="
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
 </span>
-<a class="headerlink" href="#aria2p.client.Client.res_or_raise" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.res_or_raise" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the result of the response, or raise an error with code and message.</p>
 <p><strong>Parameters:</strong></p>
@@ -5512,7 +5512,7 @@ response_as_exception<span class="p">(</span><span class="n">response</span><spa
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
 </span>
-<a class="headerlink" href="#aria2p.client.Client.response_as_exception" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.response_as_exception" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Transform the response as a <a href="https://pawamoy.github.io/aria2p/reference/client/#aria2p.client.ClientException"><code>ClientException</code></a> instance and return it.</p>
 <p><strong>Parameters:</strong></p>
@@ -5599,7 +5599,7 @@ response_as_exception<span class="p">(</span><span class="n">response</span><spa
 <h3 class="doc doc-heading" id="aria2p.client.Client.save_session">
 <code class="highlight language-python">
 save_session<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.save_session" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.save_session" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.saveSession([secret])</p>
 <p>This method saves the current session to a file specified by the --save-session option. This method returns
@@ -5642,7 +5642,7 @@ OK if it succeeds.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.shutdown">
 <code class="highlight language-python">
 shutdown<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.shutdown" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.shutdown" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.shutdown([secret])</p>
 <p>This method shuts down aria2. This method returns OK.</p>
@@ -5682,7 +5682,7 @@ shutdown<span class="p">(</span><span class="bp">self</span><span class="p">)</s
 <h3 class="doc doc-heading" id="aria2p.client.Client.stop_listening">
 <code class="highlight language-python">
 stop_listening<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.stop_listening" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.stop_listening" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Stop listening to notifications.</p>
 <p>Although this method returns instantly, the actual listening loop can take some time to break out,
@@ -5725,7 +5725,7 @@ depending on the timeout that was given to <a href="https://pawamoy.github.io/ar
 <h3 class="doc doc-heading" id="aria2p.client.Client.tell_active">
 <code class="highlight language-python">
 tell_active<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.tell_active" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.tell_active" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.tellActive([secret][, keys])</p>
 <p>This method returns a list of active downloads. The response is an array of the same structs as returned
@@ -5768,7 +5768,7 @@ by the aria2.tellStatus() method. For the keys parameter, please refer to the ar
 <h3 class="doc doc-heading" id="aria2p.client.Client.tell_status">
 <code class="highlight language-python">
 tell_status<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.tell_status" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.tell_status" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.tellStatus([secret], gid[, keys])</p>
 <p>This method returns the progress of the download denoted by gid (string). keys is an array of strings. If
@@ -6352,7 +6352,7 @@ response is a struct and contains following keys. Values are strings.</p>
 <h3 class="doc doc-heading" id="aria2p.client.Client.tell_stopped">
 <code class="highlight language-python">
 tell_stopped<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.tell_stopped" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.tell_stopped" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.tellStopped([secret], offset, num[, keys])</p>
 <p>This method returns a list of stopped downloads. offset is an integer and specifies the offset from the
@@ -6408,7 +6408,7 @@ returned. For the keys parameter, please refer to the aria2.tellStatus() method.
 <h3 class="doc doc-heading" id="aria2p.client.Client.tell_waiting">
 <code class="highlight language-python">
 tell_waiting<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.tell_waiting" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.tell_waiting" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.tellWaiting([secret], offset, num[, keys])</p>
 <p>This method returns a list of waiting downloads, including paused ones. offset is an integer and specifies
@@ -6480,7 +6480,7 @@ points the download before the last download, and so on. Downloads in the respon
 <h3 class="doc doc-heading" id="aria2p.client.Client.unpause">
 <code class="highlight language-python">
 unpause<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.unpause" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.unpause" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.unpause([secret], gid)</p>
 <p>This method changes the status of the download denoted by gid (string) from paused to waiting,
@@ -6523,7 +6523,7 @@ making the download eligible to be restarted. This method returns the GID of the
 <h3 class="doc doc-heading" id="aria2p.client.Client.unpause_all">
 <code class="highlight language-python">
 unpause_all<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.client.Client.unpause_all" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Client.unpause_all" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2.unpauseAll([secret])</p>
 <p>This method is equal to calling aria2.unpause() for every active/waiting download. This methods returns OK.</p>
@@ -6565,7 +6565,7 @@ unpause_all<span class="p">(</span><span class="bp">self</span><span class="p">)
 <div class="doc doc-object doc-class">
 <h2 class="doc doc-heading" id="aria2p.client.ClientException">
 <code>ClientException</code>
-<a class="headerlink" href="#aria2p.client.ClientException" title="Permanent link">¶</a></h2>
+<a class="headerlink" href="#aria2p.client.ClientException" title="Permanent link">¤</a></h2>
 <div class="doc doc-contents">
 <p>An exception specific to JSON-RPC errors.</p>
 <div class="doc doc-children">
@@ -6575,7 +6575,7 @@ unpause_all<span class="p">(</span><span class="bp">self</span><span class="p">)
 <div class="doc doc-object doc-class">
 <h2 class="doc doc-heading" id="aria2p.client.Notification">
 <code>Notification</code>
-<a class="headerlink" href="#aria2p.client.Notification" title="Permanent link">¶</a></h2>
+<a class="headerlink" href="#aria2p.client.Notification" title="Permanent link">¤</a></h2>
 <div class="doc doc-contents">
 <p>A helper class for notifications.</p>
 <p>You should not need to use this class. It simply provides methods to instantiate a notification with a
@@ -6588,7 +6588,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-special"><code>special</code></small>
 </span>
-<a class="headerlink" href="#aria2p.client.Notification.__init__" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Notification.__init__" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Initialization method.</p>
 <p><strong>Parameters:</strong></p>
@@ -6667,7 +6667,7 @@ from_message<span class="p">(</span><span class="n">message</span><span class="p
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
 </span>
-<a class="headerlink" href="#aria2p.client.Notification.from_message" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Notification.from_message" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Static method to return an instance of Notification.</p>
 <p>This method expects a valid message (not containing errors).</p>
@@ -6762,7 +6762,7 @@ get_or_raise<span class="p">(</span><span class="n">message</span><span class="p
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
 </span>
-<a class="headerlink" href="#aria2p.client.Notification.get_or_raise" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.client.Notification.get_or_raise" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Static method to raise a ClientException when the message is invalid or return a Notification instance.</p>
 <p><strong>Parameters:</strong></p>

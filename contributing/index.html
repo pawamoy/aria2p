@@ -26,7 +26,7 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
 <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
 <link href="../assets/fonts/material-icons.css" rel="stylesheet"/>
-<link href="../custom.css" rel="stylesheet"/>
+<link href="../css/mkdocstrings.css" rel="stylesheet"/>
 </head>
 <body dir="ltr">
 <svg class="md-svg">
@@ -201,27 +201,23 @@
 <label class="md-nav__title" for="__toc">Table of contents</label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#types-of-contributions">
-    Types of Contributions
-  </a>
-<nav class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#bug-reports-feature-requests-and-feedback">
-    Bug Reports, Feature Requests, and Feedback
+<a class="md-nav__link" href="#environment-setup">
+    Environment setup
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#bug-fixes-new-features-and-documentation">
-    Bug Fixes, New Features and Documentation
+<a class="md-nav__link" href="#development">
+    Development
   </a>
 </li>
-</ul>
-</nav>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#commit-message-convention">
+    Commit message convention
+  </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#mergepull-request-guidelines">
-    Merge/Pull Request Guidelines
+<a class="md-nav__link" href="#pull-requests-guidelines">
+    Pull requests guidelines
   </a>
 </li>
 </ul>
@@ -254,27 +250,23 @@
 <label class="md-nav__title" for="__toc">Table of contents</label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#types-of-contributions">
-    Types of Contributions
-  </a>
-<nav class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#bug-reports-feature-requests-and-feedback">
-    Bug Reports, Feature Requests, and Feedback
+<a class="md-nav__link" href="#environment-setup">
+    Environment setup
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#bug-fixes-new-features-and-documentation">
-    Bug Fixes, New Features and Documentation
+<a class="md-nav__link" href="#development">
+    Development
   </a>
 </li>
-</ul>
-</nav>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#commit-message-convention">
+    Commit message convention
+  </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#mergepull-request-guidelines">
-    Merge/Pull Request Guidelines
+<a class="md-nav__link" href="#pull-requests-guidelines">
+    Pull requests guidelines
   </a>
 </li>
 </ul>
@@ -285,46 +277,83 @@
 <div class="md-content">
 <article class="md-content__inner md-typeset">
 <a class="md-icon md-content__icon" href="https://github.com/pawamoy/aria2p/edit/master/docs/contributing.md" title="Edit this page"></a>
-<h1 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">¶</a></h1>
-<p>Contributions are welcome, and they are greatly appreciated!</p>
-<p>Every little bit helps, and credit will always be given.</p>
-<h2 id="types-of-contributions">Types of Contributions<a class="headerlink" href="#types-of-contributions" title="Permanent link">¶</a></h2>
-<h3 id="bug-reports-feature-requests-and-feedback">Bug Reports, Feature Requests, and Feedback<a class="headerlink" href="#bug-reports-feature-requests-and-feedback" title="Permanent link">¶</a></h3>
-<p>Create a new <a href="https://github.com/pawamoy/aria2p/issues/new">GitHub issue</a>! Try to be as descriptive as possible.</p>
-<h3 id="bug-fixes-new-features-and-documentation">Bug Fixes, New Features and Documentation<a class="headerlink" href="#bug-fixes-new-features-and-documentation" title="Permanent link">¶</a></h3>
-<p>This project is developed using <a href="https://github.com/sdispater/poetry"><code>poetry</code></a>.
-Follow the recommended installation method:</p>
-<div class="codehilite"><pre><span></span><code>curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py <span class="p">|</span> python
+<h1 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">¤</a></h1>
+<p>Contributions are welcome, and they are greatly appreciated!
+Every little bit helps, and credit will always be given.</p>
+<h2 id="environment-setup">Environment setup<a class="headerlink" href="#environment-setup" title="Permanent link">¤</a></h2>
+<p>Nothing easier!</p>
+<p>Fork and clone the repository, then:</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">cd</span> aria2p
+make setup
 </code></pre></div>
+<p>That's it!</p>
+<p>You now have the dependencies installed.</p>
+<p>You can run the application with <code>poetry run aria2p [ARGS...]</code>.</p>
+<p>Run <code>make help</code> to see all the available actions!</p>
+<h2 id="development">Development<a class="headerlink" href="#development" title="Permanent link">¤</a></h2>
+<p>As usual:</p>
 <ol>
-<li>Fork the repository <a href="https://github.com/pawamoy/aria2p">on GitHub</a>;</li>
-<li>Clone it on your machine;</li>
-<li>Go into the directory, and run <code>poetry install</code> to setup the development environment;</li>
-<li>Create a new branch with <code>git checkout -b bug-fix-or-feature-name</code>;</li>
-<li>Code!</li>
-<li>
-<p><strong>Write tests. Run them all.</strong> The commands to run the tests are:</p>
-<div class="codehilite"><pre><span></span><code>poetry run pytest  <span class="c1"># to run all tests sequentially</span>
-poetry run pytest -v  <span class="c1"># to print one test per line</span>
-poetry run pytest -n <span class="m">4</span>  <span class="c1"># to run tests in parallel (4 workers)</span>
-poetry run pytest tests/test_api.py  <span class="c1"># to run tests in a specific file</span>
-</code></pre></div>
-<p><code>pytest</code> provides the <code>-k</code> option to select tests based on their names:</p>
-<div class="codehilite"><pre><span></span><code>poetry run pytest -k <span class="s2">"api and remove"</span>
-poetry run pytest -k <span class="s2">"utils or stats"</span>
-</code></pre></div>
-<p>See the <a href="https://docs.pytest.org/en/latest/example/markers.html#using-k-expr-to-select-tests-based-on-their-name">documentation for the <code>-k</code> option</a> for more examples.</p>
-</li>
-<li>
-<p>When the tests pass, commit;</p>
-</li>
-<li>Push;</li>
-<li>...and finally, create a new <a href="https://github.com/pawamoy/aria2p/compare">pull request</a>!
-   Make sure to follow the guidelines.</li>
+<li>create a new branch: <code>git checkout -b feature-or-bugfix-name</code></li>
+<li>edit the code and/or the documentation</li>
 </ol>
-<h2 id="mergepull-request-guidelines">Merge/Pull Request Guidelines<a class="headerlink" href="#mergepull-request-guidelines" title="Permanent link">¶</a></h2>
-<p>Make sure to have atomic commits and contextual commit messages!</p>
-<p><a href="http://chris.beams.io/posts/git-commit/">Check out this awesome blog post by Chris Beams for more information.</a></p>
+<p>If you updated the documentation or the project dependencies:</p>
+<ol>
+<li>run <code>make docs-regen</code></li>
+<li>run <code>make docs-serve</code>,
+   go to http://localhost:8000 and check that everything looks good</li>
+</ol>
+<p><strong>Before committing:</strong></p>
+<ol>
+<li>run <code>make format</code> to auto-format the code</li>
+<li>run <code>make check</code> to check everything (fix any warning)</li>
+<li>run <code>make test</code> to run the tests (fix any issue)</li>
+<li>follow our <a href="#commit-message-convention">commit message convention</a></li>
+</ol>
+<p>If you are unsure about how to fix or ignore a warning,
+just let the continuous integration fail,
+and we will help you during review.</p>
+<p>Don't bother updating the changelog, we will take care of this.</p>
+<h2 id="commit-message-convention">Commit message convention<a class="headerlink" href="#commit-message-convention" title="Permanent link">¤</a></h2>
+<p>Commits messages must follow the
+<a href="https://gist.github.com/stephenparish/9941e89d80e2bc58a153#format-of-the-commit-message">Angular style</a>:</p>
+<div class="codehilite"><pre><span></span><code>&lt;type&gt;[(scope)]: Subject
+
+[Body]
+</code></pre></div>
+<p>Scope and body are optional. Type can be:</p>
+<ul>
+<li><code>build</code>: About packaging, building wheels, etc.</li>
+<li><code>chore</code>: About packaging or repo/files management.</li>
+<li><code>ci</code>: About Continuous Integration.</li>
+<li><code>docs</code>: About documentation.</li>
+<li><code>feat</code>: New feature.</li>
+<li><code>fix</code>: Bug fix.</li>
+<li><code>perf</code>: About performance.</li>
+<li><code>refactor</code>: Changes which are not features nor bug fixes.</li>
+<li><code>style</code>: A change in code style/format.</li>
+<li><code>tests</code>: About tests.</li>
+</ul>
+<p><strong>Subject (and body) must be valid Markdown.</strong>
+If you write a body, please add issues references at the end:</p>
+<div class="codehilite"><pre><span></span><code>Body.
+
+References: #10, #11.
+Fixes #15.
+</code></pre></div>
+<h2 id="pull-requests-guidelines">Pull requests guidelines<a class="headerlink" href="#pull-requests-guidelines" title="Permanent link">¤</a></h2>
+<p>Link to any related issue in the Pull Request message.</p>
+<p>During review, we recommend using fixups:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># SHA is the SHA of the commit you want to fix</span>
+git commit --fixup<span class="o">=</span>SHA
+</code></pre></div>
+<p>Once all the changes are approved, you can squash your commits:</p>
+<div class="codehilite"><pre><span></span><code>git rebase -i --autosquash master
+</code></pre></div>
+<p>And force-push:</p>
+<div class="codehilite"><pre><span></span><code>git push -f
+</code></pre></div>
+<p>If this seems all too complicated, you can push or force-push each new commit,
+and we will squash them ourselves if needed, before merging.</p>
 </article>
 </div>
 </div>

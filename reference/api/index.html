@@ -26,7 +26,7 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
 <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
 <link href="../../assets/fonts/material-icons.css" rel="stylesheet"/>
-<link href="../../custom.css" rel="stylesheet"/>
+<link href="../../css/mkdocstrings.css" rel="stylesheet"/>
 </head>
 <body dir="ltr">
 <svg class="md-svg">
@@ -577,8 +577,8 @@
 <a class="md-icon md-content__icon" href="https://github.com/pawamoy/aria2p/edit/master/docs/reference/api.md" title="Edit this page"></a>
 <h1>api.py</h1>
 <div class="doc doc-object doc-module">
-<h6 class="hidden-toc" href="#aria2p.api" id="aria2p.api" style="visibility: hidden; width: 0; height: 0;">
-<a class="headerlink" href="#aria2p.api" title="Permanent link">¶</a></h6>
+<h2 class="hidden-toc" href="#aria2p.api" id="aria2p.api" style="visibility: hidden; width: 0; height: 0;">
+<a class="headerlink" href="#aria2p.api" title="Permanent link">¤</a></h2>
 <div class="doc doc-contents first">
 <p>This module defines the API class, which makes use of a JSON-RPC client to provide higher-level methods to
 interact easily with a remote aria2c process.</p>
@@ -586,7 +586,7 @@ interact easily with a remote aria2c process.</p>
 <div class="doc doc-object doc-class">
 <h2 class="doc doc-heading" id="aria2p.api.API">
 <code>API</code>
-<a class="headerlink" href="#aria2p.api.API" title="Permanent link">¶</a></h2>
+<a class="headerlink" href="#aria2p.api.API" title="Permanent link">¤</a></h2>
 <div class="doc doc-contents">
 <p>A class providing high-level methods to interact with a remote aria2c process.</p>
 <p>This class is instantiated with a reference to a <a href="https://pawamoy.github.io/aria2p/reference/client/#aria2p.client.Client"><code>Client</code></a> instance. It then uses this client
@@ -602,7 +602,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-special"><code>special</code></small>
 </span>
-<a class="headerlink" href="#aria2p.api.API.__init__" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.__init__" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Initialization method.</p>
 <p><strong>Parameters:</strong></p>
@@ -670,7 +670,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <h3 class="doc doc-heading" id="aria2p.api.API.add_magnet">
 <code class="highlight language-python">
 add_magnet<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">magnet_uri</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.add_magnet" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.add_magnet" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Add a download with a Magnet URI.</p>
 <p><strong>Parameters:</strong></p>
@@ -797,7 +797,7 @@ add_magnet<span class="p">(</span><span class="bp">self</span><span class="p">,<
 <h3 class="doc doc-heading" id="aria2p.api.API.add_metalink">
 <code class="highlight language-python">
 add_metalink<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metalink_file_path</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.add_metalink" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.add_metalink" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Add a download with a Metalink file.</p>
 <p><strong>Parameters:</strong></p>
@@ -936,7 +936,7 @@ add_metalink<span class="p">(</span><span class="bp">self</span><span class="p">
 <h3 class="doc doc-heading" id="aria2p.api.API.add_torrent">
 <code class="highlight language-python">
 add_torrent<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">torrent_file_path</span><span class="p">,</span> <span class="n">uris</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.add_torrent" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.add_torrent" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Add a download with a torrent file (usually .torrent extension).</p>
 <p><strong>Parameters:</strong></p>
@@ -1099,7 +1099,7 @@ add_torrent<span class="p">(</span><span class="bp">self</span><span class="p">,
 <h3 class="doc doc-heading" id="aria2p.api.API.add_uris">
 <code class="highlight language-python">
 add_uris<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uris</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.add_uris" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.add_uris" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Add a download with a URL (or more).</p>
 <p><strong>Parameters:</strong></p>
@@ -1232,7 +1232,7 @@ add_uris<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <h3 class="doc doc-heading" id="aria2p.api.API.autopurge">
 <code class="highlight language-python">
 autopurge<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.autopurge" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.autopurge" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Purge completed, removed or failed downloads from the queue.</p>
 <p><strong>Returns:</strong></p>
@@ -1299,7 +1299,7 @@ copy_files<span class="p">(</span><span class="n">downloads</span><span class="p
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
 </span>
-<a class="headerlink" href="#aria2p.api.API.copy_files" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.copy_files" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Copy downloaded files to another directory.</p>
 <p><strong>Parameters:</strong></p>
@@ -1442,7 +1442,7 @@ copy_files<span class="p">(</span><span class="n">downloads</span><span class="p
 <h3 class="doc doc-heading" id="aria2p.api.API.get_download">
 <code class="highlight language-python">
 get_download<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.get_download" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.get_download" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Get a <a href="https://pawamoy.github.io/aria2p/reference/downloads/#aria2p.downloads.Download"><code>Download</code></a> object thanks to its GID.</p>
 <p><strong>Parameters:</strong></p>
@@ -1527,7 +1527,7 @@ get_download<span class="p">(</span><span class="bp">self</span><span class="p">
 <h3 class="doc doc-heading" id="aria2p.api.API.get_downloads">
 <code class="highlight language-python">
 get_downloads<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gids</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.get_downloads" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.get_downloads" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Get a list of <a href="https://pawamoy.github.io/aria2p/reference/downloads/#aria2p.downloads.Download"><code>Download</code></a> object thanks to their GIDs.</p>
 <p><strong>Parameters:</strong></p>
@@ -1636,7 +1636,7 @@ get_downloads<span class="p">(</span><span class="bp">self</span><span class="p"
 <h3 class="doc doc-heading" id="aria2p.api.API.get_global_options">
 <code class="highlight language-python">
 get_global_options<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.get_global_options" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.get_global_options" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Get the global options.</p>
 <p><strong>Returns:</strong></p>
@@ -1694,7 +1694,7 @@ get_global_options<span class="p">(</span><span class="bp">self</span><span clas
 <h3 class="doc doc-heading" id="aria2p.api.API.get_options">
 <code class="highlight language-python">
 get_options<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">downloads</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.get_options" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.get_options" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Get options for each of the given downloads.</p>
 <p><strong>Parameters:</strong></p>
@@ -1787,7 +1787,7 @@ get_options<span class="p">(</span><span class="bp">self</span><span class="p">,
 <h3 class="doc doc-heading" id="aria2p.api.API.get_stats">
 <code class="highlight language-python">
 get_stats<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.get_stats" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.get_stats" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Get the stats of the remote aria2c process.</p>
 <p><strong>Returns:</strong></p>
@@ -1845,7 +1845,7 @@ get_stats<span class="p">(</span><span class="bp">self</span><span class="p">)</
 <h3 class="doc doc-heading" id="aria2p.api.API.listen_to_notifications">
 <code class="highlight language-python">
 listen_to_notifications<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threaded</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.listen_to_notifications" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.listen_to_notifications" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Start listening to aria2 notifications via WebSocket.</p>
 <p>This method differs from <a href="https://pawamoy.github.io/aria2p/reference/client/#aria2p.client.Client.listen_to_notifications"><code>Client.listen_to_notifications</code></a>
@@ -1951,7 +1951,7 @@ Accepting <code>api</code> allows to use the high-level methods of the <a href="
 <h3 class="doc doc-heading" id="aria2p.api.API.move">
 <code class="highlight language-python">
 move<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.move" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.move" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Move a download in the queue, relatively to its current position.</p>
 <p><strong>Parameters:</strong></p>
@@ -2046,7 +2046,7 @@ move<span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 <h3 class="doc doc-heading" id="aria2p.api.API.move_down">
 <code class="highlight language-python">
 move_down<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.move_down" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.move_down" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Move a download down in the queue.</p>
 <p><strong>Parameters:</strong></p>
@@ -2144,7 +2144,7 @@ move_files<span class="p">(</span><span class="n">downloads</span><span class="p
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
 </span>
-<a class="headerlink" href="#aria2p.api.API.move_files" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.move_files" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Move downloaded files to another directory.</p>
 <p><strong>Parameters:</strong></p>
@@ -2279,7 +2279,7 @@ move_files<span class="p">(</span><span class="n">downloads</span><span class="p
 <h3 class="doc doc-heading" id="aria2p.api.API.move_to">
 <code class="highlight language-python">
 move_to<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.move_to" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.move_to" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Move a download in the queue, with absolute positioning.</p>
 <p><strong>Parameters:</strong></p>
@@ -2384,7 +2384,7 @@ move_to<span class="p">(</span><span class="bp">self</span><span class="p">,</sp
 <h3 class="doc doc-heading" id="aria2p.api.API.move_to_bottom">
 <code class="highlight language-python">
 move_to_bottom<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.move_to_bottom" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.move_to_bottom" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Move a download to the bottom of the queue.</p>
 <p><strong>Parameters:</strong></p>
@@ -2469,7 +2469,7 @@ move_to_bottom<span class="p">(</span><span class="bp">self</span><span class="p
 <h3 class="doc doc-heading" id="aria2p.api.API.move_to_top">
 <code class="highlight language-python">
 move_to_top<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.move_to_top" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.move_to_top" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Move a download to the top of the queue.</p>
 <p><strong>Parameters:</strong></p>
@@ -2554,7 +2554,7 @@ move_to_top<span class="p">(</span><span class="bp">self</span><span class="p">,
 <h3 class="doc doc-heading" id="aria2p.api.API.move_up">
 <code class="highlight language-python">
 move_up<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.move_up" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.move_up" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Move a download up in the queue.</p>
 <p><strong>Parameters:</strong></p>
@@ -2649,7 +2649,7 @@ move_up<span class="p">(</span><span class="bp">self</span><span class="p">,</sp
 <h3 class="doc doc-heading" id="aria2p.api.API.pause">
 <code class="highlight language-python">
 pause<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">downloads</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.pause" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.pause" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Remove the given downloads from the list.</p>
 <p><strong>Parameters:</strong></p>
@@ -2780,7 +2780,7 @@ pause<span class="p">(</span><span class="bp">self</span><span class="p">,</span
 <h3 class="doc doc-heading" id="aria2p.api.API.pause_all">
 <code class="highlight language-python">
 pause_all<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.pause_all" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.pause_all" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Remove the given downloads from the list.</p>
 <p><strong>Parameters:</strong></p>
@@ -2873,7 +2873,7 @@ pause_all<span class="p">(</span><span class="bp">self</span><span class="p">,</
 <h3 class="doc doc-heading" id="aria2p.api.API.remove">
 <code class="highlight language-python">
 remove<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">downloads</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.remove" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.remove" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Remove the given downloads from the list.</p>
 <p><strong>Parameters:</strong></p>
@@ -3104,7 +3104,7 @@ remove<span class="p">(</span><span class="bp">self</span><span class="p">,</spa
 <h3 class="doc doc-heading" id="aria2p.api.API.remove_all">
 <code class="highlight language-python">
 remove_all<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.remove_all" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.remove_all" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Remove all downloads from the list.</p>
 <p><strong>Parameters:</strong></p>
@@ -3192,7 +3192,7 @@ remove_files<span class="p">(</span><span class="n">downloads</span><span class=
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
 </span>
-<a class="headerlink" href="#aria2p.api.API.remove_files" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.remove_files" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Remove downloaded files.</p>
 <p><strong>Parameters:</strong></p>
@@ -3311,7 +3311,7 @@ remove_files<span class="p">(</span><span class="n">downloads</span><span class=
 <h3 class="doc doc-heading" id="aria2p.api.API.resume">
 <code class="highlight language-python">
 resume<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">downloads</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.resume" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.resume" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Resume (unpause) the given downloads.</p>
 <p><strong>Parameters:</strong></p>
@@ -3422,7 +3422,7 @@ resume<span class="p">(</span><span class="bp">self</span><span class="p">,</spa
 <h3 class="doc doc-heading" id="aria2p.api.API.resume_all">
 <code class="highlight language-python">
 resume_all<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.resume_all" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.resume_all" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Resume (unpause) all downloads.</p>
 <p><strong>Returns:</strong></p>
@@ -3480,7 +3480,7 @@ resume_all<span class="p">(</span><span class="bp">self</span><span class="p">)<
 <h3 class="doc doc-heading" id="aria2p.api.API.search">
 <code class="highlight language-python">
 search<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patterns</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.search" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.search" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Not implemented.</p>
 <p>Search and return <a href="https://pawamoy.github.io/aria2p/reference/downloads/#aria2p.downloads.Download"><code>Download</code></a> objects based on multiple patterns.</p>
@@ -3632,7 +3632,7 @@ search<span class="p">(</span><span class="bp">self</span><span class="p">,</spa
 <h3 class="doc doc-heading" id="aria2p.api.API.set_global_options">
 <code class="highlight language-python">
 set_global_options<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.set_global_options" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.set_global_options" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set global options.</p>
 <p><strong>Parameters:</strong></p>
@@ -3729,7 +3729,7 @@ set_global_options<span class="p">(</span><span class="bp">self</span><span clas
 <h3 class="doc doc-heading" id="aria2p.api.API.set_options">
 <code class="highlight language-python">
 set_options<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">downloads</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.set_options" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.set_options" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set options for specific downloads.</p>
 <p><strong>Parameters:</strong></p>
@@ -3844,7 +3844,7 @@ set_options<span class="p">(</span><span class="bp">self</span><span class="p">,
 <h3 class="doc doc-heading" id="aria2p.api.API.stop_listening">
 <code class="highlight language-python">
 stop_listening<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.api.API.stop_listening" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.api.API.stop_listening" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Stop listening to notifications.</p>
 <p>If the listening loop was threaded, this method will wait for the thread to finish.

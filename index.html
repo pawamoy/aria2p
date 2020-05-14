@@ -26,7 +26,7 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
 <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
 <link href="assets/fonts/material-icons.css" rel="stylesheet"/>
-<link href="custom.css" rel="stylesheet"/>
+<link href="css/mkdocstrings.css" rel="stylesheet"/>
 </head>
 <body dir="ltr">
 <svg class="md-svg">
@@ -236,8 +236,8 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#troubleshoot">
-    Troubleshoot
+<a class="md-nav__link" href="#troubleshooting">
+    Troubleshooting
   </a>
 </li>
 <li class="md-nav__item">
@@ -426,8 +426,8 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#troubleshoot">
-    Troubleshoot
+<a class="md-nav__link" href="#troubleshooting">
+    Troubleshooting
   </a>
 </li>
 <li class="md-nav__item">
@@ -447,9 +447,8 @@
 IMPORTANT: This file is generated from the template at 'scripts/templates/README.md'.
            Please update the template instead of this file.
 -->
-<h1 id="aria2p">aria2p<a class="headerlink" href="#aria2p" title="Permanent link">¶</a></h1>
-<p><a href="https://gitlab.com/pawamoy/aria2p/commits/master"><img alt="pipeline status" src="https://gitlab.com/pawamoy/aria2p/badges/master/pipeline.svg"/></a>
-<a href="https://gitlab.com/pawamoy/aria2p/commits/master"><img alt="coverage report" src="https://gitlab.com/pawamoy/aria2p/badges/master/coverage.svg"/></a>
+<h1 id="aria2p">aria2p<a class="headerlink" href="#aria2p" title="Permanent link">¤</a></h1>
+<p><a href="https://github.com/pawamoy/aria2p/actions?query=workflow%3Aci"><img alt="ci" src="https://github.com/pawamoy/aria2p/workflows/ci/badge.svg"/></a>
 <a href="https://pawamoy.github.io/aria2p/"><img alt="documentation" src="https://img.shields.io/badge/docs-mkdocs%20material-blue.svg?style=flat"/></a>
 <a href="https://pypi.org/project/aria2p/"><img alt="pypi version" src="https://img.shields.io/pypi/v/aria2p.svg"/></a>
 <a href="https://gitter.im/aria2p/community?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge"><img alt="Gitter" src="https://badges.gitter.im/aria2p/community.svg"/></a>
@@ -482,7 +481,7 @@ can be found in the <a href="https://aria2p.readthedocs.io/en/latest/configurati
 <li><a href="#troubleshoot">Troubleshoot</a></li>
 <li><a href="#support">Support</a></li>
 </ul>
-<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">¶</a></h2>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">¤</a></h2>
 <p><code>aria2p</code> requires Python 3.6 or above.</p>
 <details>
 <summary>To install Python 3.6, I recommend using <a href="https://github.com/pyenv/pyenv"><code>pyenv</code></a>.</summary>
@@ -504,7 +503,7 @@ pyenv global system <span class="m">3</span>.6.8
 <p>You must also install <a href="https://github.com/aria2/aria2"><em>aria2</em></a>. On systems with <code>apt-get</code>:</p>
 <div class="codehilite"><pre><span></span><code>sudo apt-get install aria2
 </code></pre></div>
-<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">¶</a></h2>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">¤</a></h2>
 <p>With <code>pip</code>:</p>
 <div class="codehilite"><pre><span></span><code>python3.6 -m pip install aria2p<span class="o">[</span>tui<span class="o">]</span>
 </code></pre></div>
@@ -515,7 +514,7 @@ pipx install --python python3.6 aria2p<span class="o">[</span>tui<span class="o"
 </code></pre></div>
 <p>The <code>tui</code> extra is needed for the interactive interface. If you don't need the interface (for example when you are
 writing a Python package with a dependency to aria2p), simply install <code>aria2p</code> without any extra.</p>
-<h2 id="usage-as-a-library">Usage (as a library)<a class="headerlink" href="#usage-as-a-library" title="Permanent link">¶</a></h2>
+<h2 id="usage-as-a-library">Usage (as a library)<a class="headerlink" href="#usage-as-a-library" title="Permanent link">¤</a></h2>
 <p><strong>This library is still a work in progress. More examples will be added later.
 In the meantime, you can read the <a href="https://aria2p.readthedocs.io/en/latest/reference.html">Reference section</a> on the official documentation.</strong></p>
 <div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">aria2p</span>
@@ -540,7 +539,7 @@ In the meantime, you can read the <a href="https://aria2p.readthedocs.io/en/late
 
 <span class="n">download</span> <span class="o">=</span> <span class="n">aria2</span><span class="o">.</span><span class="n">add_magnet</span><span class="p">(</span><span class="n">magnet_uri</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="usage-command-line">Usage (command-line)<a class="headerlink" href="#usage-command-line" title="Permanent link">¶</a></h2>
+<h2 id="usage-command-line">Usage (command-line)<a class="headerlink" href="#usage-command-line" title="Permanent link">¤</a></h2>
 <div class="codehilite"><pre><span></span><code>usage: aria2p [GLOBAL_OPTS...] COMMAND [COMMAND_OPTS...]
 
 Command-line tool and Python library to interact with an `aria2c` daemon
@@ -600,7 +599,7 @@ which is a console interactive interface.</p>
 <li><a href="#top"><code>top</code></a></li>
 </ul>
 <hr/>
-<h3 id="add"><code>add</code><a class="headerlink" href="#add" title="Permanent link">¶</a></h3>
+<h3 id="add"><code>add</code><a class="headerlink" href="#add" title="Permanent link">¤</a></h3>
 <div class="codehilite"><pre><span></span><code>usage: aria2p add [-h] [-f FROM_FILE] [uris [uris ...]]
 
 Add downloads with URIs/Magnets/torrents/Metalinks.
@@ -614,7 +613,7 @@ optional arguments:
                         Load URIs from a file.
 </code></pre></div>
 <hr/>
-<h3 id="add-magnets"><code>add-magnets</code><a class="headerlink" href="#add-magnets" title="Permanent link">¶</a></h3>
+<h3 id="add-magnets"><code>add-magnets</code><a class="headerlink" href="#add-magnets" title="Permanent link">¤</a></h3>
 <div class="codehilite"><pre><span></span><code>usage: aria2p add-magnets [-h] [-f FROM_FILE] [uris [uris ...]]
 
 Add downloads with Magnet URIs.
@@ -628,7 +627,7 @@ optional arguments:
                         Load URIs from a file.
 </code></pre></div>
 <hr/>
-<h3 id="add-metalinks"><code>add-metalinks</code><a class="headerlink" href="#add-metalinks" title="Permanent link">¶</a></h3>
+<h3 id="add-metalinks"><code>add-metalinks</code><a class="headerlink" href="#add-metalinks" title="Permanent link">¤</a></h3>
 <div class="codehilite"><pre><span></span><code>usage: aria2p add-metalinks [-h] [-f FROM_FILE]
                             [metalink_files [metalink_files ...]]
 
@@ -643,7 +642,7 @@ optional arguments:
                         Load file paths from a file.
 </code></pre></div>
 <hr/>
-<h3 id="add-torrents"><code>add-torrents</code><a class="headerlink" href="#add-torrents" title="Permanent link">¶</a></h3>
+<h3 id="add-torrents"><code>add-torrents</code><a class="headerlink" href="#add-torrents" title="Permanent link">¤</a></h3>
 <div class="codehilite"><pre><span></span><code>usage: aria2p add-torrents [-h] [-f FROM_FILE]
                            [torrent_files [torrent_files ...]]
 
@@ -658,7 +657,7 @@ optional arguments:
                         Load file paths from a file.
 </code></pre></div>
 <hr/>
-<h3 id="autopurge"><code>autopurge</code><a class="headerlink" href="#autopurge" title="Permanent link">¶</a></h3>
+<h3 id="autopurge"><code>autopurge</code><a class="headerlink" href="#autopurge" title="Permanent link">¤</a></h3>
 <div class="codehilite"><pre><span></span><code>usage: aria2p autopurge [-h]
 
 Automatically purge completed/removed/failed downloads.
@@ -667,7 +666,7 @@ optional arguments:
   -h, --help  Show this help message and exit.
 </code></pre></div>
 <hr/>
-<h3 id="call"><code>call</code><a class="headerlink" href="#call" title="Permanent link">¶</a></h3>
+<h3 id="call"><code>call</code><a class="headerlink" href="#call" title="Permanent link">¤</a></h3>
 <div class="codehilite"><pre><span></span><code>usage: aria2p call [-h] [-P PARAMS [PARAMS ...] | -J PARAMS] method
 
 Call a remote method through the JSON-RPC client.
@@ -700,7 +699,7 @@ It is case-insensitive, and dashes and underscores will be removed.</p>
 - <code>A-d_D-u_R-i</code> (yes it's valid)
 - <code>A---R---I---A---2.a__d__d__u__r__i</code> (I think you got it)
 - and even more ugly forms...</p>
-<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">¶</a></h4>
+<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">¤</a></h4>
 <p>List all available methods.
 <em>This example uses <a href="https://github.com/stedolan/jq"><code>jq</code></a>.</em>
 <div class="codehilite"><pre><span></span><code><span class="gp">$</span> aria2p call listmethods <span class="p">|</span> jq
@@ -763,7 +762,7 @@ It is case-insensitive, and dashes and underscores will be removed.</p>
 <span class="go">"OK"</span>
 </code></pre></div></p>
 <hr/>
-<h3 id="listen"><code>listen</code><a class="headerlink" href="#listen" title="Permanent link">¶</a></h3>
+<h3 id="listen"><code>listen</code><a class="headerlink" href="#listen" title="Permanent link">¤</a></h3>
 <div class="codehilite"><pre><span></span><code>usage: aria2p listen [-h] [-c CALLBACKS_MODULE] [-t TIMEOUT]
                      [event_types [event_types ...]]
 
@@ -788,7 +787,7 @@ optional arguments:
                         faster reactivity when stopping to listen.
 </code></pre></div>
 <hr/>
-<h3 id="pause"><code>pause</code><a class="headerlink" href="#pause" title="Permanent link">¶</a></h3>
+<h3 id="pause"><code>pause</code><a class="headerlink" href="#pause" title="Permanent link">¤</a></h3>
 <div class="codehilite"><pre><span></span><code>usage: aria2p pause [-h] [-a] [-f] [gids [gids ...]]
 
 Pause downloads.
@@ -802,7 +801,7 @@ optional arguments:
   -f, --force  Pause without contacting servers first.
 </code></pre></div>
 <hr/>
-<h3 id="remove"><code>remove</code><a class="headerlink" href="#remove" title="Permanent link">¶</a></h3>
+<h3 id="remove"><code>remove</code><a class="headerlink" href="#remove" title="Permanent link">¤</a></h3>
 <div class="codehilite"><pre><span></span><code>usage: aria2p remove [-h] [-a] [-f] [gids [gids ...]]
 
 Remove downloads.
@@ -816,7 +815,7 @@ optional arguments:
   -f, --force  Remove without contacting servers first.
 </code></pre></div>
 <hr/>
-<h3 id="resume"><code>resume</code><a class="headerlink" href="#resume" title="Permanent link">¶</a></h3>
+<h3 id="resume"><code>resume</code><a class="headerlink" href="#resume" title="Permanent link">¤</a></h3>
 <div class="codehilite"><pre><span></span><code>usage: aria2p resume [-h] [-a] [gids [gids ...]]
 
 Resume downloads.
@@ -829,7 +828,7 @@ optional arguments:
   -a, --all   Resume all the downloads.
 </code></pre></div>
 <hr/>
-<h3 id="show"><code>show</code><a class="headerlink" href="#show" title="Permanent link">¶</a></h3>
+<h3 id="show"><code>show</code><a class="headerlink" href="#show" title="Permanent link">¤</a></h3>
 <div class="codehilite"><pre><span></span><code>usage: aria2p show [-h]
 
 Show the download progression.
@@ -838,7 +837,7 @@ optional arguments:
   -h, --help  Show this help message and exit.
 </code></pre></div>
 <hr/>
-<h3 id="top"><code>top</code><a class="headerlink" href="#top" title="Permanent link">¶</a></h3>
+<h3 id="top"><code>top</code><a class="headerlink" href="#top" title="Permanent link">¤</a></h3>
 <div class="codehilite"><pre><span></span><code>usage: aria2p top [-h]
 
 Launch the top-like interactive interface.
@@ -846,19 +845,14 @@ Launch the top-like interactive interface.
 optional arguments:
   -h, --help  Show this help message and exit.
 </code></pre></div>
-<h2 id="troubleshoot">Troubleshoot<a class="headerlink" href="#troubleshoot" title="Permanent link">¶</a></h2>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¤</a></h2>
 <ul>
 <li>Error outputs like below when using <code>aria2p</code> as a Python library:</li>
 </ul>
 <div class="codehilite"><pre><span></span><code>requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=6800): Max retries exceeded with url: /jsonrpc (Caused by NewConnectionError('&lt;urllib3.connection.HTTPConnection object at 0x1115b1908&gt;: Failed to establish a new connection: [Errno 61] Connection refused',))
 </code></pre></div>
 <p>Solution: <code>aria2c</code> needs to be up and running first.</p>
-<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
-<p>To support this project,
-consider donating through one of the following platforms:</p>
-<ul>
-<li><a href="https://beerpay.io/pawamoy/aria2p">Beerpay</a></li>
-</ul>
+<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">¤</a></h2>
 <p>To support me as an open-source software author,
 consider donating or be a supporter through one of the following platforms</p>
 <ul>

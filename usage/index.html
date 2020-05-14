@@ -26,7 +26,7 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
 <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
 <link href="../assets/fonts/material-icons.css" rel="stylesheet"/>
-<link href="../custom.css" rel="stylesheet"/>
+<link href="../css/mkdocstrings.css" rel="stylesheet"/>
 </head>
 <body dir="ltr">
 <svg class="md-svg">
@@ -313,10 +313,10 @@
 <div class="md-content">
 <article class="md-content__inner md-typeset">
 <a class="md-icon md-content__icon" href="https://github.com/pawamoy/aria2p/edit/master/docs/usage.md" title="Edit this page"></a>
-<h1 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">¶</a></h1>
+<h1 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">¤</a></h1>
 <p>Extensive usage instructions will be added later, when the application is more stable.
 You can also refer to the README / Overview.</p>
-<h2 id="listening-to-notifications">Listening to notifications<a class="headerlink" href="#listening-to-notifications" title="Permanent link">¶</a></h2>
+<h2 id="listening-to-notifications">Listening to notifications<a class="headerlink" href="#listening-to-notifications" title="Permanent link">¤</a></h2>
 <p>Since <a href="/changelog/#v030-compare-2019-10-11">version 0.3</a>, it is possible to listen to the server notifications
 thanks to the <a href="https://pypi.org/project/websocket_client/"><code>websocket-client</code></a> Python package.</p>
 <p>The server sends a notification to the client through a WebSocket for each of these events:
@@ -326,7 +326,7 @@ thanks to the <a href="https://pypi.org/project/websocket_client/"><code>websock
 - a download fails,
 - a download is complete,
 - a bittorrent download is complete (received 100%, still seeding).</p>
-<h3 id="through-the-command-line">Through the command line<a class="headerlink" href="#through-the-command-line" title="Permanent link">¶</a></h3>
+<h3 id="through-the-command-line">Through the command line<a class="headerlink" href="#through-the-command-line" title="Permanent link">¤</a></h3>
 <p>The command line interface offers a <code>listen</code> subcommand:</p>
 <div class="codehilite"><pre><span></span><code>aria2p listen -c /path/to/callbacks.py
 </code></pre></div>
@@ -367,7 +367,7 @@ You can use the names you want.</p>
         <span class="n">download</span><span class="o">.</span><span class="n">purge</span><span class="p">()</span>
 </code></pre></div>
 <p>You can now use this callbacks module with <code>aria2p listen -c ~/callbacks.py</code>.</p>
-<h4 id="process-specific-types-of-notifications">Process specific types of notifications<a class="headerlink" href="#process-specific-types-of-notifications" title="Permanent link">¶</a></h4>
+<h4 id="process-specific-types-of-notifications">Process specific types of notifications<a class="headerlink" href="#process-specific-types-of-notifications" title="Permanent link">¤</a></h4>
 <p>If you want to listen to only a particular type of notification, even though your callbacks module
 defines all the possible callbacks, you can pass additional arguments:</p>
 <div class="codehilite"><pre><span></span><code><span class="c1"># let say you want to run multiple listeners:</span>
@@ -377,16 +377,16 @@ aria2p listen -c ~/callbacks.py <span class="nb">complete</span> btcomplete <spa
 aria2p listen -c ~/callbacks.py start pause stop <span class="p">&amp;</span>
 </code></pre></div>
 <p>This is possible because the server sends the notifications to every client that is listening.</p>
-<h4 id="interruption">Interruption<a class="headerlink" href="#interruption" title="Permanent link">¶</a></h4>
+<h4 id="interruption">Interruption<a class="headerlink" href="#interruption" title="Permanent link">¤</a></h4>
 <p>To stop listening, send a SIGTERM or SIGINT signal to the process,
 for example by hitting Control-C if aria2p is running in the foreground.
 If a notification is currently being handled, it will finish before the listener is stopped.</p>
-<h4 id="timeout">Timeout<a class="headerlink" href="#timeout" title="Permanent link">¶</a></h4>
+<h4 id="timeout">Timeout<a class="headerlink" href="#timeout" title="Permanent link">¤</a></h4>
 <p>If you find the default five seconds to be too long when interrupting the process,
 you can decrease this timeout value by passing the <code>-t</code> or <code>--timeout</code> option:</p>
 <div class="codehilite"><pre><span></span><code>aria2p listen -c ~/callbacks.py -t <span class="m">1</span>
 </code></pre></div>
-<h3 id="programmatically">Programmatically<a class="headerlink" href="#programmatically" title="Permanent link">¶</a></h3>
+<h3 id="programmatically">Programmatically<a class="headerlink" href="#programmatically" title="Permanent link">¤</a></h3>
 <p>Both the <a href="/reference/api/#aria2p.api.API.listen_to_notifications"><code>API</code></a>
 and <a href="/reference/client/#aria2p.client.Client.listen_to_notifications"><code>Client</code></a> classes provide a method called
 <code>listen_to_notifications</code>, and another one called <code>stop_listening</code>. Please check their respective documentation. </p>

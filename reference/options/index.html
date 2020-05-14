@@ -26,7 +26,7 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
 <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
 <link href="../../assets/fonts/material-icons.css" rel="stylesheet"/>
-<link href="../../custom.css" rel="stylesheet"/>
+<link href="../../css/mkdocstrings.css" rel="stylesheet"/>
 </head>
 <body dir="ltr">
 <svg class="md-svg">
@@ -2227,8 +2227,8 @@
 <a class="md-icon md-content__icon" href="https://github.com/pawamoy/aria2p/edit/master/docs/reference/options.md" title="Edit this page"></a>
 <h1>options.py</h1>
 <div class="doc doc-object doc-module">
-<h6 class="hidden-toc" href="#aria2p.options" id="aria2p.options" style="visibility: hidden; width: 0; height: 0;">
-<a class="headerlink" href="#aria2p.options" title="Permanent link">¶</a></h6>
+<h2 class="hidden-toc" href="#aria2p.options" id="aria2p.options" style="visibility: hidden; width: 0; height: 0;">
+<a class="headerlink" href="#aria2p.options" title="Permanent link">¤</a></h2>
 <div class="doc doc-contents first">
 <p>This module defines the Options class, which holds information retrieved with the <code>get_option</code> or
 <code>get_global_option</code> methods of the client.</p>
@@ -2236,7 +2236,7 @@
 <div class="doc doc-object doc-class">
 <h2 class="doc doc-heading" id="aria2p.options.Options">
 <code>Options</code>
-<a class="headerlink" href="#aria2p.options.Options" title="Permanent link">¶</a></h2>
+<a class="headerlink" href="#aria2p.options.Options" title="Permanent link">¤</a></h2>
 <div class="doc doc-contents">
 <p>This class holds information retrieved with the <code>get_option</code> or <code>get_global_option</code> methods of the client.</p>
 <p>Instances are given a reference to an <a href="https://pawamoy.github.io/aria2p/reference/api/#aria2p.api.API"><code>API</code></a> instance to be able to change their values both
@@ -2253,7 +2253,7 @@ all_proxy: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.all_proxy" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.all_proxy" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Use a proxy server for all protocols.</p>
 <p>To override a previously defined proxy, use "". You also can override this setting and specify a proxy server
@@ -2300,7 +2300,7 @@ all_proxy_passwd: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.all_proxy_passwd" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.all_proxy_passwd" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set password for --all-proxy option.</p>
 <p><strong>Returns:</strong></p>
@@ -2330,7 +2330,7 @@ all_proxy_user: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.all_proxy_user" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.all_proxy_user" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set user for --all-proxy option.</p>
 <p><strong>Returns:</strong></p>
@@ -2360,7 +2360,7 @@ allow_overwrite: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.allow_overwrite" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.allow_overwrite" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Restart download from scratch if the corresponding control file doesn't exist.</p>
 <p>See also --auto-file-renaming option. Default: false.</p>
@@ -2391,7 +2391,7 @@ allow_piece_length_change: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.allow_piece_length_change" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.allow_piece_length_change" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>If false is given, aria2 aborts download when a piece length is different from one in a control file.</p>
 <p>If true is given, you can proceed but some download progress will be lost. Default: false.</p>
@@ -2422,7 +2422,7 @@ always_resume: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.always_resume" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.always_resume" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Always resume download.</p>
 <p>If true is given, aria2 always tries to resume download and if resume is not possible, aborts download. If
@@ -2456,7 +2456,7 @@ are_global        </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.are_global" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.are_global" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Property to tell if options are global, or tied to a Download object.</p>
 </div>
@@ -2469,7 +2469,7 @@ async_dns: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.async_dns" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.async_dns" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Enable asynchronous DNS.</p>
 <p>Default: true.</p>
@@ -2500,7 +2500,7 @@ async_dns_server: <span class="n">List</span><span class="p">[</span><span class
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.async_dns_server" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.async_dns_server" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Comma separated list of DNS server address used in asynchronous DNS resolver.</p>
 <p>Usually asynchronous DNS resolver reads DNS server addresses from /etc/resolv.conf. When this option is used,
@@ -2534,7 +2534,7 @@ auto_file_renaming: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.auto_file_renaming" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.auto_file_renaming" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Rename file name if the same file already exists.</p>
 <p>This option works only in HTTP(S)/FTP download. The new file name has a dot and a number(1..9999) appended
@@ -2566,7 +2566,7 @@ auto_save_interval: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.auto_save_interval" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.auto_save_interval" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Save a control file (*.aria2) every SEC seconds.</p>
 <p>If 0 is given, a control file is not saved during download. aria2 saves a control file when it stops
@@ -2598,7 +2598,7 @@ bt_detach_seed_only: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_detach_seed_only" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_detach_seed_only" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Exclude seed only downloads when counting concurrent active downloads (See -j option).</p>
 <p>This means that if -j3 is given and this option is turned on and 3 downloads are active and one of those
@@ -2632,7 +2632,7 @@ bt_enable_hook_after_hash_check: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_enable_hook_after_hash_check" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_enable_hook_after_hash_check" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Allow hook command invocation after hash check (see -V option) in BitTorrent download.</p>
 <p>By default, when hash check succeeds, the command given by --on-bt-download-complete is executed. To disable
@@ -2664,7 +2664,7 @@ bt_enable_lpd: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_enable_lpd" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_enable_lpd" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Enable Local Peer Discovery.</p>
 <p>If a private flag is set in a torrent, aria2 doesn't use this feature for that download even if true is
@@ -2696,7 +2696,7 @@ bt_exclude_tracker: <span class="n">List</span><span class="p">[</span><span cla
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_exclude_tracker" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_exclude_tracker" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Comma separated list of BitTorrent tracker's announce URI to remove.</p>
 <p>You can use special value * which matches all URIs, thus removes all announce URIs. When specifying * in
@@ -2728,7 +2728,7 @@ bt_external_ip: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_external_ip" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_external_ip" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify the external IP address to use in BitTorrent download and DHT.</p>
 <p>It may be sent to BitTorrent tracker. For DHT, this option should be set to report that local node is
@@ -2761,7 +2761,7 @@ bt_force_encryption: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_force_encryption" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_force_encryption" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Requires BitTorrent message payload encryption with arc4.</p>
 <p>This is a shorthand of --bt-require-crypto --bt-min-crypto-level=arc4. This option does not change the option
@@ -2794,7 +2794,7 @@ bt_hash_check_seed: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_hash_check_seed" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_hash_check_seed" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>If true is given, after hash check using --check-integrity option and file is complete, continue to seed
 file.</p>
@@ -2827,7 +2827,7 @@ bt_lpd_interface: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_lpd_interface" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_lpd_interface" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Use given interface for Local Peer Discovery.</p>
 <p>If this option is not specified, the default interface is chosen. You can specify interface name and IP
@@ -2859,7 +2859,7 @@ bt_max_open_files: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_max_open_files" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_max_open_files" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify maximum number of files to open in multi-file BitTorrent/Metalink download globally.</p>
 <p>Default: 100.</p>
@@ -2890,7 +2890,7 @@ bt_max_peers: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_max_peers" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_max_peers" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify the maximum number of peers per torrent. 0 means unlimited.</p>
 <p>See also --bt-request-peer-speed-limit option. Default: 55.</p>
@@ -2921,7 +2921,7 @@ bt_metadata_only: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_metadata_only" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_metadata_only" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Download meta data only.</p>
 <p>The file(s) described in meta data will not be downloaded. This option has effect only when BitTorrent Magnet
@@ -2953,7 +2953,7 @@ bt_min_crypto_level: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_min_crypto_level" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_min_crypto_level" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set minimum level of encryption method (plain/arc4).</p>
 <p>If several encryption methods are provided by a peer, aria2 chooses the lowest one which satisfies the given
@@ -2985,7 +2985,7 @@ bt_prioritize_piece: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_prioritize_piece" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_prioritize_piece" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Try to download first and last pieces of each file first (head[=<code>&lt;SIZE&gt;</code>],tail[=<code>&lt;SIZE&gt;</code>]).</p>
 <p>This is useful for previewing files. The argument can contain 2 keywords: head and tail. To include both
@@ -3020,7 +3020,7 @@ bt_remove_unselected_file: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_remove_unselected_file" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_remove_unselected_file" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Removes the unselected files when download is completed in BitTorrent.</p>
 <p>To select files, use --select-file option. If it is not used, all files are assumed to be selected. Please
@@ -3052,7 +3052,7 @@ bt_request_peer_speed_limit: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_request_peer_speed_limit" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_request_peer_speed_limit" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>If the whole download speed of every torrent is lower than SPEED, aria2 temporarily increases the number
 of peers to try for more download speed.</p>
@@ -3085,7 +3085,7 @@ bt_require_crypto: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_require_crypto" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_require_crypto" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>If true is given, aria2 doesn't accept and establish connection with legacy BitTorrent handshake
 (BitTorrent protocol).</p>
@@ -3117,7 +3117,7 @@ bt_save_metadata: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_save_metadata" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_save_metadata" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Save meta data as ".torrent" file.</p>
 <p>This option has effect only when BitTorrent Magnet URI is used. The file name is hex encoded info hash with
@@ -3150,7 +3150,7 @@ bt_seed_unverified: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_seed_unverified" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_seed_unverified" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Seed previously downloaded files without verifying piece hashes.</p>
 <p>Default: false.</p>
@@ -3181,7 +3181,7 @@ bt_stop_timeout: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_stop_timeout" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_stop_timeout" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Stop BitTorrent download if download speed is 0 in consecutive SEC seconds.</p>
 <p>If 0 is given, this feature is disabled. Default: 0.</p>
@@ -3212,7 +3212,7 @@ bt_tracker: <span class="n">List</span><span class="p">[</span><span class="nb">
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_tracker" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_tracker" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Comma separated list of additional BitTorrent tracker's announce URI.</p>
 <p>These URIs are not affected by --bt-exclude-tracker option because they are added after URIs in
@@ -3244,7 +3244,7 @@ bt_tracker_connect_timeout: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_tracker_connect_timeout" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_tracker_connect_timeout" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set the connect timeout in seconds to establish connection to tracker.</p>
 <p>After the connection is established, this option makes no effect and --bt-tracker-timeout option is used
@@ -3276,7 +3276,7 @@ bt_tracker_interval: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_tracker_interval" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_tracker_interval" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set the interval in seconds between tracker requests.</p>
 <p>This completely overrides interval value and aria2 just uses this value and ignores the min interval and
@@ -3309,7 +3309,7 @@ bt_tracker_timeout: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.bt_tracker_timeout" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.bt_tracker_timeout" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set timeout in seconds.</p>
 <p>Default: 60.</p>
@@ -3340,7 +3340,7 @@ ca_certificate: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.ca_certificate" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.ca_certificate" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Use the certificate authorities in FILE to verify the peers.</p>
 <p>The certificate file must be in PEM format and can contain multiple CA certificates. Use --check-certificate
@@ -3383,7 +3383,7 @@ certificate: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.certificate" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.certificate" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Use the client certificate in FILE.</p>
 <p>The certificate must be either in PKCS12 (.p12, .pfx) or in PEM format.</p>
@@ -3427,7 +3427,7 @@ check_certificate: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.check_certificate" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.check_certificate" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Verify the peer using certificates specified in --ca-certificate option.</p>
 <p>Default: true.</p>
@@ -3458,7 +3458,7 @@ check_integrity: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.check_integrity" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.check_integrity" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Check file integrity by validating piece hashes or a hash of entire file.</p>
 <p>This option has effect only in BitTorrent, Metalink downloads with checksums or HTTP(S)/FTP downloads with
@@ -3493,7 +3493,7 @@ checksum: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.checksum" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.checksum" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set checksum (<code>&lt;TYPE&gt;=&lt;DIGEST&gt;</code>).</p>
 <p>TYPE is hash type. The supported hash type is listed in Hash Algorithms in aria2c -v. DIGEST is hex digest.
@@ -3526,7 +3526,7 @@ conditional_get: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.conditional_get" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.conditional_get" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Download file only when the local file is older than remote file.</p>
 <p>This function only works with HTTP(S) downloads only. It does not work if file size is specified in Metalink.
@@ -3561,7 +3561,7 @@ conf_path: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.conf_path" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.conf_path" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Change the configuration file path to PATH.</p>
 <p>Default: $HOME/.aria2/aria2.conf if present, otherwise $XDG_CONFIG_HOME/aria2/aria2.conf.</p>
@@ -3592,7 +3592,7 @@ connect_timeout: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.connect_timeout" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.connect_timeout" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set the connect timeout in seconds to establish connection to HTTP/FTP/proxy server.</p>
 <p>After the connection is established, this option makes no effect and --timeout option is used instead.
@@ -3624,7 +3624,7 @@ console_log_level: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.console_log_level" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.console_log_level" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set log level to output to console.</p>
 <p>LEVEL is either debug, info, notice, warn or error. Default: notice.</p>
@@ -3655,7 +3655,7 @@ continue_downloads: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.continue_downloads" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.continue_downloads" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Continue downloading a partially downloaded file.</p>
 <p>Use this option to resume a download started by a web browser or another program which downloads files
@@ -3687,7 +3687,7 @@ daemon: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.daemon" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.daemon" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Run as daemon.</p>
 <p>The current working directory will be changed to / and standard input, standard output and standard error
@@ -3719,7 +3719,7 @@ deferred_input: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.deferred_input" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.deferred_input" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>If true is given, aria2 does not read all URIs and options from file specified by --input-file option at
 startup, but it reads one by one when it needs later.</p>
@@ -3756,7 +3756,7 @@ dht_entry_point: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.dht_entry_point" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.dht_entry_point" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set host and port as an entry point to IPv4 DHT network (<code>&lt;HOST&gt;</code>:<code>&lt;PORT&gt;</code>).</p>
 <p><strong>Returns:</strong></p>
@@ -3786,7 +3786,7 @@ dht_entry_point6: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.dht_entry_point6" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.dht_entry_point6" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set host and port as an entry point to IPv6 DHT network (<code>&lt;HOST&gt;</code>:<code>&lt;PORT&gt;</code>).</p>
 <p><strong>Returns:</strong></p>
@@ -3816,7 +3816,7 @@ dht_file_path: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.dht_file_path" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.dht_file_path" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Change the IPv4 DHT routing table file to PATH.</p>
 <p>Default: $HOME/.aria2/dht.dat if present, otherwise $XDG_CACHE_HOME/aria2/dht.dat.</p>
@@ -3847,7 +3847,7 @@ dht_file_path6: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.dht_file_path6" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.dht_file_path6" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Change the IPv6 DHT routing table file to PATH.</p>
 <p>Default: $HOME/.aria2/dht6.dat if present, otherwise $XDG_CACHE_HOME/aria2/dht6.dat.</p>
@@ -3878,7 +3878,7 @@ dht_listen_addr6: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.dht_listen_addr6" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.dht_listen_addr6" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify address to bind socket for IPv6 DHT.</p>
 <p>It should be a global unicast IPv6 address of the host.</p>
@@ -3909,7 +3909,7 @@ dht_listen_port: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.dht_listen_port" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.dht_listen_port" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set UDP listening port used by DHT(IPv4, IPv6) and UDP tracker.</p>
 <p>Multiple ports can be specified by using ,, for example: 6881,6885. You can also use - to specify a range:
@@ -3945,7 +3945,7 @@ dht_message_timeout: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.dht_message_timeout" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.dht_message_timeout" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set timeout in seconds.</p>
 <p>Default: 10.</p>
@@ -3976,7 +3976,7 @@ dir: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.dir" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.dir" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The directory to store the downloaded file.</p>
 <p><strong>Returns:</strong></p>
@@ -4006,7 +4006,7 @@ disable_ipv6: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.disable_ipv6" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.disable_ipv6" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Disable IPv6.</p>
 <p>This is useful if you have to use broken DNS and want to avoid terribly slow AAAA record lookup. Default: false.</p>
@@ -4037,7 +4037,7 @@ disk_cache: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.disk_cache" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.disk_cache" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Enable disk cache.</p>
 <p>If SIZE is 0, the disk cache is disabled. This feature caches the downloaded data in memory, which grows to
@@ -4072,7 +4072,7 @@ download_result: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.download_result" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.download_result" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>This option changes the way Download Results is formatted.</p>
 <p>If OPT is default, print GID, status, average download speed and path/URI. If multiple files are involved,
@@ -4106,7 +4106,7 @@ dry_run: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.dry_run" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.dry_run" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>If true is given, aria2 just checks whether the remote file is available and doesn't download data.</p>
 <p>This option has effect on HTTP/FTP download. BitTorrent downloads are canceled if true is specified. Default:
@@ -4138,7 +4138,7 @@ dscp: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.dscp" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.dscp" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set DSCP value in outgoing IP packets of BitTorrent traffic for QoS.</p>
 <p>This parameter sets only DSCP bits in TOS field of IP packets, not the whole field. If you take values from
@@ -4172,7 +4172,7 @@ enable_color: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.enable_color" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.enable_color" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Enable color output for a terminal.</p>
 <p>Default: true.</p>
@@ -4203,7 +4203,7 @@ enable_dht: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.enable_dht" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.enable_dht" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Enable IPv4 DHT functionality.</p>
 <p>It also enables UDP tracker support. If a private flag is set in a torrent, aria2 doesn't use DHT for that
@@ -4235,7 +4235,7 @@ enable_dht6: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.enable_dht6" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.enable_dht6" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Enable IPv6 DHT functionality.</p>
 <p>If a private flag is set in a torrent, aria2 doesn't use DHT for that download even if true is given. Use
@@ -4267,7 +4267,7 @@ enable_http_keep_alive: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.enable_http_keep_alive" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.enable_http_keep_alive" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Enable HTTP/1.1 persistent connection.</p>
 <p>Default: true.</p>
@@ -4298,7 +4298,7 @@ enable_http_pipelining: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.enable_http_pipelining" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.enable_http_pipelining" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Enable HTTP/1.1 pipelining.</p>
 <p>Default: false.</p>
@@ -4333,7 +4333,7 @@ enable_mmap: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.enable_mmap" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.enable_mmap" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Map files into memory.</p>
 <p>This option may not work if the file space is not pre-allocated. See --file-allocation. Default: false.</p>
@@ -4364,7 +4364,7 @@ enable_peer_exchange: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.enable_peer_exchange" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.enable_peer_exchange" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Enable Peer Exchange extension.</p>
 <p>If a private flag is set in a torrent, this feature is disabled for that download even if true is given.
@@ -4396,7 +4396,7 @@ enable_rpc: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.enable_rpc" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.enable_rpc" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Enable JSON-RPC/XML-RPC server.</p>
 <p>It is strongly recommended to set secret authorization token using --rpc-secret option. See also
@@ -4428,7 +4428,7 @@ event_poll: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.event_poll" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.event_poll" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify the method for polling events.</p>
 <p>The possible values are epoll, kqueue, port, poll and select. For each epoll, kqueue, port and poll,
@@ -4462,7 +4462,7 @@ file_allocation: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.file_allocation" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.file_allocation" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify file allocation method.</p>
 <p>Possible Values: none, prealloc, trunc, falloc.</p>
@@ -4514,7 +4514,7 @@ follow_metalink: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.follow_metalink" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.follow_metalink" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>If true or mem is specified, when a file whose suffix is .meta4 or .metalink or content type of
 application/metalink4+xml or application/metalink+xml is downloaded, aria2 parses it as a metalink file and
@@ -4549,7 +4549,7 @@ follow_torrent: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.follow_torrent" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.follow_torrent" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>If true or mem is specified, when a file whose suffix is .torrent or content type is application/x-bittorrent
 is downloaded, aria2 parses it as a torrent file and downloads files mentioned in it.</p>
@@ -4583,7 +4583,7 @@ force_save: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.force_save" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.force_save" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Save download with --save-session option even if the download is completed or removed.</p>
 <p>This option also saves control file in that situations. This may be useful to save BitTorrent seeding which
@@ -4615,7 +4615,7 @@ force_sequential: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.force_sequential" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.force_sequential" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Fetch URIs in the command-line sequentially and download each URI in a separate session, like the usual
 command-line download utilities.</p>
@@ -4647,7 +4647,7 @@ ftp_passwd: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.ftp_passwd" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.ftp_passwd" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set FTP password. This affects all URIs.</p>
 <p>If user name is embedded but password is missing in URI, aria2 tries to resolve password using .netrc. If
@@ -4680,7 +4680,7 @@ ftp_pasv: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.ftp_pasv" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.ftp_pasv" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Use the passive mode in FTP.</p>
 <p>If false is given, the active mode will be used. Default: true.</p>
@@ -4715,11 +4715,11 @@ ftp_proxy: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.ftp_proxy" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.ftp_proxy" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Use a proxy server for FTP.</p>
 <p>To override a previously defined proxy, use "". See also the --all-proxy option. This affects all ftp
-downloads. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]</p>
+downloads. The format of PROXY is <code>[http://][USER:PASSWORD@]HOST[:PORT]</code>.</p>
 <p><strong>Returns:</strong></p>
 <table>
 <thead>
@@ -4747,7 +4747,7 @@ ftp_proxy_passwd: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.ftp_proxy_passwd" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.ftp_proxy_passwd" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set password for --ftp-proxy option.</p>
 <p><strong>Returns:</strong></p>
@@ -4777,7 +4777,7 @@ ftp_proxy_user: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.ftp_proxy_user" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.ftp_proxy_user" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set user for --ftp-proxy option.</p>
 <p><strong>Returns:</strong></p>
@@ -4807,7 +4807,7 @@ ftp_reuse_connection: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.ftp_reuse_connection" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.ftp_reuse_connection" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Reuse connection in FTP.</p>
 <p>Default: true.</p>
@@ -4838,7 +4838,7 @@ ftp_type: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.ftp_type" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.ftp_type" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set FTP transfer type.</p>
 <p>TYPE is either binary or ascii. Default: binary.</p>
@@ -4873,7 +4873,7 @@ ftp_user: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.ftp_user" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.ftp_user" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set FTP user. This affects all URIs.</p>
 <p>Default: anonymous.</p>
@@ -4904,7 +4904,7 @@ gid: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.gid" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.gid" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set GID manually.</p>
 <p>aria2 identifies each download by the ID called GID. The GID must be hex string of 16 characters,
@@ -4939,7 +4939,7 @@ hash_check_only: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.hash_check_only" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.hash_check_only" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>If true is given, after hash check using --check-integrity option, abort download whether or not download
 is complete.</p>
@@ -4971,7 +4971,7 @@ header: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.header" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.header" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Append HEADER to HTTP request header.</p>
 <p>You can use this option repeatedly to specify more than one header:</p>
@@ -5006,7 +5006,7 @@ http_accept_gzip: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.http_accept_gzip" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.http_accept_gzip" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Send Accept: deflate, gzip request header and inflate response if remote server responds with
 Content-Encoding:  gzip or Content-Encoding:  deflate.</p>
@@ -5043,7 +5043,7 @@ http_auth_challenge: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.http_auth_challenge" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.http_auth_challenge" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Send HTTP authorization header only when it is requested by the server.</p>
 <p>If false is set, then authorization header is always sent to the server. There is an exception: if user name
@@ -5076,7 +5076,7 @@ http_no_cache: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.http_no_cache" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.http_no_cache" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Send Cache-Control:  no-cache and Pragma:  no-cache header to avoid cached content.</p>
 <p>If false is given, these headers are not sent and you can add Cache-Control header with a directive you like
@@ -5108,7 +5108,7 @@ http_passwd: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.http_passwd" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.http_passwd" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set HTTP password. This affects all URIs.</p>
 <p><strong>Returns:</strong></p>
@@ -5138,11 +5138,11 @@ http_proxy: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.http_proxy" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.http_proxy" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Use a proxy server for HTTP.</p>
 <p>To override a previously defined proxy, use "". See also the --all-proxy option. This affects all http
-downloads. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]</p>
+downloads. The format of PROXY is <code>[http://][USER:PASSWORD@]HOST[:PORT]</code>.</p>
 <p><strong>Returns:</strong></p>
 <table>
 <thead>
@@ -5170,7 +5170,7 @@ http_proxy_passwd: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.http_proxy_passwd" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.http_proxy_passwd" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set password for --http-proxy.</p>
 <p><strong>Returns:</strong></p>
@@ -5200,7 +5200,7 @@ http_proxy_user: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.http_proxy_user" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.http_proxy_user" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set user for --http-proxy.</p>
 <p><strong>Returns:</strong></p>
@@ -5230,7 +5230,7 @@ http_user: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.http_user" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.http_user" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set HTTP user. This affects all URIs.</p>
 <p><strong>Returns:</strong></p>
@@ -5260,11 +5260,11 @@ https_proxy: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.https_proxy" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.https_proxy" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Use a proxy server for HTTPS.</p>
 <p>To override a previously defined proxy, use "". See also the --all-proxy option. This affects all https
-download. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT].</p>
+download. The format of PROXY is <code>[http://][USER:PASSWORD@]HOST[:PORT]</code>.</p>
 <p><strong>Returns:</strong></p>
 <table>
 <thead>
@@ -5292,7 +5292,7 @@ https_proxy_passwd: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.https_proxy_passwd" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.https_proxy_passwd" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set password for --https-proxy.</p>
 <p><strong>Returns:</strong></p>
@@ -5322,7 +5322,7 @@ https_proxy_user: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.https_proxy_user" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.https_proxy_user" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set user for --https-proxy.</p>
 <p><strong>Returns:</strong></p>
@@ -5352,7 +5352,7 @@ human_readable: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.human_readable" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.human_readable" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Print sizes and speed in human readable format (e.g., 1.2Ki, 3.4Mi) in the console readout.</p>
 <p>Default: true.</p>
@@ -5383,7 +5383,7 @@ index_out: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.index_out" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.index_out" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set file path for file with index=INDEX (<code>&lt;INDEX&gt;=&lt;PATH&gt;</code>).</p>
 <p>You can find the file index using the --show-files option. PATH is a relative path to the path specified in
@@ -5416,7 +5416,7 @@ input_file: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.input_file" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.input_file" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Downloads the URIs listed in FILE.</p>
 <p>You can specify multiple sources for a single entity by putting multiple URIs on a single line separated by
@@ -5451,7 +5451,7 @@ interface: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.interface" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.interface" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Bind sockets to given interface.</p>
 <p>You can specify interface name, IP address and host name. Possible Values: interface, IP address, host name.</p>
@@ -5488,7 +5488,7 @@ keep_unfinished_download_result: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.keep_unfinished_download_result" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.keep_unfinished_download_result" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Keep unfinished download results even if doing so exceeds --max-download-result.</p>
 <p>This is useful if all unfinished downloads must be saved in session file (see --save-session option). Please
@@ -5521,7 +5521,7 @@ listen_port: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.listen_port" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.listen_port" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set TCP port number for BitTorrent downloads.</p>
 <p>Multiple ports can be specified by using, for example: 6881,6885. You can also use - to specify a range:
@@ -5557,7 +5557,7 @@ load_cookies: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.load_cookies" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.load_cookies" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Load Cookies from FILE using the Firefox3 format (SQLite3), Chromium/Google Chrome (SQLite3) and the
 Mozilla/Firefox(1.x/2.x)/Netscape format.</p>
@@ -5593,7 +5593,7 @@ log: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.log" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.log" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The file name of the log file.</p>
 <p>If - is specified, log is written to stdout. If empty string("") is
@@ -5625,7 +5625,7 @@ log_level: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.log_level" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.log_level" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set log level to output.</p>
 <p>LEVEL is either debug, info, notice, warn or error. Default: debug.</p>
@@ -5656,7 +5656,7 @@ lowest_speed_limit: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.lowest_speed_limit" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.lowest_speed_limit" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Close connection if download speed is lower than or equal to this value(bytes per sec).</p>
 <p>0 means aria2 does not have a lowest speed limit. You can append K or M (1K = 1024, 1M = 1024K). This option
@@ -5688,7 +5688,7 @@ max_concurrent_downloads: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.max_concurrent_downloads" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.max_concurrent_downloads" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set the maximum number of parallel downloads for every queue item.</p>
 <p>See also the --split option. Default: 5.</p>
@@ -5719,7 +5719,7 @@ max_connection_per_server: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.max_connection_per_server" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.max_connection_per_server" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The maximum number of connections to one server for each download.</p>
 <p>Default: 1.</p>
@@ -5750,7 +5750,7 @@ max_download_limit: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.max_download_limit" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.max_download_limit" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set max download speed per each download in bytes/sec.</p>
 <p>0 means unrestricted. You can append K or M (1K = 1024, 1M = 1024K). To limit the overall download speed,
@@ -5782,7 +5782,7 @@ max_download_result: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.max_download_result" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.max_download_result" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set maximum number of download result kept in memory.</p>
 <p>The download results are completed/error/removed downloads. The download results are stored in FIFO queue and
@@ -5818,7 +5818,7 @@ max_file_not_found: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.max_file_not_found" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.max_file_not_found" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>If aria2 receives "file not found" status from the remote HTTP/FTP servers NUM times without getting a single
 byte, then force the download to fail.</p>
@@ -5852,7 +5852,7 @@ max_mmap_limit: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.max_mmap_limit" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.max_mmap_limit" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set the maximum file size to enable mmap (see --enable-mmap option).</p>
 <p>The file size is determined by the sum of all files contained in one download. For example, if a download
@@ -5885,7 +5885,7 @@ max_overall_download_limit: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.max_overall_download_limit" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.max_overall_download_limit" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set max overall download speed in bytes/sec.</p>
 <p>0 means unrestricted. You can append K or M (1K = 1024, 1M = 1024K). To limit the download speed per
@@ -5917,7 +5917,7 @@ max_overall_upload_limit: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.max_overall_upload_limit" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.max_overall_upload_limit" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set max overall upload speed in bytes/sec.</p>
 <p>0 means unrestricted. You can append K or M (1K = 1024, 1M = 1024K). To limit the upload speed per torrent,
@@ -5949,7 +5949,7 @@ max_resume_failure_tries: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.max_resume_failure_tries" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.max_resume_failure_tries" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>When used with --always-resume=false, aria2 downloads file from scratch when aria2 detects N number of
 URIs that does not support resume.</p>
@@ -5982,7 +5982,7 @@ max_tries: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.max_tries" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.max_tries" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set number of tries.</p>
 <p>0 means unlimited. See also --retry-wait. Default: 5.</p>
@@ -6013,7 +6013,7 @@ max_upload_limit: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.max_upload_limit" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.max_upload_limit" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set max upload speed per each torrent in bytes/sec.</p>
 <p>0 means unrestricted. You can append K or M (1K = 1024, 1M = 1024K). To limit the overall upload speed,
@@ -6045,7 +6045,7 @@ metalink_base_uri: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.metalink_base_uri" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.metalink_base_uri" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify base URI to resolve relative URI in metalink:url and metalink:metaurl element in a metalink file
 stored in local disk.</p>
@@ -6077,7 +6077,7 @@ metalink_enable_unique_protocol: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.metalink_enable_unique_protocol" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.metalink_enable_unique_protocol" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>If true is given and several protocols are available for a mirror in a metalink file, aria2 uses one of them.</p>
 <p>Use --metalink-preferred-protocol option to specify the preference of protocol. Default: true.</p>
@@ -6108,7 +6108,7 @@ metalink_file: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.metalink_file" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.metalink_file" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The file path to ".meta4" and ".metalink" file.</p>
 <p>Reads input from stdin when - is specified. You are not required to use this option because you can specify
@@ -6140,7 +6140,7 @@ metalink_language: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.metalink_language" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.metalink_language" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The language of the file to download.</p>
 <p><strong>Returns:</strong></p>
@@ -6170,7 +6170,7 @@ metalink_location: <span class="n">List</span><span class="p">[</span><span clas
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.metalink_location" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.metalink_location" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The location of the preferred server.</p>
 <p>A comma-delimited list of locations is acceptable, for example, jp,us.</p>
@@ -6201,7 +6201,7 @@ metalink_os: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.metalink_os" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.metalink_os" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The operating system of the file to download.</p>
 <p><strong>Returns:</strong></p>
@@ -6231,7 +6231,7 @@ metalink_preferred_protocol: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.metalink_preferred_protocol" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.metalink_preferred_protocol" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify preferred protocol.</p>
 <p>The possible values are http, https, ftp and none. Specify none to disable this feature. Default: none.</p>
@@ -6262,7 +6262,7 @@ metalink_version: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.metalink_version" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.metalink_version" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The version of the file to download.</p>
 <p><strong>Returns:</strong></p>
@@ -6292,7 +6292,7 @@ min_split_size: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.min_split_size" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.min_split_size" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>aria2 does not split less than 2*SIZE byte range.</p>
 <p>For example, let's consider downloading 20MiB file. If SIZE is 10M, aria2 can split file into 2 range [
@@ -6326,7 +6326,7 @@ min_tls_version: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.min_tls_version" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.min_tls_version" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify minimum SSL/TLS version to enable.</p>
 <p>Possible Values: SSLv3, TLSv1, TLSv1.1, TLSv1.2. Default: TLSv1.</p>
@@ -6357,7 +6357,7 @@ multiple_interface: <span class="n">List</span><span class="p">[</span><span cla
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.multiple_interface" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.multiple_interface" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Comma separated list of interfaces to bind sockets to.</p>
 <p>Requests will be split among the interfaces to achieve link aggregation. You can specify interface name,
@@ -6390,7 +6390,7 @@ netrc_path: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.netrc_path" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.netrc_path" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify the path to the netrc file.</p>
 <p>Default: $(HOME)/.netrc.</p>
@@ -6425,7 +6425,7 @@ no_conf: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.no_conf" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.no_conf" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Disable loading aria2.conf file.</p>
 <p><strong>Returns:</strong></p>
@@ -6455,7 +6455,7 @@ no_file_allocation_limit: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.no_file_allocation_limit" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.no_file_allocation_limit" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>No file allocation is made for files whose size is smaller than SIZE.</p>
 <p>You can append K or M (1K = 1024, 1M = 1024K). Default: 5M.</p>
@@ -6486,7 +6486,7 @@ no_netrc: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.no_netrc" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.no_netrc" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Disable netrc support.</p>
 <p>netrc support is enabled by default.</p>
@@ -6523,7 +6523,7 @@ no_proxy: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.no_proxy" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.no_proxy" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify a comma separated list of host names, domains and network addresses with or without a subnet mask
 where no proxy should be used.</p>
@@ -6560,7 +6560,7 @@ on_bt_download_complete: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.on_bt_download_complete" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.on_bt_download_complete" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>For BitTorrent, a command specified in --on-download-complete is called after download completed and
 seeding is over.</p>
@@ -6593,7 +6593,7 @@ on_download_complete: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.on_download_complete" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.on_download_complete" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set the command to be executed after download completed.</p>
 <p>See See Event Hook for more details about COMMAND. See also --on-download-stop option. Possible Values:
@@ -6625,7 +6625,7 @@ on_download_error: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.on_download_error" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.on_download_error" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set the command to be executed after download aborted due to error.</p>
 <p>See Event Hook for more details about COMMAND. See also --on-download-stop option. Possible Values:
@@ -6657,7 +6657,7 @@ on_download_pause: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.on_download_pause" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.on_download_pause" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set the command to be executed after download was paused.</p>
 <p>See Event Hook for more details about COMMAND. Possible Values: /path/to/command.</p>
@@ -6688,7 +6688,7 @@ on_download_start: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.on_download_start" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.on_download_start" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set the command to be executed after download got started.</p>
 <p>See Event Hook for more details about COMMAND. Possible Values: /path/to/command.</p>
@@ -6719,7 +6719,7 @@ on_download_stop: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.on_download_stop" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.on_download_stop" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set the command to be executed after download stopped.</p>
 <p>You can override the command to be executed for particular download result using --on-download-complete and
@@ -6752,7 +6752,7 @@ optimize_concurrent_downloads: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.optimize_concurrent_downloads" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.optimize_concurrent_downloads" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Optimizes the number of concurrent downloads according to the bandwidth available (<code>true|false|&lt;A&gt;:&lt;B&gt;</code>).</p>
 <p>aria2 uses the download speed observed in the previous downloads to adapt the number of downloads launched in
@@ -6788,7 +6788,7 @@ out: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.out" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.out" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The file name of the downloaded file.</p>
 <p>It is always relative to the directory given in --dir option. When the --force-sequential option is used,
@@ -6831,7 +6831,7 @@ parameterized_uri: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.parameterized_uri" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.parameterized_uri" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Enable parameterized URI support.</p>
 <p>You can specify set of parts: http://{sv1,sv2,sv3}/foo.iso. Also you can specify numeric sequences with step
@@ -6864,7 +6864,7 @@ pause: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.pause" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.pause" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Pause download after added.</p>
 <p>This option is effective only when --enable-rpc=true is given. Default: false.</p>
@@ -6895,7 +6895,7 @@ pause_metadata: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.pause_metadata" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.pause_metadata" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Pause downloads created as a result of metadata download.</p>
 <p>There are 3 types of metadata downloads in aria2: (1) downloading .torrent file. (2) downloading torrent
@@ -6929,7 +6929,7 @@ peer_id_prefix: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.peer_id_prefix" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.peer_id_prefix" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify the prefix of peer ID.</p>
 <p>The peer ID in BitTorrent is 20 byte length. If more than 20 bytes are specified, only first 20 bytes are
@@ -6963,7 +6963,7 @@ piece_length: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.piece_length" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.piece_length" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set a piece length for HTTP/FTP downloads.</p>
 <p>This is the boundary when aria2 splits a file. All splits occur at multiple of this length. This option will
@@ -7000,7 +7000,7 @@ private_key: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.private_key" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.private_key" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Use the private key in FILE.</p>
 <p>The private key must be decrypted and in PEM format. The behavior when encrypted one is given is undefined.
@@ -7032,7 +7032,7 @@ proxy_method: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.proxy_method" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.proxy_method" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set the method to use in proxy request.</p>
 <p>METHOD is either get or tunnel. HTTPS downloads always use tunnel regardless of this option. Default: get</p>
@@ -7063,7 +7063,7 @@ quiet: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.quiet" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.quiet" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Make aria2 quiet (no console output).</p>
 <p>Default: false.</p>
@@ -7094,7 +7094,7 @@ realtime_chunk_checksum: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.realtime_chunk_checksum" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.realtime_chunk_checksum" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Validate chunk of data by calculating checksum while downloading a file if chunk checksums are provided.</p>
 <p>Default: true.</p>
@@ -7125,7 +7125,7 @@ referer: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.referer" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.referer" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set an http referrer (Referer).</p>
 <p>This affects all http/https downloads. If * is given, the download URI is also used as the referrer. This may
@@ -7157,7 +7157,7 @@ remote_time: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.remote_time" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.remote_time" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Retrieve timestamp of the remote file from the remote HTTP/FTP server and if it is available, apply it to the
 local file.</p>
@@ -7189,7 +7189,7 @@ remove_control_file: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.remove_control_file" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.remove_control_file" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Remove control file before download.</p>
 <p>Using with --allow-overwrite=true, download always starts from scratch. This will be useful for users behind
@@ -7221,7 +7221,7 @@ retry_wait: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.retry_wait" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.retry_wait" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set the seconds to wait between retries.</p>
 <p>When SEC &gt;` 0, aria2 will retry downloads when the HTTP server returns a 503 response. Default: 0.</p>
@@ -7252,7 +7252,7 @@ reuse_uri: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.reuse_uri" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.reuse_uri" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Reuse already used URIs if no unused URIs are left.</p>
 <p>Default: true.</p>
@@ -7283,7 +7283,7 @@ rlimit_nofile: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.rlimit_nofile" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.rlimit_nofile" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set the soft limit of open file descriptors.</p>
 <p>This open will only have effect when:</p>
@@ -7319,7 +7319,7 @@ rpc_allow_origin_all: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.rpc_allow_origin_all" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.rpc_allow_origin_all" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Add Access-Control-Allow-Origin header field with value * to the RPC response.</p>
 <p>Default: false.</p>
@@ -7350,7 +7350,7 @@ rpc_certificate: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.rpc_certificate" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.rpc_certificate" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Use the certificate in FILE for RPC server.</p>
 <p>The certificate must be either in PKCS12 (.p12, .pfx) or in PEM format.</p>
@@ -7396,7 +7396,7 @@ rpc_listen_all: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.rpc_listen_all" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.rpc_listen_all" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Listen incoming JSON-RPC/XML-RPC requests on all network interfaces.</p>
 <p>If false is given, listen only on local loopback interface. Default: false.</p>
@@ -7427,7 +7427,7 @@ rpc_listen_port: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.rpc_listen_port" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.rpc_listen_port" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify a port number for JSON-RPC/XML-RPC server to listen to.</p>
 <p>Possible Values: 1024-65535. Default: 6800.</p>
@@ -7458,7 +7458,7 @@ rpc_max_request_size: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.rpc_max_request_size" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.rpc_max_request_size" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set max size of JSON-RPC/XML-RPC request in bytes.</p>
 <p>If aria2 detects the request is more than SIZE bytes, it drops connection. Default: 2M.</p>
@@ -7489,7 +7489,7 @@ rpc_passwd: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.rpc_passwd" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.rpc_passwd" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set JSON-RPC/XML-RPC password.</p>
 <div class="admonition warning">
@@ -7524,7 +7524,7 @@ rpc_private_key: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.rpc_private_key" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.rpc_private_key" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Use the private key in FILE for RPC server.</p>
 <p>The private key must be decrypted and in PEM format. Use --rpc-secure option to enable encryption. See also
@@ -7556,7 +7556,7 @@ rpc_save_upload_metadata: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.rpc_save_upload_metadata" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.rpc_save_upload_metadata" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Save the uploaded torrent or metalink meta data in the directory specified by --dir option.</p>
 <p>The file name consists of SHA-1 hash hex string of meta data plus extension. For torrent, the extension is
@@ -7589,7 +7589,7 @@ rpc_secret: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.rpc_secret" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.rpc_secret" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set RPC secret authorization token.</p>
 <p>Read RPC authorization secret token to know how this option value is used.</p>
@@ -7620,7 +7620,7 @@ rpc_secure: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.rpc_secure" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.rpc_secure" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>RPC transport will be encrypted by SSL/TLS.</p>
 <p>The RPC clients must use https scheme to access the server. For WebSocket client, use wss scheme. Use
@@ -7652,7 +7652,7 @@ rpc_user: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.rpc_user" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.rpc_user" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set JSON-RPC/XML-RPC user.</p>
 <div class="admonition warning">
@@ -7687,7 +7687,7 @@ save_cookies: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.save_cookies" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.save_cookies" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Save Cookies to FILE in Mozilla/Firefox(1.x/2.x)/ Netscape format.</p>
 <p>If FILE already exists, it is overwritten. Session Cookies are also saved and their expiry values are treated
@@ -7719,7 +7719,7 @@ save_not_found: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.save_not_found" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.save_not_found" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Save download with --save-session option even if the file was not found on the server.</p>
 <p>This option also saves control file in that situations. Default: true.</p>
@@ -7750,7 +7750,7 @@ save_session: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.save_session" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.save_session" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Save error/unfinished downloads to FILE on exit.</p>
 <p>You can pass this output file to aria2c with --input-file option on restart. If you like the output to be
@@ -7800,7 +7800,7 @@ save_session_interval: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.save_session_interval" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.save_session_interval" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Save error/unfinished downloads to a file specified by --save-session option every SEC seconds.</p>
 <p>If 0 is given, file will be saved only when aria2 exits. Default: 0.</p>
@@ -7831,7 +7831,7 @@ seed_ratio: <span class="nb">float</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.seed_ratio" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.seed_ratio" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify share ratio.</p>
 <p>Seed completed torrents until share ratio reaches RATIO. You are strongly encouraged to specify equals or
@@ -7865,7 +7865,7 @@ seed_time: <span class="nb">float</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.seed_time" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.seed_time" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify seeding time in (fractional) minutes.</p>
 <p>Also see the --seed-ratio option.</p>
@@ -7900,7 +7900,7 @@ select_file: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.select_file" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.select_file" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set file to download by specifying its index.</p>
 <p>You can find the file index using the --show-files option. Multiple indexes can be specified by using ,,
@@ -7939,7 +7939,7 @@ server_stat_if: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.server_stat_if" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.server_stat_if" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify the file name to load performance profile of the servers.</p>
 <p>The loaded data will be used in some URI selector such as feedback. See also --uri-selector option. See
@@ -7971,7 +7971,7 @@ server_stat_of: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.server_stat_of" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.server_stat_of" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify the file name to which performance profile of the servers is saved.</p>
 <p>You can load saved data using --server-stat-if option. See Server Performance Profile subsection below for
@@ -8003,7 +8003,7 @@ server_stat_timeout: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.server_stat_timeout" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.server_stat_timeout" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specifies timeout in seconds to invalidate performance profile of the servers since the last contact to
 them.</p>
@@ -8035,7 +8035,7 @@ show_console_readout: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.show_console_readout" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.show_console_readout" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Show console readout.</p>
 <p>Default: true.</p>
@@ -8066,7 +8066,7 @@ show_files: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.show_files" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.show_files" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Print file listing of ".torrent", ".meta4" and ".metalink" file and exit.</p>
 <p>In case of ".torrent" file, additional information (infohash, piece length, etc) is also printed.</p>
@@ -8097,7 +8097,7 @@ socket_recv_buffer_size: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.socket_recv_buffer_size" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.socket_recv_buffer_size" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set the maximum socket receive buffer in bytes.</p>
 <p>Specifying 0 will disable this option. This value will be set to socket file descriptor using SO_RCVBUF
@@ -8129,7 +8129,7 @@ split: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.split" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.split" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Download a file using N connections.</p>
 <p>If more than N URIs are given, first N URIs are used and remaining URIs are used for backup. If less than N
@@ -8169,7 +8169,7 @@ ssh_host_key_md: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.ssh_host_key_md" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.ssh_host_key_md" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set checksum for SSH host public key (<code>&lt;TYPE&gt;=&lt;DIGEST&gt;</code>).</p>
 <p>TYPE is hash type. The supported hash type is sha-1 or md5. DIGEST is hex digest. For example:
@@ -8202,7 +8202,7 @@ stderr: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.stderr" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.stderr" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Redirect all console output that would be otherwise printed in stdout to stderr.</p>
 <p>Default: false.</p>
@@ -8233,7 +8233,7 @@ stop: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.stop" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.stop" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Stop application after SEC seconds has passed.</p>
 <p>If 0 is given, this feature is disabled. Default: 0.</p>
@@ -8264,7 +8264,7 @@ stop_with_process: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.stop_with_process" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.stop_with_process" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Stop application when process PID is not running.</p>
 <p>This is useful if aria2 process is forked from a parent process. The parent process can fork aria2 with its
@@ -8296,7 +8296,7 @@ stream_piece_selector: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.stream_piece_selector" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.stream_piece_selector" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify piece selection algorithm used in HTTP/FTP download.</p>
 <p>Piece means fixed length segment which is downloaded in parallel in segmented download. If default is given,
@@ -8337,7 +8337,7 @@ summary_interval: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.summary_interval" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.summary_interval" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set interval in seconds to output download progress summary.</p>
 <p>Setting 0 suppresses the output. Default: 60.</p>
@@ -8368,7 +8368,7 @@ timeout: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.timeout" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.timeout" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set timeout in seconds.</p>
 <p>Default: 60.</p>
@@ -8399,7 +8399,7 @@ torrent_file: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.torrent_file" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.torrent_file" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The path to the ".torrent" file.</p>
 <p>You are not required to use this option because you can specify ".torrent" files without --torrent-file.</p>
@@ -8430,7 +8430,7 @@ truncate_console_readout: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.truncate_console_readout" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.truncate_console_readout" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Truncate console readout to fit in a single line.</p>
 <p>Default: true.</p>
@@ -8461,7 +8461,7 @@ uri_selector: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.uri_selector" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.uri_selector" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Specify URI selection algorithm.</p>
 <p>The possible values are inorder, feedback and adaptive. If inorder is given, URI is tried in the order
@@ -8499,7 +8499,7 @@ use_head: <span class="nb">bool</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.use_head" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.use_head" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Use HEAD method for the first request to the HTTP server.</p>
 <p>Default: false.</p>
@@ -8530,7 +8530,7 @@ user_agent: <span class="nb">str</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-writable"><code>writable</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.user_agent" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.user_agent" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set user agent for HTTP(S) downloads.</p>
 <p>Default: aria2/$VERSION, $VERSION is replaced by package version.</p>
@@ -8560,7 +8560,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-special"><code>special</code></small>
 </span>
-<a class="headerlink" href="#aria2p.options.Options.__init__" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.__init__" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Initialization method.</p>
 <p><strong>Parameters:</strong></p>
@@ -8648,7 +8648,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <h3 class="doc doc-heading" id="aria2p.options.Options.get">
 <code class="highlight language-python">
 get<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.options.Options.get" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.get" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Get the value of an option given its name.</p>
 <p><strong>Parameters:</strong></p>
@@ -8749,7 +8749,7 @@ get<span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
 <h3 class="doc doc-heading" id="aria2p.options.Options.get_struct">
 <code class="highlight language-python">
 get_struct<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.options.Options.get_struct" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.get_struct" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return a copy of the struct dictionary of this Options object.</p>
 <details class="quote">
@@ -8780,7 +8780,7 @@ get_struct<span class="p">(</span><span class="bp">self</span><span class="p">)<
 <h3 class="doc doc-heading" id="aria2p.options.Options.set">
 <code class="highlight language-python">
 set<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.options.Options.set" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.options.Options.set" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Set the value of an option given its name.</p>
 <p><strong>Parameters:</strong></p>

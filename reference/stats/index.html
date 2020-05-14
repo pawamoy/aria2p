@@ -26,7 +26,7 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
 <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
 <link href="../../assets/fonts/material-icons.css" rel="stylesheet"/>
-<link href="../../custom.css" rel="stylesheet"/>
+<link href="../../css/mkdocstrings.css" rel="stylesheet"/>
 </head>
 <body dir="ltr">
 <svg class="md-svg">
@@ -357,8 +357,8 @@
 <a class="md-icon md-content__icon" href="https://github.com/pawamoy/aria2p/edit/master/docs/reference/stats.md" title="Edit this page"></a>
 <h1>stats.py</h1>
 <div class="doc doc-object doc-module">
-<h6 class="hidden-toc" href="#aria2p.stats" id="aria2p.stats" style="visibility: hidden; width: 0; height: 0;">
-<a class="headerlink" href="#aria2p.stats" title="Permanent link">¶</a></h6>
+<h2 class="hidden-toc" href="#aria2p.stats" id="aria2p.stats" style="visibility: hidden; width: 0; height: 0;">
+<a class="headerlink" href="#aria2p.stats" title="Permanent link">¤</a></h2>
 <div class="doc doc-contents first">
 <p>This module defines the Stats class, which holds information retrieved with the <code>get_global_stat</code> method of the
 client.</p>
@@ -366,7 +366,7 @@ client.</p>
 <div class="doc doc-object doc-class">
 <h2 class="doc doc-heading" id="aria2p.stats.Stats">
 <code>Stats</code>
-<a class="headerlink" href="#aria2p.stats.Stats" title="Permanent link">¶</a></h2>
+<a class="headerlink" href="#aria2p.stats.Stats" title="Permanent link">¤</a></h2>
 <div class="doc doc-contents">
 <p>This class holds information retrieved with the <code>get_global_stat</code> method of the client.</p>
 <div class="doc doc-children">
@@ -378,7 +378,7 @@ download_speed: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.stats.Stats.download_speed" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.stats.Stats.download_speed" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Overall download speed (byte/sec).</p>
 </div>
@@ -391,7 +391,7 @@ num_active: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.stats.Stats.num_active" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.stats.Stats.num_active" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The number of active downloads.</p>
 </div>
@@ -404,7 +404,7 @@ num_stopped: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.stats.Stats.num_stopped" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.stats.Stats.num_stopped" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The number of stopped downloads in the current session. This value is capped by the --max-download-result
 option.</p>
@@ -418,7 +418,7 @@ num_stopped_total: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.stats.Stats.num_stopped_total" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.stats.Stats.num_stopped_total" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The number of stopped downloads in the current session and not capped by the --max-download-result option.</p>
 </div>
@@ -431,7 +431,7 @@ num_waiting: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.stats.Stats.num_waiting" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.stats.Stats.num_waiting" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>The number of waiting downloads.</p>
 </div>
@@ -444,7 +444,7 @@ upload_speed: <span class="nb">int</span> </code>
 <small class="doc doc-property doc-property-property"><code>property</code></small>
 <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
 </span>
-<a class="headerlink" href="#aria2p.stats.Stats.upload_speed" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.stats.Stats.upload_speed" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Overall upload speed(byte/sec).</p>
 </div>
@@ -456,7 +456,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <span class="doc doc-properties">
 <small class="doc doc-property doc-property-special"><code>special</code></small>
 </span>
-<a class="headerlink" href="#aria2p.stats.Stats.__init__" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.stats.Stats.__init__" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Initialization method.</p>
 <p><strong>Parameters:</strong></p>
@@ -518,7 +518,7 @@ __init__<span class="p">(</span><span class="bp">self</span><span class="p">,</s
 <h3 class="doc doc-heading" id="aria2p.stats.Stats.download_speed_string">
 <code class="highlight language-python">
 download_speed_string<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.stats.Stats.download_speed_string" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.stats.Stats.download_speed_string" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the download speed as string.</p>
 <p><strong>Parameters:</strong></p>
@@ -607,7 +607,7 @@ download_speed_string<span class="p">(</span><span class="bp">self</span><span c
 <h3 class="doc doc-heading" id="aria2p.stats.Stats.upload_speed_string">
 <code class="highlight language-python">
 upload_speed_string<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
-<a class="headerlink" href="#aria2p.stats.Stats.upload_speed_string" title="Permanent link">¶</a></h3>
+<a class="headerlink" href="#aria2p.stats.Stats.upload_speed_string" title="Permanent link">¤</a></h3>
 <div class="doc doc-contents">
 <p>Return the upload speed as string.</p>
 <p><strong>Parameters:</strong></p>
