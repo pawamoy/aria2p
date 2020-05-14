@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v0.9.1](https://github.com/pawamoy/aria2p/releases/tag/v0.9.1) - 2020-05-14
+
+<small>[Compare with v0.9.0](https://github.com/pawamoy/aria2p/compare/v0.9.0...v0.9.1)</small>
+
+### Bug Fixes
+- Forbid version of `asciimatics` below 1.11.0 ([c305b9b](https://github.com/pawamoy/aria2p/commit/c305b9b88cd9156ccad2dd5a5a1e7725c2b08ca3) by Timothée Mazzucotelli). References: [#57](https://github.com/pawamoy/aria2p/issues/57)
+
+
 ## [v0.9.0](https://github.com/pawamoy/aria2p/releases/tag/v0.9.0) - 2020-04-08
 
 <small>[Compare with v0.8.1](https://github.com/pawamoy/aria2p/compare/v0.8.1...v0.9.0)</small>
