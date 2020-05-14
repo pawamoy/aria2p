@@ -1,3 +1,5 @@
+"""Tests suite for `aria2p`."""
+
 import random
 import re
 import subprocess

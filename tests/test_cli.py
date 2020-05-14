@@ -1,3 +1,5 @@
+"""Tests for the `cli` module."""
+
 import threading
 import time
 from unittest.mock import patch

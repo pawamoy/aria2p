@@ -1,140 +1,118 @@
 .DEFAULT_GOAL := help
 
-PY_SRC := src/ tests/ scripts/*.py
-
-.PHONY: build
-build:  ## Build sdist and wheel.
-	poetry build
+PY_SRC := src/ tests/ scripts/
+CI ?= false
+TESTING ?= false
 
 .PHONY: bundle
 bundle:  ## Build one-file executable.
 	poetry run bash -c 'pyinstaller -F -n aria2p -p $$VIRTUAL_ENV/lib/python3.6/site-packages src/aria2p/__main__.py'
 
-.PHONY: clean
-clean: clean-tests  ## Delete temporary files.
-	@rm -rf build 2>/dev/null
-	@rm -rf dist 2>/dev/null
-	@rm -rf src/aria2p.egg-info 2>/dev/null
-	@rm -rf .coverage* 2>/dev/null
-	@rm -rf .pytest_cache 2>/dev/null
-	@rm -rf pip-wheel-metadata 2>/dev/null
-
-.PHONY: clean-tests
-clean-tests:  ## Delete temporary tests files.
-	@rm -rf tests/tmp/* 2>/dev/null
-
-.PHONY: clear-queue
-clear-queue:  ## Remove all downloads from the queue.
-	poetry run aria2p remove -a
-
-.PHONY: credits
-credits:  ## Regenerate CREDITS.md.
-	poetry run ./scripts/gen-credits-data.py | \
-		poetry run jinja2 --format=json scripts/templates/CREDITS.md - -o CREDITS.md
-
-.PHONY: docs
-docs:  ## Build the documentation locally.
-	poetry run mkdocs build
-
-.PHONY: docs-serve
-docs-serve:  ## Serve the documentation locally, on localhost:8000.
-	poetry run mkdocs serve
-
-.PHONY: docs-deploy
-docs-deploy:  ## Deploy the documentation on GitHub pages.
-	poetry run mkdocs gh-deploy
-
-.PHONY: help
-help:  ## Print this help.
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
+.PHONY: changelog
+changelog:  ## Update the changelog in-place with latest commits.
+	@poetry run failprint -t "Updating changelog" -- python scripts/update_changelog.py \
+		CHANGELOG.md "<!-- insertion marker -->" "^## \[(?P<version>[^\]]+)"
 
 .PHONY: check
-check: check-bandit check-black check-flake8 check-isort check-safety check-ports docs  ## Check it all!
+check: check-docs check-code-quality check-types check-ports check-dependencies  ## Check it all!
 
-.PHONY: check-bandit
-check-bandit:  ## Check for security warnings in code using bandit.
-	poetry run bandit -r src/
+.PHONY: check-code-quality
+check-code-quality:  ## Check the code quality.
+	@poetry run failprint -t "Checking code quality" -- flake8 --config=config/flake8.ini $(PY_SRC)
 
-.PHONY: check-black
-check-black:  ## Check if code is formatted nicely using black.
-	poetry run black --check $(PY_SRC)
+.PHONY: check-dependencies
+check-dependencies:  ## Check for vulnerabilities in dependencies.
+	@SAFETY=safety; \
+	if ! $(CI); then \
+		if ! command -v $$SAFETY &>/dev/null; then \
+			SAFETY="pipx run safety"; \
+		fi; \
+	fi; \
+	poetry run pip freeze 2>/dev/null | \
+		grep -v aria2p | \
+		poetry run failprint --no-pty -t "Checking dependencies" -- $$SAFETY check --stdin --full-report
 
-.PHONY: check-flake8
-check-flake8:  ## Check for general warnings in code using flake8.
-	poetry run flake8 $(PY_SRC)
-
-.PHONY: check-isort
-check-isort:  ## Check if imports are correctly ordered using isort.
-	poetry run isort -c -rc $(PY_SRC)
-
-.PHONY: check-mypy
-check-mypy:  ## Check if code is correctly typed.
-	poetry run mypy src
+.PHONY: check-docs
+check-docs:  ## Check if the documentation builds correctly.
+	@poetry run failprint -t "Building documentation" -- mkdocs build -s
 
 .PHONY: check-ports
 check-ports:  ## Check if the ports used in the tests are all unique.
-	poetry run python scripts/ports.py check
+	@poetry run failprint -t "Checking ports in test suite" -- python scripts/ports.py check
 
-.PHONY: check-pylint
-check-pylint:  ## Check for code smells using pylint.
-	poetry run pylint $(PY_SRC)
+.PHONY: check-types
+check-types:  ## Check that the code is correctly typed.
+	@poetry run failprint -t "Type-checking" -- mypy --config-file config/mypy.ini $(PY_SRC)
 
-.PHONY: check-safety
-check-safety:  ## Check for vulnerabilities in dependencies using safety.
-	poetry run pip freeze 2>/dev/null | \
-		grep -v aria2p | \
-		poetry run safety check --stdin --full-report 2>/dev/null
+.PHONY: clean
+clean:  ## Delete temporary files.
+	@rm -rf build 2>/dev/null
+	@rm -rf .coverage* 2>/dev/null
+	@rm -rf dist 2>/dev/null
+	@rm -rf .mypy_cache 2>/dev/null
+	@rm -rf pip-wheel-metadata 2>/dev/null
+	@rm -rf .pytest_cache 2>/dev/null
+	@rm -rf src/*.egg-info 2>/dev/null
+	@rm -rf src/aria2p/__pycache__ 2>/dev/null
+	@rm -rf scripts/__pycache__ 2>/dev/null
+	@rm -rf site 2>/dev/null
+	@rm -rf tests/__pycache__ 2>/dev/null
 
-.PHONY: lint
-lint: lint-black lint-isort  ## Run linting tools on the code.
+.PHONY: docs
+docs: docs-regen  ## Build the documentation locally.
+	@poetry run mkdocs build
 
-.PHONY: lint-black
-lint-black:  ## Lint the code using black.
-	poetry run black $(PY_SRC)
+.PHONY: docs-regen
+docs-regen:  ## Regenerate some documentation pages.
+	@poetry run python scripts/regen_docs.py
 
-.PHONY: lint-isort
-lint-isort:  ## Sort the imports using isort.
-	poetry run isort -y -rc $(PY_SRC)
+.PHONY: docs-serve
+docs-serve: docs-regen  ## Serve the documentation (localhost:8000).
+	@poetry run mkdocs serve
 
-.PHONY: load-queue
-load-queue:  ## Load fixture downloads in the queue.
-	poetry run aria2p add-magnets -f tests/data/linux_magnets
+.PHONY: docs-deploy
+docs-deploy: docs-regen  ## Deploy the documentation on GitHub pages.
+	@poetry run mkdocs gh-deploy
 
-.PHONY: publish
-publish:  ## Publish latest built version to PyPI.
-	poetry publish
+.PHONY: help
+help:  ## Print this help.
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
 
-.PHONY: readme
-readme:  ## Regenerate README.md.
-	poetry run ./scripts/gen-readme-data.py | \
-		poetry run jinja2 --format=json scripts/templates/README.md - -o README.md
+.PHONY: format
+format:  ## Run formatting tools on the code.
+	@poetry run failprint -t "Formatting code" -- black $(PY_SRC)
+	@poetry run failprint -t "Ordering imports" -- isort -y -rc $(PY_SRC)
 
 .PHONY: release
 release:  ## Create a new release (commit, tag, push, build, publish, deploy docs).
-	poetry version $(v)
-	git add pyproject.toml CHANGELOG.md
-	git commit -m "chore: Prepare release $(v)"
-	git tag v$(v)
-	git push
-	git push --tags
-	poetry build
-	poetry publish
-	poetry run mkdocs gh-deploy
+ifndef v
+	$(error Pass the new version with 'make release v=0.0.0')
+endif
+	@poetry run failprint -t "Bumping version" -- poetry version $(v)
+	@poetry run failprint -t "Staging files" -- git add pyproject.toml CHANGELOG.md
+	@poetry run failprint -t "Committing changes" -- git commit -m "chore: Prepare release $(v)"
+	@poetry run failprint -t "Tagging commit" -- git tag v$(v)
+	@poetry run failprint -t "Building dist/wheel" -- poetry build
+	-@if ! $(CI) && ! $(TESTING); then \
+		poetry run failprint -t "Pushing commits" -- git push; \
+		poetry run failprint -t "Pushing tags" -- git push --tags; \
+		poetry run failprint -t "Publishing version" -- poetry publish; \
+		poetry run failprint -t "Deploying docs" -- poetry run mkdocs gh-deploy; \
+	fi
 
 .PHONY: setup
-setup:  ## Setup the project with poetry.
-	if ! command -v poetry; then \
-	  if [ -n "$GITLAB_CI" ]; then \
-	    pip install poetry; \
-	  else \
-	    command -v pipx && pipx install poetry || \
-	      curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python; \
-	  fi; \
-	fi
-	poetry install -vE tui
+setup:  ## Setup the development environment (install dependencies).
+	@if ! $(CI); then \
+		if ! command -v poetry &>/dev/null; then \
+		  if ! command -v pipx &>/dev/null; then \
+			  pip install --user pipx; \
+			fi; \
+		  pipx install poetry; \
+		fi; \
+	fi; \
+	poetry install -v
 
 .PHONY: test
-test: check-ports clean-tests  ## Run the tests using pytest.
-	poetry run pytest -nauto -k "$(K)" 2>/dev/null
-	-poetry run coverage html --rcfile=coverage.ini
-	-poetry run coverage json --rcfile=coverage.ini
+test:  ## Run the test suite and report coverage.
+	@poetry run pytest -c config/pytest.ini -n auto -k "$(K)" 2>/dev/null
+	-@poetry run coverage html --rcfile=config/coverage.ini

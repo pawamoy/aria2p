@@ -849,7 +849,7 @@ class Options:
         Use a proxy server for HTTP.
 
         To override a previously defined proxy, use "". See also the --all-proxy option. This affects all http
-        downloads. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
+        downloads. The format of PROXY is `[http://][USER:PASSWORD@]HOST[:PORT]`.
 
         Returns:
             str
@@ -894,7 +894,7 @@ class Options:
         Use a proxy server for HTTPS.
 
         To override a previously defined proxy, use "". See also the --all-proxy option. This affects all https
-        download. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT].
+        download. The format of PROXY is `[http://][USER:PASSWORD@]HOST[:PORT]`.
 
         Returns:
             str
@@ -1148,7 +1148,7 @@ class Options:
         Use a proxy server for FTP.
 
         To override a previously defined proxy, use "". See also the --all-proxy option. This affects all ftp
-        downloads. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
+        downloads. The format of PROXY is `[http://][USER:PASSWORD@]HOST[:PORT]`.
 
         Returns:
             str

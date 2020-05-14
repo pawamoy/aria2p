@@ -27,26 +27,34 @@ asciimatics = { version = "^1.11.0", optional = true }
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.5"
-coverage = "^5.0"
+black = "^19.10b0"
+coverage = "^5.0.4"
+failprint = "^0.3.0"
 flake8 = "^3.6"
-git-changelog = "^0.2.0"
+flake8-bandit = "^2.1.2"
+flake8-black = "^0.1.1"
+flake8-builtins = "^1.5.2"
+flake8-comprehensions = "^3.2.2"
+flake8-docstrings = "^1.5.0"
+flake8-isort = "^3.0.0"
+flake8-tidy-imports = "^4.1.0"
+flake8-variables-names = "^0.0.3"
+git-changelog = { git = "https://github.com/pawamoy/git-changelog.git" }
 ipython = "^7.2"
 isort = { version = "^4.3", extras = ["pyproject"] }
 jinja2-cli = "^0.7.0"
 mkdocs = "^1.1"
-mkdocstrings = "^0.10.0"
-mkdocs-material = "^4.6.0"
-mypy = "^0.761"
-pyinstaller = "^3.5"
-pylint = { git = "https://github.com/PyCQA/pylint.git" }
+mkdocs-material = ">=4.5, <6.0"
+mkdocstrings = "^0.11.0"
+mypy = "^0.770"
+pyinstaller = "^3.6"
 pytest = "^4.3"
 pytest-cov = "^2.8"
 pytest-sugar = "^0.9.2"
 pytest-xdist = "^1.26"
-responses = "^0.10.5"
-safety = "^1.8"
+requests = "^2.23.0"
+responses = "^0.10.14"
 toml = "^0.10.0"
-black = "^19.10b0"
 
 [tool.poetry.extras]
 tui = ["asciimatics"]
@@ -66,18 +74,3 @@ balanced_wrapping = true
 default_section = "THIRDPARTY"
 known_first_party = "aria2p"
 include_trailing_comma = true
-
-[tool.pylint.options]
-disable = """
-  bad-continuation,
-  too-many-lines,
-  too-many-public-methods,
-  too-many-locals,
-  too-many-statements,
-  too-many-arguments,
-  too-many-instance-attributes,
-  too-many-branches,
-  too-few-public-methods,
-  duplicate-code
-"""
-max-line-length = "120"

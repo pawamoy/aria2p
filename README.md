@@ -4,8 +4,7 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
 -->
 
 # aria2p
-[![pipeline status](https://gitlab.com/pawamoy/aria2p/badges/master/pipeline.svg)](https://gitlab.com/pawamoy/aria2p/commits/master)
-[![coverage report](https://gitlab.com/pawamoy/aria2p/badges/master/coverage.svg)](https://gitlab.com/pawamoy/aria2p/commits/master)
+[![ci](https://github.com/pawamoy/aria2p/workflows/ci/badge.svg)](https://github.com/pawamoy/aria2p/actions?query=workflow%3Aci)
 [![documentation](https://img.shields.io/badge/docs-mkdocs%20material-blue.svg?style=flat)](https://pawamoy.github.io/aria2p/)
 [![pypi version](https://img.shields.io/pypi/v/aria2p.svg)](https://pypi.org/project/aria2p/)
 [![Gitter](https://badges.gitter.im/aria2p/community.svg)](https://gitter.im/aria2p/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
@@ -47,6 +46,7 @@ can be found in the [Configuration section][conf doc] of the documentation.
 
 
 ## Requirements
+
 `aria2p` requires Python 3.6 or above.
 
 <details>
@@ -79,6 +79,7 @@ sudo apt-get install aria2
 [2]: https://en.wikipedia.org/wiki/Remote_procedure_call
 
 ## Installation
+
 With `pip`:
 
 ```bash
@@ -97,6 +98,7 @@ The `tui` extra is needed for the interactive interface. If you don't need the i
 writing a Python package with a dependency to aria2p), simply install `aria2p` without any extra.
 
 ## Usage (as a library)
+
 **This library is still a work in progress. More examples will be added later.
 In the meantime, you can read the [Reference section](https://aria2p.readthedocs.io/en/latest/reference.html) on the official documentation.**
 
@@ -405,7 +407,6 @@ $ aria2p call purge_download_result
 "OK"
 ```
 
-
 ---
 
 ### `listen`
@@ -533,7 +534,7 @@ optional arguments:
 
 
 
-## Troubleshoot
+## Troubleshooting
 
 - Error outputs like below when using `aria2p` as a Python library:
 
@@ -544,10 +545,6 @@ optional arguments:
   Solution: `aria2c` needs to be up and running first.
 
 ## Support
-To support this project,
-consider donating through one of the following platforms:
-
-- [Beerpay](https://beerpay.io/pawamoy/aria2p)
 
 To support me as an open-source software author,
 consider donating or be a supporter through one of the following platforms

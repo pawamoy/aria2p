@@ -1,56 +1,109 @@
 # Contributing
-Contributions are welcome, and they are greatly appreciated!
 
+Contributions are welcome, and they are greatly appreciated!
 Every little bit helps, and credit will always be given.
 
-## Types of Contributions
+## Environment setup
 
-### Bug Reports, Feature Requests, and Feedback
-Create a new [GitHub issue][1]! Try to be as descriptive as possible.
+Nothing easier!
 
-### Bug Fixes, New Features and Documentation
-This project is developed using [`poetry`](https://github.com/sdispater/poetry).
-Follow the recommended installation method:
+Fork and clone the repository, then:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+cd aria2p
+make setup
 ```
 
-1. Fork the repository [on GitHub][2];
-1. Clone it on your machine;
-1. Go into the directory, and run `poetry install` to setup the development environment;
-1. Create a new branch with `git checkout -b bug-fix-or-feature-name`;
-1. Code!
-1. **Write tests. Run them all.** The commands to run the tests are:
+That's it!
 
-    ```bash
-    poetry run pytest  # to run all tests sequentially
-    poetry run pytest -v  # to print one test per line
-    poetry run pytest -n 4  # to run tests in parallel (4 workers)
-    poetry run pytest tests/test_api.py  # to run tests in a specific file
-    ```
-  
-    `pytest` provides the `-k` option to select tests based on their names:
-   
-    ```bash
-    poetry run pytest -k "api and remove"
-    poetry run pytest -k "utils or stats"
-    ``` 
-   
-    See the [documentation for the `-k` option][3] for more examples.
+You now have the dependencies installed.
 
-1. When the tests pass, commit;
-1. Push;
-1. ...and finally, create a new [pull request][4]!
-   Make sure to follow the guidelines.
+You can run the application with `poetry run aria2p [ARGS...]`.
 
-## Merge/Pull Request Guidelines
-Make sure to have atomic commits and contextual commit messages!
+Run `make help` to see all the available actions!
 
-[Check out this awesome blog post by Chris Beams for more information.][5]
+## Development
 
-[1]: https://github.com/pawamoy/aria2p/issues/new
-[2]: https://github.com/pawamoy/aria2p
-[3]: https://docs.pytest.org/en/latest/example/markers.html#using-k-expr-to-select-tests-based-on-their-name
-[4]: https://github.com/pawamoy/aria2p/compare
-[5]: http://chris.beams.io/posts/git-commit/
+As usual:
+
+1. create a new branch: `git checkout -b feature-or-bugfix-name`
+1. edit the code and/or the documentation
+
+If you updated the documentation or the project dependencies:
+
+1. run `make docs-regen`
+1. run `make docs-serve`,
+   go to http://localhost:8000 and check that everything looks good
+
+**Before committing:**
+
+1. run `make format` to auto-format the code
+1. run `make check` to check everything (fix any warning)
+1. run `make test` to run the tests (fix any issue)
+1. follow our [commit message convention](#commit-message-convention)
+
+If you are unsure about how to fix or ignore a warning,
+just let the continuous integration fail,
+and we will help you during review.
+
+Don't bother updating the changelog, we will take care of this.
+
+## Commit message convention
+
+Commits messages must follow the
+[Angular style](https://gist.github.com/stephenparish/9941e89d80e2bc58a153#format-of-the-commit-message):
+
+```
+<type>[(scope)]: Subject
+
+[Body]
+```
+
+Scope and body are optional. Type can be:
+
+- `build`: About packaging, building wheels, etc.
+- `chore`: About packaging or repo/files management.
+- `ci`: About Continuous Integration.
+- `docs`: About documentation.
+- `feat`: New feature.
+- `fix`: Bug fix.
+- `perf`: About performance.
+- `refactor`: Changes which are not features nor bug fixes.
+- `style`: A change in code style/format.
+- `tests`: About tests.
+
+**Subject (and body) must be valid Markdown.**
+If you write a body, please add issues references at the end:
+
+```
+Body.
+
+References: #10, #11.
+Fixes #15.
+```
+
+## Pull requests guidelines
+
+Link to any related issue in the Pull Request message.
+
+During review, we recommend using fixups:
+
+```bash
+# SHA is the SHA of the commit you want to fix
+git commit --fixup=SHA
+```
+
+Once all the changes are approved, you can squash your commits:
+
+```bash
+git rebase -i --autosquash master
+```
+
+And force-push:
+
+```bash
+git push -f
+```
+
+If this seems all too complicated, you can push or force-push each new commit,
+and we will squash them ourselves if needed, before merging.
