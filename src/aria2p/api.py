@@ -328,6 +328,35 @@ class API:
         """
         return self.client.change_position(download.gid, 0, "POS_END")
 
+    def retry_downloads(self, downloads: List[Download], clean: bool = False) -> List[bool]:
+        """
+        Resume failed downloads from where they left off with new GIDs.
+
+        Parameters:
+            downloads: the list of downloads to remove.
+            clean: whether to remove the aria2 control file as well.
+
+        Returns:
+            Success or failure of the operation for each given download.
+        """
+        result = []
+        for download in downloads:
+            if not download.has_failed:
+                continue
+            try:
+                uri = download.files[0].uris[0]["uri"]
+                new_download_gid = self.add_uris([uri], download.options)
+                if not new_download_gid:
+                    continue
+
+                self.remove([download], clean)
+                result.append(True)
+
+            except ClientException as error:
+                result.append(error)
+
+        return result
+
     def remove(
         self, downloads: List[Download], force: bool = False, files: bool = False, clean: bool = True
     ) -> List[bool]:
