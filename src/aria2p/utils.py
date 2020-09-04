@@ -4,11 +4,15 @@ Utils module.
 This module contains simple utility classes and functions.
 """
 import signal
+import textwrap
 from datetime import timedelta
+from pathlib import Path
 from typing import List
 
 import pkg_resources
+import toml
 from loguru import logger
+from xdg import XDG_CONFIG_DIRS, XDG_CONFIG_HOME
 
 
 class SignalHandler:
@@ -127,3 +131,79 @@ def get_version():
         return Version("0.0.0")
     else:
         return Version(distribution.version)
+
+
+def load_configuration():
+    """Return dict from toml formatted string or file."""
+
+    default_config = """
+        [key_bindings]
+            AUTOCLEAR = "c"
+            CANCEL = "esc"
+            ENTER = "enter"
+            FILTER = ["F4", "\\\\"]
+            FOLLOW_ROW = "F"
+            HELP = ["F1", "?"]
+            MOVE_DOWN = ["down", "j"]
+            MOVE_DOWN_STEP = "J"
+            MOVE_END = "end"
+            MOVE_HOME = "home"
+            MOVE_LEFT = ["left", "h"]
+            MOVE_RIGHT = ["right", "l"]
+            MOVE_UP = ["up", "k"]
+            MOVE_UP_STEP = "K"
+            NEXT_SORT = ["p", ">"]
+            PREVIOUS_SORT = "<"
+            PRIORITY_DOWN = ["F8", "d", "]"]
+            PRIORITY_UP = ["F7", "u", "["]
+            QUIT = ["F10", "q"]
+            REMOVE_ASK = ["del", "F9"]
+            RETRY = "r"
+            RETRY_ALL = "R"
+            REVERSE_SORT = "I"
+            SEARCH = ["F3", "/"]
+            SELECT_SORT = "F6"
+            SETUP = "F2"
+            TOGGLE_EXPAND_COLLAPSE = "x"
+            TOGGLE_EXPAND_COLLAPSE_ALL = "X"
+            TOGGLE_RESUME_PAUSE = "space"
+            TOGGLE_RESUME_PAUSE_ALL = "P"
+            TOGGLE_SELECT = "s"
+            UN_SELECT_ALL = "U"
+
+        [colors]
+            BRIGHT_HELP = "CYAN BOLD BLACK"
+            FOCUSED_HEADER = "BLACK NORMAL CYAN"
+            FOCUSED_ROW = "BLACK NORMAL CYAN"
+            HEADER = "BLACK NORMAL GREEN"
+            METADATA = "WHITE UNDERLINE BLACK"
+            SIDE_COLUMN_FOCUSED_ROW = "BLACK NORMAL CYAN"
+            SIDE_COLUMN_HEADER = "BLACK NORMAL GREEN"
+            SIDE_COLUMN_ROW = "WHITE NORMAL BLACK"
+            STATUS_ACTIVE = "CYAN NORMAL BLACK"
+            STATUS_COMPLETE = "GREEN NORMAL BLACK"
+            STATUS_ERROR = "RED BOLD BLACK"
+            STATUS_PAUSED = "YELLOW NORMAL BLACK"
+            STATUS_WAITING = "WHITE BOLD BLACK"
+    """
+
+    config_dict = {}
+    config_dict["DEFAULT"] = toml.loads(default_config)
+
+    # Check for configuration file
+    config_file_path = Path(XDG_CONFIG_HOME) / "aria2p" / "config.toml"
+
+    if config_file_path.exists():
+        try:
+            config_dict["USER"] = toml.load(config_file_path)
+            return config_dict
+
+        except Exception as error:
+            logger.error(f"Failed to load configuration file: {error}")
+            return config_dict
+    else:
+        # Write initial configuration file if it does not exist
+        config_file_path.parent.mkdir(parents=True, exist_ok=True)
+        with config_file_path.open("w") as fd:
+            fd.write(textwrap.dedent(default_config).lstrip("\n"))
+    return config_dict
