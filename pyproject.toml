@@ -24,6 +24,7 @@ requests = "*"
 loguru = "*"
 websocket_client = "*"
 asciimatics = { version = "^1.11.0", optional = true }
+xdg = "^4.0.1"
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.5"

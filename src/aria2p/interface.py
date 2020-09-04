@@ -28,48 +28,116 @@ from asciimatics.screen import ManagedScreen, Screen
 from loguru import logger
 
 from .api import API
-from .utils import get_version
+from .utils import get_version, load_configuration
+
+configs = load_configuration()
 
 
 class Key:
+
+    OTHER_KEY_VALUES = {
+        "F1": Screen.KEY_F1,
+        "F2": Screen.KEY_F2,
+        "F3": Screen.KEY_F3,
+        "F4": Screen.KEY_F4,
+        "F5": Screen.KEY_F5,
+        "F6": Screen.KEY_F6,
+        "F7": Screen.KEY_F7,
+        "F8": Screen.KEY_F8,
+        "F9": Screen.KEY_F9,
+        "F10": Screen.KEY_F10,
+        "F11": Screen.KEY_F11,
+        "F12": Screen.KEY_F12,
+        "ESC": Screen.KEY_ESCAPE,
+        "DEL": Screen.KEY_DELETE,
+        "PAGE_UP": Screen.KEY_PAGE_UP,
+        "PAGE_DOWN": Screen.KEY_PAGE_DOWN,
+        "HOME": Screen.KEY_HOME,
+        "END": Screen.KEY_END,
+        "LEFT": Screen.KEY_LEFT,
+        "UP": Screen.KEY_UP,
+        "RIGHT": Screen.KEY_RIGHT,
+        "DOWN": Screen.KEY_DOWN,
+        "BACK": Screen.KEY_BACK,
+        "TAB": Screen.KEY_TAB,
+        "SPACE": ord(" "),
+        "ENTER": ord("\n"),
+    }
+
     def __init__(self, name, value=None):
         self.name = name
         if value is None:
-            value = ord(name)
+            value = self.get_value(name)
         self.value = value
+
+    def get_value(self, name):
+        try:
+            value = ord(name)
+        except TypeError:
+            value = self.OTHER_KEY_VALUES[name.upper()]
+
+        return value
 
     def __eq__(self, value):
         return self.value == value
 
 
+def key_bind_parser(action):
+
+    # Returns a list of Key instance/instances.
+
+    default_bindings = configs.get("DEFAULT").get("key_bindings")
+
+    try:
+        bindings = configs.get("USER").get("key_bindings")
+
+    except AttributeError as error:
+        bindings = default_bindings
+
+    key_binds = bindings.get(action, default_bindings[action])
+
+    if isinstance(key_binds, list):
+        return [Key(k) for k in key_binds]
+    else:
+        return [Key(key_binds)]
+
+
 class Keys:
     """The actions and their shortcuts keys."""
 
-    HELP = [Key("F1", Screen.KEY_F1), Key("h")]
-    SETUP = [Key("F2", Screen.KEY_F2)]
-    TOGGLE_RESUME_PAUSE = [Key("space", ord(" "))]
-    PRIORITY_UP = [Key("F7", Screen.KEY_F7), Key("u"), Key("[")]
-    PRIORITY_DOWN = [Key("F8", Screen.KEY_F8), Key("d"), Key("]")]
-    REVERSE_SORT = [Key("I")]
-    NEXT_SORT = [Key("n"), Key(">")]
-    PREVIOUS_SORT = [Key("p"), Key("<")]
-    SELECT_SORT = [Key("F6", Screen.KEY_F6)]
-    REMOVE_ASK = [Key("F9", Screen.KEY_F9), Key("del", Screen.KEY_DELETE)]
-    TOGGLE_EXPAND_COLLAPSE = [Key("x")]
-    TOGGLE_EXPAND_COLLAPSE_ALL = [Key("X")]
-    AUTOCLEAR = [Key("c")]
-    FOLLOW_ROW = [Key("F")]
-    SEARCH = [Key("F3", Screen.KEY_F3), Key("/")]
-    FILTER = [Key("F4", Screen.KEY_F4), Key("\\")]
-    TOGGLE_SELECT = [Key("s")]
-    UN_SELECT_ALL = [Key("U")]
-    QUIT = [Key("F10", Screen.KEY_F10), Key("q")]
-    CANCEL = [Key("esc", Screen.KEY_ESCAPE)]
-    ENTER = [Key("enter", ord("\n"))]
-    MOVE_UP = [Key("up", Screen.KEY_UP)]
-    MOVE_DOWN = [Key("down", Screen.KEY_DOWN)]
-    MOVE_LEFT = [Key("left", Screen.KEY_LEFT)]
-    MOVE_RIGHT = [Key("right", Screen.KEY_RIGHT)]
+    AUTOCLEAR = key_bind_parser("AUTOCLEAR")
+    CANCEL = key_bind_parser("CANCEL")
+    ENTER = key_bind_parser("ENTER")
+    FILTER = key_bind_parser("FILTER")
+    FOLLOW_ROW = key_bind_parser("FOLLOW_ROW")
+    HELP = key_bind_parser("HELP")
+    MOVE_DOWN = key_bind_parser("MOVE_DOWN")
+    MOVE_LEFT = key_bind_parser("MOVE_LEFT")
+    MOVE_RIGHT = key_bind_parser("MOVE_RIGHT")
+    MOVE_UP = key_bind_parser("MOVE_UP")
+    NEXT_SORT = key_bind_parser("NEXT_SORT")
+    PREVIOUS_SORT = key_bind_parser("PREVIOUS_SORT")
+    PRIORITY_DOWN = key_bind_parser("PRIORITY_DOWN")
+    PRIORITY_UP = key_bind_parser("PRIORITY_UP")
+    QUIT = key_bind_parser("QUIT")
+    REMOVE_ASK = key_bind_parser("REMOVE_ASK")
+    REVERSE_SORT = key_bind_parser("REVERSE_SORT")
+    SEARCH = key_bind_parser("SEARCH")
+    SELECT_SORT = key_bind_parser("SELECT_SORT")
+    SETUP = key_bind_parser("SETUP")
+    TOGGLE_EXPAND_COLLAPSE_ALL = key_bind_parser("TOGGLE_EXPAND_COLLAPSE_ALL")
+    TOGGLE_EXPAND_COLLAPSE = key_bind_parser("TOGGLE_EXPAND_COLLAPSE")
+    TOGGLE_RESUME_PAUSE = key_bind_parser("TOGGLE_RESUME_PAUSE")
+    TOGGLE_RESUME_PAUSE_ALL = key_bind_parser("TOGGLE_RESUME_PAUSE_ALL")
+    TOGGLE_SELECT = key_bind_parser("TOGGLE_SELECT")
+    UN_SELECT_ALL = key_bind_parser("UN_SELECT_ALL")
+    MOVE_HOME = key_bind_parser("MOVE_HOME")
+    MOVE_END = key_bind_parser("MOVE_END")
+    MOVE_UP_STEP = key_bind_parser("MOVE_UP_STEP")
+    MOVE_DOWN_STEP = key_bind_parser("MOVE_DOWN_STEP")
+    TOGGLE_RESUME_PAUSE_ALL = key_bind_parser("TOGGLE_RESUME_PAUSE_ALL")
+    RETRY = key_bind_parser("RETRY")
+    RETRY_ALL = key_bind_parser("RETRY_ALL")
 
     @staticmethod
     def names(keys_list):
@@ -78,6 +146,42 @@ class Keys:
     @staticmethod
     def values(keys_list):
         return [key.value for key in keys_list]
+
+
+def color_palette_parser(palette):
+    # Returns tuple (foreground color, mode, background color)
+
+    default_colors = configs.get("DEFAULT").get("colors")
+    try:
+        colors = configs.get("USER").get("colors")
+    except AttributeError as error:
+        colors = default_colors
+
+    # get values of colors and modes for ascimatics.screen module
+    COLOURS = {
+        "BLACK": Screen.COLOUR_BLACK,
+        "WHITE": Screen.COLOUR_WHITE,
+        "RED": Screen.COLOUR_RED,
+        "CYAN": Screen.COLOUR_CYAN,
+        "YELLOW": Screen.COLOUR_YELLOW,
+        "BLUE": Screen.COLOUR_BLUE,
+        "GREEN": Screen.COLOUR_GREEN,
+    }
+    MODES = {
+        "NORMAL": Screen.A_NORMAL,
+        "BOLD": Screen.A_BOLD,
+        "UNDERLINE": Screen.A_UNDERLINE,
+        "REVERSE": Screen.A_REVERSE,
+    }
+
+    palette_colors = colors.get(palette, default_colors[palette])
+    palette_fg, palette_mode, palette_bg = palette_colors.split(" ")
+
+    return (
+        COLOURS[palette_fg],
+        MODES[palette_mode],
+        COLOURS[palette_bg],
+    )
 
 
 class Exit(Exception):
@@ -238,19 +342,19 @@ class Interface:
     palettes = defaultdict(lambda: (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK))
     palettes.update(
         {
-            "header": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_GREEN),
-            "focused_header": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_CYAN),
-            "focused_row": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_CYAN),
-            "status_active": (Screen.COLOUR_CYAN, Screen.A_NORMAL, Screen.COLOUR_BLACK),
-            "status_paused": (Screen.COLOUR_YELLOW, Screen.A_NORMAL, Screen.COLOUR_BLACK),
-            "status_waiting": (Screen.COLOUR_WHITE, Screen.A_BOLD, Screen.COLOUR_BLACK),
-            "status_error": (Screen.COLOUR_RED, Screen.A_BOLD, Screen.COLOUR_BLACK),
-            "status_complete": (Screen.COLOUR_GREEN, Screen.A_NORMAL, Screen.COLOUR_BLACK),
-            "metadata": (Screen.COLOUR_WHITE, Screen.A_UNDERLINE, Screen.COLOUR_BLACK),
-            "side_column_header": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_GREEN),
-            "side_column_row": (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),
-            "side_column_focused_row": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_CYAN),
-            "bright_help": (Screen.COLOUR_CYAN, Screen.A_BOLD, Screen.COLOUR_BLACK),
+            "header": color_palette_parser("HEADER"),
+            "focused_header": color_palette_parser("FOCUSED_HEADER"),
+            "focused_row": color_palette_parser("FOCUSED_ROW"),
+            "status_active": color_palette_parser("STATUS_ACTIVE"),
+            "status_paused": color_palette_parser("STATUS_PAUSED"),
+            "status_waiting": color_palette_parser("STATUS_WAITING"),
+            "status_error": color_palette_parser("STATUS_ERROR"),
+            "status_complete": color_palette_parser("STATUS_COMPLETE"),
+            "metadata": color_palette_parser("METADATA"),
+            "side_column_header": color_palette_parser("SIDE_COLUMN_HEADER"),
+            "side_column_row": color_palette_parser("SIDE_COLUMN_ROW"),
+            "side_column_focused_row": color_palette_parser("SIDE_COLUMN_FOCUSED_ROW"),
+            "bright_help": color_palette_parser("BRIGHT_HELP"),
         }
     )
 
@@ -466,6 +570,7 @@ class Interface:
             if self.focused > 0:
                 self.focused -= 1
                 logger.debug(f"Move focus up: {self.focused}")
+
                 if self.focused < self.row_offset:
                     self.row_offset = self.focused
                 elif self.focused >= self.row_offset + (self.height - 1):
@@ -576,6 +681,74 @@ class Interface:
 
         elif event.key_code in Keys.UN_SELECT_ALL:
             pass  # TODO
+
+        elif event.key_code in Keys.MOVE_HOME:
+            if self.focused > 0:
+                self.focused = 0
+                logger.debug(f"Move focus home: {self.focused}")
+
+                if self.focused < self.row_offset:
+                    self.row_offset = self.focused
+                elif self.focused >= self.row_offset + (self.height - 1):
+                    # happens when shrinking height
+                    self.row_offset = self.focused + 1 - (self.height - 1)
+                self.follow = None
+                self.refresh = True
+
+        elif event.key_code in Keys.MOVE_END:
+            if self.focused < len(self.rows) - 1:
+                self.focused = len(self.rows) - 1
+                logger.debug(f"Move focus end: {self.focused}")
+
+                if self.focused - self.row_offset >= (self.height - 1):
+                    self.row_offset = self.focused + 1 - (self.height - 1)
+                self.follow = None
+                self.refresh = True
+
+        elif event.key_code in Keys.MOVE_UP_STEP:
+            if self.focused > 0:
+                self.focused -= len(self.rows) // 5
+
+                if self.focused < 0:
+                    self.focused = 0
+                logger.debug(f"Move focus up (step): {self.focused}")
+
+                if self.focused < self.row_offset:
+                    self.row_offset = self.focused
+                elif self.focused >= self.row_offset + (self.height - 1):
+                    # happens when shrinking height
+                    self.row_offset = self.focused + 1 - (self.height - 1)
+
+                self.follow = None
+                self.refresh = True
+
+        elif event.key_code in Keys.MOVE_DOWN_STEP:
+            if self.focused < len(self.rows) - 1:
+                self.focused += len(self.rows) // 5
+
+                if self.focused > len(self.rows) - 1:
+                    self.focused = len(self.rows) - 1
+                logger.debug(f"Move focus down (step): {self.focused}")
+
+                if self.focused - self.row_offset >= (self.height - 1):
+                    self.row_offset = self.focused + 1 - (self.height - 1)
+                self.follow = None
+                self.refresh = True
+
+        elif event.key_code in Keys.TOGGLE_RESUME_PAUSE_ALL:
+            stats = self.api.get_stats()
+            if stats.num_active:
+                self.api.pause_all()
+            else:
+                self.api.resume_all()
+
+        elif event.key_code in Keys.RETRY:
+            download = self.data[self.focused]
+            self.api.retry_downloads([download])
+
+        elif event.key_code in Keys.RETRY_ALL:
+            downloads = self.data[:]
+            self.api.retry_downloads(downloads)
 
         elif event.key_code in Keys.QUIT:
             raise Exit()
@@ -693,11 +866,12 @@ class Interface:
             self.screen.print_at(f"{line:<{self.width}}", 0, y, *self.palettes["bright_help"])
             y += 1
 
-        self.print_keys_text("Arrows:", " scroll downloads list", y)
-        y += 1
-
         for keys, text in [
             (Keys.HELP, " show this help screen"),
+            (Keys.MOVE_UP, " scroll downloads list"),
+            (Keys.MOVE_UP_STEP, " scroll downloads list (steps)"),
+            (Keys.MOVE_DOWN, " scroll downloads list"),
+            (Keys.MOVE_DOWN_STEP, " scroll downloads list (steps)"),
             # (Keys.SETUP, " setup"),  # not implemented
             (Keys.TOGGLE_RESUME_PAUSE, " toggle pause/resume"),
             (Keys.PRIORITY_UP, " priority up (-)"),
@@ -715,6 +889,10 @@ class Interface:
             # (Keys.FILTER, " name filtering"),  # not implemented
             # (Keys.TOGGLE_SELECT, " toggle select download"),  # not implemented
             # (Keys.UN_SELECT_ALL, " unselect all downloads"),  # not implemented
+            (Keys.MOVE_HOME, " move focus to first download"),
+            (Keys.MOVE_END, " move focus to last download"),
+            (Keys.RETRY, " retry failed download"),
+            (Keys.RETRY_ALL, " retry all failed download"),
             (Keys.QUIT, " quit"),
         ]:
             self.print_keys(keys, text, y)

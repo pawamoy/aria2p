@@ -196,7 +196,7 @@ def test_move_focus(monkeypatch):
 
 def test_show_help(monkeypatch):
     with Aria2Server(port=7604) as server:
-        interface = run_interface(monkeypatch, server.api, events=[Event.hit("h"), Event.pass_tick, Event.enter])
+        interface = run_interface(monkeypatch, server.api, events=[Event.f1, Event.pass_tick, Event.enter])
     assert interface.screen.print_at_calls[-1]["args"][0].startswith("Press any key to return.")
 
 
