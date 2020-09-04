@@ -16,4 +16,4 @@ site/
 demo.gif
 .mypy_cache/
 poetry.lock
-
+*.sw[po]
