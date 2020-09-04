@@ -42,7 +42,8 @@ These projects were used to build `aria2p`. **Thank you!**
 [`requests`](https://requests.readthedocs.io) |
 [`responses`](https://github.com/getsentry/responses) |
 [`toml`](https://github.com/uiri/toml) |
-[`websocket_client`](https://github.com/websocket-client/websocket-client.git)
+[`websocket_client`](https://github.com/websocket-client/websocket-client.git) |
+[`xdg`](https://github.com/srstevenson/xdg)
 
 ### Indirect dependencies
 [`aiocontextvars`](https://github.com/fantix/aiocontextvars) |
@@ -55,14 +56,13 @@ These projects were used to build `aria2p`. **Thank you!**
 [`attrs`](https://www.attrs.org/) |
 [`backcall`](https://github.com/takluyver/backcall) |
 [`beautifulsoup4`](http://www.crummy.com/software/BeautifulSoup/bs4/) |
-[`certifi`](https://certifi.io/) |
+[`certifi`](https://certifiio.readthedocs.io/en/latest/) |
 [`chardet`](https://github.com/chardet/chardet) |
 [`click`](https://palletsprojects.com/p/click/) |
 [`colorama`](https://github.com/tartley/colorama) |
 [`contextvars`](http://github.com/MagicStack/contextvars) |
 [`decorator`](https://github.com/micheles/decorator) |
 [`dis3`](https://github.com/KeyWeeUsr/python-dis3) |
-[`entrypoints`](https://github.com/takluyver/entrypoints) |
 [`execnet`](https://execnet.readthedocs.io/en/latest/) |
 [`flake8-polyfill`](https://gitlab.com/pycqa/flake8-polyfill) |
 [`future`](https://python-future.org) |
@@ -74,12 +74,14 @@ These projects were used to build `aria2p`. **Thank you!**
 [`ipython-genutils`](http://ipython.org) |
 [`jedi`](https://github.com/davidhalter/jedi) |
 [`Jinja2`](https://palletsprojects.com/p/jinja/) |
+[`joblib`](https://joblib.readthedocs.io) |
 [`livereload`](https://github.com/lepture/python-livereload) |
 [`lunr`](https://github.com/yeraydiazdiaz/lunr.py) |
 [`Markdown`](https://Python-Markdown.github.io/) |
 [`MarkupSafe`](https://palletsprojects.com/p/markupsafe/) |
 [`mccabe`](https://github.com/pycqa/mccabe) |
-[`more-itertools`](https://github.com/erikrose/more-itertools) |
+[`mkdocs-material-extensions`](https://github.com/facelessuser/mkdocs-material-extensions) |
+[`more-itertools`](https://github.com/more-itertools/more-itertools) |
 [`mypy-extensions`](https://github.com/python/mypy_extensions) |
 [`nltk`](http://nltk.org/) |
 [`packaging`](https://github.com/pypa/packaging) |
@@ -92,7 +94,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`pluggy`](https://github.com/pytest-dev/pluggy) |
 [`prompt-toolkit`](https://github.com/prompt-toolkit/python-prompt-toolkit) |
 [`ptyprocess`](https://github.com/pexpect/ptyprocess) |
-[`py`](http://py.readthedocs.io/) |
+[`py`](https://py.readthedocs.io/) |
 [`pycodestyle`](https://pycodestyle.readthedocs.io/) |
 [`pydocstyle`](https://github.com/PyCQA/pydocstyle/) |
 [`pyfiglet`](https://github.com/pwaller/pyfiglet) |
@@ -114,6 +116,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`termcolor`](http://pypi.python.org/pypi/termcolor) |
 [`testfixtures`](https://github.com/Simplistix/testfixtures) |
 [`tornado`](http://www.tornadoweb.org/) |
+[`tqdm`](https://github.com/tqdm/tqdm) |
 [`traitlets`](http://ipython.org) |
 [`typed-ast`](https://github.com/python/typed_ast) |
 [`typing-extensions`](https://github.com/python/typing/blob/master/typing_extensions/README.rst) |
