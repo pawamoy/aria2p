@@ -30,12 +30,13 @@ coverage = {version = "^5.2.1", optional = true}
 invoke = {version = "^1.4.1", optional = true}
 mypy = {version = "^0.782", optional = true}
 pytest = {version = "^6.0.1", optional = true}
+pytest-cov = {version = "^2.10.1", optional = true}
 pytest-randomly = {version = "^3.4.1", optional = true}
 pytest-sugar = {version = "^0.9.4", optional = true}
 pytest-xdist = {version = "^2.1.0", optional = true}
 
 [tool.poetry.extras]
-tests = ["coverage", "invoke", "mypy", "pytest", "pytest-randomly", "pytest-sugar", "pytest-xdist"]
+tests = ["coverage", "invoke", "mypy", "pytest", "pytest-cov", "pytest-randomly", "pytest-sugar", "pytest-xdist"]
 tui = ["asciimatics"]
 
 [tool.poetry.dev-dependencies]
@@ -62,6 +63,7 @@ mkdocstrings = "^0.13.1"
 mypy = "^0.782"
 pyinstaller = "^3.6"
 pytest = "^6.0.1"
+pytest-cov = "^2.10.1"
 pytest-randomly = "^3.4.1"
 pytest-sugar = "^0.9.4"
 pytest-xdist = "^2.1.0"
