@@ -7,7 +7,7 @@ repo_name: "pawamoy/aria2p"
 nav:
   - Overview: index.md
   - Usage: usage.md
-  - Reference:
+  - API Reference:
     - api.py: reference/api.md
     - cli.py: reference/cli.md
     - client.py: reference/client.md
@@ -30,8 +30,11 @@ markdown_extensions:
   - admonition
   - codehilite:
       guess_lang: false
-  - pymdownx.superfences
   - pymdownx.emoji
+  - pymdownx.magiclink
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist
   - toc:
       permalink: "¤"
 
