@@ -1,7 +1,6 @@
 """Regenerate all templated documentation pages."""
 
 import sys
-from pathlib import Path
 
 import httpx
 from gen_credits_data import get_data as get_credits
@@ -11,7 +10,7 @@ from jinja2.sandbox import SandboxedEnvironment
 
 URL_PREFIX = "https://raw.githubusercontent.com/pawamoy/jinja-templates/master/"
 REGEN = (
-    ("docs/credits.md", get_credits, URL_PREFIX + "credits.md"),    
+    ("docs/credits.md", get_credits, URL_PREFIX + "credits.md"),
     ("docs/index.md", get_readme, "scripts/templates/README.md"),
 )
 

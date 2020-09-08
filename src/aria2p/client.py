@@ -171,7 +171,11 @@ class Client:
     ]
 
     def __init__(  # nosec
-        self, host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, secret: str = "", timeout: float = DEFAULT_TIMEOUT,
+        self,
+        host: str = DEFAULT_HOST,
+        port: int = DEFAULT_PORT,
+        secret: str = "",
+        timeout: float = DEFAULT_TIMEOUT,
     ) -> None:
         """
         Initialization method.

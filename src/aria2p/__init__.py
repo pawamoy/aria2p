@@ -5,7 +5,6 @@ Command-line tool and library to interact with an aria2c daemon process with JSO
 """
 
 import sys
-from typing import List
 
 from loguru import logger
 
@@ -43,5 +42,5 @@ __all__ = [  # noqa: WPS410 (the only __variable__ we use)
     "File",
     "Options",
     "Stats",
-    "enable_logger"
+    "enable_logger",
 ]

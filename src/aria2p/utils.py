@@ -12,7 +12,7 @@ from typing import List
 import pkg_resources
 import toml
 from loguru import logger
-from xdg import XDG_CONFIG_DIRS, XDG_CONFIG_HOME
+from xdg import XDG_CONFIG_HOME
 
 
 class SignalHandler:
