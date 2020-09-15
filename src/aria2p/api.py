@@ -73,7 +73,8 @@ class API:
                 new_downloads.extend(self.add_metalink(path))
             else:
                 for line in path.read_text().split("\n"):
-                    new_downloads.extend(self.add(line))
+                    if line:
+                        new_downloads.extend(self.add(line))
         elif uri.startswith("magnet:?"):
             new_downloads.append(self.add_magnet(uri))
         else:

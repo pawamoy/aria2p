@@ -25,6 +25,7 @@ loguru = "*"
 websocket_client = "*"
 asciimatics = { version = "^1.11.0", optional = true }
 xdg = "^4.0.1"
+pyperclip = "^1.8.0"
 
 coverage = {version = "^5.2.1", optional = true}
 invoke = {version = "^1.4.1", optional = true}

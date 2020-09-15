@@ -15,13 +15,14 @@ This module contains all the code responsible for the HTOP-like interface.
 # Well, asciimatics also provides a "top" example, so...
 
 # pylint: disable=invalid-name
-
 import os
 import sys
 import time
 from collections import defaultdict
 from pathlib import Path
+from typing import List
 
+import pyperclip
 import requests
 from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import ManagedScreen, Screen
@@ -138,6 +139,7 @@ class Keys:
     TOGGLE_RESUME_PAUSE_ALL = key_bind_parser("TOGGLE_RESUME_PAUSE_ALL")
     RETRY = key_bind_parser("RETRY")
     RETRY_ALL = key_bind_parser("RETRY_ALL")
+    ADD_DOWNLOADS = key_bind_parser("ADD_DOWNLOADS")
 
     @staticmethod
     def names(keys_list):
@@ -316,6 +318,7 @@ class Interface:
         SETUP = 2
         REMOVE_ASK = 3
         SELECT_SORT = 4
+        ADD_DOWNLOADS = 9
 
     state = State.MAIN
     sleep = 0.005
@@ -426,6 +429,9 @@ class Interface:
     select_sort_header = "Select sort:"
     select_sort_rows = columns_order
 
+    downloads_uris: List[str] = []
+    downloads_uris_header = f"Add Download: [ Hit ENTER to download; Hit { ','.join(Keys.names(Keys.ADD_DOWNLOADS)) } to download all ]"
+
     def __init__(self, api=None):
         """
         Initialization method.
@@ -465,6 +471,11 @@ class Interface:
                 "process_keyboard_event": self.process_keyboard_event_select_sort,
                 "process_mouse_event": self.process_mouse_event_select_sort,
                 "print_functions": [self.print_select_sort_column, self.print_table],
+            },
+            self.State.ADD_DOWNLOADS: {
+                "process_keyboard_event": self.process_keyboard_event_add_downloads,
+                "process_mouse_event": self.process_mouse_event_add_downloads,
+                "print_functions": [self.print_add_downloads, self.print_table],
             },
         }
 
@@ -750,6 +761,25 @@ class Interface:
             downloads = self.data[:]
             self.api.retry_downloads(downloads)
 
+        elif event.key_code in Keys.ADD_DOWNLOADS:
+            self.state = self.State.ADD_DOWNLOADS
+            self.refresh = True
+            self.side_focused = 0
+            self.x_offset = self.width
+
+            # build set of copied lines
+            copied_lines = set()
+            for line in pyperclip.paste().split("\n") + pyperclip.paste(primary=True).split("\n"):
+                copied_lines.add(line.strip())
+            try:
+                copied_lines.remove("")
+            except KeyError:
+                pass
+
+            # add lines to download uris
+            if copied_lines:
+                self.downloads_uris = list(sorted(copied_lines))
+
         elif event.key_code in Keys.QUIT:
             raise Exit()
 
@@ -815,6 +845,46 @@ class Interface:
                 self.side_focused += 1
                 self.refresh = True
 
+    def process_keyboard_event_add_downloads(self, event):
+        if event.key_code in Keys.CANCEL:
+            self.state = self.State.MAIN
+            self.x_offset = 0
+            self.refresh = True
+
+        elif event.key_code in Keys.MOVE_UP:
+            if self.side_focused > 0:
+                self.side_focused -= 1
+
+                if self.side_focused < self.row_offset:
+                    self.row_offset = self.side_focused
+                elif self.side_focused >= self.row_offset + (self.height - 1):
+                    # happens when shrinking height
+                    self.row_offset = self.side_focused + 1 - (self.height - 1)
+                self.follow = None
+                self.refresh = True
+
+        elif event.key_code in Keys.MOVE_DOWN:
+            if self.side_focused < len(self.downloads_uris) - 1:
+                self.side_focused += 1
+                if self.side_focused - self.row_offset >= (self.height - 1):
+                    self.row_offset = self.side_focused + 1 - (self.height - 1)
+                self.follow = None
+                self.refresh = True
+
+        elif event.key_code in Keys.ENTER:
+            if self.api.add(self.downloads_uris[self.side_focused]):
+                self.downloads_uris.pop(self.side_focused)
+                if 0 < self.side_focused > len(self.downloads_uris) - 1:
+                    self.side_focused -= 1
+                self.refresh = True
+
+        elif event.key_code in Keys.ADD_DOWNLOADS:
+            for uri in self.downloads_uris:
+                self.api.add(uri)
+
+            self.downloads_uris.clear()
+            self.refresh = True
+
     def process_mouse_event(self, event):
         self.state_mapping[self.state]["process_mouse_event"](event)
 
@@ -845,6 +915,9 @@ class Interface:
     def process_mouse_event_select_sort(self, event):
         pass
 
+    def process_mouse_event_add_downloads(self, event):
+        pass
+
     def width_remove_ask(self):
         return max(len(self.remove_ask_header), max(len(row[0]) for row in self.remove_ask_rows))
 
@@ -856,6 +929,35 @@ class Interface:
             self.follow = self.data[self.focused]
             return True
         return False
+
+    def print_add_downloads(self):
+        y = self.y_offset
+        padding = self.width
+        header_string = f"{self.downloads_uris_header:<{padding}}"
+        len_header = len(header_string)
+        self.screen.print_at(header_string, 0, y, *self.palettes["side_column_header"])
+        self.screen.print_at(" ", len_header, y, *self.palettes["default"])
+        y += 1
+        self.screen.print_at(" " * self.width, 0, y)
+        for i, uri in enumerate(self.downloads_uris):
+            y += 1
+            palette = (
+                self.palettes["side_column_focused_row"] if i == self.side_focused else self.palettes["side_column_row"]
+            )
+            if uri.startswith("magnet:?"):
+                # print part of magnet string
+                uri = f"{uri[:12]}...{uri[-10:]}"
+
+            if len(uri) > padding:
+                uri = f"{uri[:padding-3]:<{uri-3}}..."
+            else:
+                uri = f"{uri:<{padding}}"
+
+            self.screen.print_at(uri, 0, y, *palette)
+            self.screen.print_at(" ", len(uri), y, *self.palettes["default"])
+
+        for i in range(1, self.height - y):
+            self.screen.print_at(" " * (padding + 1), 0, y + i)
 
     def print_help(self):
         version = get_version()
@@ -893,6 +995,7 @@ class Interface:
             (Keys.MOVE_END, " move focus to last download"),
             (Keys.RETRY, " retry failed download"),
             (Keys.RETRY_ALL, " retry all failed download"),
+            (Keys.ADD_DOWNLOADS, " add downloads from clipboard"),
             (Keys.QUIT, " quit"),
         ]:
             self.print_keys(keys, text, y)

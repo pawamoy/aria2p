@@ -34,6 +34,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`mkdocstrings`](https://github.com/pawamoy/mkdocstrings) |
 [`mypy`](http://www.mypy-lang.org/) |
 [`PyInstaller`](http://www.pyinstaller.org) |
+[`pyperclip`](https://github.com/asweigart/pyperclip) |
 [`pytest`](https://docs.pytest.org/en/latest/) |
 [`pytest-cov`](https://github.com/pytest-dev/pytest-cov) |
 [`pytest-sugar`](http://pivotfinland.com/pytest-sugar/) |

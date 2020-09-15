@@ -170,6 +170,7 @@ def load_configuration():
             TOGGLE_RESUME_PAUSE_ALL = "P"
             TOGGLE_SELECT = "s"
             UN_SELECT_ALL = "U"
+            ADD_DOWNLOADS = "a"
 
         [colors]
             BRIGHT_HELP = "CYAN BOLD BLACK"
