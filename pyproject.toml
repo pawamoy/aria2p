@@ -34,12 +34,14 @@ pytest-cov = {version = "^2.10.1", optional = true}
 pytest-randomly = {version = "^3.4.1", optional = true}
 pytest-sugar = {version = "^0.9.4", optional = true}
 pytest-xdist = {version = "^2.1.0", optional = true}
+responses = {version = "^0.10.14", optional = true}
 
 [tool.poetry.extras]
-tests = ["coverage", "invoke", "mypy", "pytest", "pytest-cov", "pytest-randomly", "pytest-sugar", "pytest-xdist"]
+tests = ["asciimatics", "coverage", "invoke", "mypy", "pytest", "pytest-cov", "pytest-randomly", "pytest-sugar", "pytest-xdist", "responses"]
 tui = ["asciimatics"]
 
 [tool.poetry.dev-dependencies]
+asciimatics = "^1.11.0"
 autoflake = "^1.4"
 black = "^20.8b1"
 coverage = "^5.2.1"
