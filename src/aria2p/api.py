@@ -43,6 +43,44 @@ class API:
     def __repr__(self):
         return f"API({self.client!r})"
 
+    def add(self, uri: str) -> List[Download]:
+        """
+        Add a download (guess its type).
+
+        If the provided URI is in fact a file-path, and is neither a torrent or a metalink,
+        then we read its lines and try to add each line as a download, recursively.
+
+        Parameters:
+            uri: The URI or file-path to add.
+
+        Returns:
+            The created downloads.
+        """
+        new_downloads = []
+        path = Path(uri)
+
+        # On Windows, path.exists() generates an OSError when path is an URI
+        # See https://github.com/pawamoy/aria2p/issues/41
+        try:
+            path_exists = path.exists()
+        except OSError:
+            path_exists = False
+
+        if path_exists:
+            if path.suffix == ".torrent":
+                new_downloads.append(self.add_torrent(path))
+            elif path.suffix == ".metalink":
+                new_downloads.extend(self.add_metalink(path))
+            else:
+                for line in path.read_text().split("\n"):
+                    new_downloads.extend(self.add(line))
+        elif uri.startswith("magnet:?"):
+            new_downloads.append(self.add_magnet(uri))
+        else:
+            new_downloads.append(self.add_uris([uri]))
+
+        return new_downloads
+
     def add_magnet(self, magnet_uri: str, options: Union[Options, dict] = None, position: int = None) -> Download:
         """
         Add a download with a Magnet URI.
