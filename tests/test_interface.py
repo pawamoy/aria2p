@@ -1,12 +1,13 @@
 import time
 from pathlib import Path
 
+import pyperclip
 from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import Screen
 
 from aria2p import interface as tui
 
-from . import SESSIONS_DIR, Aria2Server
+from . import SESSIONS_DIR, TESTS_DATA_DIR, Aria2Server
 
 tui.Interface.frames = 20  # reduce tests time
 
@@ -415,3 +416,78 @@ def test_click_out_bounds(monkeypatch):
             break
     assert error_line
     assert "clicked outside of boundaries" in error_line
+
+
+def test_add_downloads_uris(monkeypatch):
+    clipboard_selection_downloads = ""
+    primary_selection_downloads = ""
+
+    uri1 = "http://example.com/1"
+    magnet1 = "magnet:?xt=urn:btih:RX46NCATYQRS3MCQNSEXVZGCCDNKTASQ"
+    clipboard_selection_downloads += "\n".join([uri1, magnet1])
+
+    uri2 = "http://example.com/2"
+    magnet2 = "magnet:?xt=urn:btih:VLYICEBJDQQ64SUGREZHD4IAD2FVCJCS"
+    primary_selection_downloads += "\n".join([uri2, magnet2])
+
+    # clipboard selection
+    pyperclip.copy(clipboard_selection_downloads)
+    # primary selection
+    pyperclip.copy(primary_selection_downloads, primary=True)
+
+    with Aria2Server(port=7622) as server:
+        interface = run_interface(
+            monkeypatch,
+            server.api,
+            events=[
+                Event.pass_frame,
+                Event.hit("a"),
+                Event.esc,
+                Event.hit("a"),
+                Event.down,
+                Event.enter,
+                Event.enter,
+                Event.esc,
+                Event.pass_tick_and_a_half,
+            ],
+        )
+        # clear clipboards
+        pyperclip.copy("")
+        pyperclip.copy("", primary=True)
+        assert len(interface.data) == 2
+
+
+def test_add_downloads_torrents_and_metalinks(monkeypatch):
+
+    torrent_file = TESTS_DATA_DIR / "bunsenlabs-helium-4.iso.torrent"
+    metalink_file = TESTS_DATA_DIR / "debian.metalink"
+
+    clipboard_selection_download = f"{torrent_file.absolute()}"
+    primary_selection_download = f"{metalink_file.absolute()}"
+
+    # clipboard selection
+    pyperclip.copy(clipboard_selection_download)
+
+    # primary selection
+    pyperclip.copy(primary_selection_download, primary=True)
+
+    with Aria2Server(port=7623) as server:
+        interface = run_interface(
+            monkeypatch,
+            server.api,
+            events=[
+                Event.pass_frame,
+                Event.hit("a"),
+                Event.esc,
+                Event.pass_tick_and_a_half,
+                Event.hit("a"),
+                Event.down,
+                Event.up,
+                Event.enter,
+                Event.enter,
+                Event.pass_tick_and_a_half,
+            ],
+        )
+        pyperclip.copy("")
+        pyperclip.copy("", primary=True)
+        assert len(interface.data) == 2

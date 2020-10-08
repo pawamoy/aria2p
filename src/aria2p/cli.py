@@ -392,53 +392,34 @@ def subcommand_add(api: API, uris: List[str] = None, from_file: str = None) -> i
     Add magnet subcommand.
 
     Parameters:
-        api: the API instance to use.
-        uris: the URIs or file-paths to add.
-        from_file: path to the file to read uris from.
+        api: The API instance to use.
+        uris: The URIs or file-paths to add.
+        from_file: Path to the file to read uris from.
+            Deprecated: every URI that is a valid file-path
+            and is not a torrent or a metalink is now read as an input file.
 
     Returns:
         int: 0 if OK else 1.
     """
-    ok = True
+    uris = uris or []
 
-    if not uris:
-        uris = []
     if from_file:
-        try:
-            uris.extend(read_lines(from_file))
-        except OSError:
-            print(f"Cannot open file: {from_file}", file=sys.stderr)
-            ok = False
+        logger.warning(
+            "Deprecation warning: every URI that is a valid file-path "
+            "and is not a torrent or a metalink is now read as an input file."
+        )
 
+    new_downloads = []
     for uri in uris:
-        path = Path(uri)
-
-        # On Windows, path.exists() generates an OSError when path is an URI
-        # See https://github.com/pawamoy/aria2p/issues/41
-        try:
-            path_exists = path.exists()
-        except OSError:
-            path_exists = False
-
-        if path_exists:
-            if path.suffix == ".torrent":
-                new_downloads = [api.add_torrent(path)]
-            elif path.suffix == ".metalink":
-                new_downloads = api.add_metalink(path)
-            else:
-                print(f"Cannot determine type of file {path}", file=sys.stderr)
-                print(f"  Known extensions are .torrent and .metalink", file=sys.stderr)
-                ok = False
-                continue
-        elif uri.startswith("magnet:?"):
-            new_downloads = [api.add_magnet(uri)]
-        else:
-            new_downloads = [api.add_uris([uri])]
-
+        new_downloads.extend(api.add(uri))
+    
+    if new_downloads:
         for new_download in new_downloads:
             print(f"Created download {new_download.gid}")
+        return 0
 
-    return 0 if ok else 1
+    print("No new download was created", file=sys.stderr)
+    return 1
 
 
 def subcommand_add_magnets(api: API, uris: List[str] = None, from_file: str = None) -> int:
