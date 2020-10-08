@@ -86,11 +86,8 @@ def main(args: Optional[List[str]] = None) -> int:
         "top": subcommand_top,
         "call": subcommand_call,
         "add": subcommand_add,
-        "add-magnet": subcommand_add_magnets,
         "add-magnets": subcommand_add_magnets,
-        "add-torrent": subcommand_add_torrents,
         "add-torrents": subcommand_add_torrents,
-        "add-metalink": subcommand_add_metalinks,
         "add-metalinks": subcommand_add_metalinks,
         "pause": subcommand_pause,
         "stop": subcommand_pause,  # alias for pause
@@ -678,19 +675,3 @@ def subcommand_listen(
 
     api.listen_to_notifications(timeout=timeout, handle_signals=True, threaded=False, **callbacks_kwargs)
     return 0
-
-
-def _changed_name(name, func):
-    def _new_func(*args, **kwargs):
-        logger.warning(
-            f"Deprecation warning: function {name} was renamed {name}s in version 0.6.0,"
-            f"and will be removed in version 0.9.0."
-        )
-        return func(*args, **kwargs)
-
-    return _new_func
-
-
-subcommand_add_magnet = _changed_name("subcommand_add_magnet", subcommand_add_magnets)
-subcommand_add_torrent = _changed_name("subcommand_add_torrent", subcommand_add_torrents)
-subcommand_add_metalink = _changed_name("subcommand_add_metalink", subcommand_add_metalinks)
