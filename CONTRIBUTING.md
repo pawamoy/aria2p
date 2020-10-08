@@ -7,30 +7,50 @@ Every little bit helps, and credit will always be given.
 
 Nothing easier!
 
-You just need two tools: Poetry and Invoke.
-
-You can install them with:
-
-```bash
-python3 -m pip install --user pipx
-pipx install poetry
-pipx install invoke
-```
-
-Now fork and clone the repository, then:
+Fork and clone the repository, then:
 
 ```bash
 cd aria2p
 make setup
 ```
 
-That's it!
+!!! note
+    If it fails for some reason,
+    you'll need to install
+    [Poetry](https://github.com/python-poetry/poetry)
+    manually.
+
+    You can install it with:
+
+    ```bash
+    python3 -m pip install --user pipx
+    pipx install poetry
+    ```
+
+    Now you can try running `make setup` again,
+    or simply `poetry install`.
 
 You now have the dependencies installed.
 
 You can run the application with `poetry run aria2p [ARGS...]`.
 
 Run `make help` to see all the available actions!
+
+## Tasks
+
+This project uses [Duty](https://github.com/pawamoy/duty) to run tasks.
+A Makefile is also provided. The Makefile will try to run certain tasks
+on multiple Python versions. If for some reason you don't want to run the task
+on multiple Python versions, you can do one of the following:
+
+1. `export PYTHON_VERSIONS= `: this will run the task
+   with only the current Python version
+2. run the task directly with `poetry run duty TASK`,
+   or `duty TASK` if the environment was already activated
+   through `poetry shell`
+
+The Makefile detects if the Poetry environment is activated,
+so `make` will work the same with the virtualenv activated or not.
 
 ## Development
 

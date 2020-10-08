@@ -27,6 +27,19 @@ def first_err_line(cs):
     return err_lines(cs)[0]
 
 
+def test_show_help(capsys):
+    """
+    Show help.
+
+    Arguments:
+        capsys: Pytest fixture to capture output.
+    """
+    with pytest.raises(SystemExit):
+        cli.main(["-h"])
+    captured = capsys.readouterr()
+    assert "aria2p" in captured.out
+
+
 def test_main_returns_2_when_no_remote_running():
     assert cli.main(["--port=7549"]) == 2
 
