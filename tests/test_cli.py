@@ -224,9 +224,9 @@ def test_remove_all_subcommand():
         assert cli.subcommand_remove(server.api, do_all=True) == 0
 
 
-def test_autopurge_subcommand():
+def test_purge_subcommand():
     with Aria2Server(port=7527, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
-        assert cli.subcommand_autopurge(server.api) == 0
+        assert cli.subcommand_purge(server.api) == 0
 
 
 def test_listen_subcommand(capsys):

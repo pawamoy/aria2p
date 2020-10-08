@@ -1,3 +1,5 @@
+"""Tests for the `options` module."""
+
 from aria2p import API, Download, Options
 
 

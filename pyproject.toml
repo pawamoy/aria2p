@@ -30,7 +30,6 @@ pyperclip = {version = "^1.8.0", optional = true}
 [tool.poetry.dev-dependencies]
 asciimatics = "^1.11.0"
 autoflake = "^1.4"
-black = "^20.8b1"
 duty = "^0.4.1"
 flakehell = "^0.6.0"
 flake8-black = "^0.2.1"
@@ -58,6 +57,7 @@ pytest-xdist = "^2.1.0"
 responses = "^0.10.14"
 toml = "^0.10.1"
 wemake-python-styleguide = "^0.14.1"
+black = "^20.8b1"
 
 [tool.poetry.scripts]
 aria2p = "aria2p.cli:main"
@@ -99,6 +99,7 @@ exclude = ["tests/fixtures"]
     "-C0301",  # line too long
     "-R0902",  # too many instance attributes
     "-R0903",  # too few public methods
+    "-R0904",  # too many public methods
     "-R0912",  # too many branches
     "-R0913",  # too many methods
     "-R0914",  # too many local variables
@@ -124,8 +125,26 @@ exclude = ["tests/fixtures"]
     "-WPS322",  # multi-line strings (incompatible with attributes docstrings)
     "-WPS326",  # implicit string concatenation
     "-WPS336",  # explicit string concatenation
+    "-WPS402",  # nosa overuse
     "-WPS412",  # __init__ modules with logic
     "-WPS428",  # statement with no effect (not compatible with attribute docstrings)
     "-WPS433",  # redundant with C0415 (not top-level import)
     "-WPS529",  # implicit dict.get usage (generally false-positive)
+]
+
+[tool.flakehell.exceptions."src/aria2p/cli.py"]
+"*" = [
+    "-WPS421",  # print
+]
+
+[tool.flakehell.exceptions."src/aria2p/client.py"]
+"*" = [
+    "-C0302",  # too many lines in module
+    "-WPS115",  # upper-case constant in class (RPC methods)
+    "-WPS602",  # staticmethod
+]
+
+[tool.flakehell.exceptions."tests/"]
+"*" = [
+    "-WPS432",  # magic numbers
 ]

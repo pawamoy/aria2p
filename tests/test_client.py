@@ -1,3 +1,5 @@
+"""Tests for the `client` module."""
+
 import http.server
 import json
 import os

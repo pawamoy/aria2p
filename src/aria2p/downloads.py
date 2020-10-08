@@ -4,14 +4,15 @@ torrent files, files and downloads in aria2c.
 """
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Union
+from typing import List, Optional
 
 from loguru import logger
 
 import aria2p
-
-from .client import ClientException
-from .utils import bool_or_value, human_readable_bytes, human_readable_timedelta
+from aria2p.client import ClientException
+from aria2p.options import Options
+from aria2p.types import OperationResult, PathOrStr
+from aria2p.utils import bool_or_value, human_readable_bytes, human_readable_timedelta
 
 
 class BitTorrent:
@@ -19,9 +20,9 @@ class BitTorrent:
 
     def __init__(self, struct: dict) -> None:
         """
-        Initialization method.
+        Initialize the object.
 
-        Args:
+        Arguments:
             struct: a dictionary Python object returned by the JSON-RPC client.
         """
         self._struct = struct or {}
@@ -30,20 +31,26 @@ class BitTorrent:
         return self.info["name"]
 
     @property
-    def announce_list(self):
+    def announce_list(self) -> Optional[List[List[str]]]:
         """
         List of lists of announce URIs.
 
         If the torrent contains announce and no announce-list, announce is converted to the announce-list format.
+
+        Returns:
+            The announce URIs.
         """
         return self._struct.get("announceList")
 
     @property
-    def comment(self):
+    def comment(self) -> Optional[str]:
         """
         The comment of the torrent.
 
         comment.utf-8 is used if available.
+
+        Returns:
+            The torrent's comment.
         """
         return self._struct.get("comment")
 
@@ -53,25 +60,33 @@ class BitTorrent:
         The creation time of the torrent.
 
         The value is an integer since the epoch, measured in seconds.
+
+        Returns:
+            The creation date.
         """
-        return datetime.fromtimestamp(self._struct.get("creationDate"))
+        return datetime.fromtimestamp(self._struct["creationDate"])
 
     @property
-    def mode(self) -> str:
+    def mode(self) -> Optional[str]:
         """
         File mode of the torrent.
 
         The value is either single or multi.
+
+        Returns:
+            The file mode.
         """
         return self._struct.get("mode")
 
     @property
-    def info(self):
+    def info(self) -> Optional[dict]:
         """
         Struct which contains data from Info dictionary.
 
-        It contains following keys:
-            name   name in info dictionary. name.utf-8 is used if available.
+        It contains the `name` key: name in info dictionary. `name.utf-8` is used if available.
+
+        Returns:
+            The torrent's info.
         """
         return self._struct.get("info")
 
@@ -81,9 +96,9 @@ class File:
 
     def __init__(self, struct: dict) -> None:
         """
-        Initialization method.
+        Initialize the object.
 
-        Parameters:
+        Arguments:
             struct: a dictionary Python object returned by the JSON-RPC client.
         """
         self._struct = struct or {}
@@ -95,30 +110,45 @@ class File:
         return self.path == other.path
 
     @property
-    def index(self):
-        """Index of the file, starting at 1, in the same order as files appear in the multi-file torrent."""
-        return int(self._struct.get("index"))
+    def index(self) -> int:
+        """
+        Index of the file, starting at 1, in the same order as files appear in the multi-file torrent.
+
+        Returns:
+            The index of the file.
+        """
+        return int(self._struct["index"])
 
     @property
-    def path(self):
-        """File path."""
-        return Path(self._struct.get("path"))
+    def path(self) -> Path:
+        """
+        File path.
+
+        Returns:
+            The file path.
+        """
+        return Path(self._struct["path"])
 
     @property
-    def is_metadata(self):
-        """Return True if this file is aria2 metadata and not an actual file."""
+    def is_metadata(self) -> bool:
+        """
+        Return True if this file is aria2 metadata and not an actual file.
+
+        Returns:
+            If the file is metadata.
+        """
         return str(self.path).startswith("[METADATA]")
 
     @property
-    def length(self):
+    def length(self) -> int:
         """File size in bytes."""
-        return int(self._struct.get("length"))
+        return int(self._struct["length"])
 
     def length_string(self, human_readable: bool = True) -> str:
         """
         Return the length as string.
 
-        Parameters:
+        Arguments:
             human_readable: return in human readable format or not.
 
         Returns:
@@ -129,21 +159,24 @@ class File:
         return str(self.length) + " B"
 
     @property
-    def completed_length(self):
+    def completed_length(self) -> int:
         """
         Completed length of this file in bytes.
 
         Please note that it is possible that sum of completedLength is less than the completedLength returned by the
         aria2.tellStatus() method. This is because completedLength in aria2.getFiles() only includes completed
         pieces. On the other hand, completedLength in aria2.tellStatus() also includes partially completed pieces.
+
+        Returns:
+            The completed length.
         """
-        return int(self._struct.get("completedLength"))
+        return int(self._struct["completedLength"])
 
     def completed_length_string(self, human_readable: bool = True) -> str:
         """
         Return the completed length as string.
 
-        Parameters:
+        Arguments:
             human_readable: return in human readable format or not.
 
         Returns:
@@ -154,21 +187,29 @@ class File:
         return str(self.completed_length) + " B"
 
     @property
-    def selected(self):
+    def selected(self) -> bool:
         """
-        True if this file is selected by --select-file option.
+        True if this file is selected by [`--select-file`][aria2p.options.Options.select_file] option.
 
-        If --select-file is not specified or this is single-file torrent or not a torrent download at all, this value
-        is always true. Otherwise false.
+        If [`--select-file`][aria2p.options.Options.select_file] is not specified
+        or this is single-file torrent or not a torrent download at all, this value is always true.
+        Otherwise false.
+
+        Returns:
+            If this file is selected.
         """
-        return bool_or_value(self._struct.get("selected"))
+        return bool_or_value(self._struct["selected"])
 
     @property
-    def uris(self):
+    def uris(self) -> Optional[List[str]]:
         """
         Return a list of URIs for this file.
 
-        The element type is the same struct used in the aria2.getUris() method.
+        The element type is the same struct
+        used in the [`client.get_uris()`][aria2p.client.Client.get_uris] method.
+
+        Returns:
+            The list of URIs.
         """
         return self._struct.get("uris")
 
@@ -178,19 +219,19 @@ class Download:
 
     def __init__(self, api: "aria2p.api.API", struct: dict) -> None:
         """
-        Initialization method.
+        Initialize the object.
 
-        Parameters:
+        Arguments:
             api: the reference to an [`API`][aria2p.api.API] instance.
             struct: a dictionary Python object returned by the JSON-RPC client.
         """
         self.api = api
         self._struct = struct or {}
-        self._files = []
-        self._root_files_paths = []
+        self._files: List[File] = []
+        self._root_files_paths: List[Path] = []
         self._bittorrent = None
         self._name = ""
-        self._options = None
+        self._options: Optional[Options] = None
         self._followed_by = None
         self._following = None
         self._belongs_to = None
@@ -206,7 +247,7 @@ class Download:
         self._struct = self.api.client.tell_status(self.gid)
 
         self._files = []
-        self._name = None
+        self._name = ""
         self._bittorrent = None
         self._followed_by = None
         self._following = None
@@ -215,16 +256,24 @@ class Download:
 
     @property
     def live(self) -> "Download":
-        """Returns the same object with updated data."""
+        """
+        Returns the same object with updated data.
+
+        Returns:
+            Itself.
+        """
         self.update()
         return self
 
     @property
-    def name(self):
+    def name(self) -> str:
         """
         The name of the download.
 
         Name is the name of the file if single-file, first file's directory name if multi-file.
+
+        Returns:
+            The download name.
         """
         if not self._name:
             if self.bittorrent and self.bittorrent.info:
@@ -244,12 +293,17 @@ class Download:
         return self._name
 
     @property
-    def control_file_path(self):
-        """Return the path to the aria2 control file for this download."""
+    def control_file_path(self) -> str:
+        """
+        Return the path to the aria2 control file for this download.
+
+        Returns:
+            The control file path.
+        """
         return self.dir / (self.name + ".aria2")
 
     @property
-    def root_files_paths(self):
+    def root_files_paths(self) -> List[Path]:
         """
         Return the unique set of directories/files for this download.
 
@@ -260,9 +314,12 @@ class Download:
         in order to move or copy them. We don't want to copy files one by one,
         but rather entire directories at once when possible.
 
-        Examples:
+        Returns:
+            The root file paths.
 
-            # download dir is /a/b.
+        Examples:
+            Download directory is `/a/b`.
+
             >>> self.files
             ["/a/b/c/1.txt", "/a/b/c/2.txt", "/a/b/3.txt"]
             >>> self.root_files_paths
@@ -286,11 +343,12 @@ class Download:
         return self._root_files_paths
 
     @property
-    def options(self):
+    def options(self) -> Options:
         """
         Options specific to this download.
 
-        The returned object is an instance of [`Options`][aria2p.options.Options].
+        Returns:
+            The download options.
         """
         if not self._options:
             self.update_options()
@@ -300,70 +358,125 @@ class Download:
     def options(self, value):
         self._options = value
 
-    def update_options(self):
+    def update_options(self) -> None:
         """Re-fetch the options from the remote."""
         self._options = self.api.get_options(downloads=[self])[0]
 
     @property
-    def gid(self):
-        """GID of the download."""
-        return self._struct.get("gid")
+    def gid(self) -> str:
+        """
+        GID of the download.
+
+        Returns:
+            The download GID.
+        """
+        return self._struct["gid"]
 
     @property
-    def status(self):
-        """Status of the download: active, waiting, paused, error, complete or removed."""
-        return self._struct.get("status")
+    def status(self) -> str:
+        """
+        Return the status of the download
+
+        Returns:
+            `active`, `waiting`, `paused`, `error`, `complete` or `removed`.
+        """
+        return self._struct["status"]
 
     @property
-    def is_active(self):
-        """Return True if download is active."""
+    def is_active(self) -> bool:
+        """
+        Return True if download is active.
+
+        Returns:
+            If this download is active.
+        """
         return self.status == "active"
 
     @property
-    def is_waiting(self):
-        """Return True if download is waiting."""
+    def is_waiting(self) -> bool:
+        """
+        Return True if download is waiting.
+
+        Returns:
+            If this download is waiting.
+        """
         return self.status == "waiting"
 
     @property
-    def is_paused(self):
-        """Return True if download is paused."""
+    def is_paused(self) -> bool:
+        """
+        Return True if download is paused.
+
+        Returns:
+            If this download is paused.
+        """
         return self.status == "paused"
 
     @property
-    def has_failed(self):
-        """Return True if download has errored."""
+    def has_failed(self) -> bool:
+        """
+        Return True if download has errored.
+
+        Returns:
+            If this download has failed.
+        """
         return self.status == "error"
 
     @property
-    def is_complete(self):
-        """Return True if download is complete."""
+    def is_complete(self) -> bool:
+        """
+        Return True if download is complete.
+
+        Returns:
+            If this download is complete.
+        """
         return self.status == "complete"
 
     @property
-    def is_removed(self):
-        """Return True if download was removed."""
+    def is_removed(self) -> bool:
+        """
+        Return True if download was removed.
+
+        Returns:
+            If this download was removed.
+        """
         return self.status == "removed"
 
     @property
-    def is_metadata(self):
-        """Return True if this download is only composed of metadata, and no actual files."""
+    def is_metadata(self) -> bool:
+        """
+        Return True if this download is only composed of metadata, and no actual files.
+
+        Returns:
+            If this is a metadata download.
+        """
         return all(_.is_metadata for _ in self.files)
 
     @property
-    def is_torrent(self):
-        """Return true if this download is a torrent."""
+    def is_torrent(self) -> bool:
+        """
+        Return true if this download is a torrent.
+
+        Returns:
+            If this is a torrent downlaod.
+        """
         return "bittorrent" in self._struct
 
     @property
-    def total_length(self):
-        """Total length of the download in bytes."""
-        return int(self._struct.get("totalLength"))
+    def total_length(self) -> int:
+        """
+        Total length of the download in bytes.
+
+        Returns:
+            The total length in bytes.
+        """
+        return int(self._struct["totalLength"])
 
     def total_length_string(self, human_readable: bool = True) -> str:
         """
         Return the total length as string.
 
-        Parameters:
+        Arguments:
             human_readable: return in human readable format or not.
 
         Returns:
@@ -374,15 +487,20 @@ class Download:
         return str(self.total_length) + " B"
 
     @property
-    def completed_length(self):
-        """Completed length of the download in bytes."""
-        return int(self._struct.get("completedLength"))
+    def completed_length(self) -> int:
+        """
+        Completed length of the download in bytes.
+
+        Returns:
+            The completed length in bytes.
+        """
+        return int(self._struct["completedLength"])
 
     def completed_length_string(self, human_readable: bool = True) -> str:
         """
         Return the completed length as string.
 
-        Parameters:
+        Arguments:
             human_readable: return in human readable format or not.
 
         Returns:
@@ -393,15 +511,20 @@ class Download:
         return str(self.completed_length) + " B"
 
     @property
-    def upload_length(self):
-        """Uploaded length of the download in bytes."""
-        return int(self._struct.get("uploadLength"))
+    def upload_length(self) -> int:
+        """
+        Uploaded length of the download in bytes.
+
+        Returns:
+            The uploaded length in bytes.
+        """
+        return int(self._struct["uploadLength"])
 
     def upload_length_string(self, human_readable: bool = True) -> str:
         """
         Return the upload length as string.
 
-        Parameters:
+        Arguments:
             human_readable: return in human readable format or not.
 
         Returns:
@@ -412,26 +535,34 @@ class Download:
         return str(self.upload_length) + " B"
 
     @property
-    def bitfield(self):
+    def bitfield(self) -> Optional[str]:
         """
         Hexadecimal representation of the download progress.
 
         The highest bit corresponds to the piece at index 0. Any set bits indicate loaded pieces, while unset bits
         indicate not yet loaded and/or missing pieces. Any overflow bits at the end are set to zero. When the
         download was not started yet, this key will not be included in the response.
+
+        Returns:
+            The hexadecimal representation of the download progress.
         """
         return self._struct.get("bitfield")
 
     @property
-    def download_speed(self):
-        """Download speed of this download measured in bytes/sec."""
-        return int(self._struct.get("downloadSpeed"))
+    def download_speed(self) -> int:
+        """
+        Download speed of this download measured in bytes/sec.
+
+        Returns:
+            The download speed in bytes/sec.
+        """
+        return int(self._struct["downloadSpeed"])
 
     def download_speed_string(self, human_readable: bool = True) -> str:
         """
         Return the download speed as string.
 
-        Parameters:
+        Arguments:
             human_readable: return in human readable format or not.
 
         Returns:
@@ -442,15 +573,20 @@ class Download:
         return str(self.download_speed) + " B/s"
 
     @property
-    def upload_speed(self):
-        """Upload speed of this download measured in bytes/sec."""
-        return int(self._struct.get("uploadSpeed"))
+    def upload_speed(self) -> int:
+        """
+        Upload speed of this download measured in bytes/sec.
+
+        Returns:
+            The upload speed in bytes/sec.
+        """
+        return int(self._struct["uploadSpeed"])
 
     def upload_speed_string(self, human_readable: bool = True) -> str:
         """
         Return the upload speed as string.
 
-        Parameters:
+        Arguments:
             human_readable: return in human readable format or not.
 
         Returns:
@@ -461,42 +597,56 @@ class Download:
         return str(self.upload_speed) + " B/s"
 
     @property
-    def info_hash(self):
+    def info_hash(self) -> Optional[str]:
         """
-        InfoHash.
+        Return the InfoHash.
 
         BitTorrent only.
+
+        Returns:
+            The InfoHash.
         """
         return self._struct.get("infoHash")
 
     @property
-    def num_seeders(self):
+    def num_seeders(self) -> int:
         """
         The number of seeders aria2 has connected to.
 
         BitTorrent only.
+
+        Returns:
+            The numbers of seeders.
         """
-        return int(self._struct.get("numSeeders"))
+        return int(self._struct["numSeeders"])
 
     @property
-    def seeder(self):
+    def seeder(self) -> bool:
         """
         True if the local endpoint is a seeder, otherwise false.
 
         BitTorrent only.
+
+        Returns:
+            If the local endpoint is a seeder.
         """
         return bool_or_value(self._struct.get("seeder"))
 
     @property
-    def piece_length(self):
-        """Piece length in bytes."""
-        return int(self._struct.get("pieceLength"))
+    def piece_length(self) -> int:
+        """
+        Piece length in bytes.
+
+        Returns:
+            The piece length in bytes.
+        """
+        return int(self._struct["pieceLength"])
 
     def piece_length_string(self, human_readable: bool = True) -> str:
         """
         Return the piece length as string.
 
-        Parameters:
+        Arguments:
             human_readable: return in human readable format or not.
 
         Returns:
@@ -507,28 +657,46 @@ class Download:
         return str(self.piece_length) + " B"
 
     @property
-    def num_pieces(self):
-        """The number of pieces."""
-        return int(self._struct.get("numPieces"))
+    def num_pieces(self) -> int:
+        """
+        The number of pieces.
+
+        Returns:
+            The number of pieces.
+        """
+        return int(self._struct["numPieces"])
 
     @property
-    def connections(self):
-        """The number of peers/servers aria2 has connected to."""
-        return int(self._struct.get("connections"))
+    def connections(self) -> int:
+        """
+        The number of peers/servers aria2 has connected to.
+
+        Returns:
+            The number of connected peers/servers.
+        """
+        return int(self._struct["connections"])
 
     @property
-    def error_code(self):
+    def error_code(self) -> Optional[str]:
         """
         The code of the last error for this item, if any.
 
         The value is a string. The error codes are defined in the EXIT STATUS section. This value is only available
         for stopped/completed downloads.
+
+        Returns:
+            The error code.
         """
         return self._struct.get("errorCode")
 
     @property
-    def error_message(self):
-        """The (hopefully) human readable error message associated to errorCode."""
+    def error_message(self) -> Optional[str]:
+        """
+        The (hopefully) human readable error message associated to errorCode.
+
+        Returns:
+            The error message.
+        """
         return self._struct.get("errorMessage")
 
     @property
@@ -660,7 +828,7 @@ class Download:
         """
         Return the verified length as string.
 
-        Parameters:
+        Arguments:
             human_readable: return in human readable format or not.
 
         Returns:
@@ -691,7 +859,7 @@ class Download:
         """
         Return the progress percentage as string.
 
-        Parameters:
+        Arguments:
             digits: number of decimal digits to use.
 
         Returns:
@@ -723,7 +891,7 @@ class Download:
         """
         Move the download in the queue, relatively.
 
-        Parameters:
+        Arguments:
             pos: number of times to move.
 
         Returns:
@@ -735,7 +903,7 @@ class Download:
         """
         Move the download in the queue, absolutely.
 
-        Parameters:
+        Arguments:
             pos: the absolute position in the queue to take.
 
         Returns:
@@ -747,7 +915,7 @@ class Download:
         """
         Move the download up in the queue.
 
-        Parameters:
+        Arguments:
             pos: number of times to move up.
 
         Returns:
@@ -759,7 +927,7 @@ class Download:
         """
         Move the download down in the queue.
 
-        Parameters:
+        Arguments:
             pos: number of times to move down.
 
         Returns:
@@ -834,11 +1002,11 @@ class Download:
         """Purge itself from the results."""
         return self.api.purge([self])[0]
 
-    def move_files(self, to_directory: Union[str, Path], force: bool = False) -> List[bool]:
+    def move_files(self, to_directory: PathOrStr, force: bool = False) -> List[OperationResult]:
         """
         Move downloaded files to another directory.
 
-        Parameters:
+        Arguments:
             to_directory: the target directory to move files to.
             force: whether to move files even if download is not complete.
 
@@ -847,11 +1015,11 @@ class Download:
         """
         return self.api.move_files([self], to_directory, force)[0]
 
-    def copy_files(self, to_directory: Union[str, Path], force: bool = False) -> List[bool]:
+    def copy_files(self, to_directory: PathOrStr, force: bool = False) -> List[OperationResult]:
         """
         Copy downloaded files to another directory.
 
-        Parameters:
+        Arguments:
             to_directory: the target directory to copy files into.
             force: whether to move files even if download is not complete.
 
