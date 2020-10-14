@@ -430,7 +430,9 @@ class Interface:
     select_sort_rows = columns_order
 
     downloads_uris: List[str] = []
-    downloads_uris_header = f"Add Download: [ Hit ENTER to download; Hit { ','.join(Keys.names(Keys.ADD_DOWNLOADS)) } to download all ]"
+    downloads_uris_header = (
+        f"Add Download: [ Hit ENTER to download; Hit { ','.join(Keys.names(Keys.ADD_DOWNLOADS)) } to download all ]"
+    )
 
     def __init__(self, api=None):
         """

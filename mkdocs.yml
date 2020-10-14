@@ -22,14 +22,17 @@ nav:
 
 theme:
   name: material
+  palette:
+    scheme: slate
+    primary: teal
+    accent: purple
 
 extra_css:
   - css/mkdocstrings.css
 
 markdown_extensions:
   - admonition
-  - codehilite:
-      guess_lang: false
+  - markdown_include.include
   - pymdownx.emoji
   - pymdownx.magiclink
   - pymdownx.superfences

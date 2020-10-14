@@ -412,7 +412,7 @@ def subcommand_add(api: API, uris: List[str] = None, from_file: str = None) -> i
     new_downloads = []
     for uri in uris:
         new_downloads.extend(api.add(uri))
-    
+
     if new_downloads:
         for new_download in new_downloads:
             print(f"Created download {new_download.gid}")

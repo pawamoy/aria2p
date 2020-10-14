@@ -1,38 +1,47 @@
 .DEFAULT_GOAL := help
 SHELL := bash
 
-INVOKE_OR_POETRY = $(shell ! command -v invoke &>/dev/null && echo poetry run) invoke
-INVOKE_AND_POETRY = $(shell [ ! -n "${VIRTUAL_ENV}" ] && echo poetry run) invoke
+DUTY = $(shell [ -n "${VIRTUAL_ENV}" ] || echo poetry run) duty
 
-POETRY_TASKS = \
+args = $(foreach a,$($(subst -,_,$1)_args),$(if $(value $a),$a=$($a)))
+check_code_quality_args = files
+docs_serve_args = host port
+release_args = version
+test_args = match
+
+BASIC_DUTIES = \
 	bundle \
 	changelog \
-	check \
-	check-code-quality \
-	check-dependencies \
-	check-docs \
-	check-types \
-	combine \
+	clean \
 	coverage \
 	docs \
 	docs-deploy \
 	docs-regen \
 	docs-serve \
 	format \
-	release \
+	release
+
+QUALITY_DUTIES = \
+	check \
+	check-code-quality \
+	check-dependencies \
+	check-docs \
+	check-types \
 	test
-
-INVOKE_TASKS = \
-	clean \
-	setup
-
 
 .PHONY: help
 help:
-	@$(INVOKE) --list
+	@$(DUTY) --list
 
-$(POETRY_TASKS):
-	@$(INVOKE_AND_POETRY) $@ $(args)
+.PHONY: setup
+setup:
+	@bash scripts/setup.sh
 
-$(INVOKE_TASKS):
-	@$(INVOKE_OR_POETRY) $@ $(args)
+.PHONY: $(BASIC_DUTIES)
+$(BASIC_DUTIES):
+	@$(DUTY) $@ $(call args,$@)
+
+.PHONY: $(QUALITY_DUTIES)
+$(QUALITY_DUTIES):
+	@bash scripts/multirun.sh duty $@ $(call args,$@)
+
