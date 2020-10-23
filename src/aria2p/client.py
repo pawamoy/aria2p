@@ -191,10 +191,10 @@ class Client:
         Initialize the object.
 
         Arguments:
-            host: the remote process address.
-            port: the remote process port.
-            secret: the secret token.
-            timeout: the timeout to use for requests towards the remote server.
+            host: The remote process address.
+            port: The remote process port.
+            secret: The secret token.
+            timeout: The timeout to use for requests towards the remote server.
         """
         host = host.rstrip("/")
 
@@ -326,8 +326,8 @@ class Client:
             It is implemented here as a simple convenience method.
 
         Arguments:
-            calls: list of tuples composed of method name and parameters.
-            insert_secret: whether to insert the secret token in the parameters or not.
+            calls: List of tuples composed of method name and parameters.
+            insert_secret: Whether to insert the secret token in the parameters or not.
 
         Returns:
             The answer from the server, as a Python object (dict / list / str / int).
@@ -351,7 +351,7 @@ class Client:
         The response is a JSON string, which we then load as a Python object.
 
         Arguments:
-            payload: the payload / data to send to the remote process. It contains the following key-value pairs:
+            payload: The payload / data to send to the remote process. It contains the following key-value pairs:
                 "jsonrpc": "2.0", "method": method, "id": id, "params": params (optional).
 
         Returns:
@@ -365,7 +365,7 @@ class Client:
         Transform the response as a [`ClientException`][aria2p.client.ClientException] instance and return it.
 
         Arguments:
-            response: a response sent by the server.
+            response: A response sent by the server.
 
         Returns:
             An instance of the [`ClientException`][aria2p.client.ClientException] class.
@@ -378,13 +378,13 @@ class Client:
         Return the result of the response, or raise an error with code and message.
 
         Arguments:
-            response: a response sent by the server.
+            response: A response sent by the server.
 
         Returns:
             The "result" value of the response.
 
         Raises:
-            ClientException: when the response contains an error (client/server error).
+            ClientException: When the response contains an error (client/server error).
                 See the [`ClientException`][aria2p.client.ClientException] class.
         """  # noqa: DAR401,DAR402 (fails to follow exceptions)
         if "error" in response:
@@ -402,10 +402,10 @@ class Client:
         Build a payload.
 
         Arguments:
-            method: the method name. You can use the constant defined in [`Client`][aria2p.client.Client].
-            params: the list of parameters.
-            msg_id: the ID of the call, sent back with the server's answer.
-            as_json: whether to return the payload as a JSON-string or Python dictionary.
+            method: The method name. You can use the constant defined in [`Client`][aria2p.client.Client].
+            params: The list of parameters.
+            msg_id: The ID of the call, sent back with the server's answer.
+            as_json: Whether to return the payload as a JSON-string or Python dictionary.
 
         Returns:
             The payload as a JSON string or as Python dictionary.
@@ -1811,7 +1811,7 @@ class Notification:
             A Notification instance if the message is valid.
 
         Raises:
-            ClientException: when the message contains an error.
+            ClientException: When the message contains an error.
         """  # noqa: DAR401,DAR402 (fails to follow exceptions)
         if "error" in message:
             raise Client.response_as_exception(message)

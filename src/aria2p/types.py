@@ -1,3 +1,5 @@
+"""Complex type annotations."""
+
 from pathlib import Path
 from typing import List, Tuple, Union
 

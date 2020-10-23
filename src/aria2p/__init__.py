@@ -23,7 +23,7 @@ def enable_logger(sink=sys.stderr, level="WARNING"):
 
     Configure the `logger` variable imported from `loguru`.
 
-    Args:
+    Arguments:
         sink (file): An opened file pointer, or stream handler. Default to standard error.
         level (str): The log level to use. Possible values are TRACE, DEBUG, INFO, WARNING, ERROR, CRITICAL.
             Default to WARNING.

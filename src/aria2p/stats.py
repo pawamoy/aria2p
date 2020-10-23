@@ -1,7 +1,9 @@
 """
-This module defines the Stats class, which holds information retrieved with the `get_global_stat` method of the
-client.
+This module defines the Stats class.
+
+It holds information retrieved with the `get_global_stat` method of the client.
 """
+
 from aria2p.utils import human_readable_bytes
 
 
@@ -13,21 +15,26 @@ class Stats:
         Initialize the object.
 
         Arguments:
-            struct: a dictionary Python object returned by the JSON-RPC client.
+            struct: A dictionary Python object returned by the JSON-RPC client.
         """
         self._struct = struct or {}
 
     @property
     def download_speed(self) -> int:
-        """Overall download speed (byte/sec)."""
-        return int(self._struct.get("downloadSpeed"))
+        """
+        Overall download speed (byte/sec).
+
+        Returns:
+            The overall download speed in bytes per second.
+        """
+        return int(self._struct["downloadSpeed"])
 
     def download_speed_string(self, human_readable: bool = True) -> str:
         """
         Return the download speed as string.
 
         Arguments:
-            human_readable: return in human readable format or not.
+            human_readable: Return in human readable format or not.
 
         Returns:
             The download speed string.
@@ -38,15 +45,20 @@ class Stats:
 
     @property
     def upload_speed(self) -> int:
-        """Overall upload speed(byte/sec)."""
-        return int(self._struct.get("uploadSpeed"))
+        """
+        Overall upload speed (byte/sec).
+
+        Returns:
+            The overall upload speed in bytes per second.
+        """
+        return int(self._struct["uploadSpeed"])
 
     def upload_speed_string(self, human_readable: bool = True) -> str:
         """
         Return the upload speed as string.
 
         Arguments:
-            human_readable: return in human readable format or not.
+            human_readable: Return in human readable format or not.
 
         Returns:
             The upload speed string.
@@ -57,23 +69,44 @@ class Stats:
 
     @property
     def num_active(self) -> int:
-        """The number of active downloads."""
-        return int(self._struct.get("numActive"))
+        """
+        Return the number of active downloads.
+
+        Returns:
+            The number of active downloads.
+        """
+        return int(self._struct["numActive"])
 
     @property
     def num_waiting(self) -> int:
-        """The number of waiting downloads."""
-        return int(self._struct.get("numWaiting"))
+        """
+        Return the number of waiting downloads.
+
+        Returns:
+            The number of waiting downloads.
+        """
+        return int(self._struct["numWaiting"])
 
     @property
     def num_stopped(self) -> int:
         """
-        The number of stopped downloads in the current session. This value is capped by the --max-download-result
-        option.
+        Return the number of stopped downloads in the current session.
+
+        This value is capped by the [`--max-download-result`][aria2p.options.Options.max_download_result] option.
+
+        Returns:
+            The number of stopped downloads in the current session (capped).
         """
-        return int(self._struct.get("numStopped"))
+        return int(self._struct["numStopped"])
 
     @property
     def num_stopped_total(self) -> int:
-        """The number of stopped downloads in the current session and not capped by the --max-download-result option."""
-        return int(self._struct.get("numStoppedTotal"))
+        """
+        Return the number of stopped downloads in the current session.
+
+        This value is not capped by the [`--max-download-result`][aria2p.options.Options.max_download_result] option.
+
+        Returns:
+            The number of stopped downloads in the current session (not capped).
+        """
+        return int(self._struct["numStoppedTotal"])

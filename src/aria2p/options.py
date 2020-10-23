@@ -19,6 +19,9 @@ except ImportError:
         """Placeholder."""
 
 
+OptionType = Union[str, int, bool, float, None]
+
+
 class Options:
     """
     This class holds information retrieved with the `get_option` or `get_global_option` methods of the client.
@@ -36,9 +39,9 @@ class Options:
         Initialize the object.
 
         Arguments:
-            api: the reference to an [`API`][aria2p.api.API] instance.
-            struct: a dictionary Python object returned by the JSON-RPC client.
-            download: an optional [`Download`][aria2p.downloads.Download] object
+            api: The reference to an [`API`][aria2p.api.API] instance.
+            struct: A dictionary Python object returned by the JSON-RPC client.
+            download: An optional [`Download`][aria2p.downloads.Download] object
                 to inform about the owner, or None to tell they are global options.
         """
         self.api = api
@@ -64,13 +67,13 @@ class Options:
         """
         return deepcopy(self._struct)
 
-    def get(self, item: str, class_: Union[GenericMeta, Callable] = None) -> Union[str, int, bool, float, None]:
+    def get(self, item: str, class_: Union[GenericMeta, Callable] = None) -> OptionType:
         """
         Get the value of an option given its name.
 
         Arguments:
-            item: the name of the option (example: "input-file").
-            class_: pass the value through this class/function to change its type.
+            item: The name of the option (example: "input-file").
+            class_: Pass the value through this class/function to change its type.
 
         Returns:
             The option value.
@@ -85,8 +88,8 @@ class Options:
         Set the value of an option given its name.
 
         Arguments:
-            key: the name of the option (example: "input-file").
-            value: the value to set.
+            key: The name of the option (example: "input-file").
+            value: The value to set.
 
         Returns:
             True if the value was successfully set, False otherwise.
@@ -562,7 +565,7 @@ class Options:
         Retrieve timestamp of the remote file from the remote HTTP/FTP server and if it is available, apply it to the
         local file.
 
-        Default: false.
+        Default: False.
 
         Returns:
             bool
@@ -580,7 +583,7 @@ class Options:
 
         Reuse already used URIs if no unused URIs are left.
 
-        Default: true.
+        Default: True.
 
         Returns:
             bool
@@ -830,7 +833,7 @@ class Options:
 
         Verify the peer using certificates specified in --ca-certificate option.
 
-        Default: true.
+        Default: True.
 
         Returns:
             bool
@@ -849,7 +852,7 @@ class Options:
         Send Accept: deflate, gzip request header and inflate response if remote server responds with
         Content-Encoding:  gzip or Content-Encoding:  deflate.
 
-        Default: false.
+        Default: False.
 
         NOTE:
             Some server responds with Content-Encoding: gzip for files which itself is gzipped file. aria2 inflates
@@ -1082,7 +1085,7 @@ class Options:
 
         Enable HTTP/1.1 persistent connection.
 
-        Default: true.
+        Default: True.
 
         Returns:
             bool
@@ -1100,7 +1103,7 @@ class Options:
 
         Enable HTTP/1.1 pipelining.
 
-        Default: false.
+        Default: False.
 
         NOTE:
             In performance perspective, there is usually no advantage to enable this option.
@@ -1181,7 +1184,7 @@ class Options:
 
         Use HEAD method for the first request to the HTTP server.
 
-        Default: false.
+        Default: False.
 
         Returns:
             bool
@@ -1349,7 +1352,7 @@ class Options:
 
         Reuse connection in FTP.
 
-        Default: true.
+        Default: True.
 
         Returns:
             bool
@@ -1763,7 +1766,7 @@ class Options:
 
         Seed previously downloaded files without verifying piece hashes.
 
-        Default: false.
+        Default: False.
 
         Returns:
             bool
@@ -2040,7 +2043,7 @@ class Options:
         Enable Peer Exchange extension.
 
         If a private flag is set in a torrent, this feature is disabled for that download even if true is given.
-        Default: true.
+        Default: True.
 
         Returns:
             bool
@@ -2463,7 +2466,7 @@ class Options:
 
         Add Access-Control-Allow-Origin header field with value * to the RPC response.
 
-        Default: false.
+        Default: False.
 
         Returns:
             bool
@@ -2742,7 +2745,7 @@ class Options:
 
         Enable asynchronous DNS.
 
-        Default: true.
+        Default: True.
 
         Returns:
             bool
@@ -3027,7 +3030,7 @@ class Options:
 
         Enable color output for a terminal.
 
-        Default: true.
+        Default: True.
 
         Returns:
             bool
@@ -3082,22 +3085,20 @@ class Options:
 
         Specify file allocation method.
 
-        Possible Values: none, prealloc, trunc, falloc.
+        Possible Values: `none`, `prealloc`, `trunc`, `falloc`.
 
-        none: doesn't pre-allocate file space.
-
-        prealloc: pre-allocates file space before download begins. This may take some time depending on the size of
+        - `none`: Doesn't pre-allocate file space.
+        - `prealloc`: Pre-allocates file space before download begins. This may take some time depending on the size of
         the file.
 
-        falloc: If you are using newer file systems such as ext4 (with extents support), btrfs, xfs or NTFS(MinGW
-        build only), falloc is your best choice. It allocates large(few GiB) files almost instantly. Don't use falloc
-        with legacy file systems such as ext3 and FAT32 because it takes almost same time as prealloc and it blocks
-        aria2 entirely until allocation finishes. falloc may not be available if your system doesn't have
-        posix_fallocate(3) function.
+        - `falloc`: If you are using newer file systems such as ext4 (with extents support), btrfs, xfs or NTFS(MinGW
+          build only), falloc is your best choice. It allocates large(few GiB) files almost instantly. Don't use falloc
+          with legacy file systems such as ext3 and FAT32 because it takes almost same time as prealloc and it blocks
+          aria2 entirely until allocation finishes. falloc may not be available if your system doesn't have
+          posix_fallocate(3) function.
+        - `trunc`: Uses ftruncate(2) system call or platform-specific counterpart to truncate a file to a specified length.
 
-        trunc: uses ftruncate(2) system call or platform-specific counterpart to truncate a file to a specified length.
-
-        Default: prealloc.
+        Default: `prealloc`.
 
         WARNING:
             Using trunc seemingly allocates disk space very quickly, but what it actually does is that it sets file
@@ -3184,7 +3185,7 @@ class Options:
         If true is given, after hash check using --check-integrity option, abort download whether or not download
         is complete.
 
-        Default: false.
+        Default: False.
 
         Returns:
             bool
@@ -3202,7 +3203,7 @@ class Options:
 
         Print sizes and speed in human readable format (e.g., 1.2Ki, 3.4Mi) in the console readout.
 
-        Default: true.
+        Default: True.
 
         Returns:
             bool
@@ -3542,7 +3543,7 @@ class Options:
 
         Show console readout.
 
-        Default: true.
+        Default: True.
 
         Returns:
             bool
@@ -3560,7 +3561,7 @@ class Options:
 
         Redirect all console output that would be otherwise printed in stdout to stderr.
 
-        Default: false.
+        Default: False.
 
         Returns:
             bool
@@ -3597,7 +3598,7 @@ class Options:
         Fetch URIs in the command-line sequentially and download each URI in a separate session, like the usual
         command-line download utilities.
 
-        Default: false.
+        Default: False.
 
         Returns:
             bool
@@ -3707,7 +3708,7 @@ class Options:
 
         Make aria2 quiet (no console output).
 
-        Default: false.
+        Default: False.
 
         Returns:
             bool
@@ -3725,7 +3726,7 @@ class Options:
 
         Validate chunk of data by calculating checksum while downloading a file if chunk checksums are provided.
 
-        Default: true.
+        Default: True.
 
         Returns:
             bool
@@ -3877,7 +3878,7 @@ class Options:
 
         Truncate console readout to fit in a single line.
 
-        Default: true.
+        Default: True.
 
         Returns:
             bool

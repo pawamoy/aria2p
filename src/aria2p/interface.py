@@ -1,6 +1,4 @@
-"""
-This module contains all the code responsible for the HTOP-like interface.
-"""
+"""This module contains all the code responsible for the HTOP-like interface."""
 
 # Why using asciimatics?
 #
@@ -14,13 +12,12 @@ This module contains all the code responsible for the HTOP-like interface.
 #
 # Well, asciimatics also provides a "top" example, so...
 
-# pylint: disable=invalid-name
 import os
 import sys
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
 import pyperclip
 import requests
@@ -34,7 +31,70 @@ from aria2p.utils import get_version, load_configuration
 configs = load_configuration()
 
 
+def key_bind_parser(action: str) -> List["Key"]:
+    """
+    Return a list of Key instances.
+
+    Arguments:
+        action: The action name.
+
+    Returns:
+        A list of keys.
+    """
+    default_bindings = configs.get("DEFAULT").get("key_bindings")
+    bindings = configs.get("USER", {}).get("key_bindings", default_bindings)
+
+    key_binds = bindings.get(action, default_bindings[action])
+
+    if isinstance(key_binds, list):
+        return [Key(k) for k in key_binds]
+    else:
+        return [Key(key_binds)]
+
+
+def color_palette_parser(palette: str) -> Tuple[int, int, int]:
+    """
+    Return a color tuple (foreground color, mode, background color).
+
+    Arguments:
+        palette: The palette name.
+
+    Returns:
+        Foreground color, mode, background color.
+    """
+
+    default_colors = configs.get("DEFAULT").get("colors")
+    colors = configs.get("USER", {}).get("colors", default_colors)
+
+    # get values of colors and modes for ascimatics.screen module
+    color_map = {
+        "BLACK": Screen.COLOUR_BLACK,
+        "WHITE": Screen.COLOUR_WHITE,
+        "RED": Screen.COLOUR_RED,
+        "CYAN": Screen.COLOUR_CYAN,
+        "YELLOW": Screen.COLOUR_YELLOW,
+        "BLUE": Screen.COLOUR_BLUE,
+        "GREEN": Screen.COLOUR_GREEN,
+    }
+    mode_map = {
+        "NORMAL": Screen.A_NORMAL,
+        "BOLD": Screen.A_BOLD,
+        "UNDERLINE": Screen.A_UNDERLINE,
+        "REVERSE": Screen.A_REVERSE,
+    }
+
+    palette_colors = colors.get(palette, default_colors[palette])
+    palette_fg, palette_mode, palette_bg = palette_colors.split(" ")
+
+    return (
+        color_map[palette_fg],
+        mode_map[palette_mode],
+        color_map[palette_bg],
+    )
+
+
 class Key:
+    """A class to represent an input key."""
 
     OTHER_KEY_VALUES = {
         "F1": Screen.KEY_F1,
@@ -65,7 +125,14 @@ class Key:
         "ENTER": ord("\n"),
     }
 
-    def __init__(self, name, value=None):
+    def __init__(self, name: str, value=None) -> None:
+        """
+        Initialize the object.
+
+        Arguments:
+            name: The key name.
+            value: The key value.
+        """
         self.name = name
         if value is None:
             value = self.get_value(name)
@@ -81,26 +148,6 @@ class Key:
 
     def __eq__(self, value):
         return self.value == value
-
-
-def key_bind_parser(action):
-
-    # Returns a list of Key instance/instances.
-
-    default_bindings = configs.get("DEFAULT").get("key_bindings")
-
-    try:
-        bindings = configs.get("USER").get("key_bindings")
-
-    except AttributeError as error:
-        bindings = default_bindings
-
-    key_binds = bindings.get(action, default_bindings[action])
-
-    if isinstance(key_binds, list):
-        return [Key(k) for k in key_binds]
-    else:
-        return [Key(key_binds)]
 
 
 class Keys:
@@ -150,42 +197,6 @@ class Keys:
         return [key.value for key in keys_list]
 
 
-def color_palette_parser(palette):
-    # Returns tuple (foreground color, mode, background color)
-
-    default_colors = configs.get("DEFAULT").get("colors")
-    try:
-        colors = configs.get("USER").get("colors")
-    except AttributeError as error:
-        colors = default_colors
-
-    # get values of colors and modes for ascimatics.screen module
-    COLOURS = {
-        "BLACK": Screen.COLOUR_BLACK,
-        "WHITE": Screen.COLOUR_WHITE,
-        "RED": Screen.COLOUR_RED,
-        "CYAN": Screen.COLOUR_CYAN,
-        "YELLOW": Screen.COLOUR_YELLOW,
-        "BLUE": Screen.COLOUR_BLUE,
-        "GREEN": Screen.COLOUR_GREEN,
-    }
-    MODES = {
-        "NORMAL": Screen.A_NORMAL,
-        "BOLD": Screen.A_BOLD,
-        "UNDERLINE": Screen.A_UNDERLINE,
-        "REVERSE": Screen.A_REVERSE,
-    }
-
-    palette_colors = colors.get(palette, default_colors[palette])
-    palette_fg, palette_mode, palette_bg = palette_colors.split(" ")
-
-    return (
-        COLOURS[palette_fg],
-        MODES[palette_mode],
-        COLOURS[palette_bg],
-    )
-
-
 class Exit(Exception):
     """A simple exception to exit the interactive interface."""
 
@@ -203,7 +214,7 @@ class Column:
         """
         Initialize the object.
 
-        Args:
+        Arguments:
             header (str): The string to display on top.
             padding (str): How to align the text.
             get_text (func): Function accepting a Download as argument and returning the text to display.
@@ -229,7 +240,7 @@ class HorizontalScroll:
         """
         Initialize the object.
 
-        Args:
+        Arguments:
             screen (Screen): The asciimatics screen object.
             scroll (int): Base scroll to use when printing. Will decrease by one with each character skipped.
         """
@@ -244,7 +255,7 @@ class HorizontalScroll:
         """
         Wrapper print_at method.
 
-        Args:
+        Arguments:
             text (str): Text to print.
             x (int): X axis position / column.
             y (int): Y axis position / row.
@@ -298,7 +309,7 @@ class Palette:
 
 class Interface:
     """
-    The main class responsible of drawing the HTOP-like interface.
+    The main class responsible for drawing the HTOP-like interface.
 
     It should be instantiated with an API instance, and then ran with its `run` method.
 
@@ -438,7 +449,7 @@ class Interface:
         """
         Initialize the object.
 
-        Args:
+        Arguments:
             api (API): An instance of API.
         """
         if api is None:
@@ -566,7 +577,7 @@ class Interface:
         For reactivity purpose, this method should not compute expensive stuff, only change the state of the interface,
         changes that will be applied by update_data and update_rows methods.
 
-        Args:
+        Arguments:
             event (KeyboardEvent/MouseEvent): The event to process.
         """
         if isinstance(event, KeyboardEvent):
@@ -963,7 +974,11 @@ class Interface:
 
     def print_help(self):
         version = get_version()
-        lines = [f"aria2p {version} — (C) 2018-2019 Timothée Mazzucotelli", "Released under the ISC license.", ""]
+        lines = [
+            f"aria2p {version} — (C) 2018-2020 Timothée Mazzucotelli and contributors",
+            "Released under the ISC license.",
+            "",
+        ]
 
         y = 0
         for line in lines:
@@ -976,7 +991,7 @@ class Interface:
             (Keys.MOVE_UP_STEP, " scroll downloads list (steps)"),
             (Keys.MOVE_DOWN, " scroll downloads list"),
             (Keys.MOVE_DOWN_STEP, " scroll downloads list (steps)"),
-            # (Keys.SETUP, " setup"),  # not implemented
+            # not implemented: (Keys.SETUP, " setup"),
             (Keys.TOGGLE_RESUME_PAUSE, " toggle pause/resume"),
             (Keys.PRIORITY_UP, " priority up (-)"),
             (Keys.PRIORITY_DOWN, " priority down (+)"),
@@ -985,14 +1000,14 @@ class Interface:
             (Keys.PREVIOUS_SORT, " sort previous column"),
             (Keys.SELECT_SORT, " select sort column"),
             (Keys.REMOVE_ASK, " remove download"),
-            # (Keys.TOGGLE_EXPAND_COLLAPSE, " toggle expand/collapse"),  # not implemented
-            # (Keys.TOGGLE_EXPAND_COLLAPSE_ALL, " toggle expand/collapse all"),  # not implemented
+            # not implemented: (Keys.TOGGLE_EXPAND_COLLAPSE, " toggle expand/collapse"),
+            # not implemented: (Keys.TOGGLE_EXPAND_COLLAPSE_ALL, " toggle expand/collapse all"),
             (Keys.AUTOCLEAR, " autopurge downloads"),
             (Keys.FOLLOW_ROW, " cursor follows download"),
-            # (Keys.SEARCH, " name search"),  # not implemented
-            # (Keys.FILTER, " name filtering"),  # not implemented
-            # (Keys.TOGGLE_SELECT, " toggle select download"),  # not implemented
-            # (Keys.UN_SELECT_ALL, " unselect all downloads"),  # not implemented
+            # not implemented: (Keys.SEARCH, " name search"),
+            # not implemented: (Keys.FILTER, " name filtering"),
+            # not implemented: (Keys.TOGGLE_SELECT, " toggle select download"),
+            # not implemented: (Keys.UN_SELECT_ALL, " unselect all downloads"),
             (Keys.MOVE_HOME, " move focus to first download"),
             (Keys.MOVE_END, " move focus to last download"),
             (Keys.RETRY, " retry failed download"),

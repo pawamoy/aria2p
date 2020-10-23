@@ -117,7 +117,7 @@ def main(args: Optional[List[str]] = None) -> int:
     if subcommand:
         logger.debug("Running subcommand " + subcommand)
     try:
-        return subcommands.get(subcommand)(api, **kwargs)
+        return subcommands[subcommand](api, **kwargs)
     except ClientException as error:  # noqa: WPS440 (variable overlap)
         print(str(error), file=sys.stderr)
         return error.code
@@ -352,10 +352,10 @@ def subcommand_show(api: API) -> int:
     Show subcommand.
 
     Arguments:
-        api: the API instance to use.
+        api: The API instance to use.
 
     Returns:
-        int: always 0.
+        int: Always 0.
     """
     downloads = api.get_downloads()
 
@@ -383,10 +383,10 @@ def subcommand_top(api: API) -> int:
     Top subcommand.
 
     Arguments:
-        api: the API instance to use.
+        api: The API instance to use.
 
     Returns:
-        int: always 0.
+        int: Always 0.
     """
     if Interface is None:
         print(
@@ -405,12 +405,12 @@ def subcommand_call(api: API, method: str, params: Union[str, List[str]]) -> int
     Call subcommand.
 
     Arguments:
-        api: the API instance to use.
-        method: name of the method to call.
-        params: parameters to use when calling method.
+        api: The API instance to use.
+        method: Name of the method to call.
+        params: Parameters to use when calling method.
 
     Returns:
-        int: always 0.
+        int: Always 0.
     """
     real_method = get_method(method)
 
@@ -461,7 +461,7 @@ def subcommand_add(api: API, uris: List[str] = None, from_file: str = None) -> i
         api: The API instance to use.
         uris: The URIs or file-paths to add.
         from_file: Path to the file to read uris from.
-            Deprecated: every URI that is a valid file-path
+            Deprecated: Every URI that is a valid file-path
             and is not a torrent or a metalink is now read as an input file.
 
     Returns:
@@ -494,12 +494,12 @@ def subcommand_add_magnets(api: API, uris: List[str] = None, from_file: str = No
     Add magnet subcommand.
 
     Arguments:
-        api: the API instance to use.
-        uris: the URIs of the magnets.
-        from_file: path to the file to read uris from.
+        api: The API instance to use.
+        uris: The URIs of the magnets.
+        from_file: Path to the file to read uris from.
 
     Returns:
-        int: always 0.
+        int: Always 0.
     """
     ok = True
 
@@ -525,12 +525,12 @@ def subcommand_add_torrents(api: API, torrent_files: List[str] = None, from_file
     Add torrent subcommand.
 
     Arguments:
-        api: the API instance to use.
-        torrent_files: the paths to the torrent files.
-        from_file: path to the file to read torrent files paths from.
+        api: The API instance to use.
+        torrent_files: The paths to the torrent files.
+        from_file: Path to the file to read torrent files paths from.
 
     Returns:
-        int: always 0.
+        int: Always 0.
     """
     ok = True
 
@@ -556,9 +556,9 @@ def subcommand_add_metalinks(api: API, metalink_files: List[str] = None, from_fi
     Add metalink subcommand.
 
     Arguments:
-        api: the API instance to use.
-        metalink_files: the paths to the metalink files.
-        from_file: path to the file to metalink files paths from.
+        api: The API instance to use.
+        metalink_files: The paths to the metalink files.
+        from_file: Path to the file to metalink files paths from.
 
     Returns:
         int: 0 if OK else 1.
@@ -588,10 +588,10 @@ def subcommand_pause(api: API, gids: List[str] = None, do_all: bool = False, for
     Pause subcommand.
 
     Arguments:
-        api: the API instance to use.
-        gids: the GIDs of the downloads to pause.
-        do_all: pause all downloads if True.
-        force: force pause or not (see API.pause).
+        api: The API instance to use.
+        gids: The GIDs of the downloads to pause.
+        do_all: Pause all downloads if True.
+        force: Force pause or not (see API.pause).
 
     Returns:
         int: 0 if all success, 1 if one failure.
@@ -624,9 +624,9 @@ def subcommand_resume(api: API, gids: List[str] = None, do_all: bool = False) ->
     Resume subcommand.
 
     Arguments:
-        api: the API instance to use.
-        gids: the GIDs of the downloads to resume.
-        do_all: pause all downloads if True.
+        api: The API instance to use.
+        gids: The GIDs of the downloads to resume.
+        do_all: Pause all downloads if True.
 
     Returns:
         int: 0 if all success, 1 if one failure.
@@ -659,10 +659,10 @@ def subcommand_remove(api: API, gids: List[str] = None, do_all: bool = False, fo
     Remove subcommand.
 
     Arguments:
-        api: the API instance to use.
-        gids: the GIDs of the downloads to remove.
-        do_all: pause all downloads if True.
-        force: force pause or not (see API.remove).
+        api: The API instance to use.
+        gids: The GIDs of the downloads to remove.
+        do_all: Pause all downloads if True.
+        force: Force pause or not (see API.remove).
 
     Returns:
         int: 0 if all success, 1 if one failure.
@@ -696,7 +696,7 @@ def subcommand_purge(api: API) -> int:
     Purge subcommand.
 
     Arguments:
-        api: the API instance to use.
+        api: The API instance to use.
 
     Returns:
         int: 0 if all success, 1 if one failure.
@@ -716,13 +716,13 @@ def subcommand_listen(
     Listen subcommand.
 
     Arguments:
-        api: the API instance to use.
-        callbacks_module: the path to the module to import, containing the callbacks as functions.
-        event_types: the event types to process.
-        timeout: the timeout to pass to the WebSocket connection, in seconds.
+        api: The API instance to use.
+        callbacks_module: The path to the module to import, containing the callbacks as functions.
+        event_types: The event types to process.
+        timeout: The timeout to pass to the WebSocket connection, in seconds.
 
     Returns:
-        int: always 0.
+        int: Always 0.
     """
     if not callbacks_module:
         print("aria2p: listen: Please provide the callback module file path with -c option", file=sys.stderr)

@@ -79,7 +79,8 @@ include_trailing_comma = true
 format = "colored"
 max_line_length = 132
 show_source = false
-exclude = ["tests/fixtures"]
+# TODO: reduce the excludes to tests/fixtures at some point
+exclude = ["tests/", "src/aria2p/interface.py"]
 
 [tool.flakehell.plugins]
 "*" = [
@@ -96,6 +97,7 @@ exclude = ["tests/fixtures"]
     "-C0103", # two-lowercase-letters variable DO conform to snake_case naming style
     "-C0116",  # redunant with D102 (missing docstring)
     "-C0301",  # line too long
+    "-C0302",  # too many lines in module
     "-R0902",  # too many instance attributes
     "-R0903",  # too few public methods
     "-R0904",  # too many public methods
@@ -107,7 +109,8 @@ exclude = ["tests/fixtures"]
     "-W0611",  # redundant with F401 (unused import)
     "-W1203",  # lazy formatting for logging calls
     "-WPS305",  # f-strings
-    "-WPS110",  # common variable names (too annoying)
+    "-WPS100",  # common module names
+    "-WPS110",  # common variable names
     "-WPS125",  # redundant with W0622 (builtin override), which is more precise about line number
     "-WPS201",  # too many imports
     "-WPS202",  # too many module members
@@ -115,6 +118,7 @@ exclude = ["tests/fixtures"]
     "-WPS211",  # too many arguments
     "-WPS213",  # too many expressions
     "-WPS214",  # too many methods
+    "-WPS219",  # too deep access level
     "-WPS220",  # too deep nesting
     "-WPS223",  # too many elif branches
     "-WPS226",  # string over-use: can't disable it per file?
@@ -124,6 +128,7 @@ exclude = ["tests/fixtures"]
     "-WPS322",  # multi-line strings (incompatible with attributes docstrings)
     "-WPS326",  # implicit string concatenation
     "-WPS336",  # explicit string concatenation
+    "-WPS342",  # implicit raw string
     "-WPS402",  # noqa overuse
     "-WPS412",  # __init__ modules with logic
     "-WPS428",  # statement with no effect (not compatible with attribute docstrings)
@@ -141,6 +146,25 @@ exclude = ["tests/fixtures"]
     "-C0302",  # too many lines in module
     "-WPS115",  # upper-case constant in class (RPC methods)
     "-WPS602",  # staticmethod
+]
+
+[tool.flakehell.exceptions."src/aria2p/options.py"]
+"*" = [
+    "-WPS204",  # overused expression bool_to_str(value)
+]
+
+[tool.flakehell.exceptions."src/aria2p/interface.py"]
+"*" = [
+    "-VNE001",  # name too short
+    "-WPS111",  # name too short
+    "-WPS115",  # uppercase constant in class
+    "-WPS420",  # pass (methods not implemented)
+    "-WPS601",  # shadowed class attribute
+]
+
+[tool.flakehell.exceptions."src/aria2p/types.py"]
+"*" = [
+    "-WPS221",  # high jones complexity
 ]
 
 [tool.flakehell.exceptions."tests/"]

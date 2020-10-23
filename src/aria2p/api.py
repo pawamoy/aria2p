@@ -37,10 +37,10 @@ class API:
         Initialize the object.
 
         Arguments:
-            client: an instance of the [aria2p.client.Client][] class.
+            client: An instance of the [aria2p.client.Client][] class.
         """
         self.client = client or Client()
-        self.listener = None
+        self.listener: Optional[threading.Thread] = None
 
     def __repr__(self) -> str:
         return f"API({self.client!r})"
@@ -89,10 +89,10 @@ class API:
         Add a download with a Magnet URI.
 
         Arguments:
-            magnet_uri: the Magnet URI.
-            options: an instance of the [`Options`][aria2p.options.Options] class or a dictionary
+            magnet_uri: The Magnet URI.
+            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
                 containing aria2c options to create the download with.
-            position: the position where to insert the new download in the queue. Start at 0 (top).
+            position: The position where to insert the new download in the queue. Start at 0 (top).
 
         Returns:
             The newly created download object.
@@ -120,11 +120,11 @@ class API:
         Add a download with a torrent file (usually .torrent extension).
 
         Arguments:
-            torrent_file_path: the path to the torrent file.
-            uris: a list of URIs used for Web-seeding.
-            options: an instance of the [`Options`][aria2p.options.Options] class or a dictionary
+            torrent_file_path: The path to the torrent file.
+            uris: A list of URIs used for Web-seeding.
+            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
                 containing aria2c options to create the download with.
-            position: the position where to insert the new download in the queue. Start at 0 (top).
+            position: The position where to insert the new download in the queue. Start at 0 (top).
 
         Returns:
             The newly created download object.
@@ -158,10 +158,10 @@ class API:
         Add a download with a Metalink file.
 
         Arguments:
-            metalink_file_path: the path to the Metalink file.
-            options: an instance of the [`Options`][aria2p.options.Options] class or a dictionary
+            metalink_file_path: The path to the Metalink file.
+            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
                 containing aria2c options to create the download with.
-            position: the position where to insert the new download in the queue. Start at 0 (top).
+            position: The position where to insert the new download in the queue. Start at 0 (top).
 
         Returns:
             The newly created download objects.
@@ -192,10 +192,10 @@ class API:
         Add a download with a URL (or more).
 
         Arguments:
-            uris: a list of URIs that point to the same resource.
-            options: an instance of the `Options` class or a dictionary
+            uris: A list of URIs that point to the same resource.
+            options: An instance of the `Options` class or a dictionary
                 containing aria2c options to create the download with.
-            position: the position where to insert the new download in the queue. Start at 0 (top).
+            position: The position where to insert the new download in the queue. Start at 0 (top).
 
         Returns:
             The newly created download object.
@@ -220,7 +220,7 @@ class API:
         Search and return [`Download`][aria2p.downloads.Download] objects based on multiple patterns.
 
         Arguments:
-            patterns: the patterns used to filter the download list.
+            patterns: The patterns used to filter the download list.
 
         Raises:
             NotImplementedError: This method is not implemented yet.
@@ -262,7 +262,7 @@ class API:
         Get a [`Download`][aria2p.downloads.Download] object thanks to its GID.
 
         Arguments:
-            gid: the GID of the download to get.
+            gid: The GID of the download to get.
 
         Returns:
             The retrieved download object.
@@ -274,7 +274,7 @@ class API:
         Get a list of [`Download`][aria2p.downloads.Download] object thanks to their GIDs.
 
         Arguments:
-            gids: the GIDs of the downloads to get. If None, return all the downloads.
+            gids: The GIDs of the downloads to get. If None, return all the downloads.
 
         Returns:
             The retrieved download objects.
@@ -298,8 +298,8 @@ class API:
         Move a download in the queue, relatively to its current position.
 
         Arguments:
-            download: the download object to move.
-            pos: the relative position (1 to move down, -1 to move up, -2 to move up two times, etc.).
+            download: The download object to move.
+            pos: The relative position (1 to move down, -1 to move up, -2 to move up two times, etc.).
 
         Returns:
             The new position of the download.
@@ -311,8 +311,8 @@ class API:
         Move a download in the queue, with absolute positioning.
 
         Arguments:
-            download: the download object to move.
-            pos: the absolute position in the queue where to move the download. 0 for top, -1 for bottom.
+            download: The download object to move.
+            pos: The absolute position in the queue where to move the download. 0 for top, -1 for bottom.
 
         Returns:
             The new position of the download.
@@ -329,8 +329,8 @@ class API:
         Move a download up in the queue.
 
         Arguments:
-            download: the download object to move.
-            pos: number of times to move up. With negative values, will move down (use move or move_down instead).
+            download: The download object to move.
+            pos: Number of times to move up. With negative values, will move down (use move or move_down instead).
 
         Returns:
             The new position of the download.
@@ -342,8 +342,8 @@ class API:
         Move a download down in the queue.
 
         Arguments:
-            download: the download object to move.
-            pos: number of times to move down. With negative values, will move up (use move or move_up instead).
+            download: The download object to move.
+            pos: Number of times to move down. With negative values, will move up (use move or move_up instead).
 
         Returns:
             The new position of the download.
@@ -355,7 +355,7 @@ class API:
         Move a download to the top of the queue.
 
         Arguments:
-            download: the download object to move.
+            download: The download object to move.
 
         Returns:
             The new position of the download.
@@ -367,7 +367,7 @@ class API:
         Move a download to the bottom of the queue.
 
         Arguments:
-            download: the download object to move.
+            download: The download object to move.
 
         Returns:
             The new position of the download.
@@ -383,13 +383,13 @@ class API:
         Resume failed downloads from where they left off with new GIDs.
 
         Arguments:
-            downloads: the list of downloads to remove.
-            clean: whether to remove the aria2 control file as well.
+            downloads: The list of downloads to remove.
+            clean: Whether to remove the aria2 control file as well.
 
         Returns:
             Success or failure of the operation for each given download.
         """
-        result = []
+        result: List[OperationResult] = []
 
         for download in downloads:
             if not download.has_failed:
@@ -419,10 +419,10 @@ class API:
         Remove the given downloads from the list.
 
         Arguments:
-            downloads: the list of downloads to remove.
-            force: whether to force the removal or not.
-            files: whether to remove downloads files as well.
-            clean: whether to remove the aria2 control file as well.
+            downloads: The list of downloads to remove.
+            force: Whether to force the removal or not.
+            files: Whether to remove downloads files as well.
+            clean: Whether to remove the aria2 control file as well.
 
         Returns:
             Success or failure of the operation for each given download.
@@ -433,7 +433,7 @@ class API:
         else:
             remove_func = self.client.remove
 
-        result = []
+        result: List[OperationResult] = []
 
         for download in downloads:
             if download.is_complete or download.is_removed or download.has_failed:
@@ -490,7 +490,7 @@ class API:
         Remove all downloads from the list.
 
         Arguments:
-            force: whether to force the removal or not.
+            force: Whether to force the removal or not.
 
         Returns:
             Success or failure of the operation to remove all downloads.
@@ -502,8 +502,8 @@ class API:
         Remove the given downloads from the list.
 
         Arguments:
-            downloads: the list of downloads to remove.
-            force: whether to pause immediately without contacting servers or not.
+            downloads: The list of downloads to remove.
+            force: Whether to pause immediately without contacting servers or not.
 
         Returns:
             Success or failure of the operation for each given download.
@@ -514,7 +514,7 @@ class API:
         else:
             pause_func = self.client.pause
 
-        result = []
+        result: List[OperationResult] = []
 
         for download in downloads:
             try:
@@ -533,7 +533,7 @@ class API:
         Remove the given downloads from the list.
 
         Arguments:
-            force: whether to pause immediately without contacting servers or not.
+            force: Whether to pause immediately without contacting servers or not.
 
         Returns:
             Success or failure of the operation to pause all downloads.
@@ -549,13 +549,13 @@ class API:
         Resume (unpause) the given downloads.
 
         Arguments:
-            downloads: the list of downloads to resume.
+            downloads: The list of downloads to resume.
 
         Returns:
             Success or failure of the operation for each given download.
         """
         # Note: batch/multicall candidate
-        result = []
+        result: List[OperationResult] = []
 
         for download in downloads:
             try:
@@ -585,7 +585,7 @@ class API:
         Returns:
             Success or failure of the operation.
         """
-        return self.client.purge_download_result()
+        return self.client.purge_download_result() == "OK"
 
     def autopurge(self) -> bool:
         """
@@ -604,7 +604,7 @@ class API:
         Get options for each of the given downloads.
 
         Arguments:
-            downloads: the list of downloads to get the options of.
+            downloads: The list of downloads to get the options of.
 
         Returns:
             Options object for each given download.
@@ -624,14 +624,14 @@ class API:
         """
         return Options(self, self.client.get_global_option())
 
-    def set_options(self, options: OptionsType, downloads: List[Download]) -> List[OperationResult]:
+    def set_options(self, options: OptionsType, downloads: List[Download]) -> List[bool]:
         """
         Set options for specific downloads.
 
         Arguments:
-            options: an instance of the [`Options`][aria2p.options.Options] class or a dictionary
+            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
                 containing aria2c options to create the download with.
-            downloads: the list of downloads to set the options for.
+            downloads: The list of downloads to set the options for.
 
         Returns:
             Success or failure of the operation for changing options for each given download.
@@ -652,7 +652,7 @@ class API:
         Set global options.
 
         Arguments:
-            options: an instance of the [`Options`][aria2p.options.Options] class or a dictionary
+            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
                 containing aria2c options to create the download with.
 
         Returns:
@@ -674,17 +674,17 @@ class API:
         """
         return Stats(self.client.get_global_stat())
 
-    @staticmethod
-    def remove_files(  # noqa: WPS602 (static method)
+    @staticmethod  # noqa: WPS602 (static method)
+    def remove_files(  # noqa: WPS602
         downloads: List[Download],
         force: bool = False,
-    ) -> List[OperationResult]:
+    ) -> List[bool]:
         """
         Remove downloaded files.
 
         Arguments:
             downloads:  the list of downloads for which to remove files.
-            force: whether to remove files even if download is not complete.
+            force: Whether to remove files even if download is not complete.
 
         Returns:
             Success or failure of the operation for each given download.
@@ -702,19 +702,19 @@ class API:
                 results.append(False)
         return results
 
-    @staticmethod
-    def move_files(  # noqa: WPS602 (static method)
+    @staticmethod  # noqa: WPS602 (static method)
+    def move_files(  # noqa: WPS602
         downloads: List[Download],
         to_directory: PathOrStr,
         force: bool = False,
-    ) -> List[OperationResult]:
+    ) -> List[bool]:
         """
         Move downloaded files to another directory.
 
         Arguments:
             downloads:  the list of downloads for which to move files.
-            to_directory: the target directory to move files to.
-            force: whether to move files even if download is not complete.
+            to_directory: The target directory to move files to.
+            force: Whether to move files even if download is not complete.
 
         Returns:
             Success or failure of the operation for each given download.
@@ -735,19 +735,19 @@ class API:
                 results.append(False)
         return results
 
-    @staticmethod  # noqa: WPS602 (static method)
+    @staticmethod  # noqa: WPS231,WPS602 (not that complex, static method)
     def copy_files(  # noqa: WPS231,WPS602 (not that complex)
         downloads: List[Download],
         to_directory: PathOrStr,
         force: bool = False,
-    ) -> List[OperationResult]:
+    ) -> List[bool]:
         """
         Copy downloaded files to another directory.
 
         Arguments:
             downloads:  the list of downloads for which to move files.
-            to_directory: the target directory to copy files into.
-            force: whether to move files even if download is not complete.
+            to_directory: The target directory to copy files into.
+            force: Whether to move files even if download is not complete.
 
         Returns:
             Success or failure of the operation for each given download.
