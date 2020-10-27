@@ -1,18 +1,18 @@
 """
-This module defines the Stats class, which holds information retrieved with the ``get_global_stat`` method of the
+This module defines the Stats class, which holds information retrieved with the `get_global_stat` method of the
 client.
 """
-from .utils import human_readable_bytes
+from aria2p.utils import human_readable_bytes
 
 
 class Stats:
-    """This class holds information retrieved with the ``get_global_stat`` method of the client."""
+    """This class holds information retrieved with the `get_global_stat` method of the client."""
 
     def __init__(self, struct: dict) -> None:
         """
-        Initialization method.
+        Initialize the object.
 
-        Parameters:
+        Arguments:
             struct: a dictionary Python object returned by the JSON-RPC client.
         """
         self._struct = struct or {}
@@ -26,7 +26,7 @@ class Stats:
         """
         Return the download speed as string.
 
-        Parameters:
+        Arguments:
             human_readable: return in human readable format or not.
 
         Returns:
@@ -45,7 +45,7 @@ class Stats:
         """
         Return the upload speed as string.
 
-        Parameters:
+        Arguments:
             human_readable: return in human readable format or not.
 
         Returns:

@@ -124,6 +124,21 @@ def update_changelog(
 
 
 @duty
+def bundle(ctx):
+    """
+    Build a standalone executable.
+
+    Arguments:
+        ctx: The [context][duty.logic.Context] instance (passed automatically).
+    """
+    ctx.run(
+        "bash -c 'pyinstaller -F -n aria2p -p $VIRTUAL_ENV/lib/python*/site-packages src/aria2p/__main__.py'",
+        title="Bundling standalone executable",
+        pty=PTY,
+    )
+
+
+@duty
 def changelog(ctx):
     """
     Update the changelog in-place with latest commits.
@@ -401,5 +416,6 @@ def test(ctx, match=""):
     ctx.run(
         ["pytest", "-c", "config/pytest.ini", "-n", "auto", "-k", match, "tests"],
         title="Running tests",
+        capture=False,
         pty=PTY,
     )

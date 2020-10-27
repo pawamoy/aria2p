@@ -27,6 +27,19 @@ def first_err_line(cs):
     return err_lines(cs)[0]
 
 
+def test_show_help(capsys):
+    """
+    Show help.
+
+    Arguments:
+        capsys: Pytest fixture to capture output.
+    """
+    with pytest.raises(SystemExit):
+        cli.main(["-h"])
+    captured = capsys.readouterr()
+    assert "aria2p" in captured.out
+
+
 def test_main_returns_2_when_no_remote_running():
     assert cli.main(["--port=7549"]) == 2
 
@@ -211,9 +224,9 @@ def test_remove_all_subcommand():
         assert cli.subcommand_remove(server.api, do_all=True) == 0
 
 
-def test_autopurge_subcommand():
+def test_purge_subcommand():
     with Aria2Server(port=7527, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
-        assert cli.subcommand_autopurge(server.api) == 0
+        assert cli.subcommand_purge(server.api) == 0
 
 
 def test_listen_subcommand(capsys):

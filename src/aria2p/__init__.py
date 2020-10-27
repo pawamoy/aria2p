@@ -8,11 +8,11 @@ import sys
 
 from loguru import logger
 
-from .api import API
-from .client import Client, ClientException
-from .downloads import BitTorrent, Download, File
-from .options import Options
-from .stats import Stats
+from aria2p.api import API
+from aria2p.client import Client, ClientException
+from aria2p.downloads import BitTorrent, Download, File
+from aria2p.options import Options
+from aria2p.stats import Stats
 
 logger.disable("aria2p")
 
@@ -21,7 +21,7 @@ def enable_logger(sink=sys.stderr, level="WARNING"):
     """
     Enable the logging of messages.
 
-    Configure the ``logger`` variable imported from ``loguru``.
+    Configure the `logger` variable imported from `loguru`.
 
     Args:
         sink (file): An opened file pointer, or stream handler. Default to standard error.

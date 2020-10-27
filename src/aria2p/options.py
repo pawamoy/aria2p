@@ -1,78 +1,90 @@
 """
-This module defines the Options class, which holds information retrieved with the ``get_option`` or
-``get_global_option`` methods of the client.
+Module for aria2c options.
+
+This module defines the Options class, which holds information retrieved with the `get_option` or
+`get_global_option` methods of the client.
 """
+
 from copy import deepcopy
 from typing import Callable, List, Union
 
 import aria2p
-
-from .utils import bool_or_value, bool_to_str
+from aria2p.utils import bool_or_value, bool_to_str
 
 try:
     from typing import GenericMeta  # python 3.6
 except ImportError:
     # in 3.7, GenericMeta doesn't exist but we don't need it
-    class GenericMeta:
-        pass
+    class GenericMeta:  # noqa: WPS440 (block variable overlap)
+        """Placeholder."""
 
 
 class Options:
     """
-    This class holds information retrieved with the ``get_option`` or ``get_global_option`` methods of the client.
+    This class holds information retrieved with the `get_option` or `get_global_option` methods of the client.
 
     Instances are given a reference to an [`API`][aria2p.api.API] instance to be able to change their values both
     locally and remotely, by using the API client and calling remote methods to change options.
 
     The options are available with the same names, using underscores instead of dashes, except for "continue"
     (which is a Python reserved keyword) which is here called "continue_downloads". For example,
-    "max-concurrent-downloads" is used like ``options.max_concurrent_downloads = 5``.
+    "max-concurrent-downloads" is used like `options.max_concurrent_downloads = 5`.
     """
 
     def __init__(self, api: "aria2p.api.API", struct: dict, download: "aria2p.downloads.Download" = None):
         """
-        Initialization method.
+        Initialize the object.
 
-        Parameters:
+        Arguments:
             api: the reference to an [`API`][aria2p.api.API] instance.
             struct: a dictionary Python object returned by the JSON-RPC client.
             download: an optional [`Download`][aria2p.downloads.Download] object
-              to inform about the owner, or None to tell they are global options.
+                to inform about the owner, or None to tell they are global options.
         """
         self.api = api
         self.download = download
         self._struct = struct or {}
 
     @property
-    def are_global(self):
-        """Property to tell if options are global, or tied to a Download object."""
+    def are_global(self) -> bool:
+        """
+        Tell if options are global, or tied to a Download object.
+
+        Returns:
+            Whether these options are global.
+        """
         return self.download is None
 
-    def get_struct(self):
-        """Return a copy of the struct dictionary of this Options object."""
+    def get_struct(self) -> dict:
+        """
+        Return a copy of the struct dictionary of this Options object.
+
+        Returns:
+            A copy of the struct dictionary.
+        """
         return deepcopy(self._struct)
 
-    def get(self, item: str, cls: Union[GenericMeta, Callable] = None) -> Union[str, int, bool, float, None]:
+    def get(self, item: str, class_: Union[GenericMeta, Callable] = None) -> Union[str, int, bool, float, None]:
         """
         Get the value of an option given its name.
 
-        Parameters:
+        Arguments:
             item: the name of the option (example: "input-file").
-            cls: pass the value through this class/function to change its type.
+            class_: pass the value through this class/function to change its type.
 
         Returns:
             The option value.
         """
         value = self._struct.get(item)
-        if cls is not None and value is not None:
-            return cls(value)
+        if class_ is not None and value is not None:
+            return class_(value)
         return value
 
-    def set(self, key: str, value: Union[str, int, float, bool]) -> bool:
+    def set(self, key: str, value: Union[str, int, float, bool]) -> bool:  # noqa: A003 (shadowing set)
         """
         Set the value of an option given its name.
 
-        Parameters:
+        Arguments:
             key: the name of the option (example: "input-file").
             value: the value to set.
 
@@ -90,9 +102,11 @@ class Options:
         return success
 
     # Basic Options
-    @property
-    def dir(self) -> str:
+    @property  # noqa: A003 (shadowing dir, valid aria2c option)
+    def dir(self) -> str:  # noqa: A003
         """
+        Return the `dir` option value.
+
         The directory to store the downloaded file.
 
         Returns:
@@ -100,13 +114,15 @@ class Options:
         """
         return self.get("dir")
 
-    @dir.setter
-    def dir(self, value):
+    @dir.setter  # noqa: A003
+    def dir(self, value):  # noqa: A003
         self.set("dir", value)
 
     @property
     def input_file(self) -> str:
         """
+        Return the `input-file` option value.
+
         Downloads the URIs listed in FILE.
 
         You can specify multiple sources for a single entity by putting multiple URIs on a single line separated by
@@ -127,6 +143,8 @@ class Options:
     @property
     def log(self) -> str:
         """
+        Return the `log` option value.
+
         The file name of the log file.
 
         If - is specified, log is written to stdout. If empty string("") is
@@ -144,6 +162,8 @@ class Options:
     @property
     def max_concurrent_downloads(self) -> int:
         """
+        Return the `max-concurrent-downloads` option value.
+
         Set the maximum number of parallel downloads for every queue item.
 
         See also the --split option. Default: 5.
@@ -160,6 +180,8 @@ class Options:
     @property
     def check_integrity(self) -> bool:
         """
+        Return the `check-integrity` option value.
+
         Check file integrity by validating piece hashes or a hash of entire file.
 
         This option has effect only in BitTorrent, Metalink downloads with checksums or HTTP(S)/FTP downloads with
@@ -180,6 +202,8 @@ class Options:
     @property
     def continue_downloads(self) -> bool:
         """
+        Return the `continue-downloads` option value.
+
         Continue downloading a partially downloaded file.
 
         Use this option to resume a download started by a web browser or another program which downloads files
@@ -198,6 +222,8 @@ class Options:
     @property
     def all_proxy(self) -> str:
         """
+        Return the `all-proxy` option value.
+
         Use a proxy server for all protocols.
 
         To override a previously defined proxy, use "". You also can override this setting and specify a proxy server
@@ -231,6 +257,8 @@ class Options:
     @property
     def all_proxy_passwd(self) -> str:
         """
+        Return the `all-proxy-passwd` option value.
+
         Set password for --all-proxy option.
 
         Returns:
@@ -245,6 +273,8 @@ class Options:
     @property
     def all_proxy_user(self) -> str:
         """
+        Return the `all-proxy-user` option value.
+
         Set user for --all-proxy option.
 
         Returns:
@@ -259,6 +289,8 @@ class Options:
     @property
     def checksum(self) -> str:
         """
+        Return the `checksum` option value.
+
         Set checksum (`<TYPE>=<DIGEST>`).
 
         TYPE is hash type. The supported hash type is listed in Hash Algorithms in aria2c -v. DIGEST is hex digest.
@@ -277,6 +309,8 @@ class Options:
     @property
     def connect_timeout(self) -> int:
         """
+        Return the `connect-timeout` option value.
+
         Set the connect timeout in seconds to establish connection to HTTP/FTP/proxy server.
 
         After the connection is established, this option makes no effect and --timeout option is used instead.
@@ -294,6 +328,8 @@ class Options:
     @property
     def dry_run(self) -> bool:
         """
+        Return the `dry-run` option value.
+
         If true is given, aria2 just checks whether the remote file is available and doesn't download data.
 
         This option has effect on HTTP/FTP download. BitTorrent downloads are canceled if true is specified. Default:
@@ -311,6 +347,8 @@ class Options:
     @property
     def lowest_speed_limit(self) -> int:
         """
+        Return the `lowest-speed-limit` option value.
+
         Close connection if download speed is lower than or equal to this value(bytes per sec).
 
         0 means aria2 does not have a lowest speed limit. You can append K or M (1K = 1024, 1M = 1024K). This option
@@ -328,6 +366,8 @@ class Options:
     @property
     def max_connection_per_server(self) -> int:
         """
+        Return the `max-connection-per-server` option value.
+
         The maximum number of connections to one server for each download.
 
         Default: 1.
@@ -344,6 +384,8 @@ class Options:
     @property
     def max_file_not_found(self) -> int:
         """
+        Return the `max-file-not-found` option value.
+
         If aria2 receives "file not found" status from the remote HTTP/FTP servers NUM times without getting a single
         byte, then force the download to fail.
 
@@ -364,6 +406,8 @@ class Options:
     @property
     def max_tries(self) -> int:
         """
+        Return the `max-tries` option value.
+
         Set number of tries.
 
         0 means unlimited. See also --retry-wait. Default: 5.
@@ -380,6 +424,8 @@ class Options:
     @property
     def min_split_size(self) -> int:
         """
+        Return the `min-split-size` option value.
+
         aria2 does not split less than 2*SIZE byte range.
 
         For example, let's consider downloading 20MiB file. If SIZE is 10M, aria2 can split file into 2 range [
@@ -399,6 +445,8 @@ class Options:
     @property
     def netrc_path(self) -> str:
         """
+        Return the `netrc-path` option value.
+
         Specify the path to the netrc file.
 
         Default: $(HOME)/.netrc.
@@ -418,6 +466,8 @@ class Options:
     @property
     def no_netrc(self) -> bool:
         """
+        Return the `no-netrc` option value.
+
         Disable netrc support.
 
         netrc support is enabled by default.
@@ -439,6 +489,8 @@ class Options:
     @property
     def no_proxy(self) -> str:
         """
+        Return the `no-proxy` option value.
+
         Specify a comma separated list of host names, domains and network addresses with or without a subnet mask
         where no proxy should be used.
 
@@ -459,6 +511,8 @@ class Options:
     @property
     def out(self) -> str:
         """
+        Return the `out` option value.
+
         The file name of the downloaded file.
 
         It is always relative to the directory given in --dir option. When the --force-sequential option is used,
@@ -485,6 +539,8 @@ class Options:
     @property
     def proxy_method(self) -> str:
         """
+        Return the `proxy-method` option value.
+
         Set the method to use in proxy request.
 
         METHOD is either get or tunnel. HTTPS downloads always use tunnel regardless of this option. Default: get
@@ -501,6 +557,8 @@ class Options:
     @property
     def remote_time(self) -> bool:
         """
+        Return the `remote-time` option value.
+
         Retrieve timestamp of the remote file from the remote HTTP/FTP server and if it is available, apply it to the
         local file.
 
@@ -518,6 +576,8 @@ class Options:
     @property
     def reuse_uri(self) -> bool:
         """
+        Return the `reuse-uri` option value.
+
         Reuse already used URIs if no unused URIs are left.
 
         Default: true.
@@ -534,6 +594,8 @@ class Options:
     @property
     def retry_wait(self) -> int:
         """
+        Return the `retry-wait` option value.
+
         Set the seconds to wait between retries.
 
         When SEC >` 0, aria2 will retry downloads when the HTTP server returns a 503 response. Default: 0.
@@ -550,6 +612,8 @@ class Options:
     @property
     def server_stat_of(self) -> str:
         """
+        Return the `server-stat-of` option value.
+
         Specify the file name to which performance profile of the servers is saved.
 
         You can load saved data using --server-stat-if option. See Server Performance Profile subsection below for
@@ -567,6 +631,8 @@ class Options:
     @property
     def server_stat_if(self) -> str:
         """
+        Return the `server-stat-if` option value.
+
         Specify the file name to load performance profile of the servers.
 
         The loaded data will be used in some URI selector such as feedback. See also --uri-selector option. See
@@ -584,6 +650,8 @@ class Options:
     @property
     def server_stat_timeout(self) -> int:
         """
+        Return the `server-stat-timeout` option value.
+
         Specifies timeout in seconds to invalidate performance profile of the servers since the last contact to
         them.
 
@@ -601,6 +669,8 @@ class Options:
     @property
     def split(self) -> int:
         """
+        Return the `split` option value.
+
         Download a file using N connections.
 
         If more than N URIs are given, first N URIs are used and remaining URIs are used for backup. If less than N
@@ -625,6 +695,8 @@ class Options:
     @property
     def stream_piece_selector(self) -> str:
         """
+        Return the `stream-piece-selector` option value.
+
         Specify piece selection algorithm used in HTTP/FTP download.
 
         Piece means fixed length segment which is downloaded in parallel in segmented download. If default is given,
@@ -651,6 +723,8 @@ class Options:
     @property
     def timeout(self) -> int:
         """
+        Return the `timeout` option value.
+
         Set timeout in seconds.
 
         Default: 60.
@@ -667,6 +741,8 @@ class Options:
     @property
     def uri_selector(self) -> str:
         """
+        Return the `uri-selector` option value.
+
         Specify URI selection algorithm.
 
         The possible values are inorder, feedback and adaptive. If inorder is given, URI is tried in the order
@@ -691,6 +767,8 @@ class Options:
     @property
     def ca_certificate(self) -> str:
         """
+        Return the `ca-certificate` option value.
+
         Use the certificate authorities in FILE to verify the peers.
 
         The certificate file must be in PEM format and can contain multiple CA certificates. Use --check-certificate
@@ -698,7 +776,7 @@ class Options:
 
         NOTE:
             If you build with OpenSSL or the recent version of GnuTLS which has
-            gnutls_certificate_set_x509_system_trust() function and the library is properly configured to locate the
+            gnutls_certificateset_x509_system_trust() function and the library is properly configured to locate the
             system-wide CA certificates store, aria2 will automatically load those certificates at the startup.
 
         NOTE:
@@ -717,6 +795,8 @@ class Options:
     @property
     def certificate(self) -> str:
         """
+        Return the `certificate` option value.
+
         Use the client certificate in FILE.
 
         The certificate must be either in PKCS12 (.p12, .pfx) or in PEM format.
@@ -746,6 +826,8 @@ class Options:
     @property
     def check_certificate(self) -> bool:
         """
+        Return the `check-certificate` option value.
+
         Verify the peer using certificates specified in --ca-certificate option.
 
         Default: true.
@@ -762,6 +844,8 @@ class Options:
     @property
     def http_accept_gzip(self) -> bool:
         """
+        Return the `http-accept-gzip` option value.
+
         Send Accept: deflate, gzip request header and inflate response if remote server responds with
         Content-Encoding:  gzip or Content-Encoding:  deflate.
 
@@ -783,6 +867,8 @@ class Options:
     @property
     def http_auth_challenge(self) -> bool:
         """
+        Return the `http-auth-challenge` option value.
+
         Send HTTP authorization header only when it is requested by the server.
 
         If false is set, then authorization header is always sent to the server. There is an exception: if user name
@@ -801,6 +887,8 @@ class Options:
     @property
     def http_no_cache(self) -> bool:
         """
+        Return the `http-no-cache` option value.
+
         Send Cache-Control:  no-cache and Pragma:  no-cache header to avoid cached content.
 
         If false is given, these headers are not sent and you can add Cache-Control header with a directive you like
@@ -818,6 +906,8 @@ class Options:
     @property
     def http_user(self) -> str:
         """
+        Return the `http-user` option value.
+
         Set HTTP user. This affects all URIs.
 
         Returns:
@@ -832,6 +922,8 @@ class Options:
     @property
     def http_passwd(self) -> str:
         """
+        Return the `http-passwd` option value.
+
         Set HTTP password. This affects all URIs.
 
         Returns:
@@ -846,6 +938,8 @@ class Options:
     @property
     def http_proxy(self) -> str:
         """
+        Return the `http-proxy` option value.
+
         Use a proxy server for HTTP.
 
         To override a previously defined proxy, use "". See also the --all-proxy option. This affects all http
@@ -863,6 +957,8 @@ class Options:
     @property
     def http_proxy_passwd(self) -> str:
         """
+        Return the `http-proxy-passwd` option value.
+
         Set password for --http-proxy.
 
         Returns:
@@ -877,6 +973,8 @@ class Options:
     @property
     def http_proxy_user(self) -> str:
         """
+        Return the `http-proxy-user` option value.
+
         Set user for --http-proxy.
 
         Returns:
@@ -891,6 +989,8 @@ class Options:
     @property
     def https_proxy(self) -> str:
         """
+        Return the `https-proxy` option value.
+
         Use a proxy server for HTTPS.
 
         To override a previously defined proxy, use "". See also the --all-proxy option. This affects all https
@@ -908,6 +1008,8 @@ class Options:
     @property
     def https_proxy_passwd(self) -> str:
         """
+        Return the `https-proxy-passwd` option value.
+
         Set password for --https-proxy.
 
         Returns:
@@ -922,6 +1024,8 @@ class Options:
     @property
     def https_proxy_user(self) -> str:
         """
+        Return the `https-proxy-user` option value.
+
         Set user for --https-proxy.
 
         Returns:
@@ -936,6 +1040,8 @@ class Options:
     @property
     def private_key(self) -> str:
         """
+        Return the `private-key` option value.
+
         Use the private key in FILE.
 
         The private key must be decrypted and in PEM format. The behavior when encrypted one is given is undefined.
@@ -953,6 +1059,8 @@ class Options:
     @property
     def referer(self) -> str:
         """
+        Return the `referer` option value.
+
         Set an http referrer (Referer).
 
         This affects all http/https downloads. If * is given, the download URI is also used as the referrer. This may
@@ -970,6 +1078,8 @@ class Options:
     @property
     def enable_http_keep_alive(self) -> bool:
         """
+        Return the `enable-http-keep-alive` option value.
+
         Enable HTTP/1.1 persistent connection.
 
         Default: true.
@@ -986,6 +1096,8 @@ class Options:
     @property
     def enable_http_pipelining(self) -> bool:
         """
+        Return the `enable-http-pipelining` option value.
+
         Enable HTTP/1.1 pipelining.
 
         Default: false.
@@ -1005,6 +1117,8 @@ class Options:
     @property
     def header(self) -> str:
         """
+        Return the `header` option value.
+
         Append HEADER to HTTP request header.
 
         You can use this option repeatedly to specify more than one header:
@@ -1023,6 +1137,8 @@ class Options:
     @property
     def load_cookies(self) -> str:
         """
+        Return the `load-cookies` option value.
+
         Load Cookies from FILE using the Firefox3 format (SQLite3), Chromium/Google Chrome (SQLite3) and the
         Mozilla/Firefox(1.x/2.x)/Netscape format.
 
@@ -1042,6 +1158,8 @@ class Options:
     @property
     def save_cookies(self) -> str:
         """
+        Return the `save-cookies` option value.
+
         Save Cookies to FILE in Mozilla/Firefox(1.x/2.x)/ Netscape format.
 
         If FILE already exists, it is overwritten. Session Cookies are also saved and their expiry values are treated
@@ -1059,6 +1177,8 @@ class Options:
     @property
     def use_head(self) -> bool:
         """
+        Return the `use-head` option value.
+
         Use HEAD method for the first request to the HTTP server.
 
         Default: false.
@@ -1075,6 +1195,8 @@ class Options:
     @property
     def user_agent(self) -> str:
         """
+        Return the `user-agent` option value.
+
         Set user agent for HTTP(S) downloads.
 
         Default: aria2/$VERSION, $VERSION is replaced by package version.
@@ -1092,6 +1214,8 @@ class Options:
     @property
     def ftp_user(self) -> str:
         """
+        Return the `ftp-user` option value.
+
         Set FTP user. This affects all URIs.
 
         Default: anonymous.
@@ -1108,6 +1232,8 @@ class Options:
     @property
     def ftp_passwd(self) -> str:
         """
+        Return the `ftp-passwd` option value.
+
         Set FTP password. This affects all URIs.
 
         If user name is embedded but password is missing in URI, aria2 tries to resolve password using .netrc. If
@@ -1126,6 +1252,8 @@ class Options:
     @property
     def ftp_pasv(self) -> bool:
         """
+        Return the `ftp-pasv` option value.
+
         Use the passive mode in FTP.
 
         If false is given, the active mode will be used. Default: true.
@@ -1145,6 +1273,8 @@ class Options:
     @property
     def ftp_proxy(self) -> str:
         """
+        Return the `ftp-proxy` option value.
+
         Use a proxy server for FTP.
 
         To override a previously defined proxy, use "". See also the --all-proxy option. This affects all ftp
@@ -1162,6 +1292,8 @@ class Options:
     @property
     def ftp_proxy_passwd(self) -> str:
         """
+        Return the `ftp-proxy-passwd` option value.
+
         Set password for --ftp-proxy option.
 
         Returns:
@@ -1176,6 +1308,8 @@ class Options:
     @property
     def ftp_proxy_user(self) -> str:
         """
+        Return the `ftp-proxy-user` option value.
+
         Set user for --ftp-proxy option.
 
         Returns:
@@ -1190,6 +1324,8 @@ class Options:
     @property
     def ftp_type(self) -> str:
         """
+        Return the `ftp-type` option value.
+
         Set FTP transfer type.
 
         TYPE is either binary or ascii. Default: binary.
@@ -1209,6 +1345,8 @@ class Options:
     @property
     def ftp_reuse_connection(self) -> bool:
         """
+        Return the `ftp-reuse-connection` option value.
+
         Reuse connection in FTP.
 
         Default: true.
@@ -1225,6 +1363,8 @@ class Options:
     @property
     def ssh_host_key_md(self) -> str:
         """
+        Return the `ssh-host-key-md` option value.
+
         Set checksum for SSH host public key (`<TYPE>=<DIGEST>`).
 
         TYPE is hash type. The supported hash type is sha-1 or md5. DIGEST is hex digest. For example:
@@ -1244,6 +1384,8 @@ class Options:
     @property
     def select_file(self) -> str:
         """
+        Return the `select-file` option value.
+
         Set file to download by specifying its index.
 
         You can find the file index using the --show-files option. Multiple indexes can be specified by using ,,
@@ -1267,6 +1409,8 @@ class Options:
     @property
     def show_files(self) -> bool:
         """
+        Return the `show-files` option value.
+
         Print file listing of ".torrent", ".meta4" and ".metalink" file and exit.
 
         In case of ".torrent" file, additional information (infohash, piece length, etc) is also printed.
@@ -1284,6 +1428,8 @@ class Options:
     @property
     def bt_detach_seed_only(self) -> bool:
         """
+        Return the `bt-detach-seed-only` option value.
+
         Exclude seed only downloads when counting concurrent active downloads (See -j option).
 
         This means that if -j3 is given and this option is turned on and 3 downloads are active and one of those
@@ -1303,6 +1449,8 @@ class Options:
     @property
     def bt_enable_hook_after_hash_check(self) -> bool:
         """
+        Return the `bt-enable-hook-after-hash-check` option value.
+
         Allow hook command invocation after hash check (see -V option) in BitTorrent download.
 
         By default, when hash check succeeds, the command given by --on-bt-download-complete is executed. To disable
@@ -1320,6 +1468,8 @@ class Options:
     @property
     def bt_enable_lpd(self) -> bool:
         """
+        Return the `bt-enable-lpd` option value.
+
         Enable Local Peer Discovery.
 
         If a private flag is set in a torrent, aria2 doesn't use this feature for that download even if true is
@@ -1337,6 +1487,8 @@ class Options:
     @property
     def bt_exclude_tracker(self) -> List[str]:
         """
+        Return the `bt-exclude-tracker` option value.
+
         Comma separated list of BitTorrent tracker's announce URI to remove.
 
         You can use special value * which matches all URIs, thus removes all announce URIs. When specifying * in
@@ -1354,6 +1506,8 @@ class Options:
     @property
     def bt_external_ip(self) -> str:
         """
+        Return the `bt-external-ip` option value.
+
         Specify the external IP address to use in BitTorrent download and DHT.
 
         It may be sent to BitTorrent tracker. For DHT, this option should be set to report that local node is
@@ -1372,6 +1526,8 @@ class Options:
     @property
     def bt_force_encryption(self) -> bool:
         """
+        Return the `bt-force-encryption` option value.
+
         Requires BitTorrent message payload encryption with arc4.
 
         This is a shorthand of --bt-require-crypto --bt-min-crypto-level=arc4. This option does not change the option
@@ -1390,6 +1546,8 @@ class Options:
     @property
     def bt_hash_check_seed(self) -> bool:
         """
+        Return the `bt-hash-check-seed` option value.
+
         If true is given, after hash check using --check-integrity option and file is complete, continue to seed
         file.
 
@@ -1408,6 +1566,8 @@ class Options:
     @property
     def bt_lpd_interface(self) -> str:
         """
+        Return the `bt-lpd-interface` option value.
+
         Use given interface for Local Peer Discovery.
 
         If this option is not specified, the default interface is chosen. You can specify interface name and IP
@@ -1425,6 +1585,8 @@ class Options:
     @property
     def bt_max_open_files(self) -> int:
         """
+        Return the `bt-max-open-files` option value.
+
         Specify maximum number of files to open in multi-file BitTorrent/Metalink download globally.
 
         Default: 100.
@@ -1441,6 +1603,8 @@ class Options:
     @property
     def bt_max_peers(self) -> int:
         """
+        Return the `bt-max-peers` option value.
+
         Specify the maximum number of peers per torrent. 0 means unlimited.
 
         See also --bt-request-peer-speed-limit option. Default: 55.
@@ -1457,6 +1621,8 @@ class Options:
     @property
     def bt_metadata_only(self) -> bool:
         """
+        Return the `bt-metadata-only` option value.
+
         Download meta data only.
 
         The file(s) described in meta data will not be downloaded. This option has effect only when BitTorrent Magnet
@@ -1474,6 +1640,8 @@ class Options:
     @property
     def bt_min_crypto_level(self) -> str:
         """
+        Return the `bt-min-crypto-level` option value.
+
         Set minimum level of encryption method (plain/arc4).
 
         If several encryption methods are provided by a peer, aria2 chooses the lowest one which satisfies the given
@@ -1491,6 +1659,8 @@ class Options:
     @property
     def bt_prioritize_piece(self) -> str:
         """
+        Return the `bt-prioritize-piece` option value.
+
         Try to download first and last pieces of each file first (head[=`<SIZE>`],tail[=`<SIZE>`]).
 
         This is useful for previewing files. The argument can contain 2 keywords: head and tail. To include both
@@ -1511,6 +1681,8 @@ class Options:
     @property
     def bt_remove_unselected_file(self) -> bool:
         """
+        Return the `bt-remove-unselected-file` option value.
+
         Removes the unselected files when download is completed in BitTorrent.
 
         To select files, use --select-file option. If it is not used, all files are assumed to be selected. Please
@@ -1528,6 +1700,8 @@ class Options:
     @property
     def bt_require_crypto(self) -> bool:
         """
+        Return the `bt-require-crypto` option value.
+
         If true is given, aria2 doesn't accept and establish connection with legacy BitTorrent handshake
         (BitTorrent protocol).
 
@@ -1545,6 +1719,8 @@ class Options:
     @property
     def bt_request_peer_speed_limit(self) -> int:
         """
+        Return the `bt-request-peer-speed-limit` option value.
+
         If the whole download speed of every torrent is lower than SPEED, aria2 temporarily increases the number
         of peers to try for more download speed.
 
@@ -1563,6 +1739,8 @@ class Options:
     @property
     def bt_save_metadata(self) -> bool:
         """
+        Return the `bt-save-metadata` option value.
+
         Save meta data as ".torrent" file.
 
         This option has effect only when BitTorrent Magnet URI is used. The file name is hex encoded info hash with
@@ -1581,6 +1759,8 @@ class Options:
     @property
     def bt_seed_unverified(self) -> bool:
         """
+        Return the `bt-seed-unverified` option value.
+
         Seed previously downloaded files without verifying piece hashes.
 
         Default: false.
@@ -1597,6 +1777,8 @@ class Options:
     @property
     def bt_stop_timeout(self) -> int:
         """
+        Return the `bt-stop-timeout` option value.
+
         Stop BitTorrent download if download speed is 0 in consecutive SEC seconds.
 
         If 0 is given, this feature is disabled. Default: 0.
@@ -1613,6 +1795,8 @@ class Options:
     @property
     def bt_tracker(self) -> List[str]:
         """
+        Return the `bt-tracker` option value.
+
         Comma separated list of additional BitTorrent tracker's announce URI.
 
         These URIs are not affected by --bt-exclude-tracker option because they are added after URIs in
@@ -1630,6 +1814,8 @@ class Options:
     @property
     def bt_tracker_connect_timeout(self) -> int:
         """
+        Return the `bt-tracker-connect-timeout` option value.
+
         Set the connect timeout in seconds to establish connection to tracker.
 
         After the connection is established, this option makes no effect and --bt-tracker-timeout option is used
@@ -1647,6 +1833,8 @@ class Options:
     @property
     def bt_tracker_interval(self) -> int:
         """
+        Return the `bt-tracker-interval` option value.
+
         Set the interval in seconds between tracker requests.
 
         This completely overrides interval value and aria2 just uses this value and ignores the min interval and
@@ -1665,6 +1853,8 @@ class Options:
     @property
     def bt_tracker_timeout(self) -> int:
         """
+        Return the `bt-tracker-timeout` option value.
+
         Set timeout in seconds.
 
         Default: 60.
@@ -1681,6 +1871,8 @@ class Options:
     @property
     def dht_entry_point(self) -> str:
         """
+        Return the `dht-entry-point` option value.
+
         Set host and port as an entry point to IPv4 DHT network (`<HOST>`:`<PORT>`).
 
         Returns:
@@ -1695,6 +1887,8 @@ class Options:
     @property
     def dht_entry_point6(self) -> str:
         """
+        Return the `dht-entry-point6` option value.
+
         Set host and port as an entry point to IPv6 DHT network (`<HOST>`:`<PORT>`).
 
         Returns:
@@ -1709,6 +1903,8 @@ class Options:
     @property
     def dht_file_path(self) -> str:
         """
+        Return the `dht-file-path` option value.
+
         Change the IPv4 DHT routing table file to PATH.
 
         Default: $HOME/.aria2/dht.dat if present, otherwise $XDG_CACHE_HOME/aria2/dht.dat.
@@ -1725,6 +1921,8 @@ class Options:
     @property
     def dht_file_path6(self) -> str:
         """
+        Return the `dht-file-path6` option value.
+
         Change the IPv6 DHT routing table file to PATH.
 
         Default: $HOME/.aria2/dht6.dat if present, otherwise $XDG_CACHE_HOME/aria2/dht6.dat.
@@ -1741,6 +1939,8 @@ class Options:
     @property
     def dht_listen_addr6(self) -> str:
         """
+        Return the `dht-listen-addr6` option value.
+
         Specify address to bind socket for IPv6 DHT.
 
         It should be a global unicast IPv6 address of the host.
@@ -1757,6 +1957,8 @@ class Options:
     @property
     def dht_listen_port(self) -> str:
         """
+        Return the `dht-listen-port` option value.
+
         Set UDP listening port used by DHT(IPv4, IPv6) and UDP tracker.
 
         Multiple ports can be specified by using ,, for example: 6881,6885. You can also use - to specify a range:
@@ -1777,6 +1979,8 @@ class Options:
     @property
     def dht_message_timeout(self) -> int:
         """
+        Return the `dht-message-timeout` option value.
+
         Set timeout in seconds.
 
         Default: 10.
@@ -1793,6 +1997,8 @@ class Options:
     @property
     def enable_dht(self) -> bool:
         """
+        Return the `enable-dht` option value.
+
         Enable IPv4 DHT functionality.
 
         It also enables UDP tracker support. If a private flag is set in a torrent, aria2 doesn't use DHT for that
@@ -1810,6 +2016,8 @@ class Options:
     @property
     def enable_dht6(self) -> bool:
         """
+        Return the `enable-dht6` option value.
+
         Enable IPv6 DHT functionality.
 
         If a private flag is set in a torrent, aria2 doesn't use DHT for that download even if true is given. Use
@@ -1827,6 +2035,8 @@ class Options:
     @property
     def enable_peer_exchange(self) -> bool:
         """
+        Return the `enable-peer-exchange` option value.
+
         Enable Peer Exchange extension.
 
         If a private flag is set in a torrent, this feature is disabled for that download even if true is given.
@@ -1844,6 +2054,8 @@ class Options:
     @property
     def follow_torrent(self) -> str:
         """
+        Return the `follow-torrent` option value.
+
         If true or mem is specified, when a file whose suffix is .torrent or content type is application/x-bittorrent
         is downloaded, aria2 parses it as a torrent file and downloads files mentioned in it.
 
@@ -1863,6 +2075,8 @@ class Options:
     @property
     def index_out(self) -> str:
         """
+        Return the `index-out` option value.
+
         Set file path for file with index=INDEX (`<INDEX>=<PATH>`).
 
         You can find the file index using the --show-files option. PATH is a relative path to the path specified in
@@ -1881,6 +2095,8 @@ class Options:
     @property
     def listen_port(self) -> str:
         """
+        Return the `listen-port` option value.
+
         Set TCP port number for BitTorrent downloads.
 
         Multiple ports can be specified by using, for example: 6881,6885. You can also use - to specify a range:
@@ -1901,6 +2117,8 @@ class Options:
     @property
     def max_overall_upload_limit(self) -> int:
         """
+        Return the `max-overall-upload-limit` option value.
+
         Set max overall upload speed in bytes/sec.
 
         0 means unrestricted. You can append K or M (1K = 1024, 1M = 1024K). To limit the upload speed per torrent,
@@ -1918,6 +2136,8 @@ class Options:
     @property
     def max_upload_limit(self) -> int:
         """
+        Return the `max-upload-limit` option value.
+
         Set max upload speed per each torrent in bytes/sec.
 
         0 means unrestricted. You can append K or M (1K = 1024, 1M = 1024K). To limit the overall upload speed,
@@ -1935,6 +2155,8 @@ class Options:
     @property
     def peer_id_prefix(self) -> str:
         """
+        Return the `peer-id-prefix` option value.
+
         Specify the prefix of peer ID.
 
         The peer ID in BitTorrent is 20 byte length. If more than 20 bytes are specified, only first 20 bytes are
@@ -1955,6 +2177,8 @@ class Options:
     @property
     def seed_ratio(self) -> float:
         """
+        Return the `seed-ratio` option value.
+
         Specify share ratio.
 
         Seed completed torrents until share ratio reaches RATIO. You are strongly encouraged to specify equals or
@@ -1974,6 +2198,8 @@ class Options:
     @property
     def seed_time(self) -> float:
         """
+        Return the `seed-time` option value.
+
         Specify seeding time in (fractional) minutes.
 
         Also see the --seed-ratio option.
@@ -1993,6 +2219,8 @@ class Options:
     @property
     def torrent_file(self) -> str:
         """
+        Return the `torrent-file` option value.
+
         The path to the ".torrent" file.
 
         You are not required to use this option because you can specify ".torrent" files without --torrent-file.
@@ -2010,6 +2238,8 @@ class Options:
     @property
     def follow_metalink(self) -> str:
         """
+        Return the `follow-metalink` option value.
+
         If true or mem is specified, when a file whose suffix is .meta4 or .metalink or content type of
         application/metalink4+xml or application/metalink+xml is downloaded, aria2 parses it as a metalink file and
         downloads files mentioned in it.
@@ -2030,6 +2260,8 @@ class Options:
     @property
     def metalink_base_uri(self) -> str:
         """
+        Return the `metalink-base-uri` option value.
+
         Specify base URI to resolve relative URI in metalink:url and metalink:metaurl element in a metalink file
         stored in local disk.
 
@@ -2047,6 +2279,8 @@ class Options:
     @property
     def metalink_file(self) -> str:
         """
+        Return the `metalink-file` option value.
+
         The file path to ".meta4" and ".metalink" file.
 
         Reads input from stdin when - is specified. You are not required to use this option because you can specify
@@ -2064,6 +2298,8 @@ class Options:
     @property
     def metalink_language(self) -> str:
         """
+        Return the `metalink-language` option value.
+
         The language of the file to download.
 
         Returns:
@@ -2078,6 +2314,8 @@ class Options:
     @property
     def metalink_location(self) -> List[str]:
         """
+        Return the `metalink-location` option value.
+
         The location of the preferred server.
 
         A comma-delimited list of locations is acceptable, for example, jp,us.
@@ -2094,6 +2332,8 @@ class Options:
     @property
     def metalink_os(self) -> str:
         """
+        Return the `metalink-os` option value.
+
         The operating system of the file to download.
 
         Returns:
@@ -2108,6 +2348,8 @@ class Options:
     @property
     def metalink_version(self) -> str:
         """
+        Return the `metalink-version` option value.
+
         The version of the file to download.
 
         Returns:
@@ -2122,6 +2364,8 @@ class Options:
     @property
     def metalink_preferred_protocol(self) -> str:
         """
+        Return the `metalink-preferred-protocol` option value.
+
         Specify preferred protocol.
 
         The possible values are http, https, ftp and none. Specify none to disable this feature. Default: none.
@@ -2138,6 +2382,8 @@ class Options:
     @property
     def metalink_enable_unique_protocol(self) -> bool:
         """
+        Return the `metalink-enable-unique-protocol` option value.
+
         If true is given and several protocols are available for a mirror in a metalink file, aria2 uses one of them.
 
         Use --metalink-preferred-protocol option to specify the preference of protocol. Default: true.
@@ -2155,6 +2401,8 @@ class Options:
     @property
     def enable_rpc(self) -> bool:
         """
+        Return the `enable-rpc` option value.
+
         Enable JSON-RPC/XML-RPC server.
 
         It is strongly recommended to set secret authorization token using --rpc-secret option. See also
@@ -2172,6 +2420,8 @@ class Options:
     @property
     def pause(self) -> bool:
         """
+        Return the `pause` option value.
+
         Pause download after added.
 
         This option is effective only when --enable-rpc=true is given. Default: false.
@@ -2188,6 +2438,8 @@ class Options:
     @property
     def pause_metadata(self) -> bool:
         """
+        Return the `pause-metadata` option value.
+
         Pause downloads created as a result of metadata download.
 
         There are 3 types of metadata downloads in aria2: (1) downloading .torrent file. (2) downloading torrent
@@ -2207,6 +2459,8 @@ class Options:
     @property
     def rpc_allow_origin_all(self) -> bool:
         """
+        Return the `rpc-allow-origin-all` option value.
+
         Add Access-Control-Allow-Origin header field with value * to the RPC response.
 
         Default: false.
@@ -2223,6 +2477,8 @@ class Options:
     @property
     def rpc_certificate(self) -> str:
         """
+        Return the `rpc-certificate` option value.
+
         Use the certificate in FILE for RPC server.
 
         The certificate must be either in PKCS12 (.p12, .pfx) or in PEM format.
@@ -2254,6 +2510,8 @@ class Options:
     @property
     def rpc_listen_all(self) -> bool:
         """
+        Return the `rpc-listen-all` option value.
+
         Listen incoming JSON-RPC/XML-RPC requests on all network interfaces.
 
         If false is given, listen only on local loopback interface. Default: false.
@@ -2270,6 +2528,8 @@ class Options:
     @property
     def rpc_listen_port(self) -> int:
         """
+        Return the `rpc-listen-port` option value.
+
         Specify a port number for JSON-RPC/XML-RPC server to listen to.
 
         Possible Values: 1024-65535. Default: 6800.
@@ -2286,6 +2546,8 @@ class Options:
     @property
     def rpc_max_request_size(self) -> str:
         """
+        Return the `rpc-max-request-size` option value.
+
         Set max size of JSON-RPC/XML-RPC request in bytes.
 
         If aria2 detects the request is more than SIZE bytes, it drops connection. Default: 2M.
@@ -2302,6 +2564,8 @@ class Options:
     @property
     def rpc_passwd(self) -> str:
         """
+        Return the `rpc-passwd` option value.
+
         Set JSON-RPC/XML-RPC password.
 
         WARNING:
@@ -2320,6 +2584,8 @@ class Options:
     @property
     def rpc_private_key(self) -> str:
         """
+        Return the `rpc-private-key` option value.
+
         Use the private key in FILE for RPC server.
 
         The private key must be decrypted and in PEM format. Use --rpc-secure option to enable encryption. See also
@@ -2337,6 +2603,8 @@ class Options:
     @property
     def rpc_save_upload_metadata(self) -> bool:
         """
+        Return the `rpc-save-upload-metadata` option value.
+
         Save the uploaded torrent or metalink meta data in the directory specified by --dir option.
 
         The file name consists of SHA-1 hash hex string of meta data plus extension. For torrent, the extension is
@@ -2355,6 +2623,8 @@ class Options:
     @property
     def rpc_secret(self) -> str:
         """
+        Return the `rpc-secret` option value.
+
         Set RPC secret authorization token.
 
         Read RPC authorization secret token to know how this option value is used.
@@ -2371,6 +2641,8 @@ class Options:
     @property
     def rpc_secure(self) -> bool:
         """
+        Return the `rpc-secure` option value.
+
         RPC transport will be encrypted by SSL/TLS.
 
         The RPC clients must use https scheme to access the server. For WebSocket client, use wss scheme. Use
@@ -2388,6 +2660,8 @@ class Options:
     @property
     def rpc_user(self) -> str:
         """
+        Return the `rpc-user` option value.
+
         Set JSON-RPC/XML-RPC user.
 
         WARNING:
@@ -2407,6 +2681,8 @@ class Options:
     @property
     def allow_overwrite(self) -> bool:
         """
+        Return the `allow-overwrite` option value.
+
         Restart download from scratch if the corresponding control file doesn't exist.
 
         See also --auto-file-renaming option. Default: false.
@@ -2423,6 +2699,8 @@ class Options:
     @property
     def allow_piece_length_change(self) -> bool:
         """
+        Return the `allow-piece-length-change` option value.
+
         If false is given, aria2 aborts download when a piece length is different from one in a control file.
 
         If true is given, you can proceed but some download progress will be lost. Default: false.
@@ -2439,6 +2717,8 @@ class Options:
     @property
     def always_resume(self) -> bool:
         """
+        Return the `always-resume` option value.
+
         Always resume download.
 
         If true is given, aria2 always tries to resume download and if resume is not possible, aborts download. If
@@ -2458,6 +2738,8 @@ class Options:
     @property
     def async_dns(self) -> bool:
         """
+        Return the `async-dns` option value.
+
         Enable asynchronous DNS.
 
         Default: true.
@@ -2474,6 +2756,8 @@ class Options:
     @property
     def async_dns_server(self) -> List[str]:
         """
+        Return the `async-dns-server` option value.
+
         Comma separated list of DNS server address used in asynchronous DNS resolver.
 
         Usually asynchronous DNS resolver reads DNS server addresses from /etc/resolv.conf. When this option is used,
@@ -2493,6 +2777,8 @@ class Options:
     @property
     def auto_file_renaming(self) -> bool:
         """
+        Return the `auto-file-renaming` option value.
+
         Rename file name if the same file already exists.
 
         This option works only in HTTP(S)/FTP download. The new file name has a dot and a number(1..9999) appended
@@ -2527,6 +2813,8 @@ class Options:
     @property
     def conditional_get(self) -> bool:
         """
+        Return the `conditional-get` option value.
+
         Download file only when the local file is older than remote file.
 
         This function only works with HTTP(S) downloads only. It does not work if file size is specified in Metalink.
@@ -2547,6 +2835,8 @@ class Options:
     @property
     def conf_path(self) -> str:
         """
+        Return the `conf-path` option value.
+
         Change the configuration file path to PATH.
 
         Default: $HOME/.aria2/aria2.conf if present, otherwise $XDG_CONFIG_HOME/aria2/aria2.conf.
@@ -2563,6 +2853,8 @@ class Options:
     @property
     def console_log_level(self) -> str:
         """
+        Return the `console-log-level` option value.
+
         Set log level to output to console.
 
         LEVEL is either debug, info, notice, warn or error. Default: notice.
@@ -2579,6 +2871,8 @@ class Options:
     @property
     def daemon(self) -> bool:
         """
+        Return the `daemon` option value.
+
         Run as daemon.
 
         The current working directory will be changed to / and standard input, standard output and standard error
@@ -2596,6 +2890,8 @@ class Options:
     @property
     def deferred_input(self) -> bool:
         """
+        Return the `deferred-input` option value.
+
         If true is given, aria2 does not read all URIs and options from file specified by --input-file option at
         startup, but it reads one by one when it needs later.
 
@@ -2617,6 +2913,8 @@ class Options:
     @property
     def disable_ipv6(self) -> bool:
         """
+        Return the `disable-ipv6` option value.
+
         Disable IPv6.
 
         This is useful if you have to use broken DNS and want to avoid terribly slow AAAA record lookup. Default: false.
@@ -2633,6 +2931,8 @@ class Options:
     @property
     def disk_cache(self) -> int:
         """
+        Return the `disk-cache` option value.
+
         Enable disk cache.
 
         If SIZE is 0, the disk cache is disabled. This feature caches the downloaded data in memory, which grows to
@@ -2653,6 +2953,8 @@ class Options:
     @property
     def download_result(self) -> str:
         """
+        Return the `download-result` option value.
+
         This option changes the way Download Results is formatted.
 
         If OPT is default, print GID, status, average download speed and path/URI. If multiple files are involved,
@@ -2672,6 +2974,8 @@ class Options:
     @property
     def dscp(self) -> str:
         """
+        Return the `dscp` option value.
+
         Set DSCP value in outgoing IP packets of BitTorrent traffic for QoS.
 
         This parameter sets only DSCP bits in TOS field of IP packets, not the whole field. If you take values from
@@ -2691,6 +2995,8 @@ class Options:
     @property
     def rlimit_nofile(self) -> int:
         """
+        Return the `rlimit-nofile` option value.
+
         Set the soft limit of open file descriptors.
 
         This open will only have effect when:
@@ -2717,6 +3023,8 @@ class Options:
     @property
     def enable_color(self) -> bool:
         """
+        Return the `enable-color` option value.
+
         Enable color output for a terminal.
 
         Default: true.
@@ -2733,6 +3041,8 @@ class Options:
     @property
     def enable_mmap(self) -> bool:
         """
+        Return the `enable-mmap` option value.
+
         Map files into memory.
 
         This option may not work if the file space is not pre-allocated. See --file-allocation. Default: false.
@@ -2768,6 +3078,8 @@ class Options:
     @property
     def file_allocation(self) -> str:
         """
+        Return the `file-allocation` option value.
+
         Specify file allocation method.
 
         Possible Values: none, prealloc, trunc, falloc.
@@ -2808,6 +3120,8 @@ class Options:
     @property
     def force_save(self) -> bool:
         """
+        Return the `force-save` option value.
+
         Save download with --save-session option even if the download is completed or removed.
 
         This option also saves control file in that situations. This may be useful to save BitTorrent seeding which
@@ -2825,6 +3139,8 @@ class Options:
     @property
     def save_not_found(self) -> bool:
         """
+        Return the `save-not-found` option value.
+
         Save download with --save-session option even if the file was not found on the server.
 
         This option also saves control file in that situations. Default: true.
@@ -2841,6 +3157,8 @@ class Options:
     @property
     def gid(self) -> str:
         """
+        Return the `gid` option value.
+
         Set GID manually.
 
         aria2 identifies each download by the ID called GID. The GID must be hex string of 16 characters,
@@ -2861,6 +3179,8 @@ class Options:
     @property
     def hash_check_only(self) -> bool:
         """
+        Return the `hash-check-only` option value.
+
         If true is given, after hash check using --check-integrity option, abort download whether or not download
         is complete.
 
@@ -2878,6 +3198,8 @@ class Options:
     @property
     def human_readable(self) -> bool:
         """
+        Return the `human-readable` option value.
+
         Print sizes and speed in human readable format (e.g., 1.2Ki, 3.4Mi) in the console readout.
 
         Default: true.
@@ -2894,6 +3216,8 @@ class Options:
     @property
     def interface(self) -> str:
         """
+        Return the `interface` option value.
+
         Bind sockets to given interface.
 
         You can specify interface name, IP address and host name. Possible Values: interface, IP address, host name.
@@ -2915,6 +3239,8 @@ class Options:
     @property
     def keep_unfinished_download_result(self) -> bool:
         """
+        Return the `keep-unfinished-download-result` option value.
+
         Keep unfinished download results even if doing so exceeds --max-download-result.
 
         This is useful if all unfinished downloads must be saved in session file (see --save-session option). Please
@@ -2933,6 +3259,8 @@ class Options:
     @property
     def max_download_result(self) -> int:
         """
+        Return the `max-download-result` option value.
+
         Set maximum number of download result kept in memory.
 
         The download results are completed/error/removed downloads. The download results are stored in FIFO queue and
@@ -2954,6 +3282,8 @@ class Options:
     @property
     def max_mmap_limit(self) -> int:
         """
+        Return the `max-mmap-limit` option value.
+
         Set the maximum file size to enable mmap (see --enable-mmap option).
 
         The file size is determined by the sum of all files contained in one download. For example, if a download
@@ -2972,6 +3302,8 @@ class Options:
     @property
     def max_resume_failure_tries(self) -> int:
         """
+        Return the `max-resume-failure-tries` option value.
+
         When used with --always-resume=false, aria2 downloads file from scratch when aria2 detects N number of
         URIs that does not support resume.
 
@@ -2990,6 +3322,8 @@ class Options:
     @property
     def min_tls_version(self) -> str:
         """
+        Return the `min-tls-version` option value.
+
         Specify minimum SSL/TLS version to enable.
 
         Possible Values: SSLv3, TLSv1, TLSv1.1, TLSv1.2. Default: TLSv1.
@@ -3006,6 +3340,8 @@ class Options:
     @property
     def multiple_interface(self) -> List[str]:
         """
+        Return the `multiple-interface` option value.
+
         Comma separated list of interfaces to bind sockets to.
 
         Requests will be split among the interfaces to achieve link aggregation. You can specify interface name,
@@ -3024,6 +3360,8 @@ class Options:
     @property
     def log_level(self) -> str:
         """
+        Return the `log-level` option value.
+
         Set log level to output.
 
         LEVEL is either debug, info, notice, warn or error. Default: debug.
@@ -3040,6 +3378,8 @@ class Options:
     @property
     def on_bt_download_complete(self) -> str:
         """
+        Return the `on-bt-download-complete` option value.
+
         For BitTorrent, a command specified in --on-download-complete is called after download completed and
         seeding is over.
 
@@ -3058,6 +3398,8 @@ class Options:
     @property
     def on_download_complete(self) -> str:
         """
+        Return the `on-download-complete` option value.
+
         Set the command to be executed after download completed.
 
         See See Event Hook for more details about COMMAND. See also --on-download-stop option. Possible Values:
@@ -3075,6 +3417,8 @@ class Options:
     @property
     def on_download_error(self) -> str:
         """
+        Return the `on-download-error` option value.
+
         Set the command to be executed after download aborted due to error.
 
         See Event Hook for more details about COMMAND. See also --on-download-stop option. Possible Values:
@@ -3092,6 +3436,8 @@ class Options:
     @property
     def on_download_pause(self) -> str:
         """
+        Return the `on-download-pause` option value.
+
         Set the command to be executed after download was paused.
 
         See Event Hook for more details about COMMAND. Possible Values: /path/to/command.
@@ -3108,6 +3454,8 @@ class Options:
     @property
     def on_download_start(self) -> str:
         """
+        Return the `on-download-start` option value.
+
         Set the command to be executed after download got started.
 
         See Event Hook for more details about COMMAND. Possible Values: /path/to/command.
@@ -3124,6 +3472,8 @@ class Options:
     @property
     def on_download_stop(self) -> str:
         """
+        Return the `on-download-stop` option value.
+
         Set the command to be executed after download stopped.
 
         You can override the command to be executed for particular download result using --on-download-complete and
@@ -3142,6 +3492,8 @@ class Options:
     @property
     def optimize_concurrent_downloads(self) -> str:
         """
+        Return the `optimize-concurrent-downloads` option value.
+
         Optimizes the number of concurrent downloads according to the bandwidth available (`true|false|<A>:<B>`).
 
         aria2 uses the download speed observed in the previous downloads to adapt the number of downloads launched in
@@ -3163,6 +3515,8 @@ class Options:
     @property
     def piece_length(self) -> str:
         """
+        Return the `piece-length` option value.
+
         Set a piece length for HTTP/FTP downloads.
 
         This is the boundary when aria2 splits a file. All splits occur at multiple of this length. This option will
@@ -3184,6 +3538,8 @@ class Options:
     @property
     def show_console_readout(self) -> bool:
         """
+        Return the `show-console-readout` option value.
+
         Show console readout.
 
         Default: true.
@@ -3200,6 +3556,8 @@ class Options:
     @property
     def stderr(self) -> bool:
         """
+        Return the `stderr` option value.
+
         Redirect all console output that would be otherwise printed in stdout to stderr.
 
         Default: false.
@@ -3216,6 +3574,8 @@ class Options:
     @property
     def summary_interval(self) -> int:
         """
+        Return the `summary-interval` option value.
+
         Set interval in seconds to output download progress summary.
 
         Setting 0 suppresses the output. Default: 60.
@@ -3232,6 +3592,8 @@ class Options:
     @property
     def force_sequential(self) -> bool:
         """
+        Return the `force-sequential` option value.
+
         Fetch URIs in the command-line sequentially and download each URI in a separate session, like the usual
         command-line download utilities.
 
@@ -3249,6 +3611,8 @@ class Options:
     @property
     def max_overall_download_limit(self) -> int:
         """
+        Return the `max-overall-download-limit` option value.
+
         Set max overall download speed in bytes/sec.
 
         0 means unrestricted. You can append K or M (1K = 1024, 1M = 1024K). To limit the download speed per
@@ -3266,6 +3630,8 @@ class Options:
     @property
     def max_download_limit(self) -> int:
         """
+        Return the `max-download-limit` option value.
+
         Set max download speed per each download in bytes/sec.
 
         0 means unrestricted. You can append K or M (1K = 1024, 1M = 1024K). To limit the overall download speed,
@@ -3283,6 +3649,8 @@ class Options:
     @property
     def no_conf(self) -> bool:
         """
+        Return the `no-conf` option value.
+
         Disable loading aria2.conf file.
 
         Returns:
@@ -3297,6 +3665,8 @@ class Options:
     @property
     def no_file_allocation_limit(self) -> int:
         """
+        Return the `no-file-allocation-limit` option value.
+
         No file allocation is made for files whose size is smaller than SIZE.
 
         You can append K or M (1K = 1024, 1M = 1024K). Default: 5M.
@@ -3313,6 +3683,8 @@ class Options:
     @property
     def parameterized_uri(self) -> bool:
         """
+        Return the `parameterized-uri` option value.
+
         Enable parameterized URI support.
 
         You can specify set of parts: http://{sv1,sv2,sv3}/foo.iso. Also you can specify numeric sequences with step
@@ -3331,6 +3703,8 @@ class Options:
     @property
     def quiet(self) -> bool:
         """
+        Return the `quiet` option value.
+
         Make aria2 quiet (no console output).
 
         Default: false.
@@ -3347,6 +3721,8 @@ class Options:
     @property
     def realtime_chunk_checksum(self) -> bool:
         """
+        Return the `realtime-chunk-checksum` option value.
+
         Validate chunk of data by calculating checksum while downloading a file if chunk checksums are provided.
 
         Default: true.
@@ -3363,6 +3739,8 @@ class Options:
     @property
     def remove_control_file(self) -> bool:
         """
+        Return the `remove-control-file` option value.
+
         Remove control file before download.
 
         Using with --allow-overwrite=true, download always starts from scratch. This will be useful for users behind
@@ -3380,6 +3758,8 @@ class Options:
     @property
     def save_session(self) -> str:
         """
+        Return the `save-session` option value.
+
         Save error/unfinished downloads to FILE on exit.
 
         You can pass this output file to aria2c with --input-file option on restart. If you like the output to be
@@ -3419,6 +3799,8 @@ class Options:
     @property
     def save_session_interval(self) -> int:
         """
+        Return the `save-session-interval` option value.
+
         Save error/unfinished downloads to a file specified by --save-session option every SEC seconds.
 
         If 0 is given, file will be saved only when aria2 exits. Default: 0.
@@ -3435,6 +3817,8 @@ class Options:
     @property
     def socket_recv_buffer_size(self) -> int:
         """
+        Return the `socket-recv-buffer-size` option value.
+
         Set the maximum socket receive buffer in bytes.
 
         Specifying 0 will disable this option. This value will be set to socket file descriptor using SO_RCVBUF
@@ -3452,6 +3836,8 @@ class Options:
     @property
     def stop(self) -> int:
         """
+        Return the `stop` option value.
+
         Stop application after SEC seconds has passed.
 
         If 0 is given, this feature is disabled. Default: 0.
@@ -3468,6 +3854,8 @@ class Options:
     @property
     def stop_with_process(self) -> int:
         """
+        Return the `stop-with-process` option value.
+
         Stop application when process PID is not running.
 
         This is useful if aria2 process is forked from a parent process. The parent process can fork aria2 with its
@@ -3485,6 +3873,8 @@ class Options:
     @property
     def truncate_console_readout(self) -> bool:
         """
+        Return the `truncate-console-readout` option value.
+
         Truncate console readout to fit in a single line.
 
         Default: true.

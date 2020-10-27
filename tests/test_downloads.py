@@ -1,3 +1,5 @@
+"""Tests for the `downloads` module."""
+
 import datetime
 from pathlib import Path
 

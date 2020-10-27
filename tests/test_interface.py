@@ -1,3 +1,5 @@
+"""Tests for the `interface` module."""
+
 import time
 from pathlib import Path
 

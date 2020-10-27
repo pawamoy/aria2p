@@ -14,16 +14,18 @@ import toml
 from loguru import logger
 from xdg import XDG_CONFIG_HOME
 
+from aria2p.types import PathOrStr
+
 
 class SignalHandler:
     """A helper class to handle signals."""
 
     def __init__(self, signals: List[str]) -> None:
         """
-        Initialization method.
+        Initialize the object.
 
         Args:
-            signals: List of signals names as found in the ``signal`` module (example: SIGTERM).
+            signals: List of signals names as found in the `signal` module (example: SIGTERM).
         """
         logger.debug("Signal handler: handling signals " + ", ".join(signals))
         self.triggered = False
@@ -87,7 +89,7 @@ def human_readable_bytes(value: int, digits: int = 2, delim: str = "", postfix: 
     """
     Return a human-readable bytes value as a string.
 
-    Parameters:
+    Arguments:
         value: the bytes value.
         digits: how many decimal digits to use.
         delim: string to add between value and unit.
@@ -208,3 +210,16 @@ def load_configuration():
         with config_file_path.open("w") as fd:
             fd.write(textwrap.dedent(default_config).lstrip("\n"))
     return config_dict
+
+
+def read_lines(path: PathOrStr) -> List[str]:
+    """
+    Read lines in a file.
+
+    Arguments:
+        path: The file path.
+
+    Returns:
+        The list of lines.
+    """
+    return Path(path).read_text().splitlines()

@@ -1,3 +1,5 @@
+"""Tests for the `api` module."""
+
 import tempfile
 import threading
 import time

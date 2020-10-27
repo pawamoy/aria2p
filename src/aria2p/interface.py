@@ -28,8 +28,8 @@ from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import ManagedScreen, Screen
 from loguru import logger
 
-from .api import API
-from .utils import get_version, load_configuration
+from aria2p.api import API
+from aria2p.utils import get_version, load_configuration
 
 configs = load_configuration()
 
@@ -201,7 +201,7 @@ class Column:
 
     def __init__(self, header, padding, get_text, get_sort, get_palette):
         """
-        Initialization method.
+        Initialize the object.
 
         Args:
             header (str): The string to display on top.
@@ -227,7 +227,7 @@ class HorizontalScroll:
 
     def __init__(self, screen, scroll=0):
         """
-        Initialization method.
+        Initialize the object.
 
         Args:
             screen (Screen): The asciimatics screen object.
@@ -300,7 +300,7 @@ class Interface:
     """
     The main class responsible of drawing the HTOP-like interface.
 
-    It should be instantiated with an API instance, and then ran with its ``run`` method.
+    It should be instantiated with an API instance, and then ran with its `run` method.
 
     If you want to re-use this class' code to create an HTOP-like interface for another purpose,
     simply change these few things:
@@ -436,7 +436,7 @@ class Interface:
 
     def __init__(self, api=None):
         """
-        Initialization method.
+        Initialize the object.
 
         Args:
             api (API): An instance of API.
