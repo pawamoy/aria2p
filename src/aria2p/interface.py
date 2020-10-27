@@ -941,19 +941,19 @@ class Interface:
         self.screen.print_at(" ", len_header, y, *self.palettes["default"])
         y += 1
         self.screen.print_at(" " * self.width, 0, y)
+        separator = "..."
+
         for i, uri in enumerate(self.downloads_uris):
             y += 1
             palette = (
                 self.palettes["side_column_focused_row"] if i == self.side_focused else self.palettes["side_column_row"]
             )
-            if uri.startswith("magnet:?"):
-                # print part of magnet string
-                uri = f"{uri[:12]}...{uri[-10:]}"
+            if len(uri) > self.width:
+                # print part of uri string
+                uri = f"{ uri[:(self.width//2)-len(separator)] } {separator} { uri[-(self.width//2)+len(separator):] }"
 
-            if len(uri) > padding:
-                uri = f"{uri[:padding-3]:<{uri-3}}..."
             else:
-                uri = f"{uri:<{padding}}"
+                uri = f"{uri}"
 
             self.screen.print_at(uri, 0, y, *palette)
             self.screen.print_at(" ", len(uri), y, *self.palettes["default"])
