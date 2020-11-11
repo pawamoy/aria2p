@@ -267,6 +267,7 @@ class TestClientClass:
             max_concurrent_downloads = server.client.get_global_option()["max-concurrent-downloads"]
             assert max_concurrent_downloads == "10"
 
+    @pytest.mark.skip("broken URL, https://github.com/pawamoy/aria2p/issues/76")
     def test_option_methods(self):
         with Aria2Server(port=7004, session=SESSIONS_DIR / "max-dl-limit-10000.txt") as server:
             gid = server.client.tell_active(keys=["gid"])[0]["gid"]
@@ -326,11 +327,13 @@ class TestClientClass:
         with Aria2Server(port=7012) as server:
             assert server.client.get_global_stat()
 
+    @pytest.mark.skip("broken URL, https://github.com/pawamoy/aria2p/issues/76")
     def test_get_peers_method(self):
         with Aria2Server(port=7013, session=SESSIONS_DIR / "max-dl-limit-10000.txt") as server:
             gid = server.client.tell_active(keys=["gid"])[0]["gid"]
             assert not server.client.get_peers(gid)
 
+    @pytest.mark.skip("broken URL, https://github.com/pawamoy/aria2p/issues/76")
     def test_get_servers_method(self):
         # FIXME: subject to failure "IndexError: list index out of range"
         with Aria2Server(port=7014, session=SESSIONS_DIR / "max-dl-limit-10000.txt") as server:

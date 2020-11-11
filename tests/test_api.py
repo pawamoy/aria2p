@@ -5,6 +5,8 @@ import threading
 import time
 from pathlib import Path
 
+import pytest
+
 from aria2p import API, Client, Download
 
 from . import (
@@ -59,6 +61,7 @@ def test_get_global_options_method():
         assert options.max_concurrent_downloads == 5
 
 
+@pytest.mark.skip("broken URL, https://github.com/pawamoy/aria2p/issues/76")
 def test_get_options_method():
     with Aria2Server(port=7107, session=SESSIONS_DIR / "max-dl-limit-10000.txt") as server:
         downloads = server.api.get_downloads()
@@ -160,6 +163,7 @@ def test_autopurge_method():
 def test_remove_method():
     with Aria2Server(port=7118, session=SESSIONS_DIR / "3-dls.txt") as server:
         downloads = server.api.get_downloads()
+        # FIXME: subject to failure
         assert server.api.remove(downloads) == [True for _ in downloads]
         downloads = server.api.get_downloads()
         assert not downloads
@@ -200,7 +204,7 @@ def test_remove_files_tree():
 
 def test_remove_all_method():
     with Aria2Server(port=7119, session=SESSIONS_DIR / "3-dls.txt") as server:
-        # FIXME: subject to failure
+        # FIXME: subject to failure (probably because of api.remove)
         assert server.api.remove_all()
         downloads = server.api.get_downloads()
         assert not downloads
@@ -234,6 +238,7 @@ def test_set_global_options_method():
         assert options.max_concurrent_downloads == 10
 
 
+@pytest.mark.skip("broken URL, https://github.com/pawamoy/aria2p/issues/76")
 def test_set_options_method():
     with Aria2Server(port=7124, session=SESSIONS_DIR / "max-dl-limit-10000.txt") as server:
         downloads = server.api.get_downloads()
