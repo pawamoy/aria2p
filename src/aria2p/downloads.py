@@ -34,7 +34,7 @@ class BitTorrent:
         return self.info["name"]
 
     @property  # noqa: WPS234 (not complex type annotation)
-    def announce_list(self) -> Optional[List[List[str]]]:
+    def announce_list(self) -> Optional[List[List[str]]]:  # noqa: WPS234
         """
         List of lists of announce URIs.
 
@@ -274,7 +274,7 @@ class Download:
         return self
 
     @property  # noqa: WPS231 (not that complex)
-    def name(self) -> str:
+    def name(self) -> str:  # noqa: WPS231
         """
         Return the name of the download.
 
@@ -312,7 +312,7 @@ class Download:
         return self.dir / (self.name + ".aria2")
 
     @property  # noqa: WPS231 (not that complex)
-    def root_files_paths(self) -> List[Path]:
+    def root_files_paths(self) -> List[Path]:  # noqa: WPS231
         """
         Return the unique set of directories/files for this download.
 
@@ -812,7 +812,7 @@ class Download:
         return self._belongs_to
 
     @property  # noqa: A003 (shadowing dir)
-    def dir(self) -> Path:
+    def dir(self) -> Path:  # noqa: A003
         """
         Directory to save files.
 

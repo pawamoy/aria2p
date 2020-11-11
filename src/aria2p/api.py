@@ -675,7 +675,7 @@ class API:
         return Stats(self.client.get_global_stat())
 
     @staticmethod  # noqa: WPS231,WPS602 (complex method, static method)
-    def remove_files(  # noqa: WPS602
+    def remove_files(  # noqa: WPS231,WPS602
         downloads: List[Download],
         force: bool = False,
     ) -> List[bool]:
