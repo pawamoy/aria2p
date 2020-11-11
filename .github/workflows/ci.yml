@@ -103,3 +103,12 @@ jobs:
 
     - name: Run the test suite
       run: poetry run duty test
+
+    - name: Archive tests logs
+      uses: actions/upload-artifact@v2
+      if: ${{ failure() }}
+      with:
+        name: tests-logs
+        path: |
+          tests/logs
+        retention-days: 5
