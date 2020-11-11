@@ -694,10 +694,21 @@ class API:
             if download.is_complete or force:
                 for path in download.root_files_paths:
                     if path.is_dir():
-                        shutil.rmtree(str(path))
+                        try:
+                            shutil.rmtree(str(path))
+                        except OSError:
+                            logger.error(f"Could not delete directory '{path}'")
+                            logger.opt(exception=True).trace(error)
+                            results.append(False)
+                        else:
+                            results.append(True)
                     else:
-                        path.unlink()
-                results.append(True)
+                        try:
+                            path.unlink()
+                        except FileNotFoundError as error:
+                            logger.warning(f"File '{path}' did not exist when trying to delete it")
+                            logger.opt(exception=True).trace(error)
+                        results.append(True)
             else:
                 results.append(False)
         return results
