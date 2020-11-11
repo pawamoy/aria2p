@@ -68,9 +68,19 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - name: Install xclip
+    - name: Install aria2 and xclip on Ubuntu
       if: ${{ matrix.os == 'ubuntu-latest' }}
-      run: sudo apt-get install xclip
+      run: sudo apt-get install xclip aria2
+
+    - name: Install aria2 on Windows
+      if: ${{ matrix.os == 'windows-latest' }}
+      uses: crazy-max/ghaction-chocolatey@v1
+      with:
+        args: install aria2
+
+    - name: Install aria2 on MacOS
+      if: ${{ matrix.os == 'macos-latest' }}
+      run: brew install aria2
 
     - name: Checkout
       uses: actions/checkout@v2
