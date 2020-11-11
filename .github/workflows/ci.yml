@@ -61,6 +61,7 @@ jobs:
   tests:
 
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: [3.6, 3.7, 3.8, 3.9]
@@ -108,7 +109,7 @@ jobs:
       uses: actions/upload-artifact@v2
       if: ${{ failure() }}
       with:
-        name: tests-logs
+        name: tests-logs-${{ matrix.os }}-py${{ matrix.python-version }}
         path: |
           tests/logs
         retention-days: 5
