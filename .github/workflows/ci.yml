@@ -68,6 +68,10 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+    - name: Install xclip
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      run: sudo apt-get install xclip
+
     - name: Checkout
       uses: actions/checkout@v2
 
