@@ -7,8 +7,7 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
 [![ci](https://github.com/pawamoy/aria2p/workflows/ci/badge.svg)](https://github.com/pawamoy/aria2p/actions?query=workflow%3Aci)
 [![documentation](https://img.shields.io/badge/docs-mkdocs%20material-blue.svg?style=flat)](https://pawamoy.github.io/aria2p/)
 [![pypi version](https://img.shields.io/pypi/v/aria2p.svg)](https://pypi.org/project/aria2p/)
-[![Gitter](https://badges.gitter.im/aria2p/community.svg)](https://gitter.im/aria2p/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![support](https://img.shields.io/badge/sponsor-or%20donate-blue.svg?style=flat)](#support)
+[![gitter](https://badges.gitter.im/join%20chat.svg)](https://gitter.im/aria2p/community)
 
 Command-line tool and Python library to interact with an [`aria2c`][1] daemon process through JSON-RPC.
 
