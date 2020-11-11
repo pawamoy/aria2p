@@ -20,7 +20,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = "^3.6"
-requests = "*"
+requests = ">2.19.1"
 loguru = "*"
 websocket_client = "*"
 asciimatics = {version = "^1.11.0", optional = true}
