@@ -1,15 +1,19 @@
 """Tests for the `interface` module."""
 
+import os
+import sys
 import time
 from pathlib import Path
 
 import pyperclip
+import pytest
 from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import Screen
 
 from aria2p import interface as tui
 
-from . import SESSIONS_DIR, TESTS_DATA_DIR, Aria2Server
+from . import TESTS_DATA_DIR
+from .conftest import Aria2Server
 
 tui.Interface.frames = 20  # reduce tests time
 
@@ -156,39 +160,36 @@ def test_run(monkeypatch):
     assert interface.width == 80
 
 
-def test_resize(monkeypatch):
-    with Aria2Server(port=7600) as server:
-        interface = run_interface(monkeypatch, server.api, events=[Event.resize])
-        # assert screen was renewed
-        assert not interface.screen.has_resized()
+def test_resize(server, monkeypatch):
+    interface = run_interface(monkeypatch, server.api, events=[Event.resize])
+    # assert screen was renewed
+    assert not interface.screen.has_resized()
 
 
-def test_frames_plus_n(monkeypatch):
-    with Aria2Server(port=7601) as server:
-        n = 10
-        interface = run_interface(monkeypatch, server.api, events=[Event.pass_frames(tui.Interface.frames + n)])
-        assert interface.frame == n
+def test_frames_plus_n(server, monkeypatch):
+    n = 10
+    interface = run_interface(monkeypatch, server.api, events=[Event.pass_frames(tui.Interface.frames + n)])
+    assert interface.frame == n
 
 
-def test_change_sort(monkeypatch):
-    with Aria2Server(port=7602) as server:
-        interface = run_interface(
-            monkeypatch,
-            server.api,
-            events=[
-                Event.hit(">"),
-                Event.pass_half_tick,
-                Event.hit("<"),
-                Event.pass_half_tick,
-                Event.hit("<"),
-                Event.pass_tick,
-            ],
-        )
-        assert interface.sort == tui.Interface.sort - 1
+def test_change_sort(server, monkeypatch):
+    interface = run_interface(
+        monkeypatch,
+        server.api,
+        events=[
+            Event.hit(">"),
+            Event.pass_half_tick,
+            Event.hit("<"),
+            Event.pass_half_tick,
+            Event.hit("<"),
+            Event.pass_tick,
+        ],
+    )
+    assert interface.sort == tui.Interface.sort - 1
 
 
-def test_move_focus(monkeypatch):
-    with Aria2Server(port=7603, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+def test_move_focus(tmp_path, port, monkeypatch):
+    with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         interface = run_interface(
             monkeypatch,
             server.api,
@@ -197,14 +198,13 @@ def test_move_focus(monkeypatch):
     assert interface.focused == 0
 
 
-def test_show_help(monkeypatch):
-    with Aria2Server(port=7604) as server:
-        interface = run_interface(monkeypatch, server.api, events=[Event.f1, Event.pass_tick, Event.enter])
+def test_show_help(server, monkeypatch):
+    interface = run_interface(monkeypatch, server.api, events=[Event.f1, Event.pass_tick, Event.enter])
     assert interface.screen.print_at_calls[-1]["args"][0].startswith("Press any key to return.")
 
 
-def test_horizontal_scrolling(monkeypatch):
-    with Aria2Server(port=7605, session=SESSIONS_DIR / "3-magnets.txt") as server:
+def test_horizontal_scrolling(tmp_path, port, monkeypatch):
+    with Aria2Server(tmp_path, port, session="3-magnets.txt") as server:
         run_interface(
             monkeypatch,
             server.api,
@@ -218,8 +218,8 @@ def test_horizontal_scrolling(monkeypatch):
         )
 
 
-def test_log_exception(monkeypatch):
-    with Aria2Server(port=7606, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+def test_log_exception(tmp_path, port, monkeypatch):
+    with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         interface = get_interface(monkeypatch, server.api, events=[Event.exc(LookupError("some message"))])
         assert not interface.run()
     with open(Path("tests") / "logs" / "test_interface" / "test_log_exception.log") as log_file:
@@ -234,8 +234,8 @@ def test_log_exception(monkeypatch):
     assert "LookupError" in last_line
 
 
-def test_select_sort(monkeypatch):
-    with Aria2Server(port=7607, session=SESSIONS_DIR / "3-magnets.txt") as server:
+def test_select_sort(tmp_path, port, monkeypatch):
+    with Aria2Server(tmp_path, port, session="3-magnets.txt") as server:
         run_interface(
             monkeypatch,
             server.api,
@@ -252,9 +252,9 @@ def test_select_sort(monkeypatch):
         )
 
 
-def test_mouse_event(monkeypatch):
+def test_mouse_event(tmp_path, port, monkeypatch):
     reverse = tui.Interface.reverse
-    with Aria2Server(port=7608, session=SESSIONS_DIR / "3-magnets.txt") as server:
+    with Aria2Server(tmp_path, port, session="3-magnets.txt") as server:
         interface = run_interface(
             monkeypatch,
             server.api,
@@ -264,13 +264,13 @@ def test_mouse_event(monkeypatch):
     assert interface.reverse is not reverse
 
 
-def test_vertical_scrolling(monkeypatch):
-    with Aria2Server(port=7609, session=SESSIONS_DIR / "50-dls.txt") as server:
+def test_vertical_scrolling(tmp_path, port, monkeypatch):
+    with Aria2Server(tmp_path, port, session="50-dls.txt") as server:
         run_interface(monkeypatch, server.api, events=[Event.pass_frame] + [Event.down] * 40 + [Event.up] * 30)
 
 
-def test_follow_focused(monkeypatch):
-    with Aria2Server(port=7610, session=SESSIONS_DIR / "3-magnets.txt") as server:
+def test_follow_focused(tmp_path, port, monkeypatch):
+    with Aria2Server(tmp_path, port, session="3-magnets.txt") as server:
         interface = run_interface(
             monkeypatch,
             server.api,
@@ -280,12 +280,13 @@ def test_follow_focused(monkeypatch):
     assert interface.focused == 2
 
 
-def test_remove_ask(monkeypatch):
-    with Aria2Server(port=7611, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
+def test_remove_ask(tmp_path, port, monkeypatch):
+    with Aria2Server(tmp_path, port, session="very-small-download.txt") as server:
         download = server.api.get_downloads()[0]
-        while not download.is_complete:
+        while not download.live.is_complete:
+            if download.has_failed:
+                pytest.xfail("Failed to establish connection (sporadic error)")
             time.sleep(0.1)
-            download.update()
         assert download.root_files_paths[0].exists()
         interface = run_interface(
             monkeypatch,
@@ -296,13 +297,13 @@ def test_remove_ask(monkeypatch):
         assert interface.last_remove_choice == 1
 
 
-def test_setup(monkeypatch):
-    with Aria2Server(port=7612, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+def test_setup(tmp_path, port, monkeypatch):
+    with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         run_interface(monkeypatch, server.api, events=[Event.pass_frame, Event.f2, Event.pass_tick])
 
 
-def test_toggle_resume_pause(monkeypatch):
-    with Aria2Server(port=7613, session=SESSIONS_DIR / "big-download.txt") as server:
+def test_toggle_resume_pause(tmp_path, port, monkeypatch):
+    with Aria2Server(tmp_path, port, session="big-download.txt") as server:
         interface = run_interface(
             monkeypatch,
             server.api,
@@ -318,13 +319,15 @@ def test_toggle_resume_pause(monkeypatch):
             ],
         )
 
-        time.sleep(0.5)
+        time.sleep(1)
         interface.data[0].update()
+    if interface.data[0].has_failed:
+        pytest.xfail("Failed to establish connection (sporadic error)")
     assert interface.data[0].is_paused
 
 
-def test_priority(monkeypatch):
-    with Aria2Server(port=7614, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+def test_priority(tmp_path, port, monkeypatch):
+    with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         run_interface(
             monkeypatch,
             server.api,
@@ -341,14 +344,14 @@ def test_priority(monkeypatch):
         )
 
 
-def test_sort_edges(monkeypatch):
-    with Aria2Server(port=7615, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+def test_sort_edges(tmp_path, port, monkeypatch):
+    with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         run_interface(monkeypatch, server.api, events=[Event.hit("<")], sort=0)
         run_interface(monkeypatch, server.api, events=[Event.hit(">")], sort=7)
 
 
-def test_remember_last_remove(monkeypatch):
-    with Aria2Server(port=7621, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+def test_remember_last_remove(tmp_path, port, monkeypatch):
+    with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         interface = run_interface(
             monkeypatch,
             server.api,
@@ -358,18 +361,19 @@ def test_remember_last_remove(monkeypatch):
     assert interface.side_focused == 1
 
 
-def test_autoclear(monkeypatch):
-    with Aria2Server(port=7617, session=SESSIONS_DIR / "very-small-remote-file.txt") as server:
+def test_autoclear(tmp_path, port, monkeypatch):
+    with Aria2Server(tmp_path, port, session="very-small-download.txt") as server:
         download = server.api.get_downloads()[0]
-        while not download.is_complete:
+        while not download.live.is_complete:
+            if download.has_failed:
+                pytest.xfail("Failed to establish connection (sporadic error)")
             time.sleep(0.1)
-            download.update()
         interface = run_interface(monkeypatch, server.api, events=[Event.pass_frame, Event.hit("c"), Event.pass_tick])
     assert not interface.data
 
 
-def test_side_column_edges(monkeypatch):
-    with Aria2Server(port=7618, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+def test_side_column_edges(tmp_path, port, monkeypatch):
+    with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         run_interface(
             monkeypatch,
             server.api,
@@ -396,19 +400,18 @@ def test_side_column_edges(monkeypatch):
         )
 
 
-def test_click_row(monkeypatch):
-    with Aria2Server(port=7619, session=SESSIONS_DIR / "2-dl-in-queue.txt") as server:
+def test_click_row(tmp_path, port, monkeypatch):
+    with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         interface = run_interface(
             monkeypatch, server.api, events=[Event.pass_frame, MouseEvent(x=10, y=2, buttons=MouseEvent.LEFT_CLICK)]
         )
     assert interface.focused == 1
 
 
-def test_click_out_bounds(monkeypatch):
-    with Aria2Server(port=7620) as server:
-        run_interface(
-            monkeypatch, server.api, events=[Event.pass_frame, MouseEvent(x=1000, y=0, buttons=MouseEvent.LEFT_CLICK)]
-        )
+def test_click_out_bounds(server, monkeypatch):
+    run_interface(
+        monkeypatch, server.api, events=[Event.pass_frame, MouseEvent(x=1000, y=0, buttons=MouseEvent.LEFT_CLICK)]
+    )
     with open(Path("tests") / "logs" / "test_interface" / "test_click_out_bounds.log") as log_file:
         lines = log_file.readlines()
     error_line = None
@@ -420,47 +423,54 @@ def test_click_out_bounds(monkeypatch):
     assert "clicked outside of boundaries" in error_line
 
 
-def test_add_downloads_uris(monkeypatch):
+@pytest.mark.skipif(
+    sys.platform != "win32" and "CI" in os.environ,
+    reason="Can't get pyperclip to work on Linux or MacOS in CI",
+)
+def test_add_downloads_uris(server, monkeypatch):
     clipboard_selection_downloads = ""
     primary_selection_downloads = ""
 
-    uri1 = "http://example.com/1"
+    uri1 = "http://localhost:8779/1"
     magnet1 = "magnet:?xt=urn:btih:RX46NCATYQRS3MCQNSEXVZGCCDNKTASQ"
     clipboard_selection_downloads += "\n".join([uri1, magnet1])
 
-    uri2 = "http://example.com/2"
+    uri2 = "http://localhost:8779/2"
     magnet2 = "magnet:?xt=urn:btih:VLYICEBJDQQ64SUGREZHD4IAD2FVCJCS"
     primary_selection_downloads += "\n".join([uri2, magnet2])
 
     # clipboard selection
     pyperclip.copy(clipboard_selection_downloads)
+
     # primary selection
     pyperclip.copy(primary_selection_downloads, primary=True)
 
-    with Aria2Server(port=7622) as server:
-        interface = run_interface(
-            monkeypatch,
-            server.api,
-            events=[
-                Event.pass_frame,
-                Event.hit("a"),
-                Event.esc,
-                Event.hit("a"),
-                Event.down,
-                Event.enter,
-                Event.enter,
-                Event.esc,
-                Event.pass_tick_and_a_half,
-            ],
-        )
-        # clear clipboards
-        pyperclip.copy("")
-        pyperclip.copy("", primary=True)
-        assert len(interface.data) == 2
+    interface = run_interface(
+        monkeypatch,
+        server.api,
+        events=[
+            Event.pass_frame,
+            Event.hit("a"),
+            Event.esc,
+            Event.hit("a"),
+            Event.down,
+            Event.enter,
+            Event.enter,
+            Event.esc,
+            Event.pass_tick_and_a_half,
+        ],
+    )
+    # clear clipboards
+    pyperclip.copy("")
+    pyperclip.copy("", primary=True)
+    assert len(interface.data) == 2
 
 
-def test_add_downloads_torrents_and_metalinks(monkeypatch):
-
+@pytest.mark.skipif(
+    sys.platform != "win32" and "CI" in os.environ,
+    reason="Can't get pyperclip to work on Linux or MacOS in CI",
+)
+def test_add_downloads_torrents_and_metalinks(server, monkeypatch):
     torrent_file = TESTS_DATA_DIR / "bunsenlabs-helium-4.iso.torrent"
     metalink_file = TESTS_DATA_DIR / "debian.metalink"
 
@@ -473,23 +483,22 @@ def test_add_downloads_torrents_and_metalinks(monkeypatch):
     # primary selection
     pyperclip.copy(primary_selection_download, primary=True)
 
-    with Aria2Server(port=7623) as server:
-        interface = run_interface(
-            monkeypatch,
-            server.api,
-            events=[
-                Event.pass_frame,
-                Event.hit("a"),
-                Event.esc,
-                Event.pass_tick_and_a_half,
-                Event.hit("a"),
-                Event.down,
-                Event.up,
-                Event.enter,
-                Event.enter,
-                Event.pass_tick_and_a_half,
-            ],
-        )
-        pyperclip.copy("")
-        pyperclip.copy("", primary=True)
-        assert len(interface.data) == 2
+    interface = run_interface(
+        monkeypatch,
+        server.api,
+        events=[
+            Event.pass_frame,
+            Event.hit("a"),
+            Event.esc,
+            Event.pass_tick_and_a_half,
+            Event.hit("a"),
+            Event.down,
+            Event.up,
+            Event.enter,
+            Event.enter,
+            Event.pass_tick_and_a_half,
+        ],
+    )
+    pyperclip.copy("")
+    pyperclip.copy("", primary=True)
+    assert len(interface.data) == 2

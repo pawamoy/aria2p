@@ -1,5 +1,5 @@
-https://raw.githubusercontent.com/aria2/aria2/master/README
- gid=2089b05ecca3d829
-https://github.com/aria2/aria2/archive/release-1.34.0.tar.gz
- gid=208a3d8299b05ecc
+http://localhost:8779/10k
+ gid=0000000000000001
+http://localhost:8779/10m
+ gid=0000000000000002
  pause=true

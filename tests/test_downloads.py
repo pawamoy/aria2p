@@ -7,7 +7,7 @@ import pytest
 
 from aria2p import API, BitTorrent, ClientException, Download, File
 
-from . import SESSIONS_DIR, Aria2Server
+from .conftest import Aria2Server
 
 
 class TestBitTorrentClass:
@@ -98,15 +98,14 @@ class TestDownloadClass:
     def test_str_method(self):
         assert str(self.download) == self.download.name
 
-    def test_update_method(self):
-        with Aria2Server(port=7416, session=SESSIONS_DIR / "dl-aria2-1.34.0-paused.txt") as server:
-            download = server.api.get_download("2089b05ecca3d829")
+    def test_update_method(self, tmp_path, port):
+        with Aria2Server(tmp_path, port, session="1-dl-paused.txt") as server:
+            download = server.api.get_download("0000000000000001")
             download.update()
 
-    def test_belongs_to(self):
-        with Aria2Server(port=7415) as server:
-            self.download.api = server.api
-            assert self.download.belongs_to is None
+    def test_belongs_to(self, server):
+        self.download.api = server.api
+        assert self.download.belongs_to is None
 
     def test_belongs_to_id(self):
         assert self.download.belongs_to_id is None
@@ -169,20 +168,17 @@ class TestDownloadClass:
         self.download._struct["files"] = []
         assert len(self.download.files) == 2
 
-    def test_followed_by(self):
-        with Aria2Server(port=7400) as server:
-            self.download.api = server.api
-            assert self.download.followed_by == []
+    def test_followed_by(self, server):
+        self.download.api = server.api
+        assert self.download.followed_by == []
 
-    def test_followed_by_ids(self):
-        with Aria2Server(port=7401) as server:
-            self.download.api = server.api
-            assert self.download.followed_by_ids == []
+    def test_followed_by_ids(self, server):
+        self.download.api = server.api
+        assert self.download.followed_by_ids == []
 
-    def test_following(self):
-        with Aria2Server(port=7402) as server:
-            self.download.api = server.api
-            assert self.download.following is None
+    def test_following(self, server):
+        self.download.api = server.api
+        assert self.download.following is None
 
     def test_following_id(self):
         assert self.download.following_id == "a89a9c5ac990e6ef"
@@ -211,41 +207,35 @@ class TestDownloadClass:
     def test_is_waiting(self):
         assert self.download.is_waiting is False
 
-    def test_move(self):
-        with Aria2Server(port=7403) as server:
-            self.download.api = server.api
-            with pytest.raises(ClientException):
-                self.download.move(2)
+    def test_move(self, server):
+        self.download.api = server.api
+        with pytest.raises(ClientException):
+            self.download.move(2)
 
-    def test_move_down(self):
-        with Aria2Server(port=7404) as server:
-            self.download.api = server.api
-            with pytest.raises(ClientException):
-                self.download.move_down(1)
+    def test_move_down(self, server):
+        self.download.api = server.api
+        with pytest.raises(ClientException):
+            self.download.move_down(1)
 
-    def test_move_to(self):
-        with Aria2Server(port=7405) as server:
-            self.download.api = server.api
-            with pytest.raises(ClientException):
-                self.download.move_to(10)
+    def test_move_to(self, server):
+        self.download.api = server.api
+        with pytest.raises(ClientException):
+            self.download.move_to(10)
 
-    def test_move_to_bottom(self):
-        with Aria2Server(port=7406) as server:
-            self.download.api = server.api
-            with pytest.raises(ClientException):
-                self.download.move_to_bottom()
+    def test_move_to_bottom(self, server):
+        self.download.api = server.api
+        with pytest.raises(ClientException):
+            self.download.move_to_bottom()
 
-    def test_move_to_top(self):
-        with Aria2Server(port=7407) as server:
-            self.download.api = server.api
-            with pytest.raises(ClientException):
-                self.download.move_to_top()
+    def test_move_to_top(self, server):
+        self.download.api = server.api
+        with pytest.raises(ClientException):
+            self.download.move_to_top()
 
-    def test_move_up(self):
-        with Aria2Server(port=7408) as server:
-            self.download.api = server.api
-            with pytest.raises(ClientException):
-                self.download.move_up()
+    def test_move_up(self, server):
+        self.download.api = server.api
+        with pytest.raises(ClientException):
+            self.download.move_up()
 
     def test_name(self):
         assert self.download.name == "dl"
@@ -272,11 +262,10 @@ class TestDownloadClass:
     def test_num_seeders(self):
         assert self.download.num_seeders == 12
 
-    def test_options(self):
-        with Aria2Server(port=7409) as server:
-            self.download.api = server.api
-            with pytest.raises(ClientException):
-                print(self.download.options)
+    def test_options(self, server):
+        self.download.api = server.api
+        with pytest.raises(ClientException):
+            print(self.download.options)
 
     def test_options2(self):
         witness = []
@@ -295,11 +284,10 @@ class TestDownloadClass:
         self.download.options = "options"
         assert self.download.options == "options"
 
-    def test_pause(self):
-        with Aria2Server(port=7410) as server:
-            self.download.api = server.api
-            with pytest.raises(ClientException):
-                self.download.pause()
+    def test_pause(self, server):
+        self.download.api = server.api
+        with pytest.raises(ClientException):
+            self.download.pause()
 
     def test_piece_length(self):
         assert self.download.piece_length == 524_288
@@ -319,17 +307,15 @@ class TestDownloadClass:
         self.download._struct["totalLength"] = 0
         assert self.download.progress_string() == "0.00%"
 
-    def test_remove(self):
-        with Aria2Server(port=7411) as server:
-            self.download.api = server.api
-            with pytest.raises(ClientException):
-                self.download.remove()
+    def test_remove(self, server):
+        self.download.api = server.api
+        with pytest.raises(ClientException):
+            self.download.remove()
 
-    def test_resume(self):
-        with Aria2Server(port=7412) as server:
-            self.download.api = server.api
-            with pytest.raises(ClientException):
-                self.download.resume()
+    def test_resume(self, server):
+        self.download.api = server.api
+        with pytest.raises(ClientException):
+            self.download.resume()
 
     def test_seeder(self):
         assert self.download.seeder is False
@@ -344,17 +330,15 @@ class TestDownloadClass:
         assert self.download.total_length_string() == "996.88 MiB"
         assert self.download.total_length_string(human_readable=False) == "1045306068 B"
 
-    def test_update(self):
-        with Aria2Server(port=7413) as server:
-            self.download.api = server.api
-            with pytest.raises(ClientException):
-                self.download.update()
+    def test_update(self, server):
+        self.download.api = server.api
+        with pytest.raises(ClientException):
+            self.download.update()
 
-    def test_update_options(self):
-        with Aria2Server(port=7414) as server:
-            self.download.api = server.api
-            with pytest.raises(ClientException):
-                self.download.update_options()
+    def test_update_options(self, server):
+        self.download.api = server.api
+        with pytest.raises(ClientException):
+            self.download.update_options()
 
     def test_upload_length(self):
         assert self.download.upload_length == 97_207_027

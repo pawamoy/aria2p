@@ -2,5 +2,3 @@ http://localhost:8779/30m
  gid=0000000000000001
 http://localhost:8779/30m
  gid=0000000000000002
-http://localhost:8779/30m
- gid=0000000000000003

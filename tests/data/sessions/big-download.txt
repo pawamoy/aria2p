@@ -1,2 +1,2 @@
-http://ubuntutym2.u-toyama.ac.jp/xubuntu/18.04/release/xubuntu-18.04.1-desktop-amd64.iso
- gid=2089b05ecca3d829
+http://localhost:8779/100m
+ gid=0000000000000001
