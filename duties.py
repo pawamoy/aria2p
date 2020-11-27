@@ -20,9 +20,9 @@ PY_SRC_PATHS = (Path(_) for _ in ("src", "tests", "duties.py"))
 PY_SRC_LIST = tuple(str(_) for _ in PY_SRC_PATHS)
 PY_SRC = " ".join(PY_SRC_LIST)
 TESTING = os.environ.get("TESTING", "0") in {"1", "true"}
-CI = os.environ.get("CI", "0") in {"1", "true"}
+CI = os.environ.get("CI", "0") not in {"0", "false", "no"}
 WINDOWS = os.name == "nt"
-PTY = not WINDOWS
+PTY = not WINDOWS and not CI
 
 
 def latest(lines: List[str], regex: Pattern) -> Optional[str]:
@@ -233,7 +233,7 @@ def check_types(ctx):
     ctx.run(f"mypy --config-file config/mypy.ini {PY_SRC}", title="Type-checking", pty=PTY, nofail=True, quiet=True)
 
 
-@duty(silent=True)
+@duty(silent=True, post=["clean_tests"])
 def clean(ctx):
     """
     Delete temporary files.
@@ -241,15 +241,29 @@ def clean(ctx):
     Arguments:
         ctx: The context instance (passed automatically).
     """
-    ctx.run("rm -rf .coverage*")
     ctx.run("rm -rf .mypy_cache")
-    ctx.run("rm -rf .pytest_cache")
     ctx.run("rm -rf build")
     ctx.run("rm -rf dist")
     ctx.run("rm -rf pip-wheel-metadata")
     ctx.run("rm -rf site")
     ctx.run("find . -type d -name __pycache__ | xargs rm -rf")
     ctx.run("find . -name '*.rej' -delete")
+
+
+@duty(silent=True)
+def clean_tests(ctx):
+    """
+    Delete temporary tests files.
+
+    Arguments:
+        ctx: The context instance (passed automatically).
+    """
+    ctx.run("rm -rf .ports.json")
+    ctx.run("rm -rf .lockdir")
+    ctx.run("rm -rf .coverage*")
+    ctx.run("rm -rf .pytest_cache")
+    ctx.run("rm -rf tests/.pytest_cache")
+    ctx.run("find tests -type d -name __pycache__ | xargs rm -rf")
 
 
 def get_credits_data() -> dict:
@@ -408,17 +422,37 @@ def coverage(ctx):
     ctx.run("coverage html --rcfile=config/coverage.ini")
 
 
-@duty(pre=[duty(lambda ctx: ctx.run("rm -f .coverage", silent=True))])
-def test(ctx, match=""):
+@duty(pre=[clean_tests])
+def test(ctx, match="", markers="", cpus="auto", sugar=True, verbose=False, cov=True):
     """
     Run the test suite.
 
     Arguments:
         ctx: The context instance (passed automatically).
         match: A pytest expression to filter selected tests.
+        markers: A pytest expression to filter selected tests based on markers.
+        cpus: Number of CPUs to use, or "no", default "auto".
+        sugar: Use the sugar plugin, default True.
+        verbose: Be verbose, default False.
+        cov: Compute coverage, default True.
     """
+    if WINDOWS and CI:
+        cpus = ["--dist", "no"]
+        verbose = ["-vv"]
+        sugar = ["-p", "no:sugar"]
+        cov = ["--no-cov"]
+    else:
+        cpus = ["--dist", "no"] if cpus == "no" else ["-n", cpus]
+        sugar = [] if sugar is True else ["-p", "no:sugar"]
+        verbose = [] if verbose is False else ["-vv"]
+        cov = [] if cov is True else ["--no-cov"]
+
+    match = ["-k", match] if match else []
+    markers = ["-m", markers] if markers else []
+    options = [*cov, *verbose, *sugar, *cpus, *match, *markers]  # noqa: WPS221
+
     ctx.run(
-        ["pytest", "-c", "config/pytest.ini", "-n", "auto", "-k", match, "tests"],
+        ["pytest", "-c", "config/pytest.ini", *options, "tests"],
         title="Running tests",
         capture=False,
         pty=PTY,

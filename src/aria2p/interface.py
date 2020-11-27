@@ -689,7 +689,7 @@ class Interface:
             pass  # TODO
 
         elif event.key_code in Keys.AUTOCLEAR:
-            self.api.autopurge()
+            self.api.purge()
 
         elif event.key_code in Keys.FOLLOW_ROW:
             self.follow_focused()

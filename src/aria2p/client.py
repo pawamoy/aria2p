@@ -310,14 +310,14 @@ class Client:
         With a classic multicall, you would write your params like:
 
             [
-                {"methodName": client.REMOVE, "params": ["2089b05ecca3d829"]},
+                {"methodName": client.REMOVE, "params": ["0000000000000001"]},
                 {"methodName": client.REMOVE, "params": ["2fa07b6e85c40205"]},
             ]
 
         With multicall2, you can reduce the verbosity:
 
             [
-                (client.REMOVE, ["2089b05ecca3d829"]),
+                (client.REMOVE, ["0000000000000001"]),
                 (client.REMOVE, ["2fa07b6e85c40205"]),
             ]
 
@@ -479,7 +479,7 @@ class Client:
             ...                       'params':[['http://example.org/file']]})
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> c.read()
-            '{"id":"qwer","jsonrpc":"2.0","result":"2089b05ecca3d829"}'
+            '{"id":"qwer","jsonrpc":"2.0","result":"0000000000000001"}'
         """
         return self.call(self.ADD_URI, params=[uris, options, position])
 
@@ -538,7 +538,7 @@ class Client:
             ...                       'method':'aria2.addTorrent', 'params':[torrent]})
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> c.read()
-            '{"id":"asdf","jsonrpc":"2.0","result":"2089b05ecca3d829"}'
+            '{"id":"asdf","jsonrpc":"2.0","result":"0000000000000001"}'
         """
         return self.call(self.ADD_TORRENT, [torrent, uris, options, position])
 
@@ -591,7 +591,7 @@ class Client:
             ...                       'params':[metalink]})
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> c.read()
-            '{"id":"qwer","jsonrpc":"2.0","result":["2089b05ecca3d829"]}'
+            '{"id":"qwer","jsonrpc":"2.0","result":["0000000000000001"]}'
         """
         return self.call(self.ADD_METALINK, [metalink, options, position])
 
@@ -616,15 +616,15 @@ class Client:
         Examples:
             **Original JSON-RPC Example**
 
-            The following examples remove a download with GID#2089b05ecca3d829.
+            The following examples remove a download with GID#0000000000000001.
 
             >>> import urllib2, json
             >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
             ...                       'method':'aria2.remove',
-            ...                       'params':['2089b05ecca3d829']})
+            ...                       'params':['0000000000000001']})
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> c.read()
-            '{"id":"qwer","jsonrpc":"2.0","result":"2089b05ecca3d829"}'
+            '{"id":"qwer","jsonrpc":"2.0","result":"0000000000000001"}'
         """
         return self.call(self.REMOVE, [gid])  # noqa: WPS204 (overused [gid])
 
@@ -763,7 +763,7 @@ class Client:
         This method returns the progress of the download denoted by gid (string). keys is an array of strings. If
         specified, the response contains only keys in the keys array. If keys is empty or omitted, the response
         contains all keys. This is useful when you just want specific keys and avoid unnecessary transfers. For
-        example, `tell_status("2089b05ecca3d829", ["gid", "status"])` returns the gid and status keys only. The
+        example, `tell_status("0000000000000001", ["gid", "status"])` returns the gid and status keys only. The
         response is a struct and contains following keys. Values are strings.
 
         - `gid`: GID of the download.
@@ -829,13 +829,13 @@ class Client:
         Examples:
             **Original JSON-RPC Example**
 
-            The following example gets information about a download with GID#2089b05ecca3d829:
+            The following example gets information about a download with GID#0000000000000001:
 
             >>> import urllib2, json
             >>> from pprint import pprint
             >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
             ...                       'method':'aria2.tellStatus',
-            ...                       'params':['2089b05ecca3d829']})
+            ...                       'params':['0000000000000001']})
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
@@ -852,7 +852,7 @@ class Client:
                                      u'selected': u'true',
                                      u'uris': [{u'status': u'used',
                                                 u'uri': u'http://example.org/file'}]}],
-                         u'gid': u'2089b05ecca3d829',
+                         u'gid': u'0000000000000001',
                          u'numPieces': u'34',
                          u'pieceLength': u'1048576',
                          u'status': u'active',
@@ -864,7 +864,7 @@ class Client:
 
             >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
             ...                       'method':'aria2.tellStatus',
-            ...                       'params':['2089b05ecca3d829',
+            ...                       'params':['0000000000000001',
             ...                                 ['gid',
             ...                                  'totalLength',
             ...                                  'completedLength']]})
@@ -873,7 +873,7 @@ class Client:
             {u'id': u'qwer',
              u'jsonrpc': u'2.0',
              u'result': {u'completedLength': u'5701632',
-                         u'gid': u'2089b05ecca3d829',
+                         u'gid': u'0000000000000001',
                          u'totalLength': u'34896138'}}
         """
         return self.call(self.TELL_STATUS, [gid, keys])
@@ -905,7 +905,7 @@ class Client:
             >>> from pprint import pprint
             >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
             ...                       'method':'aria2.getUris',
-            ...                       'params':['2089b05ecca3d829']})
+            ...                       'params':['0000000000000001']})
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
@@ -954,7 +954,7 @@ class Client:
             >>> from pprint import pprint
             >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
             ...                       'method':'aria2.getFiles',
-            ...                       'params':['2089b05ecca3d829']})
+            ...                       'params':['0000000000000001']})
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
@@ -1005,7 +1005,7 @@ class Client:
             >>> from pprint import pprint
             >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
             ...                       'method':'aria2.getPeers',
-            ...                       'params':['2089b05ecca3d829']})
+            ...                       'params':['0000000000000001']})
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
@@ -1062,7 +1062,7 @@ class Client:
             >>> from pprint import pprint
             >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
             ...                       'method':'aria2.getServers',
-            ...                       'params':['2089b05ecca3d829']})
+            ...                       'params':['0000000000000001']})
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
@@ -1157,9 +1157,9 @@ class Client:
                 - If the destination position is less than 0 or beyond the end of the queue,
                   it moves the download to the beginning or the end of the queue respectively.
 
-                For example, if GID#2089b05ecca3d829 is currently in position 3,
-                `change_position('2089b05ecca3d829', -1, 'POS_CUR')` will change its position to 2. Additionally
-                `change_position('2089b05ecca3d829', 0, 'POS_SET')` will change its position to 0 (the beginning of the queue).
+                For example, if GID#0000000000000001 is currently in position 3,
+                `change_position('0000000000000001', -1, 'POS_CUR')` will change its position to 2. Additionally
+                `change_position('0000000000000001', 0, 'POS_SET')` will change its position to 0 (the beginning of the queue).
 
         Returns:
             An integer denoting the resulting position.
@@ -1167,13 +1167,13 @@ class Client:
         Examples:
             **Original JSON-RPC Example**
 
-            The following examples move the download GID#2089b05ecca3d829 to the front of the queue.
+            The following examples move the download GID#0000000000000001 to the front of the queue.
 
             >>> import urllib2, json
             >>> from pprint import pprint
             >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
             ...                       'method':'aria2.changePosition',
-            ...                       'params':['2089b05ecca3d829', 0, 'POS_SET']})
+            ...                       'params':['0000000000000001', 0, 'POS_SET']})
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': 0}
@@ -1220,13 +1220,13 @@ class Client:
             **Original JSON-RPC Example**
 
             The following examples add the URI http://example.org/file to the file whose index is 1 and belongs to the
-            download GID#2089b05ecca3d829.
+            download GID#0000000000000001.
 
             >>> import urllib2, json
             >>> from pprint import pprint
             >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
             ...                       'method':'aria2.changeUri',
-            ...                       'params':['2089b05ecca3d829', 1, [],
+            ...                       'params':['0000000000000001', 1, [],
                                                ['http://example.org/file']]})
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> pprint(json.loads(c.read()))
@@ -1253,13 +1253,13 @@ class Client:
         Examples:
             **Original JSON-RPC Example**
 
-            The following examples get options of the download GID#2089b05ecca3d829.
+            The following examples get options of the download GID#0000000000000001.
 
             >>> import urllib2, json
             >>> from pprint import pprint
             >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
             ...                       'method':'aria2.getOption',
-            ...                       'params':['2089b05ecca3d829']})
+            ...                       'params':['0000000000000001']})
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
@@ -1307,13 +1307,13 @@ class Client:
         Examples:
             **Original JSON-RPC Example**
 
-            The following examples set the max-download-limit option to 20K for the download GID#2089b05ecca3d829.
+            The following examples set the max-download-limit option to 20K for the download GID#0000000000000001.
 
             >>> import urllib2, json
             >>> from pprint import pprint
             >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
             ...                       'method':'aria2.changeOption',
-            ...                       'params':['2089b05ecca3d829',
+            ...                       'params':['0000000000000001',
             ...                                 {'max-download-limit':'10K'}]})
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> pprint(json.loads(c.read()))
@@ -1445,13 +1445,13 @@ class Client:
         Examples:
             **Original JSON-RPC Example**
 
-            The following examples remove the download result of the download GID#2089b05ecca3d829.
+            The following examples remove the download result of the download GID#0000000000000001.
 
             >>> import urllib2, json
             >>> from pprint import pprint
             >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
             ...                       'method':'aria2.removeDownloadResult',
-            ...                       'params':['2089b05ecca3d829']})
+            ...                       'params':['0000000000000001']})
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'OK'}
@@ -1603,7 +1603,7 @@ class Client:
             ...                                   'params':[base64.b64encode(open('file.torrent').read())]}]]})
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> pprint(json.loads(c.read()))
-            {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': [[u'2089b05ecca3d829'], [u'd2703803b52216d1']]}
+            {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': [[u'0000000000000001'], [u'd2703803b52216d1']]}
 
             JSON-RPC additionally supports Batch requests as described in the JSON-RPC 2.0 Specification:
 
@@ -1615,7 +1615,7 @@ class Client:
             ...                        'params':[base64.b64encode(open('file.torrent').read())]}])
             >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
             >>> pprint(json.loads(c.read()))
-            [{u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'2089b05ecca3d829'},
+            [{u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'0000000000000001'},
              {u'id': u'asdf', u'jsonrpc': u'2.0', u'result': u'd2703803b52216d1'}]
         """
         return self.call(self.MULTICALL, [methods])

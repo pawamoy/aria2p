@@ -1,3 +1,3 @@
-http://example.org/aria1	http://example.org/aria2
- gid=2089b05ecca3d829
+http://localhost:8779/1024	http://localhost:8779/1k
+ gid=0000000000000001
  pause=true

@@ -1,3 +1,2 @@
 http://localhost:8779/10m
  gid=0000000000000001
- max-download-limit=10000

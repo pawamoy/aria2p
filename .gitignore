@@ -18,3 +18,4 @@ demo.gif
 poetry.lock
 *.sw[po]
 .venv/
+.ports.json
