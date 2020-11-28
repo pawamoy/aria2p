@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [0.10.1](https://github.com/pawamoy/aria2p/releases/tag/0.10.1) - 2020-11-28
+
+<small>[Compare with 0.10.0](https://github.com/pawamoy/aria2p/compare/0.10.0...0.10.1)</small>
+
+### Bug Fixes
+- Fix missing toml dependency ([4d385f1](https://github.com/pawamoy/aria2p/commit/4d385f1811c0eacfb3741ab958d59fe1b9b505f6) by Timothée Mazzucotelli).
+
+
 ## [0.10.0](https://github.com/pawamoy/aria2p/releases/tag/0.10.0) - 2020-11-28
 
 <small>[Compare with 0.9.1](https://github.com/pawamoy/aria2p/compare/0.9.1...0.10.0)</small>
