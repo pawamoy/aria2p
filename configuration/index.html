@@ -12,7 +12,7 @@
         <meta name="description" content="Command-line tool and Python library to interact with an aria2c daemon process through JSON-RPC.">
       
       
-        <link rel="canonical" href="https://pawamoy.github.io/aria2p/usage/">
+        <link rel="canonical" href="https://pawamoy.github.io/aria2p/configuration/">
       
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Usage - aria2p</title>
+        <title>Configuration - aria2p</title>
       
     
     
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#usage" class="md-skip">
+        <a href="#configuration" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +93,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Usage
+              Configuration
             
           </span>
         </div>
@@ -203,6 +203,18 @@
       
       
 
+
+  <li class="md-nav__item">
+    <a href="../usage/" title="Usage" class="md-nav__link">
+      Usage
+    </a>
+  </li>
+
+    
+      
+      
+      
+
   
 
 
@@ -213,98 +225,10 @@
       
     
     
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Usage
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-    
-    <a href="./" title="Usage" class="md-nav__link md-nav__link--active">
-      Usage
-    </a>
-    
-      
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#listening-to-notifications" class="md-nav__link">
-    Listening to notifications
-  </a>
-  
-    <nav class="md-nav" aria-label="Listening to notifications">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#through-the-command-line" class="md-nav__link">
-    Through the command line
-  </a>
-  
-    <nav class="md-nav" aria-label="Through the command line">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#process-specific-types-of-notifications" class="md-nav__link">
-    Process specific types of notifications
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#interruption" class="md-nav__link">
-    Interruption
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#timeout" class="md-nav__link">
-    Timeout
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#programmatically" class="md-nav__link">
-    Programmatically
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-    
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../configuration/" title="Configuration" class="md-nav__link">
+    <a href="./" title="Configuration" class="md-nav__link md-nav__link--active">
       Configuration
     </a>
+    
   </li>
 
     
@@ -483,68 +407,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#listening-to-notifications" class="md-nav__link">
-    Listening to notifications
-  </a>
-  
-    <nav class="md-nav" aria-label="Listening to notifications">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#through-the-command-line" class="md-nav__link">
-    Through the command line
-  </a>
-  
-    <nav class="md-nav" aria-label="Through the command line">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#process-specific-types-of-notifications" class="md-nav__link">
-    Process specific types of notifications
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#interruption" class="md-nav__link">
-    Interruption
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#timeout" class="md-nav__link">
-    Timeout
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#programmatically" class="md-nav__link">
-    Programmatically
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -555,7 +417,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/pawamoy/aria2p/edit/master/docs/usage.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/pawamoy/aria2p/edit/master/docs/configuration.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
@@ -563,83 +425,22 @@
                   
                 
                 
-                <h1 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">¤</a></h1>
-<p>Extensive usage instructions will be added later, when the application is more stable.
-You can also refer to the README / Overview.</p>
-<h2 id="listening-to-notifications">Listening to notifications<a class="headerlink" href="#listening-to-notifications" title="Permanent link">¤</a></h2>
-<p>Since <a href="/changelog/#v030-compare-2019-10-11">version 0.3</a>, it is possible to listen to the server notifications
-thanks to the <a href="https://pypi.org/project/websocket_client/"><code>websocket-client</code></a> Python package.</p>
-<p>The server sends a notification to the client through a WebSocket for each of these events:
-- a download is started,
-- a download is paused,
-- a download is stopped,
-- a download fails,
-- a download is complete,
-- a bittorrent download is complete (received 100%, still seeding).</p>
-<h3 id="through-the-command-line">Through the command line<a class="headerlink" href="#through-the-command-line" title="Permanent link">¤</a></h3>
-<p>The command line interface offers a <code>listen</code> subcommand:</p>
-<div class="highlight"><pre><span></span><code>aria2p listen -c /path/to/callbacks.py
+                <h1 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¤</a></h1>
+<p>Since version 0.10, aria2p reads configuration from <code>$XDG_CONFIG_HOME/aria2p/config.toml</code>.</p>
+<p>Things that can be configured are:</p>
+<ul>
+<li>key bindings</li>
+<li>colors</li>
+</ul>
+<p>Upon running aria2p version 0.10 or above,
+the configuration will be created with default values
+if it doesn't already exist.</p>
+<p>The format of the configuration file
+is <a href="https://github.com/toml-lang/toml">TOML</a>.</p>
+<p>You can bind several key to a single action if you want:</p>
+<div class="highlight"><pre><span></span><code><span class="n">FOLLOW_ROW</span> <span class="o">=</span> <span class="s">&quot;F&quot;</span>    <span class="c1"># only one key</span>
+<span class="n">HELP</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;F1&quot;</span><span class="p">,</span> <span class="s">&quot;?&quot;</span><span class="p">]</span>  <span class="c1"># multiple keys</span>
 </code></pre></div>
-<p><small><em>In the future, a default path will be used for the callbacks module.</em></small></p>
-<p>The <code>callbacks.py</code> file is a Python module defining one or more of these callback functions:
-- <code>on_download_start</code>,
-- <code>on_download_pause</code>,
-- <code>on_download_stop</code>,
-- <code>on_download_error</code>,
-- <code>on_download_complete</code>,
-- <code>on_bt_download_complete</code>.</p>
-<p>Each one of these callbacks must accept two parameters: the API instance and the GID of the download.
-You can use the names you want.</p>
-<p>Example:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># ~/callbacks.py</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-
-
-<span class="k">def</span> <span class="nf">on_download_error</span><span class="p">(</span><span class="n">api</span><span class="p">,</span> <span class="n">gid</span><span class="p">):</span>
-    <span class="c1"># pop a desktop notification using notify-send</span>
-    <span class="n">download</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_download</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-    <span class="n">summary</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;A download failed&quot;</span>
-    <span class="n">body</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">download</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">download</span><span class="o">.</span><span class="n">error_message</span><span class="si">}</span><span class="s2"> (code: </span><span class="si">{</span><span class="n">download</span><span class="o">.</span><span class="n">error_code</span><span class="si">}</span><span class="s2">).&quot;</span>
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s2">&quot;notify-send&quot;</span><span class="p">,</span> <span class="s2">&quot;-t&quot;</span><span class="p">,</span> <span class="s2">&quot;10000&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="n">body</span><span class="p">])</span>
-
-
-<span class="k">def</span> <span class="nf">on_download_complete</span><span class="p">(</span><span class="n">api</span><span class="p">,</span> <span class="n">gid</span><span class="p">):</span>
-    <span class="n">download</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_download</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-    <span class="c1"># purge if it was a magnet metadata download</span>
-    <span class="k">if</span> <span class="n">download</span><span class="o">.</span><span class="n">is_metadata</span><span class="p">:</span>
-        <span class="n">download</span><span class="o">.</span><span class="n">purge</span><span class="p">()</span>
-        <span class="k">return</span>
-    <span class="c1"># move files to another folder</span>
-    <span class="n">destination</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;library&quot;</span>
-    <span class="k">if</span> <span class="n">download</span><span class="o">.</span><span class="n">move_files</span><span class="p">(</span><span class="n">destination</span><span class="p">):</span>
-        <span class="n">download</span><span class="o">.</span><span class="n">control_file_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
-        <span class="n">download</span><span class="o">.</span><span class="n">purge</span><span class="p">()</span>
-</code></pre></div>
-<p>You can now use this callbacks module with <code>aria2p listen -c ~/callbacks.py</code>.</p>
-<h4 id="process-specific-types-of-notifications">Process specific types of notifications<a class="headerlink" href="#process-specific-types-of-notifications" title="Permanent link">¤</a></h4>
-<p>If you want to listen to only a particular type of notification, even though your callbacks module
-defines all the possible callbacks, you can pass additional arguments:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># let say you want to run multiple listeners:</span>
-<span class="c1"># one for errors, one for completions, and one for the rest</span>
-aria2p listen -c ~/callbacks.py error <span class="p">&amp;</span>
-aria2p listen -c ~/callbacks.py <span class="nb">complete</span> btcomplete <span class="p">&amp;</span>
-aria2p listen -c ~/callbacks.py start pause stop <span class="p">&amp;</span>
-</code></pre></div>
-<p>This is possible because the server sends the notifications to every client that is listening.</p>
-<h4 id="interruption">Interruption<a class="headerlink" href="#interruption" title="Permanent link">¤</a></h4>
-<p>To stop listening, send a SIGTERM or SIGINT signal to the process,
-for example by hitting Control-C if aria2p is running in the foreground.
-If a notification is currently being handled, it will finish before the listener is stopped.</p>
-<h4 id="timeout">Timeout<a class="headerlink" href="#timeout" title="Permanent link">¤</a></h4>
-<p>If you find the default five seconds to be too long when interrupting the process,
-you can decrease this timeout value by passing the <code>-t</code> or <code>--timeout</code> option:</p>
-<div class="highlight"><pre><span></span><code>aria2p listen -c ~/callbacks.py -t <span class="m">1</span>
-</code></pre></div>
-<h3 id="programmatically">Programmatically<a class="headerlink" href="#programmatically" title="Permanent link">¤</a></h3>
-<p>Both the <a href="/reference/api/#aria2p.api.API.listen_to_notifications"><code>API</code></a>
-and <a href="/reference/client/#aria2p.client.Client.listen_to_notifications"><code>Client</code></a> classes provide a method called
-<code>listen_to_notifications</code>, and another one called <code>stop_listening</code>. Please check their respective documentation. </p>
                 
               
               
@@ -658,7 +459,7 @@ and <a href="/reference/client/#aria2p.client.Client.listen_to_notifications"><c
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href=".." title="Overview" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../usage/" title="Usage" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -667,19 +468,19 @@ and <a href="/reference/client/#aria2p.client.Client.listen_to_notifications"><c
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Overview
+                Usage
               </div>
             </div>
           </a>
         
         
-          <a href="../configuration/" title="Configuration" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../reference/api/" title="api.py" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Configuration
+                api.py
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">

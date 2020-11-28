@@ -1,55 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
      <loc>https://pawamoy.github.io/aria2p/</loc>
-     <lastmod>2020-05-14</lastmod>
+     <lastmod>2020-11-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://pawamoy.github.io/aria2p/usage/</loc>
-     <lastmod>2020-05-14</lastmod>
+     <lastmod>2020-11-28</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://pawamoy.github.io/aria2p/configuration/</loc>
+     <lastmod>2020-11-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://pawamoy.github.io/aria2p/reference/api/</loc>
-     <lastmod>2020-05-14</lastmod>
+     <lastmod>2020-11-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://pawamoy.github.io/aria2p/reference/cli/</loc>
-     <lastmod>2020-05-14</lastmod>
+     <lastmod>2020-11-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://pawamoy.github.io/aria2p/reference/client/</loc>
-     <lastmod>2020-05-14</lastmod>
+     <lastmod>2020-11-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://pawamoy.github.io/aria2p/reference/downloads/</loc>
-     <lastmod>2020-05-14</lastmod>
+     <lastmod>2020-11-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://pawamoy.github.io/aria2p/reference/options/</loc>
-     <lastmod>2020-05-14</lastmod>
+     <lastmod>2020-11-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://pawamoy.github.io/aria2p/reference/stats/</loc>
-     <lastmod>2020-05-14</lastmod>
+     <lastmod>2020-11-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://pawamoy.github.io/aria2p/reference/utils/</loc>
-     <lastmod>2020-05-14</lastmod>
+     <lastmod>2020-11-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://pawamoy.github.io/aria2p/contributing/</loc>
-     <lastmod>2020-05-14</lastmod>
+     <lastmod>2020-11-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://pawamoy.github.io/aria2p/code_of_conduct/</loc>
-     <lastmod>2020-05-14</lastmod>
+     <lastmod>2020-11-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://pawamoy.github.io/aria2p/changelog/</loc>
-     <lastmod>2020-05-14</lastmod>
+     <lastmod>2020-11-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://pawamoy.github.io/aria2p/credits/</loc>
-     <lastmod>2020-05-14</lastmod>
+     <lastmod>2020-11-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
