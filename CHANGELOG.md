@@ -5,6 +5,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [0.10.0](https://github.com/pawamoy/aria2p/releases/tag/0.10.0) - 2020-11-28
+
+<small>[Compare with 0.9.1](https://github.com/pawamoy/aria2p/compare/0.9.1...0.10.0)</small>
+
+### Bug Fixes
+- Security fix (requests vulnerability) ([17777c0](https://github.com/pawamoy/aria2p/commit/17777c009912c2ac252f260842376039c321aca9) by Timothée Mazzucotelli).
+- Fix TUI crashes when removing files for downloads without ([c066971](https://github.com/pawamoy/aria2p/commit/c066971f13d6806e180473cf2fd15733fa7d9543) by jonnieey).
+- Fix TUI crash when URI is longer than screen width ([dc1f11b](https://github.com/pawamoy/aria2p/commit/dc1f11be5e74f9ae0e8fc9f8e77e689ad1c21ba5) by Jonnieey).
+
+### Code Refactoring
+- Use purge instead of autopurge in interface ([045b4d3](https://github.com/pawamoy/aria2p/commit/045b4d34c039ce44e497a1fd545834a723cc8b9e) by Timothée Mazzucotelli).
+- Various quality improvements ([e8aca77](https://github.com/pawamoy/aria2p/commit/e8aca774243259152f7cce3ee9aea84502027d0e) by Timothée Mazzucotelli).
+- Remove deprecated subcommands ([da9664c](https://github.com/pawamoy/aria2p/commit/da9664c95286b11d0a506b5ff6e8f7b851add515) by Timothée Mazzucotelli).
+- Move `add` command logic into API ([6f36116](https://github.com/pawamoy/aria2p/commit/6f361163b73f7ac8d0a76308b14331383c8fecd7) by Timothée Mazzucotelli).
+
+### Features
+- Add new downloads from TUI (with the `a` key by default) ([052a0ae](https://github.com/pawamoy/aria2p/commit/052a0aebe9da6e92eaea17ad64fa0ab747e069bb) by Jonnieey).
+- Add user configuration ([f3512b7](https://github.com/pawamoy/aria2p/commit/f3512b72504745ad7d0ade260ca08b3ddab65db5) by Jonnieey). References: [#60](https://github.com/pawamoy/aria2p/issues/60), [#62](https://github.com/pawamoy/aria2p/issues/62)
+- Add `retry_downloads` API method ([77678f5](https://github.com/pawamoy/aria2p/commit/77678f5717e3f5d8d9f8d3edb76935210a997072) by Jonnieey).
+
+
 ## [0.9.1](https://github.com/pawamoy/aria2p/releases/tag/0.9.1) - 2020-05-14
 
 <small>[Compare with 0.9.0](https://github.com/pawamoy/aria2p/compare/0.9.0...0.9.1)</small>
