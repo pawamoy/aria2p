@@ -46,7 +46,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`uvicorn`](https://github.com/encode/uvicorn) |
 [`websocket_client`](https://github.com/websocket-client/websocket-client.git) |
 [`wemake-python-styleguide`](https://wemake-python-stylegui.de) |
-[`xdg`](https://github.com/srstevenson/xdg)
+[`appdirs`](https://github.com/ActiveState/appdirs)
 
 ### Indirect dependencies
 [`aiocontextvars`](https://github.com/fantix/aiocontextvars) |
