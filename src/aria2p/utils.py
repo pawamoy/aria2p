@@ -12,8 +12,8 @@ from typing import Any, Dict, List
 
 import pkg_resources
 import toml
+from appdirs import user_config_dir
 from loguru import logger
-from xdg import XDG_CONFIG_HOME
 
 from aria2p.types import PathOrStr
 
@@ -240,7 +240,7 @@ def load_configuration() -> Dict[str, Any]:
     config_dict["DEFAULT"] = toml.loads(default_config)
 
     # Check for configuration file
-    config_file_path = Path(XDG_CONFIG_HOME) / "aria2p" / "config.toml"
+    config_file_path = Path(user_config_dir("aria2p")) / "config.toml"
 
     if config_file_path.exists():
         try:
