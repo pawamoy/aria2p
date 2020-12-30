@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [0.10.3](https://github.com/pawamoy/aria2p/releases/tag/0.10.3) - 2020-12-30
+
+<small>[Compare with 0.10.2](https://github.com/pawamoy/aria2p/compare/0.10.2...0.10.3)</small>
+
+### Bug Fixes
+- Add missing extra dependencies for tui group ([60f9e69](https://github.com/pawamoy/aria2p/commit/60f9e696c3961b0e91c6bfd3b4ba816f0b7bd6cd) by Timothée Mazzucotelli).
+
+
 ## [0.10.2](https://github.com/pawamoy/aria2p/releases/tag/0.10.2) - 2020-12-30
 
 <small>[Compare with 0.10.1](https://github.com/pawamoy/aria2p/compare/0.10.1...0.10.2)</small>
