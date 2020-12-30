@@ -99,7 +99,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`httpcore`](https://github.com/encode/httpcore) |
 [`idna`](https://github.com/kjd/idna) |
 [`immutables`](https://github.com/MagicStack/immutables) |
-[`importlib-metadata`](http://importlib-metadata.readthedocs.io/) |
+[`importlib-metadata`](https://github.com/python/importlib_metadata) |
 [`iniconfig`](http://github.com/RonnyPfannschmidt/iniconfig) |
 [`ipython-genutils`](http://ipython.org) |
 [`jedi`](https://github.com/davidhalter/jedi) |
