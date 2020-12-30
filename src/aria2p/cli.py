@@ -94,8 +94,11 @@ def main(args: Optional[List[str]] = None) -> int:
         "top": subcommand_top,
         "call": subcommand_call,
         "add": subcommand_add,
+        "add-magnet": subcommand_add_magnets,  # alias for add-magnets
         "add-magnets": subcommand_add_magnets,
+        "add-torrent": subcommand_add_torrents,  # alias for add-torrents
         "add-torrents": subcommand_add_torrents,
+        "add-metalink": subcommand_add_metalinks,  # alias for add-metalinks
         "add-metalinks": subcommand_add_metalinks,
         "pause": subcommand_pause,
         "stop": subcommand_pause,  # alias for pause
