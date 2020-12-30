@@ -1320,7 +1320,7 @@ load_configuration<span class="p">()</span>        </code>
     <span class="n">config_dict</span><span class="p">[</span><span class="s2">"DEFAULT"</span><span class="p">]</span> <span class="o">=</span> <span class="n">toml</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">default_config</span><span class="p">)</span>
 
     <span class="c1"># Check for configuration file</span>
-    <span class="n">config_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">XDG_CONFIG_HOME</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"aria2p"</span> <span class="o">/</span> <span class="s2">"config.toml"</span>
+    <span class="n">config_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">user_config_dir</span><span class="p">(</span><span class="s2">"aria2p"</span><span class="p">))</span> <span class="o">/</span> <span class="s2">"config.toml"</span>
 
     <span class="k">if</span> <span class="n">config_file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="k">try</span><span class="p">:</span>
