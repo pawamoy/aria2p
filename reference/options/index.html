@@ -181,6 +181,11 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#aria2p.options.GenericMeta">
+    GenericMeta
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#aria2p.options.Options">
     Options
   </a>
@@ -1225,6 +1230,11 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#aria2p.options.GenericMeta">
+    GenericMeta
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#aria2p.options.Options">
     Options
   </a>
@@ -2232,6 +2242,14 @@
 <p>This module defines the Options class, which holds information retrieved with the <code>get_option</code> or
 <code>get_global_option</code> methods of the client.</p>
 <div class="doc doc-children">
+<div class="doc doc-object doc-class">
+<h2 class="doc doc-heading" id="aria2p.options.GenericMeta">
+<code>GenericMeta</code>
+<a class="headerlink" href="#aria2p.options.GenericMeta" title="Permanent link">¤</a></h2>
+<div class="doc doc-contents">
+<p>Placeholder.</p>
+</div>
+</div>
 <div class="doc doc-object doc-class">
 <h2 class="doc doc-heading" id="aria2p.options.Options">
 <code>Options</code>
@@ -8857,7 +8875,7 @@ get<span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
 </tr>
 <tr>
 <td><code>class_</code></td>
-<td><code>Callable</code></td>
+<td><code>Union[aria2p.options.GenericMeta, Callable]</code></td>
 <td>
 <p>Pass the value through this class/function to change its type.</p>
 </td>
@@ -8875,7 +8893,7 @@ get<span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
 </thead>
 <tbody>
 <tr>
-<td><code>Union[str, int, float]</code></td>
+<td><code>Union[str, int, bool, float]</code></td>
 <td>
 <p>The option value.</p>
 </td>
@@ -8973,7 +8991,7 @@ set<span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
 </tr>
 <tr>
 <td><code>value</code></td>
-<td><code>Union[str, int, float]</code></td>
+<td><code>Union[str, int, float, bool]</code></td>
 <td>
 <p>The value to set.</p>
 </td>
