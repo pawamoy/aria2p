@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [0.10.2](https://github.com/pawamoy/aria2p/releases/tag/0.10.2) - 2020-12-30
+
+<small>[Compare with 0.10.1](https://github.com/pawamoy/aria2p/compare/0.10.1...0.10.2)</small>
+
+### Bug Fixes
+- Add back missing commands aliases ([cd25e78](https://github.com/pawamoy/aria2p/commit/cd25e787179055d6d6e271c1d64f61fef9c9cf4f) by Timothée Mazzucotelli).
+
+
 ## [0.10.1](https://github.com/pawamoy/aria2p/releases/tag/0.10.1) - 2020-11-28
 
 <small>[Compare with 0.10.0](https://github.com/pawamoy/aria2p/compare/0.10.0...0.10.1)</small>
