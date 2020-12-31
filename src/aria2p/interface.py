@@ -75,6 +75,9 @@ def color_palette_parser(palette: str) -> Tuple[int, int, int]:
         "YELLOW": Screen.COLOUR_YELLOW,
         "BLUE": Screen.COLOUR_BLUE,
         "GREEN": Screen.COLOUR_GREEN,
+        "DEFAULT": -1, # -1 stands for the standard terminfo color which means use
+        # the default color provided by the terminal this allows for terminals
+        # with transparency to allow tranparent background color
     }
     mode_map = {
         "NORMAL": Screen.A_NORMAL,
