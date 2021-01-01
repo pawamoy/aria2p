@@ -75,7 +75,7 @@ def color_palette_parser(palette: str) -> Tuple[int, int, int]:
         "YELLOW": Screen.COLOUR_YELLOW,
         "BLUE": Screen.COLOUR_BLUE,
         "GREEN": Screen.COLOUR_GREEN,
-        "DEFAULT": -1, # -1 stands for the standard terminfo color which means use
+        "DEFAULT": -1,  # -1 stands for the standard terminfo color which means use
         # the default color provided by the terminal this allows for terminals
         # with transparency to allow tranparent background color
     }
@@ -356,9 +356,10 @@ class Interface:
     follow = None
     bounds = []
 
-    palettes = defaultdict(lambda: (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK))
+    palettes = defaultdict(lambda: color_palette_parser("UI"))
     palettes.update(
         {
+            "ui": color_palette_parser("UI"),
             "header": color_palette_parser("HEADER"),
             "focused_header": color_palette_parser("FOCUSED_HEADER"),
             "focused_row": color_palette_parser("FOCUSED_ROW"),
@@ -954,7 +955,7 @@ class Interface:
         self.screen.print_at(header_string, 0, y, *self.palettes["side_column_header"])
         self.screen.print_at(" ", len_header, y, *self.palettes["default"])
         y += 1
-        self.screen.print_at(" " * self.width, 0, y)
+        self.screen.print_at(" " * self.width, 0, y, *self.palettes["ui"])
         separator = "..."
 
         for i, uri in enumerate(self.downloads_uris):
@@ -973,7 +974,8 @@ class Interface:
             self.screen.print_at(" ", len(uri), y, *self.palettes["default"])
 
         for i in range(1, self.height - y):
-            self.screen.print_at(" " * (padding + 1), 0, y + i)
+            self.screen.print_at(" " * (padding + 1), 0, y + i,
+                    *self.palettes["ui"])
 
     def print_help(self):
         version = get_version()
@@ -1021,13 +1023,13 @@ class Interface:
             self.print_keys(keys, text, y)
             y += 1
 
-        self.screen.print_at(" " * self.width, 0, y)
+        self.screen.print_at(" " * self.width, 0, y, *self.palettes["ui"])
         y += 1
         self.screen.print_at(f"{'Press any key to return.':<{self.width}}", 0, y, *self.palettes["bright_help"])
         y += 1
 
         for i in range(self.height - y):
-            self.screen.print_at(" " * self.width, 0, y + i)
+            self.screen.print_at(" " * self.width, 0, y + i, *self.palettes["ui"])
 
     def print_keys(self, keys, text, y):
         self.print_keys_text(" ".join(Keys.names(keys)) + ":", text, y)
@@ -1056,7 +1058,8 @@ class Interface:
             self.screen.print_at(" ", len_row, y, *self.palettes["default"])
 
         for i in range(1, self.height - y):
-            self.screen.print_at(" " * (padding + 1), 0, y + i)
+            self.screen.print_at(" " * (padding + 1), 0, y + i,
+                    *self.palettes["ui"])
 
     def print_select_sort_column(self):
         y = self.y_offset
@@ -1076,7 +1079,8 @@ class Interface:
             self.screen.print_at(" ", len_row, y, *self.palettes["default"])
 
         for i in range(1, self.height - y):
-            self.screen.print_at(" " * (padding + 1), 0, y + i)
+            self.screen.print_at(" " * (padding + 1), 0, y + i,
+                    *self.palettes["ui"])
 
     def print_table(self):
         self.print_headers()
@@ -1130,7 +1134,8 @@ class Interface:
             y += 1
 
         for i in range(self.height - y):
-            self.screen.print_at(" " * self.width, self.x_offset, y + i)
+            self.screen.print_at(" " * self.width, self.x_offset, y + i,
+                    *self.palettes["ui"])
 
     def get_column_at_x(self, x):
         """For an horizontal position X, return the column index."""

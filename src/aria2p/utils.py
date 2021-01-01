@@ -220,7 +220,25 @@ def load_configuration() -> Dict[str, Any]:
             UN_SELECT_ALL = "U"
             ADD_DOWNLOADS = "a"
 
+        # uncomment this one and comment the other one to enable transparency support
+        # [colors]
+        #     UI = "WHITE BOLD DEFAULT"
+        #     BRIGHT_HELP = "CYAN BOLD DEFAULT"
+        #     FOCUSED_HEADER = "BLACK NORMAL CYAN"
+        #     FOCUSED_ROW = "BLACK NORMAL CYAN"
+        #     HEADER = "BLACK NORMAL GREEN"
+        #     METADATA = "WHITE UNDERLINE DEFAULT"
+        #     SIDE_COLUMN_FOCUSED_ROW = "DEFAULT UNDERLINE DEFAULT"
+        #     SIDE_COLUMN_HEADER = "BLACK NORMAL GREEN"
+        #     SIDE_COLUMN_ROW = "DEFAULT NORMAL DEFAULT"
+        #     STATUS_ACTIVE = "CYAN NORMAL BLACK"
+        #     STATUS_COMPLETE = "GREEN NORMAL BLACK"
+        #     STATUS_ERROR = "RED BOLD BLACK"
+        #     STATUS_PAUSED = "YELLOW NORMAL BLACK"
+        #     STATUS_WAITING = "WHITE BOLD BLACK"
+
         [colors]
+            UI = "WHITE BOLD BLACK"
             BRIGHT_HELP = "CYAN BOLD BLACK"
             FOCUSED_HEADER = "BLACK NORMAL CYAN"
             FOCUSED_ROW = "BLACK NORMAL CYAN"
