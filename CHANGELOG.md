@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [0.10.4](https://github.com/pawamoy/aria2p/releases/tag/0.10.4) - 2021-01-06
+
+<small>[Compare with 0.10.3](https://github.com/pawamoy/aria2p/compare/0.10.3...0.10.4)</small>
+
+### Bug Fixes
+- Always depend on appdirs (not only in tui extra) ([7f36a04](https://github.com/pawamoy/aria2p/commit/7f36a04aaece28acf16a61fe7b87a5869aab3ac5) by Timothée Mazzucotelli).
+
+
 ## [0.10.3](https://github.com/pawamoy/aria2p/releases/tag/0.10.3) - 2020-12-30
 
 <small>[Compare with 0.10.2](https://github.com/pawamoy/aria2p/compare/0.10.2...0.10.3)</small>
