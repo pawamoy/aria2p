@@ -499,10 +499,10 @@ class API:
 
     def pause(self, downloads: List[Download], force: bool = False) -> List[OperationResult]:
         """
-        Remove the given downloads from the list.
+        Pause (active) the given downloads.
 
         Arguments:
-            downloads: The list of downloads to remove.
+            downloads: The list of downloads to pause.
             force: Whether to pause immediately without contacting servers or not.
 
         Returns:
@@ -530,7 +530,7 @@ class API:
 
     def pause_all(self, force: bool = False) -> bool:
         """
-        Remove the given downloads from the list.
+        Pause all (active) downloads.
 
         Arguments:
             force: Whether to pause immediately without contacting servers or not.
