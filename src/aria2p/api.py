@@ -499,7 +499,7 @@ class API:
 
     def pause(self, downloads: List[Download], force: bool = False) -> List[OperationResult]:
         """
-        Pause (active) the given downloads.
+        Pause the given (active) downloads.
 
         Arguments:
             downloads: The list of downloads to pause.
