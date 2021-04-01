@@ -18,7 +18,6 @@ from aria2p.downloads import Download
 from aria2p.options import Options
 from aria2p.stats import Stats
 from aria2p.types import OperationResult, OptionsType, PathOrStr
-from aria2p.utils import read_lines
 
 
 class API:
@@ -45,7 +44,7 @@ class API:
     def __repr__(self) -> str:
         return f"API({self.client!r})"
 
-    def add(self, uri: str) -> List[Download]:  # noqa: WPS231 (not that complex)
+    def add(self, uri: str, options: OptionsType = None) -> List[Download]:  # noqa: WPS231 (not that complex)
         """
         Add a download (guess its type).
 
@@ -54,6 +53,7 @@ class API:
 
         Arguments:
             uri: The URI or file-path to add.
+            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary.
 
         Returns:
             The created downloads.
@@ -70,17 +70,19 @@ class API:
 
         if path_exists:
             if path.suffix == ".torrent":
-                new_downloads.append(self.add_torrent(path))
+                new_downloads.append(self.add_torrent(path, options=options))
             elif path.suffix == ".metalink":
-                new_downloads.extend(self.add_metalink(path))
+                new_downloads.extend(self.add_metalink(path, options=options))
             else:
-                for line in read_lines(path):
-                    if line:
-                        new_downloads.extend(self.add(line))
+                for download in self.add_input_file(path):
+                    links, options = download[0], download[1]
+                    for link in links:
+                        new_downloads.extend(self.add(uri=link, options=options))
+
         elif uri.startswith("magnet:?"):
-            new_downloads.append(self.add_magnet(uri))
+            new_downloads.append(self.add_magnet(uri, options=options))
         else:
-            new_downloads.append(self.add_uris([uri]))
+            new_downloads.append(self.add_uris([uri], options=options))
 
         return new_downloads
 
@@ -850,3 +852,52 @@ class API:
         if self.listener:
             self.listener.join()
         self.listener = None
+
+    def input_downloads(self, lines):
+        """
+        Helper to split downloads in an input file.
+
+        Arguments:
+             lines:  URI string.
+        """
+        block = []
+        for line in lines:
+            if line.lstrip().startswith("#"):  # Ignore Comments
+                continue
+            if not line.strip():  # Ignore empty line
+                continue
+            if not line.startswith(" "):  # Read download option
+                if block:
+                    yield block
+                    block = []
+            block.append(line.rstrip("\n"))
+        if block:
+            yield block
+
+    def add_input_file(self, input_file):
+        """
+        Parse file with uris or aria2c input file.
+
+        Arguments:
+            input_file: Path to file with URIs or aria2c input file.
+
+        Returns:
+            List of tuples containing list of uris and dictionary with aria2c options.
+
+        """
+
+        downloads = []
+        with Path(input_file).open() as fd:
+            for download_lines in self.input_downloads(fd):
+                uris = download_lines[0].split("\t")
+                options = {}
+                try:
+                    for opt_line in download_lines[1:]:
+                        opt_name, opt_value = opt_line.split("=")
+                        options[opt_name.lstrip()] = opt_value
+                    downloads.append((uris, options))
+                except ValueError as error:
+                    logger.exception(error)
+                    # Notify the user of an error.
+
+        return downloads
