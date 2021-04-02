@@ -5,6 +5,30 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [0.10.4](https://github.com/pawamoy/aria2p/releases/tag/0.10.4) - 2021-01-06
+
+<small>[Compare with 0.10.3](https://github.com/pawamoy/aria2p/compare/0.10.3...0.10.4)</small>
+
+### Bug Fixes
+- Always depend on appdirs (not only in tui extra) ([7f36a04](https://github.com/pawamoy/aria2p/commit/7f36a04aaece28acf16a61fe7b87a5869aab3ac5) by Timothée Mazzucotelli).
+
+
+## [0.10.3](https://github.com/pawamoy/aria2p/releases/tag/0.10.3) - 2020-12-30
+
+<small>[Compare with 0.10.2](https://github.com/pawamoy/aria2p/compare/0.10.2...0.10.3)</small>
+
+### Bug Fixes
+- Add missing extra dependencies for tui group ([60f9e69](https://github.com/pawamoy/aria2p/commit/60f9e696c3961b0e91c6bfd3b4ba816f0b7bd6cd) by Timothée Mazzucotelli).
+
+
+## [0.10.2](https://github.com/pawamoy/aria2p/releases/tag/0.10.2) - 2020-12-30
+
+<small>[Compare with 0.10.1](https://github.com/pawamoy/aria2p/compare/0.10.1...0.10.2)</small>
+
+### Bug Fixes
+- Add back missing commands aliases ([cd25e78](https://github.com/pawamoy/aria2p/commit/cd25e787179055d6d6e271c1d64f61fef9c9cf4f) by Timothée Mazzucotelli).
+
+
 ## [0.10.1](https://github.com/pawamoy/aria2p/releases/tag/0.10.1) - 2020-11-28
 
 <small>[Compare with 0.10.0](https://github.com/pawamoy/aria2p/compare/0.10.0...0.10.1)</small>

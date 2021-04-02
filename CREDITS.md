@@ -10,6 +10,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`copier-poetry`](https://github.com/pawamoy/copier-poetry)
 
 ### Direct dependencies
+[`appdirs`](http://github.com/ActiveState/appdirs) |
 [`asciimatics`](https://github.com/peterbrittain/asciimatics) |
 [`autoflake`](https://github.com/myint/autoflake) |
 [`black`](https://github.com/psf/black) |
@@ -45,15 +46,13 @@ These projects were used to build `aria2p`. **Thank you!**
 [`toml`](https://github.com/uiri/toml) |
 [`uvicorn`](https://github.com/encode/uvicorn) |
 [`websocket_client`](https://github.com/websocket-client/websocket-client.git) |
-[`wemake-python-styleguide`](https://wemake-python-stylegui.de) |
-[`xdg`](https://github.com/srstevenson/xdg)
+[`wemake-python-styleguide`](https://wemake-python-stylegui.de)
 
 ### Indirect dependencies
 [`aiocontextvars`](https://github.com/fantix/aiocontextvars) |
 [`altgraph`](https://altgraph.readthedocs.io) |
 [`ansimarkup`](https://github.com/gvalkov/python-ansimarkup) |
 [`apipkg`](https://github.com/pytest-dev/apipkg) |
-[`appdirs`](http://github.com/ActiveState/appdirs) |
 [`appnope`](http://github.com/minrk/appnope) |
 [`astor`](https://github.com/berkerpeksag/astor) |
 [`astroid`](https://github.com/PyCQA/astroid) |
@@ -99,7 +98,7 @@ These projects were used to build `aria2p`. **Thank you!**
 [`httpcore`](https://github.com/encode/httpcore) |
 [`idna`](https://github.com/kjd/idna) |
 [`immutables`](https://github.com/MagicStack/immutables) |
-[`importlib-metadata`](http://importlib-metadata.readthedocs.io/) |
+[`importlib-metadata`](https://github.com/python/importlib_metadata) |
 [`iniconfig`](http://github.com/RonnyPfannschmidt/iniconfig) |
 [`ipython-genutils`](http://ipython.org) |
 [`jedi`](https://github.com/davidhalter/jedi) |
