@@ -879,7 +879,7 @@ class API:
             input_file: Path to file with URIs or aria2c input file.
 
         Returns:
-            List of tuples containing list of uris and dictionary with aria2c options.
+            List of tuples containing list of URIs and dictionary with aria2c options.
 
         """
 
@@ -889,13 +889,12 @@ class API:
                 uris = download_lines[0].split("\t")
                 options = {}
                 try:
-                    for opt_line in download_lines[1:]:
-                        opt_name, opt_value = opt_line.split("=", 1)
-                        options[opt_name.lstrip()] = opt_value
+                    for option_line in download_lines[1:]:
+                        option_name, option_value = option_line.split("=", 1)
+                        options[option_name.lstrip()] = option_value
                     downloads.append((uris, options))
                 except ValueError as error:
-                    logger.error(f"Skipping download because of invalid option line '{opt_line}'")
+                    logger.error(f"Skipping download because of invalid option line '{option_line}'")
                     logger.opt(exception=True).trace(error)
-                    return []
 
         return downloads
