@@ -18,7 +18,6 @@ from aria2p.downloads import Download
 from aria2p.options import Options
 from aria2p.stats import Stats
 from aria2p.types import OperationResult, OptionsType, PathOrStr
-from aria2p.utils import read_lines
 
 
 class API:
@@ -74,9 +73,9 @@ class API:
             elif path.suffix == ".metalink":
                 new_downloads.extend(self.add_metalink(path))
             else:
-                for line in read_lines(path):
-                    if line:
-                        new_downloads.extend(self.add(line))
+                for uris, options in self.parse_input_file(path):
+                    new_downloads.append(self.add_uris(uris, options=options))
+
         elif uri.startswith("magnet:?"):
             new_downloads.append(self.add_magnet(uri))
         else:
@@ -850,3 +849,52 @@ class API:
         if self.listener:
             self.listener.join()
         self.listener = None
+
+    def split_input_file(self, lines):
+        """
+        Helper to split downloads in an input file.
+
+        Arguments:
+             lines:  The lines of the input file.
+        """
+        block = []
+        for line in lines:
+            if line.lstrip().startswith("#"):  # Ignore Comments
+                continue
+            if not line.strip():  # Ignore empty line
+                continue
+            if not line.startswith(" "):  # Read uri
+                if block:
+                    yield block
+                    block = []
+            block.append(line.rstrip("\n"))
+        if block:
+            yield block
+
+    def parse_input_file(self, input_file):
+        """
+        Parse a file with URIs or an aria2c input file.
+
+        Arguments:
+            input_file: Path to file with URIs or aria2c input file.
+
+        Returns:
+            List of tuples containing list of URIs and dictionary with aria2c options.
+
+        """
+
+        downloads = []
+        with Path(input_file).open() as fd:
+            for download_lines in self.split_input_file(fd):
+                uris = download_lines[0].split("\t")
+                options = {}
+                try:
+                    for option_line in download_lines[1:]:
+                        option_name, option_value = option_line.split("=", 1)
+                        options[option_name.lstrip()] = option_value
+                    downloads.append((uris, options))
+                except ValueError as error:
+                    logger.error(f"Skipping download because of invalid option line '{option_line}'")
+                    logger.opt(exception=True).trace(error)
+
+        return downloads

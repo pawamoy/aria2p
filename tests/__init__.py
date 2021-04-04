@@ -16,3 +16,9 @@ XUBUNTU_MIRRORS = [
     "http://ftp.free.fr/mirrors/ftp.xubuntu.com/releases/18.04/release/xubuntu-18.04.1-desktop-amd64.iso",
     "http://mirror.us.leaseweb.net/ubuntu-cdimage/xubuntu/releases/18.04/release/xubuntu-18.04.1-desktop-amd64.iso",
 ]
+
+INPUT_FILES = [
+    TESTS_DATA_DIR / "input_files" / "two-valid-downloads",
+    TESTS_DATA_DIR / "input_files" / "one-valid-one-invalid-downloads",
+    TESTS_DATA_DIR / "input_files" / "two-invalid-downloads",
+]
