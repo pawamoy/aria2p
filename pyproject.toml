@@ -25,14 +25,14 @@ loguru = "*"
 requests = ">2.19.1"
 toml = "^0.10.2"
 websocket_client = "*"
-asciimatics = {version = "^1.11.0", optional = true}
+asciimatics = {version = "^1.13.0", optional = true}
 pyperclip = {version = "^1.8.0", optional = true}
 
 [tool.poetry.extras]
 tui = ["asciimatics", "pyperclip"]
 
 [tool.poetry.dev-dependencies]
-asciimatics = "^1.11.0"
+asciimatics = "^1.13.0"
 autoflake = "^1.4"
 black = "^20.8b1"
 duty = "^0.5.0"
@@ -58,7 +58,7 @@ pyinstaller = "^3.6"
 pyperclip = "^1.8.0"
 pytest = "^6.0.1"
 pytest-cov = "^2.10.1"
-pytest-randomly = "<3.6.0"
+pytest-randomly = "<3.6"
 pytest-rerunfailures = "^9.1.1"
 pytest-sugar = "^0.9.4"
 pytest-xdist = "^2.1.0"
