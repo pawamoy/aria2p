@@ -972,8 +972,7 @@ class Interface:
             self.screen.print_at(" ", len(uri), y, *self.palettes["default"])
 
         for i in range(1, self.height - y):
-            self.screen.print_at(" " * (padding + 1), 0, y + i,
-                    *self.palettes["ui"])
+            self.screen.print_at(" " * (padding + 1), 0, y + i, *self.palettes["ui"])
 
     def print_help(self):
         version = get_version()
@@ -1056,8 +1055,7 @@ class Interface:
             self.screen.print_at(" ", len_row, y, *self.palettes["default"])
 
         for i in range(1, self.height - y):
-            self.screen.print_at(" " * (padding + 1), 0, y + i,
-                    *self.palettes["ui"])
+            self.screen.print_at(" " * (padding + 1), 0, y + i, *self.palettes["ui"])
 
     def print_select_sort_column(self):
         y = self.y_offset
@@ -1077,8 +1075,7 @@ class Interface:
             self.screen.print_at(" ", len_row, y, *self.palettes["default"])
 
         for i in range(1, self.height - y):
-            self.screen.print_at(" " * (padding + 1), 0, y + i,
-                    *self.palettes["ui"])
+            self.screen.print_at(" " * (padding + 1), 0, y + i, *self.palettes["ui"])
 
     def print_table(self):
         self.print_headers()
@@ -1132,8 +1129,7 @@ class Interface:
             y += 1
 
         for i in range(self.height - y):
-            self.screen.print_at(" " * self.width, self.x_offset, y + i,
-                    *self.palettes["ui"])
+            self.screen.print_at(" " * self.width, self.x_offset, y + i, *self.palettes["ui"])
 
     def get_column_at_x(self, x):
         """For an horizontal position X, return the column index."""
