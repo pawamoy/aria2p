@@ -1,0 +1,7 @@
+# A valid aria2c input file.
+magnet:?xt=urn:btih:RX46NCATYQRS3MCQNSEXVZGCCDNKTASQ
+  max-download-limit100000
+
+  # Download 2.
+magnet:?xt=urn:btih:CVVWTODEHPIRQSNF3DZBELQT7O3BXUCB
+  max-resume-failure-tries=10
