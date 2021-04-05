@@ -280,6 +280,18 @@ def get_parser() -> argparse.ArgumentParser:
     # ========= ADD PARSER ========= #
     add_parser.add_argument("uris", nargs="*", help="The URIs/file-paths to add.")
     add_parser.add_argument("-f", "--from-file", dest="from_file", help="Load URIs from a file.")
+    add_parser.add_argument(
+        "-o",
+        "--options",
+        dest="options",
+        help="Download options to add to the new download. for example 'max-download-limit=100K,check-certificate=false'.",
+    )
+    add_parser.add_argument(
+        "-p",
+        "--position",
+        dest="position",
+        help="The position where to insert the new download in the queue.",
+    )
 
     # ========= ADD MAGNET PARSER ========= #
     add_magnets_parser.add_argument("uris", nargs="*", help="The magnet URIs to add.")
@@ -456,7 +468,13 @@ def get_method(name: str) -> Optional[str]:
     return methods.get(name)
 
 
-def subcommand_add(api: API, uris: List[str] = None, from_file: str = None) -> int:
+def subcommand_add(
+    api: API,
+    uris: List[str] = None,
+    from_file: str = None,
+    options: str = None,
+    position: str = None,
+) -> int:
     """
     Add magnet subcommand.
 
@@ -466,11 +484,20 @@ def subcommand_add(api: API, uris: List[str] = None, from_file: str = None) -> i
         from_file: Path to the file to read uris from.
             Deprecated: Every URI that is a valid file-path
             and is not a torrent or a metalink is now read as an input file.
+        options: String of aria2c options to add to download.
+        position: Position to add new download in the queue.
 
     Returns:
         int: 0 if OK else 1.
     """
     uris = uris or []
+    position = position or "0"
+
+    if options:
+        options = {
+            str(opt).strip(): str(val).strip()
+            for opt, val in (download_option.split("=", 1) for download_option in options.split(",", 1))
+        }
 
     if from_file:
         logger.warning(
@@ -481,7 +508,10 @@ def subcommand_add(api: API, uris: List[str] = None, from_file: str = None) -> i
     new_downloads = []
 
     for uri in uris:
-        new_downloads.extend(api.add(uri))
+        if int(position) > 0:
+            new_downloads.extend(api.add(uri, options=options, position=int(position) - 1))
+        else:
+            new_downloads.extend(api.add(uri, options=options, position=int(position)))
 
     if new_downloads:
         for new_download in new_downloads:
