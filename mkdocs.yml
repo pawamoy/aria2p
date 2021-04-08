@@ -5,21 +5,22 @@ repo_url: "https://github.com/pawamoy/aria2p"
 repo_name: "pawamoy/aria2p"
 
 nav:
-  - Overview: index.md
-  - Usage: usage.md
-  - Configuration: configuration.md
-  - API Reference:
-    - api.py: reference/api.md
-    - cli.py: reference/cli.md
-    - client.py: reference/client.md
-    - downloads.py: reference/downloads.md
-    - options.py: reference/options.md
-    - stats.py: reference/stats.md
-    - utils.py: reference/utils.md
-  - Contributing: contributing.md
-  - Code of Conduct: code_of_conduct.md
-  - Changelog: changelog.md
-  - Credits: credits.md
+- Overview: index.md
+- Usage: usage.md
+- Configuration: configuration.md
+- API Reference:
+  - api.py: reference/api.md
+  - cli.py: reference/cli.md
+  - client.py: reference/client.md
+  - downloads.py: reference/downloads.md
+  - options.py: reference/options.md
+  - stats.py: reference/stats.md
+  - utils.py: reference/utils.md
+- Contributing: contributing.md
+- Code of Conduct: code_of_conduct.md
+- Changelog: changelog.md
+- Coverage: coverage.md
+- Credits: credits.md
 
 theme:
   name: material
@@ -29,22 +30,25 @@ theme:
     accent: purple
 
 extra_css:
-  - css/mkdocstrings.css
+- css/mkdocstrings.css
 
 markdown_extensions:
-  - admonition
-  - markdown_include.include
-  - pymdownx.emoji
-  - pymdownx.magiclink
-  - pymdownx.superfences
-  - pymdownx.tabbed
-  - pymdownx.tasklist
-  - toc:
-      permalink: "¤"
+- admonition
+- pymdownx.emoji
+- pymdownx.magiclink
+- pymdownx.snippets:
+    check_paths: true
+- pymdownx.superfences
+- pymdownx.tabbed
+- pymdownx.tasklist
+- toc:
+    permalink: "¤"
 
 plugins:
-  - search
-  - mkdocstrings:
-      watch:
-        - src/aria2p
+- search
+- coverage:
+    html_report_dir: build/coverage
+- mkdocstrings:
+    watch:
+    - src/aria2p
 

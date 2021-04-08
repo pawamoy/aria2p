@@ -1,75 +1,88 @@
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["pdm-pep517"]
+build-backend = "pdm.pep517.api"
 
-[tool.poetry]
+[project]
 name = "aria2p"
-version = "0.10.4"
+version = {use_scm = true}
 description = "Command-line tool and library to interact with an aria2c daemon process with JSON-RPC."
-authors = ["Timothée Mazzucotelli <pawamoy@pm.me>"]
-license = "ISC"
+authors = [{name = "Timothée Mazzucotelli", email = "pawamoy@pm.me"}]
+license = {file = "LICENSE"}
 readme = "README.md"
-repository = "https://github.com/pawamoy/aria2p"
-homepage = "https://github.com/pawamoy/aria2p"
+requires-python = ">=3.6.1,<3.10"
+dynamic = ["version", "classifiers"]
+classifiers = ["Development Status :: 4 - Beta"]
 keywords = ["aria2", "aria2c", "aria2-cli"]
-packages = [ { include = "aria2p", from = "src" } ]
-include = [
-    "README.md",
-    "pyproject.toml"
+dependencies = [
+    "appdirs~=1.4",
+    "loguru~=0.5",
+    "requests~=2.19",
+    "toml~=0.10",
+    "websocket_client~=0.58",
 ]
 
-[tool.poetry.dependencies]
-python = "^3.6"
-appdirs = "^1.4.4"
-loguru = "*"
-requests = ">2.19.1"
-toml = "^0.10.2"
-websocket_client = "*"
-asciimatics = {version = "^1.13.0", optional = true}
-pyperclip = {version = "^1.8.0", optional = true}
+[project.optional-dependencies]
+tui = [
+    "asciimatics~=1.13",
+    "pyperclip~=1.8",
+]
 
-[tool.poetry.extras]
-tui = ["asciimatics", "pyperclip"]
-
-[tool.poetry.dev-dependencies]
-asciimatics = "^1.13.0"
-autoflake = "^1.4"
-black = "^20.8b1"
-duty = "^0.5.0"
-fastapi = "^0.61.2"
-flakehell = "^0.6.0"
-flake8-black = "^0.2.1"
-flake8-builtins = "^1.5.3"
-flake8-tidy-imports = "^4.1.0"
-flake8-variables-names = "^0.0.3"
-flake8-pytest-style = "^1.3.0"
-git-changelog = "^0.4.0"
-httpx = "^0.14.3"
-ipython = "^7.2"
-# TODO: accept v5 once https://github.com/wemake-services/wemake-python-styleguide/issues/1584 is resolved
-isort = {version = "<5", extras = ["pyproject"]}
-jinja2-cli = "^0.7.0"
-markdown-include = "^0.6.0"
-mkdocs = "^1.1.2"
-mkdocs-material = "^5.5.12"
-mkdocstrings = "^0.13.1"
-mypy = "^0.782"
-pyinstaller = "^3.6"
-pyperclip = "^1.8.0"
-pytest = "^6.0.1"
-pytest-cov = "^2.10.1"
-pytest-randomly = "<3.6"
-pytest-rerunfailures = "^9.1.1"
-pytest-sugar = "^0.9.4"
-pytest-xdist = "^2.1.0"
-responses = "^0.10.14"
-toml = "^0.10.1"
-uvicorn = "^0.12.2"
-wemake-python-styleguide = "^0.14.1"
-appdirs = "^1.4.4"
-
-[tool.poetry.scripts]
+[project.scripts]
 aria2p = "aria2p.cli:main"
+
+[project.urls]
+Repository = "https://github.com/pawamoy/aria2p"
+Homepage = "https://github.com/pawamoy/aria2p"
+
+[tool.pdm]
+package-dir = "src"
+
+[tool.pdm.dev-dependencies]
+duty = ["duty~=0.6"]
+docs = [
+    "mkdocs~=1.1",
+    "mkdocs-coverage~=0.2",
+    "mkdocs-macros-plugin~=0.5",
+    "mkdocs-material~=7.1",
+    "mkdocstrings~=0.15",
+    "toml~=0.10",
+]
+format = [
+    "autoflake~=1.4",
+    "black~=20.8b1",
+    "isort~=5.8",
+]
+maintain = [
+    # TODO: remove git-changelog when it is more powerful
+    "git-changelog~=0.4",
+]
+quality = [
+    "darglint~=1.7",
+    "flake8-bandit~=2.1",
+    "flake8-black~=0.2",
+    "flake8-bugbear~=21.3",
+    "flake8-builtins~=1.5",
+    "flake8-comprehensions~=3.4",
+    "flake8-docstrings~=1.6",
+    "flake8-pytest-style~=1.4",
+    "flake8-string-format~=0.3",
+    "flake8-tidy-imports~=4.2",
+    "flake8-variables-names~=0.0",
+    "pep8-naming~=0.11",
+    "wps-light~=0.15",
+]
+tests = [
+    "fastapi~=0.61",
+    "pytest~=6.2",
+    "pytest-cov~=2.11",
+    "pytest-randomly~=3.6",
+    "pytest-rerunfailures~=9.1",
+    "pytest-sugar~=0.9",
+    "pytest-xdist~=2.2",
+    "responses~=0.10",
+    "uvicorn~=0.12",
+]
+typing = ["mypy~=0.812"]
 
 [tool.black]
 line-length = 120
@@ -85,99 +98,3 @@ default_section = "THIRDPARTY"
 known_first_party = "aria2p"
 include_trailing_comma = true
 
-[tool.flakehell]
-format = "colored"
-max_line_length = 132
-show_source = false
-# TODO: reduce the excludes to tests/fixtures at some point
-exclude = ["tests/", "src/aria2p/interface.py"]
-
-[tool.flakehell.plugins]
-"*" = [
-    "+*",
-    "-RST*",  # we write docstrings in markdown, not rst
-    "-A001",  # redundant with W0622 (builtin override), which is more precise about line number
-    "-D105",  # missing docstring in magic method
-    "-D212",  # multi-line docstring summary should start at the first line
-    "-E203",  # whitespace before ‘:’ (incompatible with Black)
-    "-F821",  # redundant with E0602 (undefined variable)
-    "-Q000",  # black already deals with quoting
-    "-S101",  # use of assert
-    "-W503",  # line break before binary operator (incompatible with Black)
-    "-C0103", # two-lowercase-letters variable DO conform to snake_case naming style
-    "-C0116",  # redunant with D102 (missing docstring)
-    "-C0301",  # line too long
-    "-C0302",  # too many lines in module
-    "-R0902",  # too many instance attributes
-    "-R0903",  # too few public methods
-    "-R0904",  # too many public methods
-    "-R0912",  # too many branches
-    "-R0913",  # too many methods
-    "-R0914",  # too many local variables
-    "-R0915",  # too many statements
-    "-W0212",  # redundant with WPS437 (access to protected attribute)
-    "-W0611",  # redundant with F401 (unused import)
-    "-W1203",  # lazy formatting for logging calls
-    "-WPS305",  # f-strings
-    "-WPS100",  # common module names
-    "-WPS110",  # common variable names
-    "-WPS125",  # redundant with W0622 (builtin override), which is more precise about line number
-    "-WPS201",  # too many imports
-    "-WPS202",  # too many module members
-    "-WPS210",  # too many local variables
-    "-WPS211",  # too many arguments
-    "-WPS213",  # too many expressions
-    "-WPS214",  # too many methods
-    "-WPS219",  # too deep access level
-    "-WPS220",  # too deep nesting
-    "-WPS223",  # too many elif branches
-    "-WPS226",  # string over-use: can't disable it per file?
-    "-WPS230",  # too many public instance attributes
-    "-WPS306",  # too cumbersome, asks to write class A(object)
-    "-WPS317",  # multi-line paramaters (incompatible with Black)
-    "-WPS322",  # multi-line strings (incompatible with attributes docstrings)
-    "-WPS326",  # implicit string concatenation
-    "-WPS336",  # explicit string concatenation
-    "-WPS342",  # implicit raw string
-    "-WPS402",  # noqa overuse
-    "-WPS412",  # __init__ modules with logic
-    "-WPS428",  # statement with no effect (not compatible with attribute docstrings)
-    "-WPS433",  # redundant with C0415 (not top-level import)
-    "-WPS529",  # implicit dict.get usage (generally false-positive)
-]
-
-[tool.flakehell.exceptions."src/aria2p/cli.py"]
-"*" = [
-    "-WPS421",  # print
-]
-
-[tool.flakehell.exceptions."src/aria2p/client.py"]
-"*" = [
-    "-C0302",  # too many lines in module
-    "-WPS115",  # upper-case constant in class (RPC methods)
-    "-WPS602",  # staticmethod
-]
-
-[tool.flakehell.exceptions."src/aria2p/options.py"]
-"*" = [
-    "-WPS204",  # overused expression bool_to_str(value)
-]
-
-[tool.flakehell.exceptions."src/aria2p/interface.py"]
-"*" = [
-    "-VNE001",  # name too short
-    "-WPS111",  # name too short
-    "-WPS115",  # uppercase constant in class
-    "-WPS420",  # pass (methods not implemented)
-    "-WPS601",  # shadowed class attribute
-]
-
-[tool.flakehell.exceptions."src/aria2p/types.py"]
-"*" = [
-    "-WPS221",  # high jones complexity
-]
-
-[tool.flakehell.exceptions."tests/"]
-"*" = [
-    "-WPS432",  # magic numbers
-]

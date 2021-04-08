@@ -9,7 +9,7 @@ import shutil
 import threading
 from base64 import b64encode
 from pathlib import Path
-from typing import Callable, List, Optional
+from typing import Callable, Dict, List, Optional, Tuple
 
 from loguru import logger
 
@@ -18,6 +18,8 @@ from aria2p.downloads import Download
 from aria2p.options import Options
 from aria2p.stats import Stats
 from aria2p.types import OperationResult, OptionsType, PathOrStr
+
+InputFileContentsType = List[Tuple[List[str], Dict[str, str]]]
 
 
 class API:
@@ -850,12 +852,15 @@ class API:
             self.listener.join()
         self.listener = None
 
-    def split_input_file(self, lines):
+    def split_input_file(self, lines):  # noqa: WPS231 (not complex)
         """
         Helper to split downloads in an input file.
 
         Arguments:
-             lines:  The lines of the input file.
+             lines: The lines of the input file.
+
+        Yields:
+            Blocks of lines.
         """
         block = []
         for line in lines:
@@ -863,7 +868,7 @@ class API:
                 continue
             if not line.strip():  # Ignore empty line
                 continue
-            if not line.startswith(" "):  # Read uri
+            if not line.startswith(" "):  # URIs line
                 if block:
                     yield block
                     block = []
@@ -871,7 +876,7 @@ class API:
         if block:
             yield block
 
-    def parse_input_file(self, input_file):
+    def parse_input_file(self, input_file: str) -> InputFileContentsType:
         """
         Parse a file with URIs or an aria2c input file.
 
@@ -880,21 +885,18 @@ class API:
 
         Returns:
             List of tuples containing list of URIs and dictionary with aria2c options.
-
         """
-
         downloads = []
         with Path(input_file).open() as fd:
             for download_lines in self.split_input_file(fd):
                 uris = download_lines[0].split("\t")
                 options = {}
-                try:
+                try:  # noqa: WPS229
                     for option_line in download_lines[1:]:
                         option_name, option_value = option_line.split("=", 1)
                         options[option_name.lstrip()] = option_value
                     downloads.append((uris, options))
                 except ValueError as error:
-                    logger.error(f"Skipping download because of invalid option line '{option_line}'")
+                    logger.error(f"Skipping download because of invalid option line '{option_line}'")  # noqa: WPS441
                     logger.opt(exception=True).trace(error)
-
         return downloads

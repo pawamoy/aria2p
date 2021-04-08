@@ -15,7 +15,9 @@ pip-wheel-metadata/
 site/
 demo.gif
 .mypy_cache/
-poetry.lock
 *.sw[po]
+pdm.lock
+.pdm.toml
+__pypackages__/
 .venv/
 .ports.json
