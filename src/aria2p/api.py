@@ -83,11 +83,9 @@ class API:
             else:
                 for uris, download_options in self.parse_input_file(path):
                     # Add batch downloads in specified position in queue.
-                    if position:
-                        new_downloads.append(self.add_uris(uris, options=download_options, position=position))
+                    new_downloads.append(self.add_uris(uris, options=download_options, position=position))
+                    if position is not None:
                         position += 1
-                    else:
-                        new_downloads.append(self.add_uris(uris, options=download_options))
 
         elif uri.startswith("magnet:?"):
             new_downloads.append(self.add_magnet(uri, options=options, position=position))
