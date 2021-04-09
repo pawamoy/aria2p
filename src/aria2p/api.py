@@ -44,7 +44,12 @@ class API:
     def __repr__(self) -> str:
         return f"API({self.client!r})"
 
-    def add(self, uri: str) -> List[Download]:  # noqa: WPS231 (not that complex)
+    def add(
+        self,
+        uri: str,
+        options: OptionsType = None,
+        position: int = None,
+    ) -> List[Download]:  # noqa: WPS231 (not that complex)
         """
         Add a download (guess its type).
 
@@ -53,6 +58,9 @@ class API:
 
         Arguments:
             uri: The URI or file-path to add.
+            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
+                containing aria2c options to create the download with.
+            position: The position where to insert the new download in the queue. Start at 0 (top).
 
         Returns:
             The created downloads.
@@ -69,17 +77,20 @@ class API:
 
         if path_exists:
             if path.suffix == ".torrent":
-                new_downloads.append(self.add_torrent(path))
+                new_downloads.append(self.add_torrent(path, options=options, position=position))
             elif path.suffix == ".metalink":
-                new_downloads.extend(self.add_metalink(path))
+                new_downloads.extend(self.add_metalink(path, options=options, position=position))
             else:
-                for uris, options in self.parse_input_file(path):
-                    new_downloads.append(self.add_uris(uris, options=options))
+                for uris, download_options in self.parse_input_file(path):
+                    # Add batch downloads in specified position in queue.
+                    new_downloads.append(self.add_uris(uris, options=download_options, position=position))
+                    if position is not None:
+                        position += 1
 
         elif uri.startswith("magnet:?"):
-            new_downloads.append(self.add_magnet(uri))
+            new_downloads.append(self.add_magnet(uri, options=options, position=position))
         else:
-            new_downloads.append(self.add_uris([uri]))
+            new_downloads.append(self.add_uris([uri], options=options, position=position))
 
         return new_downloads
 

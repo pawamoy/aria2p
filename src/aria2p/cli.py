@@ -253,6 +253,26 @@ def get_parser() -> argparse.ArgumentParser:
     subparser("top", "Launch the top-like interactive interface.")
     listen_parser = subparser("listen", "Listen to notifications.")
 
+    # ========= REUSABLE OPTIONS ========= #
+    def add_options_argument(parser):
+        parser.add_argument(
+            "-o",
+            "--options",
+            dest="options",
+            type=parse_options_string,
+            help="Options for the new download(s), separated by semi-colons. "
+            f"Example: 'dir=~/aria2_downloads;max-download-limit=100K'",
+        )
+
+    def add_position_argument(parser):
+        parser.add_argument(
+            "-p",
+            "--position",
+            dest="position",
+            type=int,
+            help="Position at which to add the new download(s) in the queue. Starts at 0 (top).",
+        )
+
     # ========= CALL PARSER ========= #
     call_parser.add_argument(
         "method",
@@ -280,18 +300,26 @@ def get_parser() -> argparse.ArgumentParser:
     # ========= ADD PARSER ========= #
     add_parser.add_argument("uris", nargs="*", help="The URIs/file-paths to add.")
     add_parser.add_argument("-f", "--from-file", dest="from_file", help="Load URIs from a file.")
+    add_options_argument(add_parser)
+    add_position_argument(add_parser)
 
     # ========= ADD MAGNET PARSER ========= #
     add_magnets_parser.add_argument("uris", nargs="*", help="The magnet URIs to add.")
     add_magnets_parser.add_argument("-f", "--from-file", dest="from_file", help="Load URIs from a file.")
+    add_options_argument(add_magnets_parser)
+    add_position_argument(add_magnets_parser)
 
     # ========= ADD TORRENT PARSER ========= #
     add_torrents_parser.add_argument("torrent_files", nargs="*", help="The paths to the torrent files.")
     add_torrents_parser.add_argument("-f", "--from-file", dest="from_file", help="Load file paths from a file.")
+    add_options_argument(add_torrents_parser)
+    add_position_argument(add_torrents_parser)
 
     # ========= ADD METALINK PARSER ========= #
     add_metalinks_parser.add_argument("metalink_files", nargs="*", help="The paths to the metalink files.")
     add_metalinks_parser.add_argument("-f", "--from-file", dest="from_file", help="Load file paths from a file.")
+    add_options_argument(add_metalinks_parser)
+    add_position_argument(add_metalinks_parser)
 
     # ========= PAUSE PARSER ========= #
     pause_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to pause.")
@@ -456,7 +484,35 @@ def get_method(name: str) -> Optional[str]:
     return methods.get(name)
 
 
-def subcommand_add(api: API, uris: List[str] = None, from_file: str = None) -> int:
+def parse_options_string(options_string: str = None) -> dict:
+    """
+    Parse string of options.
+
+    Arguments:
+        options_string: String of aria2c options.
+
+    Returns:
+        Dictionary containing aria2c options.
+
+    """
+    try:
+        return {
+            opt.strip(): val.strip()
+            for opt, val in (download_option.split("=", 1) for download_option in options_string.split(";"))
+        }
+    except ValueError:
+        raise argparse.ArgumentTypeError(
+            "Options strings must follow this format:\nopt-name=opt-value;opt-name2=opt-value2"
+        )
+
+
+def subcommand_add(
+    api: API,
+    uris: List[str] = None,
+    from_file: str = None,
+    options: dict = None,
+    position: int = None,
+) -> int:
     """
     Add magnet subcommand.
 
@@ -466,6 +522,8 @@ def subcommand_add(api: API, uris: List[str] = None, from_file: str = None) -> i
         from_file: Path to the file to read uris from.
             Deprecated: Every URI that is a valid file-path
             and is not a torrent or a metalink is now read as an input file.
+        options: String of aria2c options to add to download.
+        position: Position to add new download in the queue.
 
     Returns:
         int: 0 if OK else 1.
@@ -481,7 +539,10 @@ def subcommand_add(api: API, uris: List[str] = None, from_file: str = None) -> i
     new_downloads = []
 
     for uri in uris:
-        new_downloads.extend(api.add(uri))
+        created_downloads = api.add(uri, options=options, position=position)
+        new_downloads.extend(created_downloads)
+        if position is not None:
+            position += len(created_downloads)
 
     if new_downloads:
         for new_download in new_downloads:
@@ -492,7 +553,13 @@ def subcommand_add(api: API, uris: List[str] = None, from_file: str = None) -> i
     return 1
 
 
-def subcommand_add_magnets(api: API, uris: List[str] = None, from_file: str = None) -> int:
+def subcommand_add_magnets(
+    api: API,
+    uris: List[str] = None,
+    from_file: str = None,
+    options: dict = None,
+    position: int = None,
+) -> int:
     """
     Add magnet subcommand.
 
@@ -500,6 +567,8 @@ def subcommand_add_magnets(api: API, uris: List[str] = None, from_file: str = No
         api: The API instance to use.
         uris: The URIs of the magnets.
         from_file: Path to the file to read uris from.
+        options: String of aria2c options to add to download.
+        position: Position to add new download in the queue.
 
     Returns:
         int: Always 0.
@@ -517,13 +586,19 @@ def subcommand_add_magnets(api: API, uris: List[str] = None, from_file: str = No
             ok = False
 
     for uri in uris:
-        new_download = api.add_magnet(uri)
+        new_download = api.add_magnet(uri, options=options, position=position)
         print(f"Created download {new_download.gid}")
 
     return 0 if ok else 1
 
 
-def subcommand_add_torrents(api: API, torrent_files: List[str] = None, from_file: str = None) -> int:
+def subcommand_add_torrents(
+    api: API,
+    torrent_files: List[str] = None,
+    from_file: str = None,
+    options: dict = None,
+    position: int = None,
+) -> int:
     """
     Add torrent subcommand.
 
@@ -531,6 +606,8 @@ def subcommand_add_torrents(api: API, torrent_files: List[str] = None, from_file
         api: The API instance to use.
         torrent_files: The paths to the torrent files.
         from_file: Path to the file to read torrent files paths from.
+        options: String of aria2c options to add to download.
+        position: Position to add new download in the queue.
 
     Returns:
         int: Always 0.
@@ -548,13 +625,19 @@ def subcommand_add_torrents(api: API, torrent_files: List[str] = None, from_file
             ok = False
 
     for torrent_file in torrent_files:
-        new_download = api.add_torrent(torrent_file)
+        new_download = api.add_torrent(torrent_file, options=options, position=position)
         print(f"Created download {new_download.gid}")
 
     return 0 if ok else 1
 
 
-def subcommand_add_metalinks(api: API, metalink_files: List[str] = None, from_file: str = None) -> int:
+def subcommand_add_metalinks(
+    api: API,
+    metalink_files: List[str] = None,
+    from_file: str = None,
+    options: dict = None,
+    position: int = None,
+) -> int:
     """
     Add metalink subcommand.
 
@@ -562,6 +645,8 @@ def subcommand_add_metalinks(api: API, metalink_files: List[str] = None, from_fi
         api: The API instance to use.
         metalink_files: The paths to the metalink files.
         from_file: Path to the file to metalink files paths from.
+        options: String of aria2c options to add to download.
+        position: Position to add new download in the queue.
 
     Returns:
         int: 0 if OK else 1.
@@ -579,7 +664,7 @@ def subcommand_add_metalinks(api: API, metalink_files: List[str] = None, from_fi
             ok = False
 
     for metalink_file in metalink_files:
-        new_downloads = api.add_metalink(metalink_file)
+        new_downloads = api.add_metalink(metalink_file, options=options, position=position)
         for download in new_downloads:
             print(f"Created download {download.gid}")
 

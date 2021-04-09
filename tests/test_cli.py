@@ -232,3 +232,18 @@ def test_listen_subcommand(tmp_path, port, capsys):
     captured = capsys.readouterr()
     assert captured.err == ""
     assert captured.out == "started 0000000000000001\nstarted 0000000000000002\n"
+
+
+@pytest.mark.parametrize("command", ["add", "add-magnet", "add-torrent", "add-metalink"])
+def test_parse_valid_options(command):
+    parser = cli.get_parser()
+    opts = parser.parse_args([command, "/some/file/on/the/disk", "-o", "opt1=val;opt2=val2, val3=val4"])
+    assert opts.options == {"opt1": "val", "opt2": "val2, val3=val4"}
+
+
+@pytest.mark.parametrize("command", ["add", "add-magnet", "add-torrent", "add-metalink"])
+def test_parse_invalid_options(command, capsys):
+    parser = cli.get_parser()
+    with pytest.raises(SystemExit):
+        opts = parser.parse_args([command, "http://example.com", "-o", "opt1"])
+    assert "Options strings must follow this format" in capsys.readouterr().err
