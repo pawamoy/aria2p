@@ -253,6 +253,26 @@ def get_parser() -> argparse.ArgumentParser:
     subparser("top", "Launch the top-like interactive interface.")
     listen_parser = subparser("listen", "Listen to notifications.")
 
+    # ========= REUSABLE OPTIONS ========= #
+    def add_options_argument(parser):
+        parser.add_argument(
+            "-o",
+            "--options",
+            dest="options",
+            type=parse_options_string,
+            help="Options for the new download(s), separated by semi-colons. "
+            f"Example: 'dir=~/aria2_downloads;max-download-limit=100K'",
+        )
+
+    def add_position_argument(parser):
+        parser.add_argument(
+            "-p",
+            "--position",
+            dest="position",
+            type=int,
+            help="Position at which to add the new download(s) in the queue. Starts at 0 (top).",
+        )
+
     # ========= CALL PARSER ========= #
     call_parser.add_argument(
         "method",
@@ -280,70 +300,26 @@ def get_parser() -> argparse.ArgumentParser:
     # ========= ADD PARSER ========= #
     add_parser.add_argument("uris", nargs="*", help="The URIs/file-paths to add.")
     add_parser.add_argument("-f", "--from-file", dest="from_file", help="Load URIs from a file.")
-    add_parser.add_argument(
-        "-o",
-        "--options",
-        dest="options",
-        help="Options for the new download(s). For example 'max-download-limit=100K;bt-tracker=http://someurl,udp://someurl'",
-    )
-    add_parser.add_argument(
-        "-p",
-        "--position",
-        dest="position",
-        type=int,
-        help="Position to add new download(s) in the queue.",
-    )
+    add_options_argument(add_parser)
+    add_position_argument(add_parser)
 
     # ========= ADD MAGNET PARSER ========= #
     add_magnets_parser.add_argument("uris", nargs="*", help="The magnet URIs to add.")
     add_magnets_parser.add_argument("-f", "--from-file", dest="from_file", help="Load URIs from a file.")
-    add_magnets_parser.add_argument(
-        "-o",
-        "--options",
-        dest="options",
-        help="Options for the new download(s). For example 'max-download-limit=100K;bt-tracker=http://someurl,udp://someurl'",
-    )
-    add_magnets_parser.add_argument(
-        "-p",
-        "--position",
-        dest="position",
-        type=int,
-        help="Position to add new download(s) in the queue.",
-    )
+    add_options_argument(add_magnets_parser)
+    add_position_argument(add_magnets_parser)
 
     # ========= ADD TORRENT PARSER ========= #
     add_torrents_parser.add_argument("torrent_files", nargs="*", help="The paths to the torrent files.")
     add_torrents_parser.add_argument("-f", "--from-file", dest="from_file", help="Load file paths from a file.")
-    add_torrents_parser.add_argument(
-        "-o",
-        "--options",
-        dest="options",
-        help="Options for the new download(s). For example 'max-download-limit=100K;bt-tracker=http://someurl,udp://someurl'",
-    )
-    add_torrents_parser.add_argument(
-        "-p",
-        "--position",
-        dest="position",
-        type=int,
-        help="Position to add new download(s) in the queue.",
-    )
+    add_options_argument(add_torrents_parser)
+    add_position_argument(add_torrents_parser)
 
     # ========= ADD METALINK PARSER ========= #
     add_metalinks_parser.add_argument("metalink_files", nargs="*", help="The paths to the metalink files.")
     add_metalinks_parser.add_argument("-f", "--from-file", dest="from_file", help="Load file paths from a file.")
-    add_metalinks_parser.add_argument(
-        "-o",
-        "--options",
-        dest="options",
-        help="Options for the new download(s). For example 'max-download-limit=100K;bt-tracker=http://someurl,udp://someurl'",
-    )
-    add_metalinks_parser.add_argument(
-        "-p",
-        "--position",
-        dest="position",
-        type=int,
-        help="Position to add new download(s) in the queue.",
-    )
+    add_options_argument(add_metalinks_parser)
+    add_position_argument(add_metalinks_parser)
 
     # ========= PAUSE PARSER ========= #
     pause_parser.add_argument("gids", nargs="*", help="The GIDs of the downloads to pause.")
@@ -519,17 +495,22 @@ def parse_options_string(options_string: str = None) -> dict:
         Dictionary containing aria2c options.
 
     """
-    return {
-        opt.strip(): val.strip()
-        for opt, val in (download_option.split("=", 1) for download_option in options_string.split(";"))
-    }
+    try:
+        return {
+            opt.strip(): val.strip()
+            for opt, val in (download_option.split("=", 1) for download_option in options_string.split(";"))
+        }
+    except ValueError:
+        raise argparse.ArgumentTypeError(
+            "Options strings must follow this format:\nopt-name=opt-value;opt-name2=opt-value2"
+        )
 
 
 def subcommand_add(
     api: API,
     uris: List[str] = None,
     from_file: str = None,
-    options: str = None,
+    options: dict = None,
     position: int = None,
 ) -> int:
     """
@@ -548,9 +529,6 @@ def subcommand_add(
         int: 0 if OK else 1.
     """
     uris = uris or []
-
-    if options:
-        options = parse_options_string(options)
 
     if from_file:
         logger.warning(
@@ -579,7 +557,7 @@ def subcommand_add_magnets(
     api: API,
     uris: List[str] = None,
     from_file: str = None,
-    options: str = None,
+    options: dict = None,
     position: int = None,
 ) -> int:
     """
@@ -600,9 +578,6 @@ def subcommand_add_magnets(
     if not uris:
         uris = []
 
-    if options:
-        options = parse_options_string(options)
-
     if from_file:
         try:
             uris.extend(read_lines(from_file))
@@ -621,7 +596,7 @@ def subcommand_add_torrents(
     api: API,
     torrent_files: List[str] = None,
     from_file: str = None,
-    options: str = None,
+    options: dict = None,
     position: int = None,
 ) -> int:
     """
@@ -642,9 +617,6 @@ def subcommand_add_torrents(
     if not torrent_files:
         torrent_files = []
 
-    if options:
-        options = parse_options_string(options)
-
     if from_file:
         try:
             torrent_files.extend(read_lines(from_file))
@@ -663,7 +635,7 @@ def subcommand_add_metalinks(
     api: API,
     metalink_files: List[str] = None,
     from_file: str = None,
-    options: str = None,
+    options: dict = None,
     position: int = None,
 ) -> int:
     """
@@ -683,9 +655,6 @@ def subcommand_add_metalinks(
 
     if not metalink_files:
         metalink_files = []
-
-    if options:
-        options = parse_options_string(options)
 
     if from_file:
         try:
