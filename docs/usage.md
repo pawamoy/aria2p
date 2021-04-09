@@ -1,8 +1,10 @@
 # Usage
+
 Extensive usage instructions will be added later, when the application is more stable.
 You can also refer to the README / Overview.
 
 ## Listening to notifications
+
 Since [version 0.3](/changelog/#v030-compare-2019-10-11), it is possible to listen to the server notifications
 thanks to the [`websocket-client`](https://pypi.org/project/websocket_client/) Python package.
 
@@ -15,6 +17,7 @@ The server sends a notification to the client through a WebSocket for each of th
 - a bittorrent download is complete (received 100%, still seeding).
 
 ### Through the command line
+
 The command line interface offers a `listen` subcommand:
 
 ```bash
@@ -66,6 +69,7 @@ def on_download_complete(api, gid):
 You can now use this callbacks module with `aria2p listen -c ~/callbacks.py`.
 
 #### Process specific types of notifications
+
 If you want to listen to only a particular type of notification, even though your callbacks module
 defines all the possible callbacks, you can pass additional arguments:
 
@@ -80,11 +84,13 @@ aria2p listen -c ~/callbacks.py start pause stop &
 This is possible because the server sends the notifications to every client that is listening.
 
 #### Interruption
+
 To stop listening, send a SIGTERM or SIGINT signal to the process,
 for example by hitting Control-C if aria2p is running in the foreground.
 If a notification is currently being handled, it will finish before the listener is stopped.
 
 #### Timeout
+
 If you find the default five seconds to be too long when interrupting the process,
 you can decrease this timeout value by passing the `-t` or `--timeout` option:
 
@@ -93,6 +99,7 @@ aria2p listen -c ~/callbacks.py -t 1
 ```
 
 ### Programmatically
+
 Both the [`API`](/reference/api/#aria2p.api.API.listen_to_notifications)
 and [`Client`](/reference/client/#aria2p.client.Client.listen_to_notifications) classes provide a method called
 `listen_to_notifications`, and another one called `stop_listening`. Please check their respective documentation. 

@@ -173,8 +173,7 @@ def get_version() -> str:
         distribution = pkg_resources.get_distribution("aria2p")
     except pkg_resources.DistributionNotFound:
         return "0.0.0"
-    else:
-        return distribution.version
+    return distribution.version
 
 
 def load_configuration() -> Dict[str, Any]:

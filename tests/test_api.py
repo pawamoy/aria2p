@@ -348,12 +348,14 @@ def test_listen_to_notifications_no_thread(tmp_path, port):
         server.api.stop_listening()
 
 
-def test_parse_input_file(server):
-    downloads = server.api.parse_input_file(INPUT_FILES[0])
+def test_parse_input_file():
+    api = API()
+
+    downloads = api.parse_input_file(INPUT_FILES[0])
     assert len(downloads) == 2
 
-    downloads = server.api.parse_input_file(INPUT_FILES[1])
+    downloads = api.parse_input_file(INPUT_FILES[1])
     assert len(downloads) == 1
 
-    downloads = server.api.parse_input_file(INPUT_FILES[2])
+    downloads = api.parse_input_file(INPUT_FILES[2])
     assert len(downloads) == 0

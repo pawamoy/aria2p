@@ -296,7 +296,7 @@ class Download:
                     self._name = Path(file_path[start_pos:]).parts[0]
                 else:
                     try:
-                        self._name = self.files[0].uris[0]["uri"].split("/")[-1]  # noqa: WPS221 (not complex)
+                        self._name = self.files[0].uris[0]["uri"].split("/")[-1]  # noqa: WPS219
                     except IndexError:
                         pass  # noqa: WPS420 (we don't want to fail here)
         return self._name
