@@ -28,7 +28,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up PDM
-      uses: pdm-project/setup-pdm@v1.1
+      uses: pdm-project/setup-pdm@v1.2
       with:
         python-version: 3.8
 
@@ -100,7 +100,7 @@ jobs:
       uses: actions/checkout@v2    
 
     - name: Set up PDM
-      uses: pdm-project/setup-pdm@v1.1
+      uses: pdm-project/setup-pdm@v1.2
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -121,6 +121,7 @@ jobs:
     - name: Install dependencies
       run: |
         pdm use -f ${{ matrix.python-version }}
+        pdm install -s tui
         pdm install -ds duty -s tests
 
     - name: Run the test suite
