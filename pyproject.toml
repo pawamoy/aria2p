@@ -28,7 +28,7 @@ tui = [
 ]
 
 [project.scripts]
-aria2p = "aria2p.cli:main"
+aria2p = "aria2p.cli.main:main"
 
 [project.urls]
 Repository = "https://github.com/pawamoy/aria2p"

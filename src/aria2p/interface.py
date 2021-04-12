@@ -17,7 +17,7 @@ import sys
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import List, Tuple
+from typing import Dict, List, Sequence, Tuple
 
 import pyperclip
 import requests
@@ -26,6 +26,7 @@ from asciimatics.screen import ManagedScreen, Screen
 from loguru import logger
 
 from aria2p.api import API
+from aria2p.downloads import Download
 from aria2p.utils import get_version, load_configuration
 
 configs = load_configuration()
@@ -41,7 +42,7 @@ def key_bind_parser(action: str) -> List["Key"]:
     Returns:
         A list of keys.
     """
-    default_bindings = configs.get("DEFAULT").get("key_bindings")
+    default_bindings = configs["DEFAULT"]["key_bindings"]
     bindings = configs.get("USER", {}).get("key_bindings", default_bindings)
 
     key_binds = bindings.get(action, default_bindings[action])
@@ -63,7 +64,7 @@ def color_palette_parser(palette: str) -> Tuple[int, int, int]:
         Foreground color, mode, background color.
     """
 
-    default_colors = configs.get("DEFAULT").get("colors")
+    default_colors = configs["DEFAULT"]["colors"]
     colors = configs.get("USER", {}).get("colors", default_colors)
 
     # get values of colors and modes for ascimatics.screen module
@@ -348,13 +349,13 @@ class Interface:
     width = None
     height = None
     screen = None
-    data = []
-    rows = []
+    data: List[Download] = []
+    rows: List[Sequence[str]] = []
     scroller = None
     follow = None
-    bounds = []
+    bounds: List[Sequence[int]] = []
 
-    palettes = defaultdict(lambda: color_palette_parser("UI"))
+    palettes: Dict[str, Tuple[int, int, int]] = defaultdict(lambda: color_palette_parser("UI"))
     palettes.update(
         {
             "ui": color_palette_parser("UI"),
@@ -1146,7 +1147,7 @@ class Interface:
         self.bounds = []
         for column_name in self.columns_order:
             column = self.columns[column_name]
-            if column.padding == "100%":
+            if column.padding == "100%":  # last column
                 self.bounds.append((self.bounds[-1][1] + 1, self.width))
             else:
                 padding = int(column.padding.lstrip("<>=^"))
@@ -1155,11 +1156,11 @@ class Interface:
                 else:
                     self.bounds.append((self.bounds[-1][1] + 1, self.bounds[-1][1] + 1 + padding))
 
-    def get_data(self):
+    def get_data(self) -> List[Download]:
         """Return a list of objects."""
         return self.api.get_downloads()
 
-    def update_data(self):
+    def update_data(self) -> None:
         """Set the interface data and rows contents."""
         try:
             self.data = self.get_data()
@@ -1167,12 +1168,12 @@ class Interface:
         except requests.exceptions.Timeout:
             logger.debug("Request timeout")
 
-    def sort_data(self):
+    def sort_data(self) -> None:
         """Sort data according to interface state."""
         sort_function = self.columns[self.columns_order[self.sort]].get_sort
         self.data = sorted(self.data, key=sort_function, reverse=self.reverse)
 
-    def update_rows(self):
+    def update_rows(self) -> None:
         """Update rows contents according to data and interface state."""
         text_getters = [self.columns[c].get_text for c in self.columns_order]
         n_columns = len(self.columns_order)

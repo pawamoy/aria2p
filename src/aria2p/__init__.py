@@ -33,7 +33,7 @@ def enable_logger(sink=sys.stderr, level="WARNING"):
     logger.enable("aria2p")
 
 
-__all__ = [  # noqa: WPS410 (the only __variable__ we use)
+__all__ = [
     "API",
     "ClientException",
     "Client",

@@ -258,7 +258,8 @@ class Client:
                 for param in params[0]:
                     param["params"].insert(0, f"token:{self.secret}")
 
-        return self.res_or_raise(self.post(self.get_payload(method, params, msg_id=msg_id)))
+        payload: str = self.get_payload(method, params, msg_id=msg_id)  # type: ignore
+        return self.res_or_raise(self.post(payload))
 
     def batch_call(
         self,
@@ -293,9 +294,7 @@ class Client:
             payloads.append(self.get_payload(method, params, msg_id, as_json=False))
 
         payload: str = json.dumps(payloads)
-
         responses = self.post(payload)
-
         return [self.res_or_raise(resp) for resp in responses]
 
     def multicall2(self, calls: Multicalls2Type, insert_secret: bool = True) -> CallReturnType:
@@ -340,8 +339,7 @@ class Client:
                 params.insert(0, f"token:{self.secret}")
             multicall_params.append({"methodName": method, "params": params})
 
-        payload: str = self.get_payload(self.MULTICALL, [multicall_params])
-
+        payload: str = self.get_payload(self.MULTICALL, [multicall_params])  # type: ignore
         return self.res_or_raise(self.post(payload))
 
     def post(self, payload: str) -> dict:
@@ -481,7 +479,7 @@ class Client:
             >>> c.read()
             '{"id":"qwer","jsonrpc":"2.0","result":"0000000000000001"}'
         """
-        return self.call(self.ADD_URI, params=[uris, options, position])
+        return self.call(self.ADD_URI, params=[uris, options, position])  # type: ignore
 
     def add_torrent(
         self,
@@ -540,7 +538,7 @@ class Client:
             >>> c.read()
             '{"id":"asdf","jsonrpc":"2.0","result":"0000000000000001"}'
         """
-        return self.call(self.ADD_TORRENT, [torrent, uris, options, position])
+        return self.call(self.ADD_TORRENT, [torrent, uris, options, position])  # type: ignore
 
     def add_metalink(
         self,
@@ -593,7 +591,7 @@ class Client:
             >>> c.read()
             '{"id":"qwer","jsonrpc":"2.0","result":["0000000000000001"]}'
         """
-        return self.call(self.ADD_METALINK, [metalink, options, position])
+        return self.call(self.ADD_METALINK, [metalink, options, position])  # type: ignore
 
     def remove(self, gid: str) -> str:
         """
@@ -626,7 +624,7 @@ class Client:
             >>> c.read()
             '{"id":"qwer","jsonrpc":"2.0","result":"0000000000000001"}'
         """
-        return self.call(self.REMOVE, [gid])  # noqa: WPS204 (overused [gid])
+        return self.call(self.REMOVE, [gid])  # type: ignore  # noqa: WPS204 (overused [gid])
 
     def force_remove(self, gid: str) -> str:
         """
@@ -647,7 +645,7 @@ class Client:
         Returns:
             The GID of the removed download.
         """
-        return self.call(self.FORCE_REMOVE, [gid])
+        return self.call(self.FORCE_REMOVE, [gid])  # type: ignore
 
     def pause(self, gid: str) -> str:
         """
@@ -669,7 +667,7 @@ class Client:
         Returns:
             The GID of the paused download.
         """
-        return self.call(self.PAUSE, [gid])
+        return self.call(self.PAUSE, [gid])  # type: ignore
 
     def pause_all(self) -> str:
         """
@@ -684,7 +682,7 @@ class Client:
         Returns:
             `"OK"`.
         """
-        return self.call(self.PAUSE_ALL)
+        return self.call(self.PAUSE_ALL)  # type: ignore
 
     def force_pause(self, gid: str) -> str:
         """
@@ -705,7 +703,7 @@ class Client:
         Returns:
             The GID of the paused download.
         """
-        return self.call(self.FORCE_PAUSE, [gid])
+        return self.call(self.FORCE_PAUSE, [gid])  # type: ignore
 
     def force_pause_all(self) -> str:
         """
@@ -720,7 +718,7 @@ class Client:
         Returns:
             `"OK"`.
         """
-        return self.call(self.FORCE_PAUSE_ALL)
+        return self.call(self.FORCE_PAUSE_ALL)  # type: ignore
 
     def unpause(self, gid: str) -> str:
         """
@@ -739,7 +737,7 @@ class Client:
         Returns:
             The GID of the resumed download.
         """
-        return self.call(self.UNPAUSE, [gid])
+        return self.call(self.UNPAUSE, [gid])  # type: ignore
 
     def unpause_all(self) -> str:
         """
@@ -754,7 +752,7 @@ class Client:
         Returns:
             `"OK"`.
         """
-        return self.call(self.UNPAUSE_ALL)
+        return self.call(self.UNPAUSE_ALL)  # type: ignore
 
     def tell_status(self, gid: str, keys: Optional[dict] = None) -> dict:
         """
@@ -876,7 +874,7 @@ class Client:
                          u'gid': u'0000000000000001',
                          u'totalLength': u'34896138'}}
         """
-        return self.call(self.TELL_STATUS, [gid, keys])
+        return self.call(self.TELL_STATUS, [gid, keys])  # type: ignore
 
     def get_uris(self, gid: str) -> dict:
         """
@@ -913,7 +911,7 @@ class Client:
              u'result': [{u'status': u'used',
                           u'uri': u'http://example.org/file'}]}
         """
-        return self.call(self.GET_URIS, [gid])
+        return self.call(self.GET_URIS, [gid])  # type: ignore
 
     def get_files(self, gid: str) -> dict:
         """
@@ -967,7 +965,7 @@ class Client:
                           u'uris': [{u'status': u'used',
                                      u'uri': u'http://example.org/file'}]}]}
         """
-        return self.call(self.GET_FILES, [gid])
+        return self.call(self.GET_FILES, [gid])  # type: ignore
 
     def get_peers(self, gid: str) -> dict:
         """
@@ -1029,7 +1027,7 @@ class Client:
                           u'seeder': u'false',
                           u'uploadSpeed': u'6890'}]}
         """
-        return self.call(self.GET_PEERS, [gid])
+        return self.call(self.GET_PEERS, [gid])  # type: ignore
 
     def get_servers(self, gid: str) -> dict:
         """
@@ -1072,7 +1070,7 @@ class Client:
                                         u'downloadSpeed': u'10467',
                                         u'uri': u'http://example.org/file'}]}]}
         """
-        return self.call(self.GET_SERVERS, [gid])
+        return self.call(self.GET_SERVERS, [gid])  # type: ignore
 
     def tell_active(self, keys: Optional[dict] = None) -> List[dict]:
         """
@@ -1088,7 +1086,7 @@ class Client:
         Returns:
             An array of the same structs as returned by the [`tell_status()`][aria2p.client.Client.tell_status] method.
         """
-        return self.call(self.TELL_ACTIVE, [keys])
+        return self.call(self.TELL_ACTIVE, [keys])  # type: ignore
 
     def tell_waiting(self, offset: int, num: int, keys: Optional[dict] = None) -> List[dict]:
         """
@@ -1113,7 +1111,7 @@ class Client:
         Returns:
             An array of the same structs as returned by [`tell_status()`][aria2p.client.Client.tell_status] method.
         """
-        return self.call(self.TELL_WAITING, [offset, num, keys])
+        return self.call(self.TELL_WAITING, [offset, num, keys])  # type: ignore
 
     def tell_stopped(self, offset: int, num: int, keys: Optional[dict] = None) -> List[dict]:
         """
@@ -1134,7 +1132,7 @@ class Client:
         Returns:
             An array of the same structs as returned by the [`tell_status()`][aria2p.client.Client.tell_status] method.
         """
-        return self.call(self.TELL_STOPPED, [offset, num, keys])
+        return self.call(self.TELL_STOPPED, [offset, num, keys])  # type: ignore
 
     def change_position(self, gid: str, pos: int, how: str) -> int:
         """
@@ -1178,7 +1176,7 @@ class Client:
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': 0}
         """
-        return self.call(self.CHANGE_POSITION, [gid, pos, how])
+        return self.call(self.CHANGE_POSITION, [gid, pos, how])  # type: ignore
 
     def change_uri(
         self,
@@ -1232,7 +1230,7 @@ class Client:
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': [0, 1]}
         """
-        return self.call(self.CHANGE_URI, [gid, file_index, del_uris, add_uris, position])
+        return self.call(self.CHANGE_URI, [gid, file_index, del_uris, add_uris, position])  # type: ignore
 
     def get_option(self, gid: str) -> dict:
         """
@@ -1270,7 +1268,7 @@ class Client:
                          u'async-dns': u'true',
              ...
         """
-        return self.call(self.GET_OPTION, [gid])
+        return self.call(self.GET_OPTION, [gid])  # type: ignore
 
     def change_option(self, gid: str, options: dict) -> str:
         """
@@ -1319,7 +1317,7 @@ class Client:
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'OK'}
         """
-        return self.call(self.CHANGE_OPTION, [gid, options])
+        return self.call(self.CHANGE_OPTION, [gid, options])  # type: ignore
 
     def get_global_option(self) -> dict:
         """
@@ -1338,7 +1336,7 @@ class Client:
             The global options. The response is a struct. Its keys are the names of options.
             Values are strings.
         """
-        return self.call(self.GET_GLOBAL_OPTION)
+        return self.call(self.GET_GLOBAL_OPTION)  # type: ignore
 
     def change_global_option(self, options: dict) -> str:
         """
@@ -1374,7 +1372,7 @@ class Client:
         Returns:
             `"OK"` for success.
         """
-        return self.call(self.CHANGE_GLOBAL_OPTION, [options])
+        return self.call(self.CHANGE_GLOBAL_OPTION, [options])  # type: ignore
 
     def get_global_stat(self) -> dict:
         """
@@ -1413,7 +1411,7 @@ class Client:
                          u'numWaiting': u'0',
                          u'uploadSpeed': u'0'}}
         """
-        return self.call(self.GET_GLOBAL_STAT)
+        return self.call(self.GET_GLOBAL_STAT)  # type: ignore
 
     def purge_download_result(self) -> str:
         """
@@ -1426,7 +1424,7 @@ class Client:
         Returns:
             `"OK"`.
         """
-        return self.call(self.PURGE_DOWNLOAD_RESULT)
+        return self.call(self.PURGE_DOWNLOAD_RESULT)  # type: ignore
 
     def remove_download_result(self, gid: str) -> str:
         """
@@ -1456,7 +1454,7 @@ class Client:
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'OK'}
         """
-        return self.call(self.REMOVE_DOWNLOAD_RESULT, [gid])
+        return self.call(self.REMOVE_DOWNLOAD_RESULT, [gid])  # type: ignore
 
     def get_version(self) -> str:
         """
@@ -1493,7 +1491,7 @@ class Client:
                                               u'XML-RPC'],
                          u'version': u'1.11.0'}}
         """
-        return self.call(self.GET_VERSION)
+        return self.call(self.GET_VERSION)  # type: ignore
 
     def get_session_info(self) -> dict:
         """
@@ -1519,7 +1517,7 @@ class Client:
              u'jsonrpc': u'2.0',
              u'result': {u'sessionId': u'cd6a3bc6a1de28eb5bfa181e5f6b916d44af31a9'}}
         """
-        return self.call(self.GET_SESSION_INFO)
+        return self.call(self.GET_SESSION_INFO)  # type: ignore
 
     def shutdown(self) -> str:
         """
@@ -1532,7 +1530,7 @@ class Client:
         Returns:
             `"OK"`.
         """
-        return self.call(self.SHUTDOWN)
+        return self.call(self.SHUTDOWN)  # type: ignore
 
     def force_shutdown(self) -> str:
         """
@@ -1548,7 +1546,7 @@ class Client:
         Returns:
             `"OK"`.
         """
-        return self.call(self.FORCE_SHUTDOWN)
+        return self.call(self.FORCE_SHUTDOWN)  # type: ignore
 
     def save_session(self) -> str:
         """
@@ -1564,7 +1562,7 @@ class Client:
         Returns:
             `"OK"` if it succeeds.
         """
-        return self.call(self.SAVE_SESSION)
+        return self.call(self.SAVE_SESSION)  # type: ignore
 
     # system
     def multicall(self, methods: List[dict]) -> List[CallReturnType]:
@@ -1618,7 +1616,7 @@ class Client:
             [{u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'0000000000000001'},
              {u'id': u'asdf', u'jsonrpc': u'2.0', u'result': u'd2703803b52216d1'}]
         """
-        return self.call(self.MULTICALL, [methods])
+        return self.call(self.MULTICALL, [methods])  # type: ignore
 
     def list_methods(self) -> List[str]:
         """
@@ -1650,7 +1648,7 @@ class Client:
                          u'aria2.addTorrent',
              ...
         """
-        return self.call(self.LIST_METHODS)
+        return self.call(self.LIST_METHODS)  # type: ignore
 
     def list_notifications(self) -> List[str]:
         """
@@ -1682,7 +1680,7 @@ class Client:
                          u'aria2.onDownloadPause',
              ...
         """
-        return self.call(self.LIST_NOTIFICATIONS)
+        return self.call(self.LIST_NOTIFICATIONS)  # type: ignore
 
     # notifications
     def listen_to_notifications(  # noqa: WPS231 (false-positive because of logging lines?)

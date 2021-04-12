@@ -209,7 +209,7 @@ class File:
         return bool_or_value(self._struct["selected"])
 
     @property
-    def uris(self) -> Optional[List[str]]:
+    def uris(self) -> List[dict]:
         """
         Return a list of URIs for this file.
 
@@ -219,7 +219,7 @@ class File:
         Returns:
             The list of URIs.
         """
-        return self._struct.get("uris")
+        return self._struct.get("uris", [])
 
 
 class Download:
@@ -237,7 +237,7 @@ class Download:
         self._struct = struct or {}
         self._files: List[File] = []
         self._root_files_paths: List[Path] = []
-        self._bittorrent = None
+        self._bittorrent: Optional[BitTorrent] = None
         self._name = ""
         self._options: Optional[Options] = None
         self._followed_by: Optional[List[Download]] = None
@@ -296,7 +296,7 @@ class Download:
                     self._name = Path(file_path[start_pos:]).parts[0]
                 else:
                     try:
-                        self._name = self.files[0].uris[0]["uri"].split("/")[-1]  # noqa: WPS219
+                        self._name = self.files[0].uris[0]["uri"].split("/")[-1]  # type: ignore  # noqa: WPS219
                     except IndexError:
                         pass  # noqa: WPS420 (we don't want to fail here)
         return self._name
@@ -846,7 +846,7 @@ class Download:
             A [BitTorrent][aria2p.downloads.BitTorrent] instance or `None`.
         """
         if not self._bittorrent and "bittorrent" in self._struct:
-            self._bittorrent = BitTorrent(self._struct.get("bittorrent"))
+            self._bittorrent = BitTorrent(self._struct.get("bittorrent", {}))
         return self._bittorrent
 
     @property

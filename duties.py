@@ -186,7 +186,7 @@ def check_types(ctx):
     Arguments:
         ctx: The context instance (passed automatically).
     """
-    ctx.run(f"mypy --config-file config/mypy.ini {PY_SRC}", title="Type-checking", pty=PTY, nofail=True, quiet=True)
+    ctx.run(f"mypy --config-file config/mypy.ini {PY_SRC}", title="Type-checking", pty=PTY)
 
 
 @duty(silent=True, post=["clean_tests"])
@@ -308,7 +308,7 @@ def coverage(ctx):
 
 
 @duty(pre=[lambda ctx: clean_tests.run()])
-def test(ctx, match="", markers="", cpus="auto", sugar=True, verbose=False, cov=True):
+def test(ctx, match="", markers="", cpus="auto", sugar: bool = True, verbose: bool = False, cov: bool = True):
     """
     Run the test suite.
 
@@ -322,19 +322,19 @@ def test(ctx, match="", markers="", cpus="auto", sugar=True, verbose=False, cov=
         cov: Compute coverage, default True.
     """
     if WINDOWS and CI:
-        cpus = ["--dist", "no"]
-        verbose = ["-vv"]
-        sugar = ["-p", "no:sugar"]
-        cov = ["--no-cov"]
+        cpus_opts = ["--dist", "no"]
+        verbose_opts = ["-vv"]
+        sugar_opts = ["-p", "no:sugar"]
+        cov_opts = ["--no-cov"]
     else:
-        cpus = ["--dist", "no"] if cpus == "no" else ["-n", cpus]
-        sugar = [] if sugar is True else ["-p", "no:sugar"]
-        verbose = [] if verbose is False else ["-vv"]
-        cov = [] if cov is True else ["--no-cov"]
+        cpus_opts = ["--dist", "no"] if cpus == "no" else ["-n", cpus]
+        sugar_opts = [] if sugar is True else ["-p", "no:sugar"]
+        verbose_opts = [] if verbose is False else ["-vv"]
+        cov_opts = [] if cov is True else ["--no-cov"]
 
     match = ["-k", match] if match else []
     markers = ["-m", markers] if markers else []
-    options = [*cov, *verbose, *sugar, *cpus, *match, *markers]  # noqa: WPS221
+    options = [*cov_opts, *verbose_opts, *sugar_opts, *cpus_opts, *match, *markers]  # noqa: WPS221
 
     ctx.run(
         ["pytest", "-c", "config/pytest.ini", *options, "tests"],

@@ -114,14 +114,15 @@ def human_readable_bytes(value: int, digits: int = 2, delim: str = "", postfix: 
     Returns:
         The human-readable version of the bytes.
     """
+    hr_value: float = value
     chosen_unit = "B"
     for unit in ("KiB", "MiB", "GiB", "TiB"):
-        if value > 1000:
-            value /= 1024
+        if hr_value > 1000:
+            hr_value /= 1024
             chosen_unit = unit
         else:
             break
-    return f"{value:.{digits}f}" + delim + chosen_unit + postfix  # noqa: WPS221 (not complex)
+    return f"{hr_value:.{digits}f}" + delim + chosen_unit + postfix  # noqa: WPS221 (not complex)
 
 
 def bool_or_value(value) -> Any:
@@ -185,55 +186,55 @@ def load_configuration() -> Dict[str, Any]:
     """
     default_config = """
         [key_bindings]
-            AUTOCLEAR = "c"
-            CANCEL = "esc"
-            ENTER = "enter"
-            FILTER = ["F4", "\\\\"]
-            FOLLOW_ROW = "F"
-            HELP = ["F1", "?"]
-            MOVE_DOWN = ["down", "j"]
-            MOVE_DOWN_STEP = "J"
-            MOVE_END = "end"
-            MOVE_HOME = "home"
-            MOVE_LEFT = ["left", "h"]
-            MOVE_RIGHT = ["right", "l"]
-            MOVE_UP = ["up", "k"]
-            MOVE_UP_STEP = "K"
-            NEXT_SORT = ["p", ">"]
-            PREVIOUS_SORT = "<"
-            PRIORITY_DOWN = ["F8", "d", "]"]
-            PRIORITY_UP = ["F7", "u", "["]
-            QUIT = ["F10", "q"]
-            REMOVE_ASK = ["del", "F9"]
-            RETRY = "r"
-            RETRY_ALL = "R"
-            REVERSE_SORT = "I"
-            SEARCH = ["F3", "/"]
-            SELECT_SORT = "F6"
-            SETUP = "F2"
-            TOGGLE_EXPAND_COLLAPSE = "x"
-            TOGGLE_EXPAND_COLLAPSE_ALL = "X"
-            TOGGLE_RESUME_PAUSE = "space"
-            TOGGLE_RESUME_PAUSE_ALL = "P"
-            TOGGLE_SELECT = "s"
-            UN_SELECT_ALL = "U"
-            ADD_DOWNLOADS = "a"
+        AUTOCLEAR = "c"
+        CANCEL = "esc"
+        ENTER = "enter"
+        FILTER = ["F4", "\\\\"]
+        FOLLOW_ROW = "F"
+        HELP = ["F1", "?"]
+        MOVE_DOWN = ["down", "j"]
+        MOVE_DOWN_STEP = "J"
+        MOVE_END = "end"
+        MOVE_HOME = "home"
+        MOVE_LEFT = ["left", "h"]
+        MOVE_RIGHT = ["right", "l"]
+        MOVE_UP = ["up", "k"]
+        MOVE_UP_STEP = "K"
+        NEXT_SORT = ["p", ">"]
+        PREVIOUS_SORT = "<"
+        PRIORITY_DOWN = ["F8", "d", "]"]
+        PRIORITY_UP = ["F7", "u", "["]
+        QUIT = ["F10", "q"]
+        REMOVE_ASK = ["del", "F9"]
+        RETRY = "r"
+        RETRY_ALL = "R"
+        REVERSE_SORT = "I"
+        SEARCH = ["F3", "/"]
+        SELECT_SORT = "F6"
+        SETUP = "F2"
+        TOGGLE_EXPAND_COLLAPSE = "x"
+        TOGGLE_EXPAND_COLLAPSE_ALL = "X"
+        TOGGLE_RESUME_PAUSE = "space"
+        TOGGLE_RESUME_PAUSE_ALL = "P"
+        TOGGLE_SELECT = "s"
+        UN_SELECT_ALL = "U"
+        ADD_DOWNLOADS = "a"
 
         [colors]
-            UI = "WHITE BOLD DEFAULT"
-            BRIGHT_HELP = "CYAN BOLD DEFAULT"
-            FOCUSED_HEADER = "BLACK NORMAL CYAN"
-            FOCUSED_ROW = "BLACK NORMAL CYAN"
-            HEADER = "BLACK NORMAL GREEN"
-            METADATA = "WHITE UNDERLINE DEFAULT"
-            SIDE_COLUMN_FOCUSED_ROW = "DEFAULT NORMAL CYAN"
-            SIDE_COLUMN_HEADER = "BLACK NORMAL GREEN"
-            SIDE_COLUMN_ROW = "DEFAULT NORMAL DEFAULT"
-            STATUS_ACTIVE = "CYAN NORMAL DEFAULT"
-            STATUS_COMPLETE = "GREEN NORMAL DEFAULT"
-            STATUS_ERROR = "RED BOLD DEFAULT"
-            STATUS_PAUSED = "YELLOW NORMAL DEFAULT"
-            STATUS_WAITING = "WHITE BOLD DEFAULT"
+        UI = "WHITE BOLD DEFAULT"
+        BRIGHT_HELP = "CYAN BOLD DEFAULT"
+        FOCUSED_HEADER = "BLACK NORMAL CYAN"
+        FOCUSED_ROW = "BLACK NORMAL CYAN"
+        HEADER = "BLACK NORMAL GREEN"
+        METADATA = "WHITE UNDERLINE DEFAULT"
+        SIDE_COLUMN_FOCUSED_ROW = "DEFAULT NORMAL CYAN"
+        SIDE_COLUMN_HEADER = "BLACK NORMAL GREEN"
+        SIDE_COLUMN_ROW = "DEFAULT NORMAL DEFAULT"
+        STATUS_ACTIVE = "CYAN NORMAL DEFAULT"
+        STATUS_COMPLETE = "GREEN NORMAL DEFAULT"
+        STATUS_ERROR = "RED BOLD DEFAULT"
+        STATUS_PAUSED = "YELLOW NORMAL DEFAULT"
+        STATUS_WAITING = "WHITE BOLD DEFAULT"
     """
 
     config_dict = {}

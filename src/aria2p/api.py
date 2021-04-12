@@ -46,12 +46,12 @@ class API:
     def __repr__(self) -> str:
         return f"API({self.client!r})"
 
-    def add(
+    def add(  # noqa: WPS231 (not that complex)
         self,
         uri: str,
         options: OptionsType = None,
         position: int = None,
-    ) -> List[Download]:  # noqa: WPS231 (not that complex)
+    ) -> List[Download]:
         """
         Add a download (guess its type).
 
@@ -406,7 +406,10 @@ class API:
         for download in downloads:
             if not download.has_failed:
                 continue
-            uri = download.files[0].uris[0]["uri"]  # noqa: WPS219 (deep access)
+            try:
+                uri = download.files[0].uris[0]["uri"]  # noqa: WPS219 (deep access)
+            except IndexError:
+                continue
             try:
                 new_download_gid = self.add_uris([uri], download.options)
             except ClientException as error:
@@ -887,7 +890,7 @@ class API:
         if block:
             yield block
 
-    def parse_input_file(self, input_file: str) -> InputFileContentsType:
+    def parse_input_file(self, input_file: PathOrStr) -> InputFileContentsType:
         """
         Parse a file with URIs or an aria2c input file.
 
