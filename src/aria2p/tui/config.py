@@ -25,6 +25,35 @@ mode_map = {
     "REVERSE": Screen.A_REVERSE,
 }
 
+special_keys = {
+    "F1": Screen.KEY_F1,
+    "F2": Screen.KEY_F2,
+    "F3": Screen.KEY_F3,
+    "F4": Screen.KEY_F4,
+    "F5": Screen.KEY_F5,
+    "F6": Screen.KEY_F6,
+    "F7": Screen.KEY_F7,
+    "F8": Screen.KEY_F8,
+    "F9": Screen.KEY_F9,
+    "F10": Screen.KEY_F10,
+    "F11": Screen.KEY_F11,
+    "F12": Screen.KEY_F12,
+    "ESC": Screen.KEY_ESCAPE,
+    "DEL": Screen.KEY_DELETE,
+    "PAGE_UP": Screen.KEY_PAGE_UP,
+    "PAGE_DOWN": Screen.KEY_PAGE_DOWN,
+    "HOME": Screen.KEY_HOME,
+    "END": Screen.KEY_END,
+    "LEFT": Screen.KEY_LEFT,
+    "UP": Screen.KEY_UP,
+    "RIGHT": Screen.KEY_RIGHT,
+    "DOWN": Screen.KEY_DOWN,
+    "BACK": Screen.KEY_BACK,
+    "TAB": Screen.KEY_TAB,
+    "SPACE": ord(" "),
+    "ENTER": ord("\n"),
+}
+
 
 class Config(dict):
     def __getattr__(self, name):
@@ -33,35 +62,6 @@ class Config(dict):
 
 class Key:
     """A class to represent an input key."""
-
-    OTHER_KEY_VALUES = {
-        "F1": Screen.KEY_F1,
-        "F2": Screen.KEY_F2,
-        "F3": Screen.KEY_F3,
-        "F4": Screen.KEY_F4,
-        "F5": Screen.KEY_F5,
-        "F6": Screen.KEY_F6,
-        "F7": Screen.KEY_F7,
-        "F8": Screen.KEY_F8,
-        "F9": Screen.KEY_F9,
-        "F10": Screen.KEY_F10,
-        "F11": Screen.KEY_F11,
-        "F12": Screen.KEY_F12,
-        "ESC": Screen.KEY_ESCAPE,
-        "DEL": Screen.KEY_DELETE,
-        "PAGE_UP": Screen.KEY_PAGE_UP,
-        "PAGE_DOWN": Screen.KEY_PAGE_DOWN,
-        "HOME": Screen.KEY_HOME,
-        "END": Screen.KEY_END,
-        "LEFT": Screen.KEY_LEFT,
-        "UP": Screen.KEY_UP,
-        "RIGHT": Screen.KEY_RIGHT,
-        "DOWN": Screen.KEY_DOWN,
-        "BACK": Screen.KEY_BACK,
-        "TAB": Screen.KEY_TAB,
-        "SPACE": ord(" "),
-        "ENTER": ord("\n"),
-    }
 
     def __init__(self, name: str, value=None) -> None:
         """
@@ -76,7 +76,7 @@ class Key:
             try:
                 value = ord(name)
             except TypeError:
-                value = self.OTHER_KEY_VALUES[name.upper()]
+                value = special_keys[name.upper()]
         self.value = value
 
     def __eq__(self, value):
