@@ -5,14 +5,11 @@ This module contains simple utility classes and functions.
 """
 
 import signal
-import textwrap
 from datetime import timedelta
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, List
 
 import pkg_resources
-import toml
-from appdirs import user_config_dir
 from loguru import logger
 
 from aria2p.types import PathOrStr
@@ -175,85 +172,6 @@ def get_version() -> str:
     except pkg_resources.DistributionNotFound:
         return "0.0.0"
     return distribution.version
-
-
-def load_configuration() -> Dict[str, Any]:
-    """
-    Return dict from TOML formatted string or file.
-
-    Returns:
-        The dict configuration.
-    """
-    default_config = """
-        [key_bindings]
-        AUTOCLEAR = "c"
-        CANCEL = "esc"
-        ENTER = "enter"
-        FILTER = ["F4", "\\\\"]
-        FOLLOW_ROW = "F"
-        HELP = ["F1", "?"]
-        MOVE_DOWN = ["down", "j"]
-        MOVE_DOWN_STEP = "J"
-        MOVE_END = "end"
-        MOVE_HOME = "home"
-        MOVE_LEFT = ["left", "h"]
-        MOVE_RIGHT = ["right", "l"]
-        MOVE_UP = ["up", "k"]
-        MOVE_UP_STEP = "K"
-        NEXT_SORT = ["p", ">"]
-        PREVIOUS_SORT = "<"
-        PRIORITY_DOWN = ["F8", "d", "]"]
-        PRIORITY_UP = ["F7", "u", "["]
-        QUIT = ["F10", "q"]
-        REMOVE_ASK = ["del", "F9"]
-        RETRY = "r"
-        RETRY_ALL = "R"
-        REVERSE_SORT = "I"
-        SEARCH = ["F3", "/"]
-        SELECT_SORT = "F6"
-        SETUP = "F2"
-        TOGGLE_EXPAND_COLLAPSE = "x"
-        TOGGLE_EXPAND_COLLAPSE_ALL = "X"
-        TOGGLE_RESUME_PAUSE = "space"
-        TOGGLE_RESUME_PAUSE_ALL = "P"
-        TOGGLE_SELECT = "s"
-        UN_SELECT_ALL = "U"
-        ADD_DOWNLOADS = "a"
-
-        [colors]
-        UI = "WHITE BOLD DEFAULT"
-        BRIGHT_HELP = "CYAN BOLD DEFAULT"
-        FOCUSED_HEADER = "BLACK NORMAL CYAN"
-        FOCUSED_ROW = "BLACK NORMAL CYAN"
-        HEADER = "BLACK NORMAL GREEN"
-        METADATA = "WHITE UNDERLINE DEFAULT"
-        SIDE_COLUMN_FOCUSED_ROW = "DEFAULT NORMAL CYAN"
-        SIDE_COLUMN_HEADER = "BLACK NORMAL GREEN"
-        SIDE_COLUMN_ROW = "DEFAULT NORMAL DEFAULT"
-        STATUS_ACTIVE = "CYAN NORMAL DEFAULT"
-        STATUS_COMPLETE = "GREEN NORMAL DEFAULT"
-        STATUS_ERROR = "RED BOLD DEFAULT"
-        STATUS_PAUSED = "YELLOW NORMAL DEFAULT"
-        STATUS_WAITING = "WHITE BOLD DEFAULT"
-    """
-
-    config_dict = {}
-    config_dict["DEFAULT"] = toml.loads(default_config)
-
-    # Check for configuration file
-    config_file_path = Path(user_config_dir("aria2p")) / "config.toml"
-
-    if config_file_path.exists():
-        try:
-            config_dict["USER"] = toml.load(config_file_path)
-        except Exception as error:  # noqa: W0703 (too broad exception)
-            logger.error(f"Failed to load configuration file: {error}")
-    else:
-        # Write initial configuration file if it does not exist
-        config_file_path.parent.mkdir(parents=True, exist_ok=True)
-        with config_file_path.open("w") as fd:
-            fd.write(textwrap.dedent(default_config).lstrip("\n"))
-    return config_dict
 
 
 def read_lines(path: PathOrStr) -> List[str]:
