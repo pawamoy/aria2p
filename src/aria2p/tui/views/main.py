@@ -7,8 +7,7 @@ from loguru import logger
 
 from aria2p.downloads import Download
 from aria2p.tui.errors import Exit
-from aria2p.tui.screen import Column, HorizontalScroll
-from aria2p.tui.views.base import View
+from aria2p.tui.helpers import Column, HorizontalScroll
 from aria2p.tui.views.add import AddView
 from aria2p.tui.views.base import View
 from aria2p.tui.views.help import HelpView

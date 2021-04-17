@@ -70,7 +70,6 @@ class AddView(View):
             self.uris.clear()
             self.exit()
 
-
     def draw(self):
         y = self.parent_view.y_offset
         padding = self.wrapper.width

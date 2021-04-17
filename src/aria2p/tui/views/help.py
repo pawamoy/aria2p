@@ -68,7 +68,9 @@ class HelpView(View):
 
         self.wrapper.screen.print_at(" " * self.wrapper.width, 0, y, *self.style.DEFAULT)
         y += 1
-        self.wrapper.screen.print_at(f"{'Press any key to return.':<{self.wrapper.width}}", 0, y, *self.style.BRIGHT_HELP)
+        self.wrapper.screen.print_at(
+            f"{'Press any key to return.':<{self.wrapper.width}}", 0, y, *self.style.BRIGHT_HELP
+        )
         y += 1
 
         for i in range(self.wrapper.height - y):

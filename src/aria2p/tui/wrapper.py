@@ -15,7 +15,6 @@
 import os
 import sys
 import time
-from enum import IntEnum
 from pathlib import Path
 
 from asciimatics.event import KeyboardEvent, MouseEvent
@@ -25,12 +24,8 @@ from loguru import logger
 from aria2p.api import API
 from aria2p.tui.config import load_configuration
 from aria2p.tui.errors import Exit
-from aria2p.tui.views.add import AddView
 from aria2p.tui.views.base import View
-from aria2p.tui.views.help import HelpView
 from aria2p.tui.views.main import MainView
-from aria2p.tui.views.remove import RemoveView
-from aria2p.tui.views.select_sort import SelectSortView
 
 
 class WrapperView(View):

@@ -54,4 +54,3 @@ class SelectSortView(View):
     @property
     def width(self):
         return max(len(column_name) for column_name in self.parent_view.columns_order + [self.header])
-
