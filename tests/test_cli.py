@@ -85,7 +85,7 @@ def test_parser_error_when_no_gid_and_no_all_option(capsys):
 
 
 def test_no_interface_deps_print_error(server, monkeypatch, capsys):
-    monkeypatch.setattr(top, "Interface", None)
+    monkeypatch.setattr(top, "WrapperView", None)
     main(["-p", str(server.port)])
     line = first_err_line(capsys)
     assert "aria2p[tui]" in line
