@@ -1,3 +1,5 @@
+"""The view allowing to add downloads interactively."""
+
 from typing import List
 
 import pyperclip
@@ -6,14 +8,16 @@ from aria2p.tui.views.base import View
 
 
 class AddView(View):
-    def __init__(self, parent_view):
+    """The view allowing to add downloads interactively."""
+
+    def __init__(self, parent_view):  # noqa: D107
         super().__init__(parent_view)
         self.uris: List[str] = []
         self.header = f"Add Download: [ Hit ENTER to download; Hit { ','.join(key.name for key in self.keybinds.ADD_DOWNLOADS) } to download all ]"
         self.focused = -1
         self.row_offset = 0
 
-    def enter(self):
+    def enter(self):  # noqa: D102
         # build set of copied lines
         copied_lines = set()
         for line in pyperclip.paste().split("\n") + pyperclip.paste(primary=True).split("\n"):
@@ -28,11 +32,11 @@ class AddView(View):
             self.uris = list(sorted(copied_lines))
             self.focused = 0
 
-    def exit(self):
+    def exit(self):  # noqa: D102
         self.wrapper.enter(self.parent_view)
         self.wrapper.refresh = True
 
-    def process_keyboard_event(self, event):
+    def process_keyboard_event(self, event):  # noqa: D102
         if event.key_code in self.keybinds.CANCEL + self.keybinds.QUIT:
             self.exit()
 
@@ -70,20 +74,20 @@ class AddView(View):
             self.uris.clear()
             self.exit()
 
-    def draw(self):
-        y = self.parent_view.y_offset
+    def draw(self):  # noqa: D102
+        y = self.parent_view.y_offset  # noqa WPS111
         padding = self.wrapper.width
         header_string = f"{self.header:<{padding}}"
         len_header = len(header_string)
         self.wrapper.screen.print_at(header_string, 0, y, *self.style.SIDE_COLUMN_HEADER)
         self.wrapper.screen.print_at(" ", len_header, y, *self.style.DEFAULT)
-        y += 1
+        y += 1  # noqa WPS111
         self.wrapper.screen.print_at(" " * padding, 0, y, *self.style.DEFAULT)
         separator = "..."
 
-        for i, uri in enumerate(self.uris):
-            y += 1
-            palette = self.style.FOCUSED_ROW if i == self.focused else self.style.DEFAULT
+        for line_index, uri in enumerate(self.uris):
+            y += 1  # noqa WPS111
+            palette = self.style.FOCUSED_ROW if line_index == self.focused else self.style.DEFAULT
             if len(uri) > padding:
                 # print part of uri string
                 uri = f"{uri[:(padding//2)-len(separator)]}{separator}{uri[-(padding//2)+len(separator):]}"
@@ -93,13 +97,6 @@ class AddView(View):
             self.wrapper.screen.print_at(uri, 0, y, *palette)
             self.wrapper.screen.print_at(" " * (padding - len(uri)), len(uri), y, *self.style.DEFAULT)
 
-        for i in range(1, self.wrapper.height - y):
-            self.wrapper.screen.print_at(" " * (padding + 1), 0, y + i, *self.style.DEFAULT)
-
-        self.parent_view.draw()
-
-    def resize(self, screen):
-        pass
-
-    def update(self):
-        pass
+        # fill with blank lines
+        for blank_line in range(1, self.wrapper.height - y):
+            self.wrapper.screen.print_at(" " * (padding + 1), 0, y + blank_line, *self.style.DEFAULT)

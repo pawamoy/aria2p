@@ -18,12 +18,13 @@ import time
 from pathlib import Path
 
 from asciimatics.event import KeyboardEvent, MouseEvent
-from asciimatics.screen import ManagedScreen
+from asciimatics.screen import ManagedScreen, Screen
 from loguru import logger
 
 from aria2p.api import API
+from aria2p.client import ClientException
 from aria2p.tui.config import load_configuration
-from aria2p.tui.errors import Exit
+from aria2p.tui.errors import Exit, TUIError
 from aria2p.tui.views.base import View
 from aria2p.tui.views.main import MainView
 
@@ -69,60 +70,68 @@ class WrapperView(View):
         # reduce curses' 1 second delay when hitting escape to 25 ms
         os.environ.setdefault("ESCDELAY", "25")
 
-        self.enter(MainView(parent_view=self))
+        self.main_view = MainView(parent_view=self)
+        self.enter(self.main_view)
 
-    def enter(self, view):
+    def enter(self, view: View):
+        """
+        Enter/activate a view.
+
+        Arguments:
+            view: The view to enter into.
+        """
         self.current_view = view
         self.current_view.enter()
 
-    def run(self):
-        """The main drawing loop."""
-        try:
-            # outer loop to support screen resize
-            while True:
-                with ManagedScreen() as screen:
-                    logger.debug(f"Created new screen {screen}")
-                    self.resize(screen)
-                    self.frame = 0
-                    # break (and re-enter) when screen has been resized
-                    while not screen.has_resized():
-                        # we only refresh when explicitly asked for
-                        self.refresh = False
+    def run(self) -> bool:
+        """
+        Run the interface in a loop.
 
-                        # process all events before refreshing screen,
-                        # otherwise the reactivity is slowed down a lot with fast inputs
+        Returns:
+            Whether we exited normally (true) or with an error (false).
+        """
+        # outer loop to support screen resize
+        while True:  # noqa: WPS457 (not infinite)
+            with ManagedScreen() as screen:
+                logger.debug(f"Created new screen {screen}")
+                self.resize(screen)
+                self.frame = 0
+                # break (and re-enter) when screen has been resized
+                while not screen.has_resized():
+                    # we only refresh when explicitly asked for
+                    self.refresh = False
+
+                    # process all events before refreshing screen,
+                    # otherwise the reactivity is slowed down a lot with fast inputs
+                    event = screen.get_event()
+                    while event:
+                        logger.debug(f"Got event {event}")
+                        # avoid crashing the interface if exceptions occur while processing an event
+                        try:
+                            self.process_event(event)
+                        except Exit:
+                            logger.debug("Received exit command")
+                            return True
+                        except (ClientException, TUIError) as error:
+                            # TODO: display error in status bar
+                            logger.exception(error)
                         event = screen.get_event()
-                        while event:
-                            logger.debug(f"Got event {event}")
-                            # avoid crashing the interface if exceptions occur while processing an event
-                            try:
-                                self.process_event(event)
-                            except Exit:
-                                logger.debug(f"Received exit command")
-                                return True
-                            except Exception as error:
-                                # TODO: display error in status bar
-                                logger.exception(error)
-                            event = screen.get_event()
 
-                        # time to update data and rows
-                        if self.frame == 0:
-                            logger.debug(f"Tick! Updating data and rows")
-                            self.refresh = self.refresh or self.current_view.update()
+                    # time to update data and rows
+                    if self.frame == 0:
+                        logger.debug("Tick! Updating data and rows")
+                        self.refresh = self.refresh or self.current_view.update()
 
-                        # time to refresh the screen
-                        if self.refresh:
-                            logger.debug(f"Refresh! Printing text")
-                            self.current_view.draw()
-                            screen.refresh()
+                    # time to refresh the screen
+                    if self.refresh:
+                        logger.debug("Refresh! Printing text")
+                        self.current_view.draw()
+                        screen.refresh()
 
-                        # sleep and increment frame
-                        time.sleep(self.sleep)
-                        self.frame = (self.frame + 1) % self.frames
-                    logger.debug("Screen was resized")
-        except Exception as error:
-            logger.exception(error)
-            return False
+                    # sleep and increment frame
+                    time.sleep(self.sleep)
+                    self.frame = (self.frame + 1) % self.frames
+                logger.debug("Screen was resized")
 
     def process_event(self, event):
         """
@@ -140,19 +149,25 @@ class WrapperView(View):
         elif isinstance(event, MouseEvent):
             self.current_view.process_mouse_event(event)
 
-    def resize(self, screen):
-        """Set the screen object, its scroller wrapper, width, height, and columns bounds."""
+    def resize(self, screen: Screen) -> None:
+        """
+        Set the screen object, its scroller wrapper, width, height, and columns bounds.
+
+        Arguments:
+            screen: The freshly created screen.
+        """
         self.screen = screen
-        self.height, self.width = screen.dimensions
-        self.current_view.resize(screen)
+        self.height, self.width = screen.dimensions  # noqa: WPS414
+        self.main_view.resize(screen)
         reapply_pywal_theme()
 
 
-def reapply_pywal_theme():
+def reapply_pywal_theme() -> None:
+    """Reapply the pywal theme after a resize."""
     wal_sequences = Path.home() / ".cache" / "wal" / "sequences"
     try:
         with wal_sequences.open("rb") as fd:
-            contents = fd.read()
-            sys.stdout.buffer.write(contents)
-    except Exception:  # nosec
-        pass
+            wal_contents = fd.read()
+            sys.stdout.buffer.write(wal_contents)
+    except Exception:  # noqa: S110
+        pass  # noqa: WPS420

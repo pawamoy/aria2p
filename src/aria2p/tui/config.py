@@ -1,3 +1,5 @@
+"""Configuration module."""
+
 import textwrap
 from pathlib import Path
 from typing import Any, Dict, List, Tuple, Union
@@ -55,7 +57,9 @@ special_keys = {
 }
 
 
-class Config(dict):
+class Config(dict):  # noqa: WPS600
+    """A special class to hold configuration items."""
+
     def __getattr__(self, name):
         return self[name]
 
@@ -113,6 +117,16 @@ def parse_keybinds(keybinds: Union[str, List[str]]) -> List["Key"]:
 
 
 def merge(default_config, user_config):
+    """
+    Merge the user configuration into the default configuration.
+
+    Arguments:
+        default_config: The default configuration.
+        user_config: The user configuration.
+
+    Returns:
+        The modified default configuration.
+    """
     for key, user_value in user_config.items():
         if key in default_config and isinstance(default_config[key], dict) and isinstance(user_value, dict):
             merge(default_config[key], user_value)

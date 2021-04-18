@@ -1,12 +1,14 @@
-from typing import List, Sequence
+"""The main view module."""
+
+from typing import List, Sequence, Tuple, Union
 
 import requests
-from asciimatics.event import MouseEvent
+from asciimatics.event import Event, MouseEvent
 from asciimatics.screen import Screen
 from loguru import logger
 
 from aria2p.downloads import Download
-from aria2p.tui.errors import Exit
+from aria2p.tui.errors import ClickedOutOfBounds, Exit
 from aria2p.tui.helpers import Column, HorizontalScroll
 from aria2p.tui.views.add import AddView
 from aria2p.tui.views.base import View
@@ -14,82 +16,79 @@ from aria2p.tui.views.help import HelpView
 from aria2p.tui.views.remove import RemoveView
 from aria2p.tui.views.select_sort import SelectSortView
 
+PaletteType = Union[str, List[Tuple[int, int, int]]]
+
 
 class MainView(View):
-    def __init__(self, parent_view):
+    """The main view showing the downloads in a HTOP-like interface."""
+
+    def __init__(self, parent_view):  # noqa: D107
         super().__init__(parent_view)
         self.focused = 0
-        self.side_focused = 0
         self.sort = 2
         self.reverse = True
-        self.previous_sort = (self.sort, self.reverse)
         self.x_scroll = 0
         self.x_offset = 0
         self.y_offset = 0
         self.row_offset = 0
         self.data: List[Download] = []
         self.rows: List[Sequence[str]] = []
-        self.scroller = None
         self.follow = None
         self.bounds: List[Sequence[int]] = []
         self.scroller = None
+
+        self.previous_sort = self.current_sort
 
         self.columns_order = ["gid", "status", "progress", "size", "down_speed", "up_speed", "eta", "name"]
         self.columns = {
             "gid": Column(
                 header="GID",
                 padding=">16",
-                get_text=lambda d: d.gid,
-                get_sort=lambda d: d.gid,
-                get_palette=lambda d: "DEFAULT",
+                get_text=lambda download: download.gid,
+                get_sort=lambda download: download.gid,
             ),
             "status": Column(
                 header="STATUS",
                 padding="<9",
-                get_text=lambda d: d.status,
-                get_sort=lambda d: d.status,
+                get_text=lambda download: download.status,
+                get_sort=lambda download: download.status,
                 get_palette=self.palette_status,
             ),
             "progress": Column(
                 header="PROGRESS",
                 padding=">8",
-                get_text=lambda d: d.progress_string(),
-                get_sort=lambda d: d.progress,
-                get_palette=lambda s: "DEFAULT",
+                get_text=lambda download: download.progress_string(),
+                get_sort=lambda download: download.progress,
             ),
             "size": Column(
                 header="SIZE",
                 padding=">11",
-                get_text=lambda d: d.total_length_string(),
-                get_sort=lambda d: d.total_length,
-                get_palette=lambda s: "DEFAULT",
+                get_text=lambda download: download.total_length_string(),
+                get_sort=lambda download: download.total_length,
             ),
             "down_speed": Column(
                 header="DOWN_SPEED",
                 padding=">13",
-                get_text=lambda d: d.download_speed_string(),
-                get_sort=lambda d: d.download_speed,
-                get_palette=lambda s: "DEFAULT",
+                get_text=lambda download: download.download_speed_string(),
+                get_sort=lambda download: download.download_speed,
             ),
             "up_speed": Column(
                 header="UP_SPEED",
                 padding=">13",
-                get_text=lambda d: d.upload_speed_string(),
-                get_sort=lambda d: d.upload_speed,
-                get_palette=lambda s: "DEFAULT",
+                get_text=lambda download: download.upload_speed_string(),
+                get_sort=lambda download: download.upload_speed,
             ),
             "eta": Column(
                 header="ETA",
                 padding=">8",
-                get_text=lambda d: d.eta_string(precision=2),
-                get_sort=lambda d: d.eta,
-                get_palette=lambda s: "DEFAULT",
+                get_text=lambda download: download.eta_string(precision=2),
+                get_sort=lambda download: download.eta,
             ),
             "name": Column(
                 header="NAME",
                 padding="100%",
-                get_text=lambda d: d.name,
-                get_sort=lambda d: d.name,
+                get_text=lambda download: download.name,
+                get_sort=lambda download: download.name,
                 get_palette=self.palette_name,
             ),
         }
@@ -99,15 +98,31 @@ class MainView(View):
         self.select_sort_view = SelectSortView(parent_view=self)
         self.add_downloads_view = AddView(parent_view=self)
 
-    def enter(self):
+    def enter(self) -> None:  # noqa: D102
         self.x_offset = 0
 
-    def palette_status(self, value):
-        """Return the palette for a STATUS cell."""
+    def palette_status(self, value: str) -> str:
+        """
+        Return the palette for a STATUS cell.
+
+        Arguments:
+            value: The value of the STATUS cell.
+
+        Returns:
+            The palette name (later transformed into a proper palette).
+        """
         return "STATUS_" + value.upper()
 
-    def palette_name(self, value):
-        """Return the palette for a NAME cell."""
+    def palette_name(self, value: str) -> PaletteType:
+        """
+        Return the palette for a NAME cell.
+
+        Arguments:
+            value: The value of the NAME cell.
+
+        Returns:
+            The 3 colors palette or its name.
+        """
         if value.startswith("[METADATA]"):
             return (
                 [(Screen.COLOUR_GREEN, Screen.A_UNDERLINE, Screen.COLOUR_BLACK)] * 10
@@ -116,39 +131,46 @@ class MainView(View):
             )
         return "DEFAULT"
 
-    def update_bounds(self):
-        self.bounds = []
-        for column_name in self.columns_order:
-            column = self.columns[column_name]
-            if column.padding == "100%":  # last column
-                self.bounds.append((self.bounds[-1][1] + 1, self.wrapper.width))
-            else:
-                padding = int(column.padding.lstrip("<>=^"))
-                if not self.bounds:
-                    self.bounds = [(0, padding)]
-                else:
-                    self.bounds.append((self.bounds[-1][1] + 1, self.bounds[-1][1] + 1 + padding))
+    def current_sort(self) -> Tuple[int, bool]:
+        """
+        Return the current sort.
 
-    def update_scroller(self, screen):
-        self.scroller = HorizontalScroll(screen)
-
-    def current_sort(self):
+        Returns:
+            A tuple containing the sort index and the reverse boolean.
+        """
         return self.sort, self.reverse
 
-    def follow_focused(self):
+    def follow_focused(self) -> bool:
+        """
+        Follow the currently focused download.
+
+        Returns:
+            Success or failure.
+        """
         if self.focused < len(self.data):
             self.follow = self.data[self.focused]
             return True
         return False
 
-    def get_column_at_x(self, x):
-        """For an horizontal position X, return the column index."""
-        for i, bound in enumerate(self.bounds):
-            if bound[0] <= x <= bound[1]:
-                return i
-        raise ValueError("clicked outside of boundaries")
+    def get_column_at_x(self, x: int):  # noqa: WPS111
+        """
+        Return the column index given an abscissa.
 
-    def process_keyboard_event(self, event):
+        Arguments:
+            x: The abscissa.
+
+        Raises:
+            ValueError: When the user clicked outside of boundaries.
+
+        Returns:
+            The column index.
+        """
+        for column_number, bound in enumerate(self.bounds):
+            if bound[0] <= x <= bound[1]:
+                return column_number
+        raise ClickedOutOfBounds("clicked outside of boundaries")
+
+    def process_keyboard_event(self, event: Event) -> None:  # noqa: D102
         if event.key_code in self.keybinds.MOVE_UP:
             if self.focused > 0:
                 self.focused -= 1
@@ -334,13 +356,12 @@ class MainView(View):
         elif event.key_code in self.keybinds.ADD_DOWNLOADS:
             self.wrapper.enter(self.add_downloads_view)
             self.wrapper.refresh = True
-            self.side_focused = 0
             self.x_offset = self.wrapper.width
 
         elif event.key_code in self.keybinds.QUIT:
             raise Exit()
 
-    def process_mouse_event(self, event):
+    def process_mouse_event(self, event: Event) -> None:  # noqa: D102
         if event.buttons & MouseEvent.LEFT_CLICK:
             if event.y == 0:
                 new_sort = self.get_column_at_x(event.x)
@@ -355,27 +376,27 @@ class MainView(View):
         # elif event.buttons & MouseEvent.RIGHT_CLICK:
         #     pass  # TODO: expand/collapse
 
-    def draw(self):
+    def draw(self) -> None:  # noqa: D102
         # sort if needed, unless it was just done at frame 0 when updating
-        if (self.sort, self.reverse) != self.previous_sort and self.wrapper.frame != 0:
+        if self.current_sort != self.previous_sort and self.wrapper.frame != 0:
             self.sort_data()
             self.update_rows()
-        self.previous_sort = (self.sort, self.reverse)
+        self.previous_sort = self.current_sort
 
         self.draw_headers()
         self.draw_rows()
 
-    def draw_headers(self):
-        """Print the headers (columns names)."""
+    def draw_headers(self) -> None:
+        """Draw the headers (columns names)."""
         self.scroller.set_scroll(self.x_scroll)
-        x, y, c = self.x_offset, self.y_offset, 0
+        x, y = self.x_offset, self.y_offset  # noqa: WPS111
 
-        for column_name in self.columns_order:
+        for column_index, column_name in enumerate(self.columns_order):
             column = self.columns[column_name]
-            palette = self.style.FOCUSED_HEADER if c == self.sort else self.style.HEADER
+            palette = self.style.FOCUSED_HEADER if column_index == self.sort else self.style.HEADER
 
             if column.padding == "100%":
-                header_string = f"{column.header}"
+                header_string = column.header
                 fill_up = " " * max(0, self.wrapper.width - x - len(header_string))
                 written = self.scroller.print_at(header_string, x, y, palette)
                 self.scroller.print_at(fill_up, x + written, y, self.style.HEADER)
@@ -384,42 +405,71 @@ class MainView(View):
                 header_string = f"{column.header:{column.padding}} "
                 written = self.scroller.print_at(header_string, x, y, palette)
 
-            x += written
-            c += 1
+            x += written  # noqa: WPS111
 
-    def draw_rows(self):
-        """Print the rows."""
-        y = self.y_offset + 1
+    def draw_rows(self) -> None:
+        """Draw the rows."""
+        y = self.y_offset + 1  # noqa: WPS111
         for row in self.rows[self.row_offset : self.row_offset + self.wrapper.height]:
 
             self.scroller.set_scroll(self.x_scroll)
-            x = self.x_offset
+            x = self.x_offset  # noqa: WPS111
 
-            for i, column_name in enumerate(self.columns_order):
+            for column_index, column_name in enumerate(self.columns_order):
                 column = self.columns[column_name]
                 padding = f"<{max(0, self.wrapper.width - x)}" if column.padding == "100%" else column.padding
 
                 if self.focused == y - self.y_offset - 1 + self.row_offset:
                     palette = self.style.FOCUSED_ROW
                 else:
-                    palette = column.get_palette(row[i])
+                    palette = column.get_palette(row[column_index])
                     if isinstance(palette, str):
                         palette = self.style[palette]
 
-                field_string = f"{row[i]:{padding}} "
+                field_string = f"{row[column_index]:{padding}} "
                 written = self.scroller.print_at(field_string, x, y, palette)
-                x += written
+                x += written  # noqa: WPS111
 
-            y += 1
+            y += 1  # noqa: WPS111
 
-        for i in range(self.wrapper.height - y):
-            self.wrapper.screen.print_at(" " * self.wrapper.width, self.x_offset, y + i, *self.style.DEFAULT)
+        # fill with blank lines
+        for blank_line in range(self.wrapper.height - y):
+            self.wrapper.screen.print_at(" " * self.wrapper.width, self.x_offset, y + blank_line, *self.style.DEFAULT)
 
-    def resize(self, screen):
+    def resize(self, screen: Screen) -> None:
+        """
+        Resize contents.
+
+        Arguments:
+            screen: The new screen instance.
+        """
         self.update_bounds()
         self.update_scroller(screen)
 
-    def update(self):
+    def update_bounds(self) -> None:
+        """Update the columns boundaries."""
+        self.bounds = []
+        for column_name in self.columns_order:
+            column = self.columns[column_name]
+            if column.padding == "100%":  # last column
+                self.bounds.append((self.bounds[-1][1] + 1, self.wrapper.width))
+            else:
+                padding = int(column.padding.lstrip("<>=^"))
+                if not self.bounds:
+                    self.bounds = [(0, padding)]
+                else:
+                    self.bounds.append((self.bounds[-1][1] + 1, self.bounds[-1][1] + 1 + padding))
+
+    def update_scroller(self, screen: Screen) -> None:
+        """
+        Update the horizontal scroller.
+
+        Arguments:
+            screen: The new screen.
+        """
+        self.scroller = HorizontalScroll(screen)
+
+    def update(self) -> bool:  # noqa: D102
         self.update_data()
         self.update_rows()
 
@@ -427,7 +477,12 @@ class MainView(View):
         return True
 
     def get_data(self) -> List[Download]:
-        """Return a list of objects."""
+        """
+        Return a list of downloads from aria2c.
+
+        Returns:
+            The current list of downloads.
+        """
         return self.wrapper.api.get_downloads()
 
     def update_data(self) -> None:
@@ -445,8 +500,8 @@ class MainView(View):
 
     def update_rows(self) -> None:
         """Update rows contents according to data and interface view."""
-        text_getters = [self.columns[c].get_text for c in self.columns_order]
+        text_getters = [self.columns[column_name].get_text for column_name in self.columns_order]
         n_columns = len(self.columns_order)
-        self.rows = [tuple(text_getters[i](item) for i in range(n_columns)) for item in self.data]
+        self.rows = [tuple(text_getter(item) for text_getter in text_getters) for item in self.data]
         if self.follow:
             self.focused = self.data.index(self.follow)
