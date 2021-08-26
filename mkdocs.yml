@@ -30,6 +30,7 @@ theme:
     accent: purple
 
 extra_css:
+- css/custom.css
 - css/mkdocstrings.css
 
 markdown_extensions:
