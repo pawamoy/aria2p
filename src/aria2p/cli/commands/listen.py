@@ -38,6 +38,11 @@ def listen(
         event_types = ["start", "pause", "stop", "error", "complete", "btcomplete"]
 
     spec = importlib_util.spec_from_file_location("aria2p_callbacks", callbacks_module)
+
+    if spec is None:
+        print(f"aria2p: Could not import module file {callbacks_module}", file=sys.stderr)
+        return 1
+
     callbacks = importlib_util.module_from_spec(spec)
 
     if callbacks is None:

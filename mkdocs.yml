@@ -5,31 +5,44 @@ repo_url: "https://github.com/pawamoy/aria2p"
 repo_name: "pawamoy/aria2p"
 
 nav:
-- Overview: index.md
-- Usage: usage.md
-- Configuration: configuration.md
-- API Reference:
-  - api.py: reference/api.md
-  - cli.py: reference/cli.md
-  - client.py: reference/client.md
-  - downloads.py: reference/downloads.md
-  - options.py: reference/options.md
-  - stats.py: reference/stats.md
-  - utils.py: reference/utils.md
-- Contributing: contributing.md
-- Code of Conduct: code_of_conduct.md
-- Changelog: changelog.md
-- Coverage: coverage.md
-- Credits: credits.md
+- Home:
+  - Overview: index.md
+  - Changelog: changelog.md
+  - Credits: credits.md
+  - License: license.md
+# defer to gen-files + literate-nav
+- Code Reference: reference/
+- Development:
+  - Contributing: contributing.md
+  - Code of Conduct: code_of_conduct.md
+  - Coverage report: coverage.md
+- Author's website: https://pawamoy.github.io/
 
 theme:
   name: material
+  icon:
+    logo: material/currency-sign
+  features:
+  - navigation.tabs
+  - navigation.top
   palette:
-    scheme: slate
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
     primary: teal
     accent: purple
+    toggle:
+      icon: material/weather-sunny
+      name: Switch to dark mode
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    primary: black
+    accent: lime
+    toggle:
+      icon: material/weather-night
+      name: Switch to light mode
 
 extra_css:
+- css/material.css
 - css/mkdocstrings.css
 
 markdown_extensions:
@@ -46,9 +59,20 @@ markdown_extensions:
 
 plugins:
 - search
-- coverage:
-    html_report_dir: build/coverage
+- gen-files:
+    scripts:
+    - docs/gen_credits.py
+    - docs/gen_ref_nav.py
+- literate-nav:
+    nav_file: SUMMARY.md
+- coverage
 - mkdocstrings:
     watch:
     - src/aria2p
 
+extra:
+  social:
+  - icon: fontawesome/brands/github
+    link: https://github.com/pawamoy
+  - icon: fontawesome/brands/twitter
+    link: https://twitter.com/pawamoy

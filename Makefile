@@ -4,7 +4,7 @@ SHELL := bash
 DUTY = $(shell [ -n "${VIRTUAL_ENV}" ] || echo pdm run) duty
 
 args = $(foreach a,$($(subst -,_,$1)_args),$(if $(value $a),$a="$($a)"))
-check_code_quality_args = files
+check_quality_args = files
 docs_serve_args = host port
 release_args = version
 test_args = match cpus cov verbose sugar markers extra_args
@@ -12,6 +12,7 @@ test_args = match cpus cov verbose sugar markers extra_args
 BASIC_DUTIES = \
 	bundle \
 	changelog \
+	check-dependencies \
 	clean \
 	coverage \
 	docs \
@@ -22,9 +23,7 @@ BASIC_DUTIES = \
 	release
 
 QUALITY_DUTIES = \
-	check \
-	check-code-quality \
-	check-dependencies \
+	check-quality \
 	check-docs \
 	check-types \
 	test
@@ -33,9 +32,18 @@ QUALITY_DUTIES = \
 help:
 	@$(DUTY) --list
 
+.PHONY: lock
+lock:
+	@pdm lock
+
 .PHONY: setup
 setup:
 	@bash scripts/setup.sh
+
+.PHONY: check
+check:
+	@bash scripts/multirun.sh duty check-quality check-types check-docs
+	@$(DUTY) check-dependencies
 
 .PHONY: $(BASIC_DUTIES)
 $(BASIC_DUTIES):

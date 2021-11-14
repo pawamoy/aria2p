@@ -28,7 +28,7 @@ make setup
     ```
 
     Now you can try running `make setup` again,
-    or simply `pdm install -d`.
+    or simply `pdm install`.
 
 You now have the dependencies installed.
 

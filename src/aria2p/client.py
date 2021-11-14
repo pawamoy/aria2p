@@ -53,7 +53,7 @@ NOTIFICATION_TYPES = [  # noqa: WPS407 (mutable constant)
 CallReturnType = Union[dict, list, str, int]
 
 
-class ClientException(Exception):
+class ClientException(Exception):  # noqa: N818
     """An exception specific to JSON-RPC errors."""
 
     def __init__(self, code: int, message: str) -> None:

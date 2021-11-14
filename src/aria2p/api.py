@@ -331,7 +331,7 @@ class API:
         """
         if pos < 0:
             how = "POS_END"
-            pos = -pos
+            pos = -pos  # noqa: WPS434
         else:
             how = "POS_SET"
         return self.client.change_position(download.gid, pos, how)
