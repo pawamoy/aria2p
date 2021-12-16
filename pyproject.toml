@@ -4,31 +4,41 @@ build-backend = "pdm.pep517.api"
 
 [project]
 name = "aria2p"
-version = {use_scm = true}
 description = "Command-line tool and library to interact with an aria2c daemon process with JSON-RPC."
 authors = [{name = "Timothée Mazzucotelli", email = "pawamoy@pm.me"}]
 license = {file = "LICENSE"}
 readme = "README.md"
 requires-python = ">=3.6.2"
 keywords = ["aria2", "aria2c", "aria2-cli"]
-dynamic = ["version", "classifiers"]
+dynamic = ["version"]
 classifiers = [
     "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
     "License :: OSI Approved :: ISC License (ISCL)",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Utilities",
     "Typing :: Typed",
 ]
 dependencies = [
-    "appdirs~=1.4",
-    "loguru~=0.5",
-    "requests~=2.19",
-    "toml~=0.10",
-    "websocket_client~=0.58",
+    "appdirs>=1.4",
+    "loguru>=0.5",
+    "requests>=2.19",
+    "toml>=0.10",
+    "websocket_client>=0.58",
 ]
 
 [project.optional-dependencies]
 tui = [
-    "asciimatics~=1.13",
-    "pyperclip~=1.8",
+    "asciimatics>=1.13",
+    "pyperclip>=1.8",
 ]
 
 [project.urls]
@@ -45,55 +55,63 @@ Funding = "https://github.com/sponsors/pawamoy"
 aria2p = "aria2p.cli.main:main"
 
 [tool.pdm]
+version = {use_scm = true}
 package-dir = "src"
 
 [tool.pdm.dev-dependencies]
-duty = ["duty~=0.7"]
+duty = ["duty>=0.7"]
 docs = [
-    "mkdocs~=1.2; python_version >= '3.7'",
-    "mkdocs-coverage~=0.2; python_version >= '3.7'",
-    "mkdocs-gen-files~=0.3; python_version >= '3.7'",
-    "mkdocs-literate-nav~=0.4; python_version >= '3.7'",
-    "mkdocs-material~=7.3; python_version >= '3.7'",
-    "mkdocstrings~=0.16; python_version >= '3.7'",
-    "toml~=0.10; python_version >= '3.7'",
+    "mkdocs>=1.2; python_version >= '3.7'",
+    "mkdocs-coverage>=0.2; python_version >= '3.7'",
+    "mkdocs-gen-files>=0.3; python_version >= '3.7'",
+    "mkdocs-literate-nav>=0.4; python_version >= '3.7'",
+    "mkdocs-material>=7.3; python_version >= '3.7'",
+    "mkdocstrings>=0.16; python_version >= '3.7'",
+    "toml>=0.10; python_version >= '3.7'",
 ]
 format = [
-    "autoflake~=1.4",
-    "black~=21.10b0",
-    "isort~=5.10",
+    "autoflake>=1.4",
+    "black>=21.10b0",
+    "isort>=5.10",
 ]
 maintain = [
-    # TODO: remove git-changelog when it is more powerful
-    "git-changelog~=0.4",
+    # TODO: remove this section when git-changelog is more powerful
+    "git-changelog>=0.4",
 ]
 quality = [
-    "darglint~=1.8",
-    "flake8-bandit~=2.1",
-    "flake8-black~=0.2",
-    "flake8-bugbear~=21.9",
-    "flake8-builtins~=1.5",
-    "flake8-comprehensions~=3.7",
-    "flake8-docstrings~=1.6",
-    "flake8-pytest-style~=1.5",
-    "flake8-string-format~=0.3",
-    "flake8-tidy-imports~=4.5",
-    "flake8-variables-names~=0.0",
-    "pep8-naming~=0.12",
-    "wps-light~=0.15",
+    "darglint>=1.8",
+    "flake8-bandit>=2.1",
+    "flake8-black>=0.2",
+    "flake8-bugbear>=21.9",
+    "flake8-builtins>=1.5",
+    "flake8-comprehensions>=3.7",
+    "flake8-docstrings>=1.6",
+    "flake8-pytest-style>=1.5",
+    "flake8-string-format>=0.3",
+    "flake8-tidy-imports>=4.5",
+    "flake8-variables-names>=0.0",
+    "pep8-naming>=0.12",
+    "wps-light>=0.15",
 ]
 tests = [
     "fastapi~=0.61",
-    "pytest~=6.2",
-    "pytest-cov~=3.0",
-    "pytest-randomly~=3.10",
+    "pytest>=6.2",
+    "pytest-cov>=3.0",
+    "pytest-randomly>=3.10",
     "pytest-rerunfailures~=9.1",
-    "pytest-sugar~=0.9",
-    "pytest-xdist~=2.4",
+    "pytest-sugar>=0.9",
+    "pytest-xdist>=2.4",
     "responses~=0.10",
     "uvicorn~=0.12",
 ]
-typing = ["mypy~=0.910"]
+typing = [
+    "mypy>=0.910",
+    "types-markdown>=3.3",
+    "types-toml>=0.10",
+    "types-setuptools",
+    "types-requests",
+]
+security = ["safety>=1.10"]
 
 [tool.black]
 line-length = 120
