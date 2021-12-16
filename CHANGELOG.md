@@ -5,6 +5,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [0.11.0](https://github.com/pawamoy/aria2p/releases/tag/0.11.0) - 2021-12-17
+
+<small>[Compare with 0.10.4](https://github.com/pawamoy/aria2p/compare/0.10.4...0.11.0)</small>
+
+### Features
+- Support passing options and position from the command-line ([3ec3673](https://github.com/pawamoy/aria2p/commit/3ec36732e3aebd298185ce125f1cb4c48f9b5e75) by jonnieey). [PR #93](https://github.com/pawamoy/aria2p/pull/93)
+- Support transparency (use default colors) ([ff35d2b](https://github.com/pawamoy/aria2p/commit/ff35d2b572cac2a371550016d6d4b4863a635fbd) by blackCauldron7). [PR #84](https://github.com/pawamoy/aria2p/pull/84)
+- Support aria2c input files with options ([a603961](https://github.com/pawamoy/aria2p/commit/a60396180d48c52cde384096ad8f2a592342f0b0) by jonnieey). [Issue #70](https://github.com/pawamoy/aria2p/issues/70), [PR #91](https://github.com/pawamoy/aria2p/pull/91)
+
+### Code Refactoring
+- Reorganize CLI commands ([3497d2b](https://github.com/pawamoy/aria2p/commit/3497d2b219bea4017644d384c1df08298f364689) by Timothée Mazzucotelli).
+
+
 ## [0.10.4](https://github.com/pawamoy/aria2p/releases/tag/0.10.4) - 2021-01-06
 
 <small>[Compare with 0.10.3](https://github.com/pawamoy/aria2p/compare/0.10.3...0.10.4)</small>
