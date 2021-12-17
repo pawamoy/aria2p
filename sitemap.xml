@@ -2,182 +2,182 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://pawamoy.github.io/aria2p/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/changelog/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/code_of_conduct/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/configuration/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/contributing/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/credits/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/license/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/usage/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>None</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/__init__/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/__main__/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/api/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/client/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/downloads/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/interface/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/options/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/stats/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/types/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/utils/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/__init__/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/main/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/parser/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/commands/__init__/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/commands/add/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/commands/add_magnet/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/commands/add_metalink/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/commands/add_torrent/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/commands/call/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/commands/listen/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/commands/pause/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/commands/purge/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/commands/remove/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/commands/resume/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/commands/show/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/reference/cli/commands/top/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://pawamoy.github.io/aria2p/coverage/</loc>
-         <lastmod>2021-12-16</lastmod>
+         <lastmod>2021-12-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
