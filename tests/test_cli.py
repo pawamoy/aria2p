@@ -246,3 +246,13 @@ def test_parse_invalid_options(command, capsys):
     with pytest.raises(SystemExit):
         opts = parser.parse_args([command, "http://example.com", "-o", "opt1"])
     assert "Options strings must follow this format" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    ("command", "option"),
+    [("add", "uris"), ("add-magnet", "uris"), ("add-torrent", "torrent_files"), ("add-metalink", "metalink_files")],
+)
+def test_error_when_missing_arg(command, option, capsys):
+    with pytest.raises(SystemExit):
+        main([command])
+    assert option in capsys.readouterr().err

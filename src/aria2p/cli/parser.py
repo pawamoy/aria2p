@@ -49,9 +49,16 @@ def check_args(parser: argparse.ArgumentParser, opts: argparse.Namespace) -> Non
             subparsers[opts.subcommand].error("the following arguments are required: gids or --all")
         elif opts.do_all and opts.gids:
             subparsers[opts.subcommand].error("argument -a/--all: not allowed with arguments gids")
-    elif opts.subcommand and opts.subcommand.startswith("add"):
-        if not opts.uris and not opts.from_file:
-            subparsers[opts.subcommand].error("the following arguments are required: uris")
+    elif opts.subcommand:
+        if opts.subcommand in {"add", "add-magnet", "add-magnets"}:
+            if not opts.uris and not opts.from_file:
+                subparsers[opts.subcommand].error("the following arguments are required: uris")
+        elif opts.subcommand.startswith("add-torrent"):
+            if not opts.torrent_files and not opts.from_file:
+                subparsers[opts.subcommand].error("the following arguments are required: torrent_files")
+        elif opts.subcommand.startswith("add-metalink"):
+            if not opts.metalink_files and not opts.from_file:
+                subparsers[opts.subcommand].error("the following arguments are required: metalink_files")
 
 
 def parse_options_string(options_string: str = None) -> dict:
