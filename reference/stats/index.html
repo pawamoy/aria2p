@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://pawamoy.github.io/aria2p/reference/stats/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.2">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.f7951f6f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -259,7 +259,7 @@
 
 
   <li class="md-tabs__item">
-    <a href="https:/pawamoy.github.io" class="md-tabs__link">
+    <a href="https://pawamoy.github.io/" class="md-tabs__link">
       Author's website
     </a>
   </li>
@@ -345,6 +345,34 @@
     <li class="md-nav__item">
       <a href="../.." class="md-nav__link">
         Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usage/" class="md-nav__link">
+        Usage
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        Configuration
       </a>
     </li>
   
@@ -1097,7 +1125,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https:/pawamoy.github.io" class="md-nav__link">
+      <a href="https://pawamoy.github.io/" class="md-nav__link">
         Author's website
       </a>
     </li>
@@ -1264,6 +1292,113 @@ Stats        </code>
 
       <p>This class holds information retrieved with the <code>get_global_stat</code> method of the client.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>aria2p/stats.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Stats</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;This class holds information retrieved with the `get_global_stat` method of the client.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">struct</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the object.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            struct: A dictionary Python object returned by the JSON-RPC client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span> <span class="o">=</span> <span class="n">struct</span> <span class="ow">or</span> <span class="p">{}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">download_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overall download speed (byte/sec).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The overall download speed in bytes per second.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;downloadSpeed&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">download_speed_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the download speed as string.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            human_readable: Return in human readable format or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The download speed string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">human_readable</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">human_readable_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">download_speed</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">postfix</span><span class="o">=</span><span class="s2">&quot;/s&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">download_speed</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; B/s&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">upload_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overall upload speed (byte/sec).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The overall upload speed in bytes per second.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;uploadSpeed&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">upload_speed_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the upload speed as string.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            human_readable: Return in human readable format or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The upload speed string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">human_readable</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">human_readable_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">upload_speed</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">postfix</span><span class="o">=</span><span class="s2">&quot;/s&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">upload_speed</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; B/s&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_active</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the number of active downloads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The number of active downloads.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;numActive&quot;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_waiting</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the number of waiting downloads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The number of waiting downloads.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;numWaiting&quot;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_stopped</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the number of stopped downloads in the current session.</span>
+
+<span class="sd">        This value is capped by the [`--max-download-result`][aria2p.options.Options.max_download_result] option.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The number of stopped downloads in the current session (capped).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;numStopped&quot;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_stopped_total</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the number of stopped downloads in the current session.</span>
+
+<span class="sd">        This value is not capped by the [`--max-download-result`][aria2p.options.Options.max_download_result] option.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The number of stopped downloads in the current session (not capped).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;numStoppedTotal&quot;</span><span class="p">])</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -1817,7 +1952,7 @@ Stats        </code>
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.649a939e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
       
     
   </body>

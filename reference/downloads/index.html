@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://pawamoy.github.io/aria2p/reference/downloads/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.2">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.f7951f6f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -259,7 +259,7 @@
 
 
   <li class="md-tabs__item">
-    <a href="https:/pawamoy.github.io" class="md-tabs__link">
+    <a href="https://pawamoy.github.io/" class="md-tabs__link">
       Author's website
     </a>
   </li>
@@ -345,6 +345,34 @@
     <li class="md-nav__item">
       <a href="../.." class="md-nav__link">
         Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usage/" class="md-nav__link">
+        Usage
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        Configuration
       </a>
     </li>
   
@@ -1634,7 +1662,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https:/pawamoy.github.io" class="md-nav__link">
+      <a href="https://pawamoy.github.io/" class="md-nav__link">
         Author's website
       </a>
     </li>
@@ -2339,6 +2367,84 @@ BitTorrent        </code>
 
       <p>Information retrieved from a torrent file.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>aria2p/downloads.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">BitTorrent</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Information retrieved from a torrent file.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">struct</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the object.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            struct: A dictionary Python object returned by the JSON-RPC client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span> <span class="o">=</span> <span class="n">struct</span> <span class="ow">or</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>  <span class="c1"># noqa: WPS234 (not complex type annotation)</span>
+    <span class="k">def</span> <span class="nf">announce_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>  <span class="c1"># noqa: WPS234</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of lists of announce URIs.</span>
+
+<span class="sd">        If the torrent contains announce and no announce-list, announce is converted to the announce-list format.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The announce URIs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;announceList&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">comment</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the comment of the torrent.</span>
+
+<span class="sd">        comment.utf-8 is used if available.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The torrent&#39;s comment.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comment&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">creation_date</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the creation time of the torrent.</span>
+
+<span class="sd">        The value is an integer since the epoch, measured in seconds.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The creation date.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;creationDate&quot;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        File mode of the torrent.</span>
+
+<span class="sd">        The value is either single or multi.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The file mode.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mode&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Struct which contains data from Info dictionary.</span>
+
+<span class="sd">        It contains the `name` key: name in info dictionary. `name.utf-8` is used if available.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The torrent&#39;s info.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;info&quot;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -2628,6 +2734,882 @@ Download        </code>
 
       <p>Class containing all information about a download, as retrieved with the client.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>aria2p/downloads.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Download</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class containing all information about a download, as retrieved with the client.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">:</span> <span class="s2">&quot;aria2p.api.API&quot;</span><span class="p">,</span> <span class="n">struct</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the object.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            api: The reference to an [`API`][aria2p.api.API] instance.</span>
+<span class="sd">            struct: A dictionary Python object returned by the JSON-RPC client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api</span> <span class="o">=</span> <span class="n">api</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span> <span class="o">=</span> <span class="n">struct</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">File</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root_files_paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bittorrent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BitTorrent</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Options</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_followed_by</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_following</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Download</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_belongs_to</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Download</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gid</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">gid</span>
+
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Update the internal values of the download with more recent values.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">tell_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gid</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bittorrent</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_followed_by</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_following</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_belongs_to</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">live</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Download&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the same object with updated data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Itself.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="nd">@property</span>  <span class="c1"># noqa: WPS231 (not that complex)</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa: WPS231</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the name of the download.</span>
+
+<span class="sd">        Name is the name of the file if single-file, first file&#39;s directory name if multi-file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The download name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bittorrent</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">bittorrent</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bittorrent</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">is_metadata</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">file_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span>
+                <span class="n">dir_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">file_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">dir_path</span><span class="p">):</span>
+                    <span class="n">start_pos</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dir_path</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">[</span><span class="n">start_pos</span><span class="p">:])</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">uris</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;uri&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># noqa: WPS219</span>
+                    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                        <span class="k">pass</span>  <span class="c1"># noqa: WPS420 (we don&#39;t want to fail here)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">control_file_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the path to the aria2 control file for this download.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The control file path.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.aria2&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>  <span class="c1"># noqa: WPS231 (not that complex)</span>
+    <span class="k">def</span> <span class="nf">root_files_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>  <span class="c1"># noqa: WPS231</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the unique set of directories/files for this download.</span>
+
+<span class="sd">        Instead of returning all the leaves like self.files,</span>
+<span class="sd">        return the relative root directories if any, and relative root files.</span>
+
+<span class="sd">        This property is useful when we need to list the directories and files</span>
+<span class="sd">        in order to move or copy them. We don&#39;t want to copy files one by one,</span>
+<span class="sd">        but rather entire directories at once when possible.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The root file paths.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            Download directory is `/a/b`.</span>
+
+<span class="sd">            &gt;&gt;&gt; self.files</span>
+<span class="sd">            [&quot;/a/b/c/1.txt&quot;, &quot;/a/b/c/2.txt&quot;, &quot;/a/b/3.txt&quot;]</span>
+<span class="sd">            &gt;&gt;&gt; self.root_files_paths</span>
+<span class="sd">            [&quot;/a/b/c&quot;, &quot;/a/b/3.txt&quot;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_files_paths</span><span class="p">:</span>
+            <span class="n">paths</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>  <span class="c1"># noqa: VNE002 (file)</span>
+                <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">is_metadata</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">relative_path</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t determine file path &#39;</span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; relative to &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir</span> <span class="o">/</span> <span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+                        <span class="n">paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_root_files_paths</span> <span class="o">=</span> <span class="n">paths</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_files_paths</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Options</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Options specific to this download.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The download options.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_options</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span>  <span class="c1"># type: ignore</span>
+
+    <span class="nd">@options</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">update_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Re-fetch the options from the remote.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">get_options</span><span class="p">(</span><span class="n">downloads</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">gid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        GID of the download.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The download GID.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;gid&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the status of the download.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `active`, `waiting`, `paused`, `error`, `complete` or `removed`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_active</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if download is active.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            If this download is active.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;active&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_waiting</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if download is waiting.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            If this download is waiting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;waiting&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_paused</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if download is paused.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            If this download is paused.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;paused&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if download has errored.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            If this download has failed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;error&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if download is complete.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            If this download is complete.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;complete&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_removed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if download was removed.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            If this download was removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;removed&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if this download is only composed of metadata, and no actual files.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            If this is a metadata download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">_</span><span class="o">.</span><span class="n">is_metadata</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_torrent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return true if this download is a torrent.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            If this is a torrent downlaod.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;bittorrent&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">total_length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Total length of the download in bytes.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The total length in bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;totalLength&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">total_length_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the total length as string.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            human_readable: Return in human readable format or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The total length string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">human_readable</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">human_readable_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_length</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_length</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; B&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">completed_length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Completed length of the download in bytes.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The completed length in bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;completedLength&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">completed_length_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the completed length as string.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            human_readable: Return in human readable format or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The completed length string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">human_readable</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">human_readable_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">completed_length</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">completed_length</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; B&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">upload_length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the uploaded length of the download in bytes.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The uploaded length in bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;uploadLength&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">upload_length_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the upload length as string.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            human_readable: Return in human readable format or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The upload length string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">human_readable</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">human_readable_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">upload_length</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">upload_length</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; B&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bitfield</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Hexadecimal representation of the download progress.</span>
+
+<span class="sd">        The highest bit corresponds to the piece at index 0. Any set bits indicate loaded pieces, while unset bits</span>
+<span class="sd">        indicate not yet loaded and/or missing pieces. Any overflow bits at the end are set to zero. When the</span>
+<span class="sd">        download was not started yet, this key will not be included in the response.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The hexadecimal representation of the download progress.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bitfield&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">download_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Download speed of this download measured in bytes/sec.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The download speed in bytes/sec.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;downloadSpeed&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">download_speed_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the download speed as string.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            human_readable: Return in human readable format or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The download speed string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">human_readable</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">human_readable_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">download_speed</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">postfix</span><span class="o">=</span><span class="s2">&quot;/s&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">download_speed</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; B/s&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">upload_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Upload speed of this download measured in bytes/sec.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The upload speed in bytes/sec.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;uploadSpeed&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">upload_speed_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the upload speed as string.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            human_readable: Return in human readable format or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The upload speed string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">human_readable</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">human_readable_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">upload_speed</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">postfix</span><span class="o">=</span><span class="s2">&quot;/s&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">upload_speed</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; B/s&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">info_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the InfoHash.</span>
+
+<span class="sd">        BitTorrent only.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The InfoHash.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;infoHash&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_seeders</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the number of seeders aria2 has connected to.</span>
+
+<span class="sd">        BitTorrent only.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The numbers of seeders.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;numSeeders&quot;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">seeder</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if the local endpoint is a seeder, otherwise false.</span>
+
+<span class="sd">        BitTorrent only.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            If the local endpoint is a seeder.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">bool_or_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;seeder&quot;</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">piece_length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Piece length in bytes.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The piece length in bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;pieceLength&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">piece_length_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the piece length as string.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            human_readable: Return in human readable format or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The piece length string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">human_readable</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">human_readable_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">piece_length</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">piece_length</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; B&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_pieces</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the number of pieces.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The number of pieces.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;numPieces&quot;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">connections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the number of peers/servers aria2 has connected to.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The number of connected peers/servers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;connections&quot;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">error_code</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the code of the last error for this item, if any.</span>
+
+<span class="sd">        The value is a string. The error codes are defined in the EXIT STATUS section. This value is only available</span>
+<span class="sd">        for stopped/completed downloads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The error code.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;errorCode&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">error_message</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the (hopefully) human readable error message associated to errorCode.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The error message.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;errorMessage&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">followed_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of GIDs which are generated as the result of this download.</span>
+
+<span class="sd">        For example, when aria2 downloads a Metalink file, it generates downloads described in the Metalink (see the</span>
+<span class="sd">        --follow-metalink option). This value is useful to track auto-generated downloads. If there are no such</span>
+<span class="sd">        downloads, this key will not be included in the response.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The children downloads IDs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;followedBy&quot;</span><span class="p">,</span> <span class="p">[])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">followed_by</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;Download&quot;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of downloads generated as the result of this download.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of instances of [`Download`][aria2p.downloads.Download].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_followed_by</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">gid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">followed_by_ids</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">get_download</span><span class="p">(</span><span class="n">gid</span><span class="p">))</span>
+                <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Can&#39;t find download with GID </span><span class="si">{</span><span class="n">gid</span><span class="si">}</span><span class="s2">, try to update download </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">gid</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># noqa: WPS221</span>
+                    <span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_followed_by</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_followed_by</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">following_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the reverse link for followedBy.</span>
+
+<span class="sd">        A download included in followedBy has this object&#39;s GID in its following value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The parent download ID.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;following&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">following</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;Download&quot;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the download this download is following.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An instance of [`Download`][aria2p.downloads.Download].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_following</span><span class="p">:</span>
+            <span class="n">following_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">following_id</span>
+            <span class="k">if</span> <span class="n">following_id</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_following</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">get_download</span><span class="p">(</span><span class="n">following_id</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Can&#39;t find download with GID </span><span class="si">{</span><span class="n">following_id</span><span class="si">}</span><span class="s2">, try to update download </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">gid</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_following</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_following</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">belongs_to_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        GID of a parent download.</span>
+
+<span class="sd">        Some downloads are a part of another download. For example, if a file in a Metalink has BitTorrent resources,</span>
+<span class="sd">        The downloads of &quot;.torrent&quot; files are parts of that parent. If this download has no parent, this key will not</span>
+<span class="sd">        be included in the response.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The GID of the parent download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;belongsTo&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">belongs_to</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;Download&quot;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parent download.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An instance of [`Download`][aria2p.downloads.Download].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_belongs_to</span><span class="p">:</span>
+            <span class="n">belongs_to_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">belongs_to_id</span>
+            <span class="k">if</span> <span class="n">belongs_to_id</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_belongs_to</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">get_download</span><span class="p">(</span><span class="n">belongs_to_id</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Can&#39;t find download with GID </span><span class="si">{</span><span class="n">belongs_to_id</span><span class="si">}</span><span class="s2">, try to update download </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">gid</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_belongs_to</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_belongs_to</span>
+
+    <span class="nd">@property</span>  <span class="c1"># noqa: A003 (shadowing dir)</span>
+    <span class="k">def</span> <span class="nf">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>  <span class="c1"># noqa: A003</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Directory to save files.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The directory where the files are saved.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;dir&quot;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">File</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the list of files.</span>
+
+<span class="sd">        The elements of this list are the same structs used in aria2.getFiles() method.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The files of this download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">File</span><span class="p">(</span><span class="n">struct</span><span class="p">)</span> <span class="k">for</span> <span class="n">struct</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;files&quot;</span><span class="p">,</span> <span class="p">[])]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bittorrent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BitTorrent</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Struct which contains information retrieved from the .torrent (file).</span>
+
+<span class="sd">        BitTorrent only.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A [BitTorrent][aria2p.downloads.BitTorrent] instance or `None`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bittorrent</span> <span class="ow">and</span> <span class="s2">&quot;bittorrent&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bittorrent</span> <span class="o">=</span> <span class="n">BitTorrent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bittorrent&quot;</span><span class="p">,</span> <span class="p">{}))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bittorrent</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">verified_length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the number of verified number of bytes while the files are being hash checked.</span>
+
+<span class="sd">        This key exists only when this download is being hash checked.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The verified length.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verifiedLength&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">verified_length_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the verified length as string.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            human_readable: Return in human readable format or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The verified length string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">human_readable</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">human_readable_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verified_length</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verified_length</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; B&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">verify_integrity_pending</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if this download is waiting for the hash check in a queue.</span>
+
+<span class="sd">        This key exists only when this download is in the queue.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Whether this download is waiting for the hash check.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">bool_or_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verifyIntegrityPending&quot;</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">progress</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the progress of the download as float.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Progress percentage.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">completed_length</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_length</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="k">def</span> <span class="nf">progress_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">digits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the progress percentage as string.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            digits: Number of decimal digits to use.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The progress percentage.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="si">:</span><span class="s2">.</span><span class="si">{</span><span class="n">digits</span><span class="si">}</span><span class="s2">f</span><span class="si">}</span><span class="s2">%&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">eta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">timedelta</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the Estimated Time of Arrival (a timedelta).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ETA or `timedelta.max` if unknown.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="nb">int</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">total_length</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">completed_length</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">download_speed</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">timedelta</span><span class="o">.</span><span class="n">max</span>
+
+    <span class="k">def</span> <span class="nf">eta_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">precision</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the Estimated Time of Arrival as a string.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            precision: The precision to use, see [aria2p.utils.human_readable_timedelta].</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The Estimated Time of Arrival as a string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">eta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span>
+
+        <span class="k">if</span> <span class="n">eta</span> <span class="o">==</span> <span class="n">timedelta</span><span class="o">.</span><span class="n">max</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;-&quot;</span>
+
+        <span class="k">return</span> <span class="n">human_readable_timedelta</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="n">precision</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the download in the queue, relatively.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            pos: Number of times to move.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">move_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the download in the queue, absolutely.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            pos: The absolute position in the queue to take.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">move_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the download up in the queue.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            pos: Number of times to move up.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">move_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">move_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the download down in the queue.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            pos: Number of times to move down.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">move_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">move_to_top</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the download to the top of the queue.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">move_to_top</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">move_to_bottom</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move the download to the bottom of the queue.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">move_to_bottom</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove the download from the queue (even if active).</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            force: Whether to force removal.</span>
+<span class="sd">            files: Whether to remove files as well.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Always True (raises exception otherwise).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ClientException: When removal failed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: DAR401,DAR402 (raise result)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">remove</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">result</span>  <span class="c1"># type: ignore  # we know it&#39;s a ClientException</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pause the download.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            force: Whether to force pause (don&#39;t contact servers).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Always True (raises exception otherwise).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ClientException: When pausing failed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: DAR401,DAR402 (raise result)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">pause</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">result</span>  <span class="c1"># type: ignore  # we know it&#39;s a ClientException</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resume the download.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Always True (raises exception otherwise).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ClientException: When resuming failed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: DAR401,DAR402 (raise result)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">resume</span><span class="p">([</span><span class="bp">self</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">result</span>  <span class="c1"># type: ignore  # we know it&#39;s a ClientException</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">purge</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Purge itself from the results.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">remove_download_result</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gid</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;OK&quot;</span>
+
+    <span class="k">def</span> <span class="nf">move_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_directory</span><span class="p">:</span> <span class="n">PathOrStr</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move downloaded files to another directory.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            to_directory: The target directory to move files to.</span>
+<span class="sd">            force: Whether to move files even if download is not complete.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">move_files</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="n">to_directory</span><span class="p">,</span> <span class="n">force</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">copy_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_directory</span><span class="p">:</span> <span class="n">PathOrStr</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy downloaded files to another directory.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            to_directory: The target directory to copy files into.</span>
+<span class="sd">            force: Whether to move files even if download is not complete.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">copy_files</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="n">to_directory</span><span class="p">,</span> <span class="n">force</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -5894,6 +6876,136 @@ File        </code>
 
       <p>Information about a download's file.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>aria2p/downloads.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">File</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Information about a download&#39;s file.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">struct</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the object.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            struct: A dictionary Python object returned by the JSON-RPC client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span> <span class="o">=</span> <span class="n">struct</span> <span class="ow">or</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">path</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Index of the file, starting at 1, in the same order as files appear in the multi-file torrent.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The index of the file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        File path.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The file path.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if this file is aria2 metadata and not an actual file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            If the file is metadata.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;[METADATA]&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the file size in bytes.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The file size in bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">length_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the length as string.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            human_readable: Return in human readable format or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The length string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">human_readable</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">human_readable_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; B&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">completed_length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Completed length of this file in bytes.</span>
+
+<span class="sd">        Please note that it is possible that sum of completedLength is less than the completedLength returned by the</span>
+<span class="sd">        aria2.tellStatus() method. This is because completedLength in aria2.getFiles() only includes completed</span>
+<span class="sd">        pieces. On the other hand, completedLength in aria2.tellStatus() also includes partially completed pieces.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The completed length.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;completedLength&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">completed_length_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">human_readable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the completed length as string.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            human_readable: Return in human readable format or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The completed length string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">human_readable</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">human_readable_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">completed_length</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">completed_length</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; B&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">selected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if this file is selected by [`--select-file`][aria2p.options.Options.select_file] option.</span>
+
+<span class="sd">        If [`--select-file`][aria2p.options.Options.select_file] is not specified</span>
+<span class="sd">        or this is single-file torrent or not a torrent download at all, this value is always true.</span>
+<span class="sd">        Otherwise false.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            If this file is selected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">bool_or_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">uris</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a list of URIs for this file.</span>
+
+<span class="sd">        The element type is the same struct</span>
+<span class="sd">        used in the [`client.get_uris()`][aria2p.client.Client.get_uris] method.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The list of URIs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;uris&quot;</span><span class="p">,</span> <span class="p">[])</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -6493,7 +7605,7 @@ used in the <a href="../client/#aria2p.client.Client.get_uris"><code>client.get_
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.649a939e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
       
     
   </body>

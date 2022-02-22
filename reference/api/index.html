@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://pawamoy.github.io/aria2p/reference/api/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.2">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.f7951f6f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -259,7 +259,7 @@
 
 
   <li class="md-tabs__item">
-    <a href="https:/pawamoy.github.io" class="md-tabs__link">
+    <a href="https://pawamoy.github.io/" class="md-tabs__link">
       Author's website
     </a>
   </li>
@@ -345,6 +345,34 @@
     <li class="md-nav__item">
       <a href="../.." class="md-nav__link">
         Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usage/" class="md-nav__link">
+        Usage
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        Configuration
       </a>
     </li>
   
@@ -1286,7 +1314,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https:/pawamoy.github.io" class="md-nav__link">
+      <a href="https://pawamoy.github.io/" class="md-nav__link">
         Author's website
       </a>
     </li>
@@ -1649,6 +1677,902 @@ through JSON-RPC, this class's methods allow for easier / faster control of the 
 wraps the information the client retrieves in Python object, like <a href="../downloads/#aria2p.downloads.Download"><code>Download</code></a>,
 allowing for even more Pythonic interactions, without worrying about payloads, responses, JSON, etc..</p>
 
+        <details class="quote">
+          <summary>Source code in <code>aria2p/api.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class providing high-level methods to interact with a remote aria2c process.</span>
+
+<span class="sd">    This class is instantiated with a reference to a [`Client`][aria2p.client.Client] instance. It then uses this client</span>
+<span class="sd">    to call remote procedures, or remote methods. While the client methods reflect exactly what aria2c is providing</span>
+<span class="sd">    through JSON-RPC, this class&#39;s methods allow for easier / faster control of the remote process. It also</span>
+<span class="sd">    wraps the information the client retrieves in Python object, like [`Download`][aria2p.downloads.Download],</span>
+<span class="sd">    allowing for even more Pythonic interactions, without worrying about payloads, responses, JSON, etc..</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Client</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the object.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            client: An instance of the [aria2p.client.Client][] class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">client</span> <span class="ow">or</span> <span class="n">Client</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;API(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="si">!r}</span><span class="s2">)&quot;</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>  <span class="c1"># noqa: WPS231 (not that complex)</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="n">OptionsType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a download (guess its type).</span>
+
+<span class="sd">        If the provided URI is in fact a file-path, and is neither a torrent or a metalink,</span>
+<span class="sd">        then we read its lines and try to add each line as a download, recursively.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            uri: The URI or file-path to add.</span>
+<span class="sd">            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary</span>
+<span class="sd">                containing aria2c options to create the download with.</span>
+<span class="sd">            position: The position where to insert the new download in the queue. Start at 0 (top).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The created downloads.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_downloads</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+
+        <span class="c1"># On Windows, path.exists() generates an OSError when path is an URI</span>
+        <span class="c1"># See https://github.com/pawamoy/aria2p/issues/41</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">path_exists</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="n">path_exists</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">path_exists</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.torrent&quot;</span><span class="p">:</span>
+                <span class="n">new_downloads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_torrent</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.metalink&quot;</span><span class="p">:</span>
+                <span class="n">new_downloads</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_metalink</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">uris</span><span class="p">,</span> <span class="n">download_options</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_input_file</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                    <span class="c1"># Add batch downloads in specified position in queue.</span>
+                    <span class="n">new_downloads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_uris</span><span class="p">(</span><span class="n">uris</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">download_options</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">position</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">elif</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;magnet:?&quot;</span><span class="p">):</span>
+            <span class="n">new_downloads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_magnet</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_downloads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_uris</span><span class="p">([</span><span class="n">uri</span><span class="p">],</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">new_downloads</span>
+
+    <span class="k">def</span> <span class="nf">add_magnet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">magnet_uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">OptionsType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Download</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a download with a Magnet URI.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            magnet_uri: The Magnet URI.</span>
+<span class="sd">            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary</span>
+<span class="sd">                containing aria2c options to create the download with.</span>
+<span class="sd">            position: The position where to insert the new download in the queue. Start at 0 (top).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The newly created download object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">):</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get_struct</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span>
+
+        <span class="n">gid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">add_uri</span><span class="p">([</span><span class="n">magnet_uri</span><span class="p">],</span> <span class="n">client_options</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_download</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">add_torrent</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">torrent_file_path</span><span class="p">:</span> <span class="n">PathOrStr</span><span class="p">,</span>
+        <span class="n">uris</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="n">OptionsType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Download</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a download with a torrent file (usually .torrent extension).</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            torrent_file_path: The path to the torrent file.</span>
+<span class="sd">            uris: A list of URIs used for Web-seeding.</span>
+<span class="sd">            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary</span>
+<span class="sd">                containing aria2c options to create the download with.</span>
+<span class="sd">            position: The position where to insert the new download in the queue. Start at 0 (top).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The newly created download object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">uris</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">uris</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">):</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get_struct</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">torrent_file_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="n">torrent_contents</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">encoded_contents</span> <span class="o">=</span> <span class="n">b64encode</span><span class="p">(</span><span class="n">torrent_contents</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span>
+
+        <span class="n">gid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">add_torrent</span><span class="p">(</span><span class="n">encoded_contents</span><span class="p">,</span> <span class="n">uris</span><span class="p">,</span> <span class="n">client_options</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_download</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">add_metalink</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">metalink_file_path</span><span class="p">:</span> <span class="n">PathOrStr</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="n">OptionsType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a download with a Metalink file.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            metalink_file_path: The path to the Metalink file.</span>
+<span class="sd">            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary</span>
+<span class="sd">                containing aria2c options to create the download with.</span>
+<span class="sd">            position: The position where to insert the new download in the queue. Start at 0 (top).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The newly created download objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">):</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get_struct</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">metalink_file_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="n">metalink_contents</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">encoded_contents</span> <span class="o">=</span> <span class="n">b64encode</span><span class="p">(</span><span class="n">metalink_contents</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span>
+
+        <span class="n">gids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">add_metalink</span><span class="p">(</span><span class="n">encoded_contents</span><span class="p">,</span> <span class="n">client_options</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_downloads</span><span class="p">(</span><span class="n">gids</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">add_uris</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">uris</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OptionsType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">position</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Download</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a download with a URL (or more).</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            uris: A list of URIs that point to the same resource.</span>
+<span class="sd">            options: An instance of the `Options` class or a dictionary</span>
+<span class="sd">                containing aria2c options to create the download with.</span>
+<span class="sd">            position: The position where to insert the new download in the queue. Start at 0 (top).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The newly created download object.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">):</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get_struct</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span>
+
+        <span class="n">gid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">add_uri</span><span class="p">(</span><span class="n">uris</span><span class="p">,</span> <span class="n">client_options</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_download</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patterns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Not implemented.</span>
+
+<span class="sd">        Search and return [`Download`][aria2p.downloads.Download] objects based on multiple patterns.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            patterns: The patterns used to filter the download list.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: This method is not implemented yet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># gid</span>
+        <span class="c1"># status</span>
+        <span class="c1"># totalLength</span>
+        <span class="c1"># completedLength</span>
+        <span class="c1"># uploadLength</span>
+        <span class="c1"># bitfield</span>
+        <span class="c1"># downloadSpeed</span>
+        <span class="c1"># uploadSpeed</span>
+        <span class="c1"># infoHash</span>
+        <span class="c1"># numSeeders</span>
+        <span class="c1"># seeder</span>
+        <span class="c1"># pieceLength</span>
+        <span class="c1"># numPieces</span>
+        <span class="c1"># connections</span>
+        <span class="c1"># errorCode</span>
+        <span class="c1"># errorMessage</span>
+        <span class="c1"># followedBy</span>
+        <span class="c1"># following</span>
+        <span class="c1"># belongsTo</span>
+        <span class="c1"># dir</span>
+        <span class="c1"># files</span>
+        <span class="c1"># bittorrent</span>
+        <span class="c1">#        announceList</span>
+        <span class="c1">#        comment</span>
+        <span class="c1">#        creationDate</span>
+        <span class="c1">#        mode</span>
+        <span class="c1">#        info</span>
+        <span class="c1">#               name</span>
+        <span class="c1"># verifiedLength</span>
+        <span class="c1"># verifyIntegrityPending</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">get_download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Download</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a [`Download`][aria2p.downloads.Download] object thanks to its GID.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            gid: The GID of the download to get.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The retrieved download object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">tell_status</span><span class="p">(</span><span class="n">gid</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">get_downloads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a list of [`Download`][aria2p.downloads.Download] object thanks to their GIDs.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            gids: The GIDs of the downloads to get. If None, return all the downloads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The retrieved download objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">downloads</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">gids</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">gid</span> <span class="ow">in</span> <span class="n">gids</span><span class="p">:</span>
+                <span class="n">downloads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">tell_status</span><span class="p">(</span><span class="n">gid</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">structs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">structs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">tell_active</span><span class="p">())</span>
+            <span class="n">structs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">tell_waiting</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+            <span class="n">structs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">tell_stopped</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+            <span class="n">downloads</span> <span class="o">=</span> <span class="p">[</span><span class="n">Download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">struct</span><span class="p">)</span> <span class="k">for</span> <span class="n">struct</span> <span class="ow">in</span> <span class="n">structs</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">downloads</span>
+
+    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">:</span> <span class="n">Download</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move a download in the queue, relatively to its current position.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            download: The download object to move.</span>
+<span class="sd">            pos: The relative position (1 to move down, -1 to move up, -2 to move up two times, etc.).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_position</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="s2">&quot;POS_CUR&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">move_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">:</span> <span class="n">Download</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move a download in the queue, with absolute positioning.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            download: The download object to move.</span>
+<span class="sd">            pos: The absolute position in the queue where to move the download. 0 for top, -1 for bottom.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">how</span> <span class="o">=</span> <span class="s2">&quot;POS_END&quot;</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="o">-</span><span class="n">pos</span>  <span class="c1"># noqa: WPS434</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">how</span> <span class="o">=</span> <span class="s2">&quot;POS_SET&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_position</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">how</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">move_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">:</span> <span class="n">Download</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move a download up in the queue.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            download: The download object to move.</span>
+<span class="sd">            pos: Number of times to move up. With negative values, will move down (use move or move_down instead).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_position</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="o">-</span><span class="n">pos</span><span class="p">,</span> <span class="s2">&quot;POS_CUR&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">move_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">:</span> <span class="n">Download</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move a download down in the queue.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            download: The download object to move.</span>
+<span class="sd">            pos: Number of times to move down. With negative values, will move up (use move or move_up instead).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_position</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="s2">&quot;POS_CUR&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">move_to_top</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">:</span> <span class="n">Download</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move a download to the top of the queue.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            download: The download object to move.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_position</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;POS_SET&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">move_to_bottom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">download</span><span class="p">:</span> <span class="n">Download</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move a download to the bottom of the queue.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            download: The download object to move.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new position of the download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_position</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;POS_END&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">retry_downloads</span><span class="p">(</span>  <span class="c1"># noqa: WPS231 (not that complex)</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">],</span>
+        <span class="n">clean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">OperationResult</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resume failed downloads from where they left off with new GIDs.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            downloads: The list of downloads to remove.</span>
+<span class="sd">            clean: Whether to remove the aria2 control file as well.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OperationResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">download</span><span class="o">.</span><span class="n">has_failed</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">uri</span> <span class="o">=</span> <span class="n">download</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">uris</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;uri&quot;</span><span class="p">]</span>  <span class="c1"># noqa: WPS219 (deep access)</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">new_download_gid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_uris</span><span class="p">([</span><span class="n">uri</span><span class="p">],</span> <span class="n">download</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">new_download_gid</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">([</span><span class="n">download</span><span class="p">],</span> <span class="n">clean</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span>  <span class="c1"># noqa: WPS231 (complex, maybe we could split it)</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">],</span>
+        <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">files</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">clean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">OperationResult</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove the given downloads from the list.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            downloads: The list of downloads to remove.</span>
+<span class="sd">            force: Whether to force the removal or not.</span>
+<span class="sd">            files: Whether to remove downloads files as well.</span>
+<span class="sd">            clean: Whether to remove the aria2 control file as well.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Note: batch/multicall candidate</span>
+        <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
+            <span class="n">remove_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">force_remove</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">remove_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">remove</span>
+
+        <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OperationResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">download</span><span class="o">.</span><span class="n">is_complete</span> <span class="ow">or</span> <span class="n">download</span><span class="o">.</span><span class="n">is_removed</span> <span class="ow">or</span> <span class="n">download</span><span class="o">.</span><span class="n">has_failed</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Try to remove download result </span><span class="si">{</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">remove_download_result</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removed download result </span><span class="si">{</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Try to remove download </span><span class="si">{</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">removed_gid</span> <span class="o">=</span> <span class="n">remove_func</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># noqa: WPS440 (block variable overlap)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removed download </span><span class="si">{</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>  <span class="c1"># noqa: WPS505 (nested try)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">remove_download_result</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># noqa: WPS440 (block variable overlap)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to remove download result </span><span class="si">{</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">removed_gid</span> <span class="o">!=</span> <span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Removed download GID#</span><span class="si">{</span><span class="n">removed_gid</span><span class="si">}</span><span class="s2"> is different than download GID#</span><span class="si">{</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="k">try</span><span class="p">:</span>  <span class="c1"># noqa: WPS505 (nested try)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">remove_download_result</span><span class="p">(</span><span class="n">removed_gid</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># noqa: WPS440 (block variable overlap)</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to remove download result </span><span class="si">{</span><span class="n">removed_gid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">clean</span><span class="p">:</span>
+                <span class="c1"># FUTURE: use missing_ok parameter on Python 3.8</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">download</span><span class="o">.</span><span class="n">control_file_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;aria2 control file </span><span class="si">{</span><span class="n">download</span><span class="o">.</span><span class="n">control_file_path</span><span class="si">}</span><span class="s2"> was not found&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removed control file </span><span class="si">{</span><span class="n">download</span><span class="o">.</span><span class="n">control_file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">files</span> <span class="ow">and</span> <span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove_files</span><span class="p">([</span><span class="n">download</span><span class="p">],</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">remove_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove all downloads from the list.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            force: Whether to force the removal or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation to remove all downloads.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_downloads</span><span class="p">(),</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">],</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">OperationResult</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pause the given (active) downloads.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            downloads: The list of downloads to pause.</span>
+<span class="sd">            force: Whether to pause immediately without contacting servers or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Note: batch/multicall candidate</span>
+        <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
+            <span class="n">pause_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">force_pause</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pause_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">pause</span>
+
+        <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OperationResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pause_func</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to pause download </span><span class="si">{</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">pause_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pause all (active) downloads.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            force: Whether to pause immediately without contacting servers or not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation to pause all downloads.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
+            <span class="n">pause_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">force_pause_all</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pause_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">pause_all</span>
+        <span class="k">return</span> <span class="n">pause_func</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;OK&quot;</span>
+
+    <span class="k">def</span> <span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">OperationResult</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resume (unpause) the given downloads.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            downloads: The list of downloads to resume.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Note: batch/multicall candidate</span>
+        <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OperationResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">unpause</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ClientException</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to resume download </span><span class="si">{</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">resume_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resume (unpause) all downloads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation to resume all downloads.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">unpause_all</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;OK&quot;</span>
+
+    <span class="k">def</span> <span class="nf">purge</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Purge completed, removed or failed downloads from the queue.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">purge_download_result</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;OK&quot;</span>
+
+    <span class="k">def</span> <span class="nf">autopurge</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Purge completed, removed or failed downloads from the queue.</span>
+
+<span class="sd">        Deprecated. Use [`purge`][aria2p.api.API.purge] instead.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Deprecation warning: API method &#39;autopurge&#39; is deprecated, use &#39;purge&#39; instead.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">purge</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Options</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get options for each of the given downloads.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            downloads: The list of downloads to get the options of.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Options object for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Note: batch/multicall candidate</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">),</span> <span class="n">download</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">options</span>
+
+    <span class="k">def</span> <span class="nf">get_global_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Options</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the global options.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The global aria2c options.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_global_option</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">set_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">OptionsType</span><span class="p">,</span> <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set options for specific downloads.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary</span>
+<span class="sd">                containing aria2c options to create the download with.</span>
+<span class="sd">            downloads: The list of downloads to set the options for.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for changing options for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">):</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get_struct</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span>
+
+        <span class="c1"># Note: batch/multicall candidate</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_option</span><span class="p">(</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="n">client_options</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;OK&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+
+    <span class="k">def</span> <span class="nf">set_global_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">OptionsType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set global options.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary</span>
+<span class="sd">                containing aria2c options to create the download with.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for changing global options.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">):</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get_struct</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">client_options</span> <span class="o">=</span> <span class="n">options</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">change_global_option</span><span class="p">(</span><span class="n">client_options</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;OK&quot;</span>
+
+    <span class="k">def</span> <span class="nf">get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Stats</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the stats of the remote aria2c process.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The global stats returned by the remote process.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Stats</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_global_stat</span><span class="p">())</span>
+
+    <span class="nd">@staticmethod</span>  <span class="c1"># noqa: WPS231,WPS602 (complex method, static method)</span>
+    <span class="k">def</span> <span class="nf">remove_files</span><span class="p">(</span>  <span class="c1"># noqa: WPS231,WPS602</span>
+        <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">],</span>
+        <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove downloaded files.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            downloads:  the list of downloads for which to remove files.</span>
+<span class="sd">            force: Whether to remove files even if download is not complete.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">download</span><span class="o">.</span><span class="n">is_complete</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">download</span><span class="o">.</span><span class="n">root_files_paths</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+                        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not delete directory &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+                        <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; did not exist when trying to delete it&quot;</span><span class="p">)</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+
+    <span class="nd">@staticmethod</span>  <span class="c1"># noqa: WPS602 (static method)</span>
+    <span class="k">def</span> <span class="nf">move_files</span><span class="p">(</span>  <span class="c1"># noqa: WPS602</span>
+        <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">],</span>
+        <span class="n">to_directory</span><span class="p">:</span> <span class="n">PathOrStr</span><span class="p">,</span>
+        <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move downloaded files to another directory.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            downloads:  the list of downloads for which to move files.</span>
+<span class="sd">            to_directory: The target directory to move files to.</span>
+<span class="sd">            force: Whether to move files even if download is not complete.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_directory</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">to_directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">to_directory</span><span class="p">)</span>
+
+        <span class="c1"># raises FileExistsError when target is already a file</span>
+        <span class="n">to_directory</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">download</span><span class="o">.</span><span class="n">is_complete</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">download</span><span class="o">.</span><span class="n">root_files_paths</span><span class="p">:</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">to_directory</span><span class="p">))</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+
+    <span class="nd">@staticmethod</span>  <span class="c1"># noqa: WPS231,WPS602 (not that complex, static method)</span>
+    <span class="k">def</span> <span class="nf">copy_files</span><span class="p">(</span>  <span class="c1"># noqa: WPS231,WPS602 (not that complex)</span>
+        <span class="n">downloads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">],</span>
+        <span class="n">to_directory</span><span class="p">:</span> <span class="n">PathOrStr</span><span class="p">,</span>
+        <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy downloaded files to another directory.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            downloads:  the list of downloads for which to move files.</span>
+<span class="sd">            to_directory: The target directory to copy files into.</span>
+<span class="sd">            force: Whether to move files even if download is not complete.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Success or failure of the operation for each given download.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_directory</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">to_directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">to_directory</span><span class="p">)</span>
+
+        <span class="c1"># raises FileExistsError when target is already a file</span>
+        <span class="n">to_directory</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">download</span> <span class="ow">in</span> <span class="n">downloads</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">download</span><span class="o">.</span><span class="n">is_complete</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">download</span><span class="o">.</span><span class="n">root_files_paths</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+                        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">to_directory</span> <span class="o">/</span> <span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                    <span class="k">elif</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">to_directory</span><span class="p">))</span>
+
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+
+    <span class="k">def</span> <span class="nf">listen_to_notifications</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">threaded</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">on_download_start</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">on_download_pause</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">on_download_stop</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">on_download_complete</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">on_download_error</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">on_bt_download_complete</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="n">handle_signals</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start listening to aria2 notifications via WebSocket.</span>
+
+<span class="sd">        This method differs from [`Client.listen_to_notifications`][aria2p.client.Client.listen_to_notifications]</span>
+<span class="sd">        in that it expects callbacks accepting two arguments, `api` and `gid`, instead of only `gid`.</span>
+<span class="sd">        Accepting `api` allows to use the high-level methods of the [`API`][aria2p.api.API] class.</span>
+
+<span class="sd">        Stop listening to notifications with the [`API.stop_listening`][aria2p.api.API.stop_listening] method.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            threaded: Whether to start the listening loop in a thread or not (non-blocking or blocking).</span>
+<span class="sd">            on_download_start: Callback for the `onDownloadStart` event.</span>
+<span class="sd">            on_download_pause: Callback for the `onDownloadPause` event.</span>
+<span class="sd">            on_download_stop: Callback for the `onDownloadStop` event.</span>
+<span class="sd">            on_download_complete: Callback for the `onDownloadComplete` event.</span>
+<span class="sd">            on_download_error: Callback for the `onDownloadError` event.</span>
+<span class="sd">            on_bt_download_complete: Callback for the `onBtDownloadComplete` event.</span>
+<span class="sd">            timeout: Timeout when waiting for data to be received. Use a small value for faster reactivity</span>
+<span class="sd">                when stopping to listen. Default is 5 seconds.</span>
+<span class="sd">            handle_signals: Whether to add signal handlers to gracefully stop the loop on SIGTERM and SIGINT.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">closure</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>  <span class="c1"># noqa: WPS430 (nested function)</span>
+            <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;on_download_start&quot;</span><span class="p">:</span> <span class="n">closure</span><span class="p">(</span><span class="n">on_download_start</span><span class="p">),</span>
+            <span class="s2">&quot;on_download_pause&quot;</span><span class="p">:</span> <span class="n">closure</span><span class="p">(</span><span class="n">on_download_pause</span><span class="p">),</span>
+            <span class="s2">&quot;on_download_stop&quot;</span><span class="p">:</span> <span class="n">closure</span><span class="p">(</span><span class="n">on_download_stop</span><span class="p">),</span>
+            <span class="s2">&quot;on_download_complete&quot;</span><span class="p">:</span> <span class="n">closure</span><span class="p">(</span><span class="n">on_download_complete</span><span class="p">),</span>
+            <span class="s2">&quot;on_download_error&quot;</span><span class="p">:</span> <span class="n">closure</span><span class="p">(</span><span class="n">on_download_error</span><span class="p">),</span>
+            <span class="s2">&quot;on_bt_download_complete&quot;</span><span class="p">:</span> <span class="n">closure</span><span class="p">(</span><span class="n">on_bt_download_complete</span><span class="p">),</span>
+            <span class="s2">&quot;timeout&quot;</span><span class="p">:</span> <span class="n">timeout</span><span class="p">,</span>
+            <span class="s2">&quot;handle_signals&quot;</span><span class="p">:</span> <span class="n">handle_signals</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">threaded</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;handle_signals&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">listener</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">listen_to_notifications</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">listen_to_notifications</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">stop_listening</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stop listening to notifications.</span>
+
+<span class="sd">        If the listening loop was threaded, this method will wait for the thread to finish.</span>
+<span class="sd">        The time it takes for the thread to finish will depend on the timeout given while calling</span>
+<span class="sd">        [`listen_to_notifications`][aria2p.api.API.listen_to_notifications].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">stop_listening</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">listener</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">split_input_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">):</span>  <span class="c1"># noqa: WPS231 (not complex)</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper to split downloads in an input file.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">             lines: The lines of the input file.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            list[str]: Blocks of lines.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">block</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>  <span class="c1"># Ignore Comments</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>  <span class="c1"># Ignore empty line</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">):</span>  <span class="c1"># URIs line</span>
+                <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">block</span>
+                    <span class="n">block</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">block</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">block</span>
+
+    <span class="k">def</span> <span class="nf">parse_input_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">:</span> <span class="n">PathOrStr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InputFileContentsType</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse a file with URIs or an aria2c input file.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            input_file: Path to file with URIs or aria2c input file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of tuples containing list of URIs and dictionary with aria2c options.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">downloads</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="n">Path</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">download_lines</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_input_file</span><span class="p">(</span><span class="n">fd</span><span class="p">):</span>
+                <span class="n">uris</span> <span class="o">=</span> <span class="n">download_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">try</span><span class="p">:</span>  <span class="c1"># noqa: WPS229</span>
+                    <span class="k">for</span> <span class="n">option_line</span> <span class="ow">in</span> <span class="n">download_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                        <span class="n">option_name</span><span class="p">,</span> <span class="n">option_value</span> <span class="o">=</span> <span class="n">option_line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="n">options</span><span class="p">[</span><span class="n">option_name</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()]</span> <span class="o">=</span> <span class="n">option_value</span>
+                    <span class="n">downloads</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">uris</span><span class="p">,</span> <span class="n">options</span><span class="p">))</span>
+                <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skipping download because of invalid option line &#39;</span><span class="si">{</span><span class="n">option_line</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>  <span class="c1"># noqa: WPS441</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">downloads</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -4582,11 +5506,22 @@ containing aria2c options to create the download with.</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
-</table>      <div class="admonition yields">
-<p class="admonition-title">Yields</p>
-<p>Blocks of lines.</p>
-</div>
-
+</table>
+<p><strong>Yields:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>list[str]</code></td>
+      <td><p>Blocks of lines.</p></td>
+    </tr>
+  </tbody>
+</table>
         <details class="quote">
           <summary>Source code in <code>aria2p/api.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">split_input_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">):</span>  <span class="c1"># noqa: WPS231 (not complex)</span>
@@ -4597,7 +5532,7 @@ containing aria2c options to create the download with.</p></td>
 <span class="sd">         lines: The lines of the input file.</span>
 
 <span class="sd">    Yields:</span>
-<span class="sd">        Blocks of lines.</span>
+<span class="sd">        list[str]: Blocks of lines.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">block</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
@@ -4773,7 +5708,7 @@ The time it takes for the thread to finish will depend on the timeout given whil
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.649a939e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
       
     
   </body>

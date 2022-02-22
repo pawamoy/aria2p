@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://pawamoy.github.io/aria2p/reference/interface/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.2">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.f7951f6f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -259,7 +259,7 @@
 
 
   <li class="md-tabs__item">
-    <a href="https:/pawamoy.github.io" class="md-tabs__link">
+    <a href="https://pawamoy.github.io/" class="md-tabs__link">
       Author's website
     </a>
   </li>
@@ -345,6 +345,34 @@
     <li class="md-nav__item">
       <a href="../.." class="md-nav__link">
         Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usage/" class="md-nav__link">
+        Usage
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        Configuration
       </a>
     </li>
   
@@ -1240,7 +1268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https:/pawamoy.github.io" class="md-nav__link">
+      <a href="https://pawamoy.github.io/" class="md-nav__link">
         Author's website
       </a>
     </li>
@@ -1553,6 +1581,35 @@ Column        </code>
 and three callable functions to get the text from a Python object, to sort between these objects,
 and to get a color palette based on the text.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>aria2p/interface.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Column</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to specify a column in the interface.</span>
+
+<span class="sd">    It&#39;s composed of a header (the string to display on top), a padding (how to align the text),</span>
+<span class="sd">    and three callable functions to get the text from a Python object, to sort between these objects,</span>
+<span class="sd">    and to get a color palette based on the text.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">get_text</span><span class="p">,</span> <span class="n">get_sort</span><span class="p">,</span> <span class="n">get_palette</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the object.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            header (str): The string to display on top.</span>
+<span class="sd">            padding (str): How to align the text.</span>
+<span class="sd">            get_text (func): Function accepting a Download as argument and returning the text to display.</span>
+<span class="sd">            get_sort (func): Function accepting a Download as argument and returning the attribute used to sort.</span>
+<span class="sd">            get_palette (func): Function accepting text as argument and returning a palette or a palette identifier.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">header</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="n">padding</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_text</span> <span class="o">=</span> <span class="n">get_text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_sort</span> <span class="o">=</span> <span class="n">get_sort</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_palette</span> <span class="o">=</span> <span class="n">get_palette</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -1679,6 +1736,12 @@ Exit            (<span title="Exception">Exception</span>)
 
       <p>A simple exception to exit the interactive interface.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>aria2p/interface.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Exit</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A simple exception to exit the interactive interface.&quot;&quot;&quot;</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -1705,6 +1768,67 @@ HorizontalScroll        </code>
 <p>It allows scroll the rows horizontally, used when moving left and right:
 the first N characters will not be printed.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>aria2p/interface.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">HorizontalScroll</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A wrapper around asciimatics&#39; Screen.print_at and Screen.paint methods.</span>
+
+<span class="sd">    It allows scroll the rows horizontally, used when moving left and right:</span>
+<span class="sd">    the first N characters will not be printed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">scroll</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the object.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            screen (Screen): The asciimatics screen object.</span>
+<span class="sd">            scroll (int): Base scroll to use when printing. Will decrease by one with each character skipped.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="n">screen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scroll</span> <span class="o">=</span> <span class="n">scroll</span>
+
+    <span class="k">def</span> <span class="nf">set_scroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scroll</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the scroll value.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scroll</span> <span class="o">=</span> <span class="n">scroll</span>
+
+    <span class="k">def</span> <span class="nf">print_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">palette</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper print_at method.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            text (str): Text to print.</span>
+<span class="sd">            x (int): X axis position / column.</span>
+<span class="sd">            y (int): Y axis position / row.</span>
+<span class="sd">            palette (list | tuple): A length-3 tuple or a list of length-3 tuples representing asciimatics palettes.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The number of characters actually printed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scroll</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">palette</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">paint</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">colour_map</span><span class="o">=</span><span class="n">palette</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">palette</span><span class="p">)</span>
+            <span class="n">written</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">text_length</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">scroll</span><span class="p">:</span>
+                <span class="n">new_text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">scroll</span> <span class="p">:]</span>
+                <span class="n">written</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_text</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">palette</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">new_palette</span> <span class="o">=</span> <span class="n">palette</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">scroll</span> <span class="p">:]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">paint</span><span class="p">(</span><span class="n">new_text</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">colour_map</span><span class="o">=</span><span class="n">new_palette</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="n">new_text</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">palette</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scroll</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scroll</span> <span class="o">-=</span> <span class="n">text_length</span>
+                <span class="n">written</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">written</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -1825,7 +1949,7 @@ the first N characters will not be printed.</p>
       </tr>
       <tr>
         <td><code>palette</code></td>
-        <td><code>list/tuple</code></td>
+        <td><code>list | tuple</code></td>
         <td><p>A length-3 tuple or a list of length-3 tuples representing asciimatics palettes.</p></td>
         <td><em>required</em></td>
       </tr>
@@ -1856,7 +1980,7 @@ the first N characters will not be printed.</p>
 <span class="sd">        text (str): Text to print.</span>
 <span class="sd">        x (int): X axis position / column.</span>
 <span class="sd">        y (int): Y axis position / row.</span>
-<span class="sd">        palette (list/tuple): A length-3 tuple or a list of length-3 tuples representing asciimatics palettes.</span>
+<span class="sd">        palette (list | tuple): A length-3 tuple or a list of length-3 tuples representing asciimatics palettes.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        int: The number of characters actually printed.</span>
@@ -1953,6 +2077,881 @@ simply change these few things:</p>
 <li>remove/change the few events with "download" or "self.api" in the process_event method</li>
 </ul>
 
+        <details class="quote">
+          <summary>Source code in <code>aria2p/interface.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Interface</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The main class responsible for drawing the HTOP-like interface.</span>
+
+<span class="sd">    It should be instantiated with an API instance, and then ran with its `run` method.</span>
+
+<span class="sd">    If you want to re-use this class&#39; code to create an HTOP-like interface for another purpose,</span>
+<span class="sd">    simply change these few things:</span>
+
+<span class="sd">    - columns, columns_order and palettes attributes</span>
+<span class="sd">    - sort and reverse attributes default values</span>
+<span class="sd">    - get_data method. It should return a list of objects that can be compared by equality (==, __eq__, __hash__)</span>
+<span class="sd">    - __init__ method to accept other arguments</span>
+<span class="sd">    - remove/change the few events with &quot;download&quot; or &quot;self.api&quot; in the process_event method</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">State</span><span class="p">:</span>
+        <span class="n">MAIN</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">HELP</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">SETUP</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">REMOVE_ASK</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">SELECT_SORT</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">ADD_DOWNLOADS</span> <span class="o">=</span> <span class="mi">9</span>
+
+    <span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="o">.</span><span class="n">MAIN</span>
+    <span class="n">sleep</span> <span class="o">=</span> <span class="mf">0.005</span>
+    <span class="n">frames</span> <span class="o">=</span> <span class="mi">200</span>  <span class="c1"># 200 * 0.005 seconds == 1 second</span>
+    <span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">focused</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">side_focused</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sort</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">reverse</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">x_scroll</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">x_offset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">y_offset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">row_offset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">refresh</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">screen</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">rows</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">scroller</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">follow</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">bounds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">palettes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">color_palette_parser</span><span class="p">(</span><span class="s2">&quot;UI&quot;</span><span class="p">))</span>
+    <span class="n">palettes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;ui&quot;</span><span class="p">:</span> <span class="n">color_palette_parser</span><span class="p">(</span><span class="s2">&quot;UI&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;header&quot;</span><span class="p">:</span> <span class="n">color_palette_parser</span><span class="p">(</span><span class="s2">&quot;HEADER&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;focused_header&quot;</span><span class="p">:</span> <span class="n">color_palette_parser</span><span class="p">(</span><span class="s2">&quot;FOCUSED_HEADER&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;focused_row&quot;</span><span class="p">:</span> <span class="n">color_palette_parser</span><span class="p">(</span><span class="s2">&quot;FOCUSED_ROW&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;status_active&quot;</span><span class="p">:</span> <span class="n">color_palette_parser</span><span class="p">(</span><span class="s2">&quot;STATUS_ACTIVE&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;status_paused&quot;</span><span class="p">:</span> <span class="n">color_palette_parser</span><span class="p">(</span><span class="s2">&quot;STATUS_PAUSED&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;status_waiting&quot;</span><span class="p">:</span> <span class="n">color_palette_parser</span><span class="p">(</span><span class="s2">&quot;STATUS_WAITING&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;status_error&quot;</span><span class="p">:</span> <span class="n">color_palette_parser</span><span class="p">(</span><span class="s2">&quot;STATUS_ERROR&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;status_complete&quot;</span><span class="p">:</span> <span class="n">color_palette_parser</span><span class="p">(</span><span class="s2">&quot;STATUS_COMPLETE&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="n">color_palette_parser</span><span class="p">(</span><span class="s2">&quot;METADATA&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;side_column_header&quot;</span><span class="p">:</span> <span class="n">color_palette_parser</span><span class="p">(</span><span class="s2">&quot;SIDE_COLUMN_HEADER&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;side_column_row&quot;</span><span class="p">:</span> <span class="n">color_palette_parser</span><span class="p">(</span><span class="s2">&quot;SIDE_COLUMN_ROW&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;side_column_focused_row&quot;</span><span class="p">:</span> <span class="n">color_palette_parser</span><span class="p">(</span><span class="s2">&quot;SIDE_COLUMN_FOCUSED_ROW&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;bright_help&quot;</span><span class="p">:</span> <span class="n">color_palette_parser</span><span class="p">(</span><span class="s2">&quot;BRIGHT_HELP&quot;</span><span class="p">),</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="n">columns_order</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;gid&quot;</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;progress&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="s2">&quot;down_speed&quot;</span><span class="p">,</span> <span class="s2">&quot;up_speed&quot;</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">]</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;gid&quot;</span><span class="p">:</span> <span class="n">Column</span><span class="p">(</span>
+            <span class="n">header</span><span class="o">=</span><span class="s2">&quot;GID&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;&gt;16&quot;</span><span class="p">,</span> <span class="n">get_text</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="n">get_sort</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">gid</span><span class="p">,</span> <span class="n">get_palette</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="s2">&quot;gid&quot;</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">Column</span><span class="p">(</span>
+            <span class="n">header</span><span class="o">=</span><span class="s2">&quot;STATUS&quot;</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;&lt;9&quot;</span><span class="p">,</span>
+            <span class="n">get_text</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+            <span class="n">get_sort</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+            <span class="n">get_palette</span><span class="o">=</span><span class="n">Palette</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;progress&quot;</span><span class="p">:</span> <span class="n">Column</span><span class="p">(</span>
+            <span class="n">header</span><span class="o">=</span><span class="s2">&quot;PROGRESS&quot;</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;&gt;8&quot;</span><span class="p">,</span>
+            <span class="n">get_text</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">progress_string</span><span class="p">(),</span>
+            <span class="n">get_sort</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">progress</span><span class="p">,</span>
+            <span class="n">get_palette</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="s2">&quot;progress&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">Column</span><span class="p">(</span>
+            <span class="n">header</span><span class="o">=</span><span class="s2">&quot;SIZE&quot;</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;&gt;11&quot;</span><span class="p">,</span>
+            <span class="n">get_text</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">total_length_string</span><span class="p">(),</span>
+            <span class="n">get_sort</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">total_length</span><span class="p">,</span>
+            <span class="n">get_palette</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="s2">&quot;size&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;down_speed&quot;</span><span class="p">:</span> <span class="n">Column</span><span class="p">(</span>
+            <span class="n">header</span><span class="o">=</span><span class="s2">&quot;DOWN_SPEED&quot;</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;&gt;13&quot;</span><span class="p">,</span>
+            <span class="n">get_text</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">download_speed_string</span><span class="p">(),</span>
+            <span class="n">get_sort</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">download_speed</span><span class="p">,</span>
+            <span class="n">get_palette</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="s2">&quot;down_speed&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;up_speed&quot;</span><span class="p">:</span> <span class="n">Column</span><span class="p">(</span>
+            <span class="n">header</span><span class="o">=</span><span class="s2">&quot;UP_SPEED&quot;</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;&gt;13&quot;</span><span class="p">,</span>
+            <span class="n">get_text</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">upload_speed_string</span><span class="p">(),</span>
+            <span class="n">get_sort</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">upload_speed</span><span class="p">,</span>
+            <span class="n">get_palette</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="s2">&quot;up_speed&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="n">Column</span><span class="p">(</span>
+            <span class="n">header</span><span class="o">=</span><span class="s2">&quot;ETA&quot;</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;&gt;8&quot;</span><span class="p">,</span>
+            <span class="n">get_text</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">eta_string</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+            <span class="n">get_sort</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">eta</span><span class="p">,</span>
+            <span class="n">get_palette</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="s2">&quot;eta&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">Column</span><span class="p">(</span>
+            <span class="n">header</span><span class="o">=</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">,</span>
+            <span class="n">get_text</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">get_sort</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">get_palette</span><span class="o">=</span><span class="n">Palette</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="n">remove_ask_header</span> <span class="o">=</span> <span class="s2">&quot;Remove:&quot;</span>
+    <span class="n">remove_ask_rows</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;Remove&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">False</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s2">&quot;Remove with files&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s2">&quot;Force remove&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">False</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s2">&quot;Force remove with files&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+    <span class="p">]</span>
+    <span class="n">last_remove_choice</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">select_sort_header</span> <span class="o">=</span> <span class="s2">&quot;Select sort:&quot;</span>
+    <span class="n">select_sort_rows</span> <span class="o">=</span> <span class="n">columns_order</span>
+
+    <span class="n">downloads_uris</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">downloads_uris_header</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Add Download: [ Hit ENTER to download; Hit </span><span class="si">{</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">names</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">ADD_DOWNLOADS</span><span class="p">))</span> <span class="si">}</span><span class="s2"> to download all ]&quot;</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the object.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            api (API): An instance of API.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">api</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api</span> <span class="o">=</span> <span class="n">api</span>
+
+        <span class="c1"># reduce curses&#39; 1 second delay when hitting escape to 25 ms</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;ESCDELAY&quot;</span><span class="p">,</span> <span class="s2">&quot;25&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_mapping</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">MAIN</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;process_keyboard_event&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_keyboard_event_main</span><span class="p">,</span>
+                <span class="s2">&quot;process_mouse_event&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_mouse_event_main</span><span class="p">,</span>
+                <span class="s2">&quot;print_functions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">print_table</span><span class="p">],</span>
+            <span class="p">},</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">HELP</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;process_keyboard_event&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_keyboard_event_help</span><span class="p">,</span>
+                <span class="s2">&quot;process_mouse_event&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_mouse_event_help</span><span class="p">,</span>
+                <span class="s2">&quot;print_functions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">print_help</span><span class="p">],</span>
+            <span class="p">},</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">SETUP</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;process_keyboard_event&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_keyboard_event_setup</span><span class="p">,</span>
+                <span class="s2">&quot;process_mouse_event&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_mouse_event_setup</span><span class="p">,</span>
+                <span class="s2">&quot;print_functions&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="p">},</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">REMOVE_ASK</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;process_keyboard_event&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_keyboard_event_remove_ask</span><span class="p">,</span>
+                <span class="s2">&quot;process_mouse_event&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_mouse_event_remove_ask</span><span class="p">,</span>
+                <span class="s2">&quot;print_functions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">print_remove_ask_column</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_table</span><span class="p">],</span>
+            <span class="p">},</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">SELECT_SORT</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;process_keyboard_event&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_keyboard_event_select_sort</span><span class="p">,</span>
+                <span class="s2">&quot;process_mouse_event&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_mouse_event_select_sort</span><span class="p">,</span>
+                <span class="s2">&quot;print_functions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">print_select_sort_column</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_table</span><span class="p">],</span>
+            <span class="p">},</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">ADD_DOWNLOADS</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;process_keyboard_event&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_keyboard_event_add_downloads</span><span class="p">,</span>
+                <span class="s2">&quot;process_mouse_event&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_mouse_event_add_downloads</span><span class="p">,</span>
+                <span class="s2">&quot;print_functions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">print_add_downloads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_table</span><span class="p">],</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The main drawing loop.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># outer loop to support screen resize</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">ManagedScreen</span><span class="p">()</span> <span class="k">as</span> <span class="n">screen</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created new screen </span><span class="si">{</span><span class="n">screen</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_screen</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="c1"># break (and re-enter) when screen has been resized</span>
+                    <span class="k">while</span> <span class="ow">not</span> <span class="n">screen</span><span class="o">.</span><span class="n">has_resized</span><span class="p">():</span>
+                        <span class="c1"># keep previous sort in memory to know if we have to re-sort the rows</span>
+                        <span class="c1"># once all events are processed (to avoid useless/redundant sort passes)</span>
+                        <span class="n">previous_sort</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sort</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span><span class="p">)</span>
+
+                        <span class="c1"># we only refresh when explicitly asked for</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">False</span>
+
+                        <span class="c1"># process all events before refreshing screen,</span>
+                        <span class="c1"># otherwise the reactivity is slowed down a lot with fast inputs</span>
+                        <span class="n">event</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">get_event</span><span class="p">()</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Got event </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">while</span> <span class="n">event</span><span class="p">:</span>
+                            <span class="c1"># avoid crashing the interface if exceptions occur while processing an event</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">process_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+                            <span class="k">except</span> <span class="n">Exit</span><span class="p">:</span>
+                                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received exit command&quot;</span><span class="p">)</span>
+                                <span class="k">return</span> <span class="kc">True</span>
+                            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                                <span class="c1"># TODO: display error in status bar</span>
+                                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                            <span class="n">event</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">get_event</span><span class="p">()</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Got event </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                        <span class="c1"># time to update data and rows</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tick! Updating data and rows&quot;</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">update_data</span><span class="p">()</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">update_rows</span><span class="p">()</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+                        <span class="c1"># time to refresh the screen</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">:</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Refresh! Printing text&quot;</span><span class="p">)</span>
+                            <span class="c1"># sort if needed, unless it was just done at frame 0 when updating</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sort</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span><span class="p">)</span> <span class="o">!=</span> <span class="n">previous_sort</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">sort_data</span><span class="p">()</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">update_rows</span><span class="p">()</span>
+
+                            <span class="c1"># actual printing and screen refresh</span>
+                            <span class="k">for</span> <span class="n">print_function</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_mapping</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">][</span><span class="s2">&quot;print_functions&quot;</span><span class="p">]:</span>
+                                <span class="n">print_function</span><span class="p">()</span>
+                            <span class="n">screen</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+
+                        <span class="c1"># sleep and increment frame</span>
+                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sleep</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Screen has resized&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">post_resize</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">post_resize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running post-resize function&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Trying to re-apply pywal color theme&quot;</span><span class="p">)</span>
+        <span class="n">wal_sequences</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;.cache&quot;</span> <span class="o">/</span> <span class="s2">&quot;wal&quot;</span> <span class="o">/</span> <span class="s2">&quot;sequences&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">wal_sequences</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+                <span class="n">contents</span> <span class="o">=</span> <span class="n">fd</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># nosec</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">update_select_sort_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_sort_rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns_order</span>
+
+    <span class="k">def</span> <span class="nf">process_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Process an event.</span>
+
+<span class="sd">        For reactivity purpose, this method should not compute expensive stuff, only change the state of the interface,</span>
+<span class="sd">        changes that will be applied by update_data and update_rows methods.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            event (KeyboardEvent | MouseEvent): The event to process.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">KeyboardEvent</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">process_keyboard_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">MouseEvent</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">process_mouse_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">process_keyboard_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_mapping</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">][</span><span class="s2">&quot;process_keyboard_event&quot;</span><span class="p">](</span><span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">process_keyboard_event_main</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_UP</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Move focus up: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="c1"># happens when shrinking height</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">follow</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_DOWN</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Move focus down: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">follow</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_LEFT</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_scroll</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">x_scroll</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_scroll</span> <span class="o">-</span> <span class="mi">5</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_RIGHT</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_scroll</span> <span class="o">+=</span> <span class="mi">5</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">HELP</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">HELP</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">SETUP</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># TODO</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">TOGGLE_RESUME_PAUSE</span><span class="p">:</span>
+            <span class="n">download</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">download</span><span class="o">.</span><span class="n">is_active</span> <span class="ow">or</span> <span class="n">download</span><span class="o">.</span><span class="n">is_waiting</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pausing download </span><span class="si">{</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">download</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">download</span><span class="o">.</span><span class="n">is_paused</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resuming download </span><span class="si">{</span><span class="n">download</span><span class="o">.</span><span class="n">gid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">download</span><span class="o">.</span><span class="n">resume</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">PRIORITY_UP</span><span class="p">:</span>
+            <span class="n">download</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">download</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+                <span class="n">download</span><span class="o">.</span><span class="n">move_up</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">follow</span> <span class="o">=</span> <span class="n">download</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">PRIORITY_DOWN</span><span class="p">:</span>
+            <span class="n">download</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">download</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+                <span class="n">download</span><span class="o">.</span><span class="n">move_down</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">follow</span> <span class="o">=</span> <span class="n">download</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">REVERSE_SORT</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">NEXT_SORT</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sort</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">PREVIOUS_SORT</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sort</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">SELECT_SORT</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">SELECT_SORT</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width_select_sort</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">REMOVE_ASK</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Triggered removal&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;self.focused = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;len(self.data) = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">follow_focused</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">REMOVE_ASK</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width_remove_ask</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_remove_choice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_remove_choice</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Could not focus download&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">TOGGLE_EXPAND_COLLAPSE</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># TODO</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">TOGGLE_EXPAND_COLLAPSE_ALL</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># TODO</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">AUTOCLEAR</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">purge</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">FOLLOW_ROW</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">follow_focused</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">SEARCH</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># TODO</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">FILTER</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># TODO</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">TOGGLE_SELECT</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># TODO</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">UN_SELECT_ALL</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># TODO</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_HOME</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Move focus home: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="c1"># happens when shrinking height</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">follow</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_END</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Move focus end: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">follow</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_UP_STEP</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span> <span class="o">//</span> <span class="mi">5</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Move focus up (step): </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="c1"># happens when shrinking height</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">follow</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_DOWN_STEP</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span> <span class="o">//</span> <span class="mi">5</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Move focus down (step): </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">follow</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">TOGGLE_RESUME_PAUSE_ALL</span><span class="p">:</span>
+            <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="o">.</span><span class="n">num_active</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">pause_all</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">resume_all</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">RETRY</span><span class="p">:</span>
+            <span class="n">download</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">retry_downloads</span><span class="p">([</span><span class="n">download</span><span class="p">])</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">RETRY_ALL</span><span class="p">:</span>
+            <span class="n">downloads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">retry_downloads</span><span class="p">(</span><span class="n">downloads</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">ADD_DOWNLOADS</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">ADD_DOWNLOADS</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
+
+            <span class="c1"># build set of copied lines</span>
+            <span class="n">copied_lines</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">pyperclip</span><span class="o">.</span><span class="n">paste</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">pyperclip</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">primary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+                <span class="n">copied_lines</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">copied_lines</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="c1"># add lines to download uris</span>
+            <span class="k">if</span> <span class="n">copied_lines</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">downloads_uris</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">copied_lines</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">QUIT</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Exit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">process_keyboard_event_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">MAIN</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">process_keyboard_event_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">process_keyboard_event_remove_ask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">CANCEL</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Canceling removal&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">MAIN</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">ENTER</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Validate removal&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">follow</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove_ask_rows</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span><span class="p">][</span><span class="mi">1</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">follow</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">follow</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No download was targeted, not removing&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_remove_choice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">MAIN</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># force complete refresh</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_UP</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Moving side focus up: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_DOWN</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_ask_rows</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Moving side focus down: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">process_keyboard_event_select_sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">CANCEL</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">MAIN</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">ENTER</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sort</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">MAIN</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_UP</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_DOWN</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select_sort_rows</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">process_keyboard_event_add_downloads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">CANCEL</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">MAIN</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_UP</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">-=</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="c1"># happens when shrinking height</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">follow</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_DOWN</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads_uris</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">follow</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">ENTER</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads_uris</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">downloads_uris</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span><span class="p">)</span>
+                <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads_uris</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key_code</span> <span class="ow">in</span> <span class="n">Keys</span><span class="o">.</span><span class="n">ADD_DOWNLOADS</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">uri</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads_uris</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">downloads_uris</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">process_mouse_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_mapping</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">][</span><span class="s2">&quot;process_mouse_event&quot;</span><span class="p">](</span><span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">process_mouse_event_main</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">buttons</span> <span class="o">&amp;</span> <span class="n">MouseEvent</span><span class="o">.</span><span class="n">LEFT_CLICK</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">new_sort</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_column_at_x</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_sort</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sort</span> <span class="o">=</span> <span class="n">new_sort</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># elif event.buttons &amp; MouseEvent.RIGHT_CLICK:</span>
+        <span class="c1">#     pass  # TODO: expand/collapse</span>
+
+    <span class="k">def</span> <span class="nf">process_mouse_event_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">process_mouse_event_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">process_mouse_event_remove_ask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">process_mouse_event_select_sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">process_mouse_event_add_downloads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">width_remove_ask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_ask_header</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_ask_rows</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">width_select_sort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">column_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns_order</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">select_sort_header</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">follow_focused</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">follow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="p">]</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">print_add_downloads</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_offset</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
+        <span class="n">header_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads_uris_header</span><span class="si">:</span><span class="s2">&lt;</span><span class="si">{</span><span class="n">padding</span><span class="si">}}</span><span class="s2">&quot;</span>
+        <span class="n">len_header</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">header_string</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;side_column_header&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">len_header</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">])</span>
+        <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;ui&quot;</span><span class="p">])</span>
+        <span class="n">separator</span> <span class="o">=</span> <span class="s2">&quot;...&quot;</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">uri</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">downloads_uris</span><span class="p">):</span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">palette</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;side_column_focused_row&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;side_column_row&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">:</span>
+                <span class="c1"># print part of uri string</span>
+                <span class="n">uri</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span> <span class="n">uri</span><span class="p">[:(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">separator</span><span class="p">)]</span> <span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">separator</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span> <span class="n">uri</span><span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">separator</span><span class="p">):]</span> <span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">uri</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">palette</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">uri</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">y</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">padding</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;ui&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">print_help</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">get_version</span><span class="p">()</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;aria2p </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2"> — (C) 2018-2020 Timothée Mazzucotelli and contributors&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Released under the ISC license.&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line</span><span class="si">:</span><span class="s2">&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="si">}}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;bright_help&quot;</span><span class="p">])</span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">keys</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">HELP</span><span class="p">,</span> <span class="s2">&quot; show this help screen&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_UP</span><span class="p">,</span> <span class="s2">&quot; scroll downloads list&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_UP_STEP</span><span class="p">,</span> <span class="s2">&quot; scroll downloads list (steps)&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_DOWN</span><span class="p">,</span> <span class="s2">&quot; scroll downloads list&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_DOWN_STEP</span><span class="p">,</span> <span class="s2">&quot; scroll downloads list (steps)&quot;</span><span class="p">),</span>
+            <span class="c1"># not implemented: (Keys.SETUP, &quot; setup&quot;),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">TOGGLE_RESUME_PAUSE</span><span class="p">,</span> <span class="s2">&quot; toggle pause/resume&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">PRIORITY_UP</span><span class="p">,</span> <span class="s2">&quot; priority up (-)&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">PRIORITY_DOWN</span><span class="p">,</span> <span class="s2">&quot; priority down (+)&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">REVERSE_SORT</span><span class="p">,</span> <span class="s2">&quot; invert sort order&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">NEXT_SORT</span><span class="p">,</span> <span class="s2">&quot; sort next column&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">PREVIOUS_SORT</span><span class="p">,</span> <span class="s2">&quot; sort previous column&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">SELECT_SORT</span><span class="p">,</span> <span class="s2">&quot; select sort column&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">REMOVE_ASK</span><span class="p">,</span> <span class="s2">&quot; remove download&quot;</span><span class="p">),</span>
+            <span class="c1"># not implemented: (Keys.TOGGLE_EXPAND_COLLAPSE, &quot; toggle expand/collapse&quot;),</span>
+            <span class="c1"># not implemented: (Keys.TOGGLE_EXPAND_COLLAPSE_ALL, &quot; toggle expand/collapse all&quot;),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">AUTOCLEAR</span><span class="p">,</span> <span class="s2">&quot; autopurge downloads&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">FOLLOW_ROW</span><span class="p">,</span> <span class="s2">&quot; cursor follows download&quot;</span><span class="p">),</span>
+            <span class="c1"># not implemented: (Keys.SEARCH, &quot; name search&quot;),</span>
+            <span class="c1"># not implemented: (Keys.FILTER, &quot; name filtering&quot;),</span>
+            <span class="c1"># not implemented: (Keys.TOGGLE_SELECT, &quot; toggle select download&quot;),</span>
+            <span class="c1"># not implemented: (Keys.UN_SELECT_ALL, &quot; unselect all downloads&quot;),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_HOME</span><span class="p">,</span> <span class="s2">&quot; move focus to first download&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">MOVE_END</span><span class="p">,</span> <span class="s2">&quot; move focus to last download&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETRY</span><span class="p">,</span> <span class="s2">&quot; retry failed download&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETRY_ALL</span><span class="p">,</span> <span class="s2">&quot; retry all failed download&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">ADD_DOWNLOADS</span><span class="p">,</span> <span class="s2">&quot; add downloads from clipboard&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">QUIT</span><span class="p">,</span> <span class="s2">&quot; quit&quot;</span><span class="p">),</span>
+        <span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">print_keys</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;ui&quot;</span><span class="p">])</span>
+        <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Press any key to return.&#39;</span><span class="si">:</span><span class="s2">&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="si">}}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;bright_help&quot;</span><span class="p">])</span>
+        <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">y</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;ui&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">print_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">print_keys_text</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">names</span><span class="p">(</span><span class="n">keys</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">print_keys_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys_text</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">keys_text</span><span class="si">:</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">length</span><span class="si">}}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;bright_help&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">text</span><span class="si">:</span><span class="s2">&lt;</span><span class="si">{</span><span class="n">padding</span><span class="si">}}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">print_remove_ask_column</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_offset</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width_remove_ask</span><span class="p">()</span>
+        <span class="n">header_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_ask_header</span><span class="si">:</span><span class="s2">&lt;</span><span class="si">{</span><span class="n">padding</span><span class="si">}}</span><span class="s2">&quot;</span>
+        <span class="n">len_header</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">header_string</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;side_column_header&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">len_header</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_ask_rows</span><span class="p">):</span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">palette</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;side_column_focused_row&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;side_column_row&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">row_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">&lt;</span><span class="si">{</span><span class="n">padding</span><span class="si">}}</span><span class="s2">&quot;</span>
+            <span class="n">len_row</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">row_string</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="n">row_string</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">palette</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">len_row</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">y</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">padding</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;ui&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">print_select_sort_column</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_offset</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width_select_sort</span><span class="p">()</span>
+        <span class="n">header_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">select_sort_header</span><span class="si">:</span><span class="s2">&lt;</span><span class="si">{</span><span class="n">padding</span><span class="si">}}</span><span class="s2">&quot;</span>
+        <span class="n">len_header</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">header_string</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;side_column_header&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">len_header</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select_sort_rows</span><span class="p">):</span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">palette</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;side_column_focused_row&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_focused</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;side_column_row&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">row_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">row</span><span class="si">:</span><span class="s2">&lt;</span><span class="si">{</span><span class="n">padding</span><span class="si">}}</span><span class="s2">&quot;</span>
+            <span class="n">len_row</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">row_string</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="n">row_string</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">palette</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">len_row</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">y</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">padding</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;ui&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">print_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">print_headers</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">print_rows</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">print_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print the headers (columns names).&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scroller</span><span class="o">.</span><span class="n">set_scroll</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_scroll</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_offset</span><span class="p">,</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns_order</span><span class="p">:</span>
+            <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span>
+            <span class="n">palette</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;focused_header&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;header&quot;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">padding</span> <span class="o">==</span> <span class="s2">&quot;100%&quot;</span><span class="p">:</span>
+                <span class="n">header_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">header</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">fill_up</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">x</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">header_string</span><span class="p">))</span>
+                <span class="n">written</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scroller</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">palette</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scroller</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="n">fill_up</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">written</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;header&quot;</span><span class="p">])</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">header_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">column</span><span class="o">.</span><span class="n">header</span><span class="si">:{</span><span class="n">column</span><span class="o">.</span><span class="n">padding</span><span class="si">}}</span><span class="s2"> &quot;</span>
+                <span class="n">written</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scroller</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">palette</span><span class="p">)</span>
+
+            <span class="n">x</span> <span class="o">+=</span> <span class="n">written</span>
+            <span class="n">c</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">print_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print the rows.&quot;&quot;&quot;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_offset</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">]:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">scroller</span><span class="o">.</span><span class="n">set_scroll</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_scroll</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns_order</span><span class="p">):</span>
+                <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span>
+                <span class="n">padding</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">padding</span> <span class="o">==</span> <span class="s2">&quot;100%&quot;</span> <span class="k">else</span> <span class="n">column</span><span class="o">.</span><span class="n">padding</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">==</span> <span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_offset</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_offset</span><span class="p">:</span>
+                    <span class="n">palette</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;focused_row&quot;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">palette</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">get_palette</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">palette</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                        <span class="n">palette</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="n">palette</span><span class="p">]</span>
+
+                <span class="n">field_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:{</span><span class="n">padding</span><span class="si">}}</span><span class="s2"> &quot;</span>
+                <span class="n">written</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scroller</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="n">field_string</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">palette</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">+=</span> <span class="n">written</span>
+
+            <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">y</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">print_at</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;ui&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">get_column_at_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;For an horizontal position X, return the column index.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">bound</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">bound</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">bound</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="n">i</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;clicked outside of boundaries&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_screen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the screen object, its scroller wrapper, width, height, and columns bounds.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="n">screen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">dimensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scroller</span> <span class="o">=</span> <span class="n">HorizontalScroll</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns_order</span><span class="p">:</span>
+            <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">padding</span> <span class="o">==</span> <span class="s2">&quot;100%&quot;</span><span class="p">:</span>  <span class="c1"># last column</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">padding</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">padding</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;&lt;&gt;=^&quot;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="n">padding</span><span class="p">)]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">padding</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Download</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of objects.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">get_downloads</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">update_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Set the interface data and rows contents.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sort_data</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Timeout</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Request timeout&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">sort_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Sort data according to interface state.&quot;&quot;&quot;</span>
+        <span class="n">sort_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">columns_order</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sort</span><span class="p">]]</span><span class="o">.</span><span class="n">get_sort</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">sort_function</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reverse</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">update_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Update rows contents according to data and interface state.&quot;&quot;&quot;</span>
+        <span class="n">text_getters</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">get_text</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns_order</span><span class="p">]</span>
+        <span class="n">n_columns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns_order</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">text_getters</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_columns</span><span class="p">))</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">follow</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">focused</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">follow</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -2281,7 +3280,7 @@ changes that will be applied by update_data and update_rows methods.</p>
   <tbody>
       <tr>
         <td><code>event</code></td>
-        <td><code>KeyboardEvent/MouseEvent</code></td>
+        <td><code>KeyboardEvent | MouseEvent</code></td>
         <td><p>The event to process.</p></td>
         <td><em>required</em></td>
       </tr>
@@ -2297,7 +3296,7 @@ changes that will be applied by update_data and update_rows methods.</p>
 <span class="sd">    changes that will be applied by update_data and update_rows methods.</span>
 
 <span class="sd">    Arguments:</span>
-<span class="sd">        event (KeyboardEvent/MouseEvent): The event to process.</span>
+<span class="sd">        event (KeyboardEvent | MouseEvent): The event to process.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">KeyboardEvent</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">process_keyboard_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
@@ -2572,6 +3571,65 @@ Key        </code>
 
       <p>A class to represent an input key.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>aria2p/interface.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Key</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A class to represent an input key.&quot;&quot;&quot;</span>
+
+    <span class="n">OTHER_KEY_VALUES</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;F1&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_F1</span><span class="p">,</span>
+        <span class="s2">&quot;F2&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_F2</span><span class="p">,</span>
+        <span class="s2">&quot;F3&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_F3</span><span class="p">,</span>
+        <span class="s2">&quot;F4&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_F4</span><span class="p">,</span>
+        <span class="s2">&quot;F5&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_F5</span><span class="p">,</span>
+        <span class="s2">&quot;F6&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_F6</span><span class="p">,</span>
+        <span class="s2">&quot;F7&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_F7</span><span class="p">,</span>
+        <span class="s2">&quot;F8&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_F8</span><span class="p">,</span>
+        <span class="s2">&quot;F9&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_F9</span><span class="p">,</span>
+        <span class="s2">&quot;F10&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_F10</span><span class="p">,</span>
+        <span class="s2">&quot;F11&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_F11</span><span class="p">,</span>
+        <span class="s2">&quot;F12&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_F12</span><span class="p">,</span>
+        <span class="s2">&quot;ESC&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_ESCAPE</span><span class="p">,</span>
+        <span class="s2">&quot;DEL&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_DELETE</span><span class="p">,</span>
+        <span class="s2">&quot;PAGE_UP&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_PAGE_UP</span><span class="p">,</span>
+        <span class="s2">&quot;PAGE_DOWN&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_PAGE_DOWN</span><span class="p">,</span>
+        <span class="s2">&quot;HOME&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_HOME</span><span class="p">,</span>
+        <span class="s2">&quot;END&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_END</span><span class="p">,</span>
+        <span class="s2">&quot;LEFT&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_LEFT</span><span class="p">,</span>
+        <span class="s2">&quot;UP&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_UP</span><span class="p">,</span>
+        <span class="s2">&quot;RIGHT&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_RIGHT</span><span class="p">,</span>
+        <span class="s2">&quot;DOWN&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_DOWN</span><span class="p">,</span>
+        <span class="s2">&quot;BACK&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_BACK</span><span class="p">,</span>
+        <span class="s2">&quot;TAB&quot;</span><span class="p">:</span> <span class="n">Screen</span><span class="o">.</span><span class="n">KEY_TAB</span><span class="p">,</span>
+        <span class="s2">&quot;SPACE&quot;</span><span class="p">:</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">),</span>
+        <span class="s2">&quot;ENTER&quot;</span><span class="p">:</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the object.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            name: The key name.</span>
+<span class="sd">            value: The key value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OTHER_KEY_VALUES</span><span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
+
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">value</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -2678,6 +3736,55 @@ Keys        </code>
 
       <p>The actions and their shortcuts keys.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>aria2p/interface.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Keys</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;The actions and their shortcuts keys.&quot;&quot;&quot;</span>
+
+    <span class="n">AUTOCLEAR</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;AUTOCLEAR&quot;</span><span class="p">)</span>
+    <span class="n">CANCEL</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;CANCEL&quot;</span><span class="p">)</span>
+    <span class="n">ENTER</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;ENTER&quot;</span><span class="p">)</span>
+    <span class="n">FILTER</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;FILTER&quot;</span><span class="p">)</span>
+    <span class="n">FOLLOW_ROW</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;FOLLOW_ROW&quot;</span><span class="p">)</span>
+    <span class="n">HELP</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;HELP&quot;</span><span class="p">)</span>
+    <span class="n">MOVE_DOWN</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;MOVE_DOWN&quot;</span><span class="p">)</span>
+    <span class="n">MOVE_LEFT</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;MOVE_LEFT&quot;</span><span class="p">)</span>
+    <span class="n">MOVE_RIGHT</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;MOVE_RIGHT&quot;</span><span class="p">)</span>
+    <span class="n">MOVE_UP</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;MOVE_UP&quot;</span><span class="p">)</span>
+    <span class="n">NEXT_SORT</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;NEXT_SORT&quot;</span><span class="p">)</span>
+    <span class="n">PREVIOUS_SORT</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;PREVIOUS_SORT&quot;</span><span class="p">)</span>
+    <span class="n">PRIORITY_DOWN</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;PRIORITY_DOWN&quot;</span><span class="p">)</span>
+    <span class="n">PRIORITY_UP</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;PRIORITY_UP&quot;</span><span class="p">)</span>
+    <span class="n">QUIT</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;QUIT&quot;</span><span class="p">)</span>
+    <span class="n">REMOVE_ASK</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;REMOVE_ASK&quot;</span><span class="p">)</span>
+    <span class="n">REVERSE_SORT</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;REVERSE_SORT&quot;</span><span class="p">)</span>
+    <span class="n">SEARCH</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;SEARCH&quot;</span><span class="p">)</span>
+    <span class="n">SELECT_SORT</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;SELECT_SORT&quot;</span><span class="p">)</span>
+    <span class="n">SETUP</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;SETUP&quot;</span><span class="p">)</span>
+    <span class="n">TOGGLE_EXPAND_COLLAPSE_ALL</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;TOGGLE_EXPAND_COLLAPSE_ALL&quot;</span><span class="p">)</span>
+    <span class="n">TOGGLE_EXPAND_COLLAPSE</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;TOGGLE_EXPAND_COLLAPSE&quot;</span><span class="p">)</span>
+    <span class="n">TOGGLE_RESUME_PAUSE</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;TOGGLE_RESUME_PAUSE&quot;</span><span class="p">)</span>
+    <span class="n">TOGGLE_RESUME_PAUSE_ALL</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;TOGGLE_RESUME_PAUSE_ALL&quot;</span><span class="p">)</span>
+    <span class="n">TOGGLE_SELECT</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;TOGGLE_SELECT&quot;</span><span class="p">)</span>
+    <span class="n">UN_SELECT_ALL</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;UN_SELECT_ALL&quot;</span><span class="p">)</span>
+    <span class="n">MOVE_HOME</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;MOVE_HOME&quot;</span><span class="p">)</span>
+    <span class="n">MOVE_END</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;MOVE_END&quot;</span><span class="p">)</span>
+    <span class="n">MOVE_UP_STEP</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;MOVE_UP_STEP&quot;</span><span class="p">)</span>
+    <span class="n">MOVE_DOWN_STEP</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;MOVE_DOWN_STEP&quot;</span><span class="p">)</span>
+    <span class="n">TOGGLE_RESUME_PAUSE_ALL</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;TOGGLE_RESUME_PAUSE_ALL&quot;</span><span class="p">)</span>
+    <span class="n">RETRY</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;RETRY&quot;</span><span class="p">)</span>
+    <span class="n">RETRY_ALL</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;RETRY_ALL&quot;</span><span class="p">)</span>
+    <span class="n">ADD_DOWNLOADS</span> <span class="o">=</span> <span class="n">key_bind_parser</span><span class="p">(</span><span class="s2">&quot;ADD_DOWNLOADS&quot;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">names</span><span class="p">(</span><span class="n">keys_list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys_list</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="n">keys_list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys_list</span><span class="p">]</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -2752,6 +3859,28 @@ Palette        </code>
 
       <p>A simple class to hold palettes getters.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>aria2p/interface.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Palette</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A simple class to hold palettes getters.&quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the palette for a STATUS cell.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;status_&quot;</span> <span class="o">+</span> <span class="n">value</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the palette for a NAME cell.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;[METADATA]&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="p">[(</span><span class="n">Screen</span><span class="o">.</span><span class="n">COLOUR_GREEN</span><span class="p">,</span> <span class="n">Screen</span><span class="o">.</span><span class="n">A_UNDERLINE</span><span class="p">,</span> <span class="n">Screen</span><span class="o">.</span><span class="n">COLOUR_BLACK</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">10</span>
+                <span class="o">+</span> <span class="p">[</span><span class="n">Interface</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">-</span> <span class="mi">10</span><span class="p">)</span>
+                <span class="o">+</span> <span class="p">[</span><span class="n">Interface</span><span class="o">.</span><span class="n">palettes</span><span class="p">[</span><span class="s2">&quot;row&quot;</span><span class="p">]]</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;name&quot;</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3122,7 +4251,7 @@ Palette        </code>
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.649a939e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
       
     
   </body>
