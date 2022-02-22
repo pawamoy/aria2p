@@ -874,7 +874,7 @@ class API:
              lines: The lines of the input file.
 
         Yields:
-            Blocks of lines.
+            list[str]: Blocks of lines.
         """
         block = []
         for line in lines:
