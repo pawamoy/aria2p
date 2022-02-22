@@ -261,7 +261,7 @@ class HorizontalScroll:
             text (str): Text to print.
             x (int): X axis position / column.
             y (int): Y axis position / row.
-            palette (list/tuple): A length-3 tuple or a list of length-3 tuples representing asciimatics palettes.
+            palette (list | tuple): A length-3 tuple or a list of length-3 tuples representing asciimatics palettes.
 
         Returns:
             int: The number of characters actually printed.
@@ -581,7 +581,7 @@ class Interface:
         changes that will be applied by update_data and update_rows methods.
 
         Arguments:
-            event (KeyboardEvent/MouseEvent): The event to process.
+            event (KeyboardEvent | MouseEvent): The event to process.
         """
         if isinstance(event, KeyboardEvent):
             self.process_keyboard_event(event)

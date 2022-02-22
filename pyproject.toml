@@ -8,7 +8,7 @@ description = "Command-line tool and library to interact with an aria2c daemon p
 authors = [{name = "Timothée Mazzucotelli", email = "pawamoy@pm.me"}]
 license = {file = "LICENSE"}
 readme = "README.md"
-requires-python = ">=3.6.2"
+requires-python = ">=3.7"
 keywords = ["aria2", "aria2c", "aria2-cli"]
 dynamic = ["version"]
 classifiers = [
@@ -61,13 +61,14 @@ package-dir = "src"
 [tool.pdm.dev-dependencies]
 duty = ["duty>=0.7"]
 docs = [
-    "mkdocs>=1.2; python_version >= '3.7'",
-    "mkdocs-coverage>=0.2; python_version >= '3.7'",
-    "mkdocs-gen-files>=0.3; python_version >= '3.7'",
-    "mkdocs-literate-nav>=0.4; python_version >= '3.7'",
-    "mkdocs-material>=7.3; python_version >= '3.7'",
-    "mkdocstrings>=0.16; python_version >= '3.7'",
-    "toml>=0.10; python_version >= '3.7'",
+    "mkdocs>=1.2",
+    "mkdocs-coverage>=0.2",
+    "mkdocs-gen-files>=0.3",
+    "mkdocs-literate-nav>=0.4",
+    "mkdocs-material>=7.3",
+    "mkdocs-section-index>=0.3",
+    "mkdocstrings[python-legacy]>=0.18",
+    "toml>=0.10",
 ]
 format = [
     "autoflake>=1.4",
