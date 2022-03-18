@@ -126,6 +126,39 @@ magnet_uri = "magnet:?xt=urn:..."
 download = aria2.add_magnet(magnet_uri)
 ```
 
+If you'd like to also run the aria2c daemon, you can use a simple context
+manager provided by the library:
+
+```python
+import time
+import aria2p
+
+files_to_download = [
+    "https://raw.githubusercontent.com/pawamoy/aria2p/master/CONTRIBUTING.md",
+    "https://raw.githubusercontent.com/pawamoy/aria2p/master/LICENSE",
+    "https://raw.githubusercontent.com/pawamoy/aria2p/master/Makefile",
+    "https://raw.githubusercontent.com/pawamoy/aria2p/master/README.md",
+]
+port, secret, download_path = 6803, "mysecret", "downloads"
+with aria2p.Daemon(port=port, secret=secret) as daemon:
+    print(f"aria2c process running with PID {daemon.process.pid} (temp config file: {daemon.config_filename})")
+
+    api = aria2p.API(aria2p.Client(host="http://localhost", port=port, secret=secret))
+    for url in files_to_download:
+        api.add(url, {"dir": download_path})
+    print(f"{len(files_to_download)} URLs added")
+
+    # Wait for all downloads to finish
+    finished = False
+    while not finished:
+        finished = all(download.status == "complete" for download in api.get_downloads())
+        print("Waiting for downloads to finish...")
+        time.sleep(1)  # Wait for downloads to finish
+    print(f"Done! Now check your files in {download_path}/")
+print("aria2c daemon process terminated, temp config file deleted.")
+```
+
+
 ## Usage (command-line)
 
 ```
@@ -150,7 +183,7 @@ Global options:
                         Floats supported. Default: 60.0.
 
 Commands:
-  
+
     add                 Add downloads with URIs/Magnets/torrents/Metalinks.
     add-magnets (add-magnet)
                         Add downloads with Magnet URIs.
@@ -542,7 +575,8 @@ optional arguments:
   requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=6800): Max retries exceeded with url: /jsonrpc (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1115b1908>: Failed to establish a new connection: [Errno 61] Connection refused',))
   ```
 
-  Solution: `aria2c` needs to be up and running first.
+  Solution: `aria2c` needs to be up and running first (you may want to run it
+  using `aria2p.Daemon` - check [the example](#usage-as-a-library)).
 
 ## Support
 
