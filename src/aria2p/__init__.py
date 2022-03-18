@@ -10,6 +10,7 @@ from loguru import logger
 
 from aria2p.api import API
 from aria2p.client import Client, ClientException
+from aria2p.daemon import Daemon
 from aria2p.downloads import BitTorrent, Download, File
 from aria2p.options import Options
 from aria2p.stats import Stats
@@ -37,6 +38,7 @@ __all__ = [
     "API",
     "ClientException",
     "Client",
+    "Daemon",
     "Download",
     "BitTorrent",
     "File",
