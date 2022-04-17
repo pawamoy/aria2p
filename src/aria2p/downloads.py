@@ -5,6 +5,7 @@ They respectively hold structured information about
 torrent files, files and downloads in aria2c.
 """
 
+from contextlib import suppress
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Optional
@@ -293,12 +294,11 @@ class Download:
                 dir_path = str(self.dir.absolute())
                 if file_path.startswith(dir_path):
                     start_pos = len(dir_path) + 1
-                    self._name = Path(file_path[start_pos:]).parts[0]
+                    with suppress(IndexError):
+                        self._name = Path(file_path[start_pos:]).parts[0]
                 else:
-                    try:
+                    with suppress(IndexError):
                         self._name = self.files[0].uris[0]["uri"].split("/")[-1]  # noqa: WPS219
-                    except IndexError:
-                        pass  # noqa: WPS420 (we don't want to fail here)
         return self._name
 
     @property
