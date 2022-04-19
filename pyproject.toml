@@ -37,7 +37,7 @@ dependencies = [
 
 [project.optional-dependencies]
 tui = [
-    "asciimatics>=1.13",
+    "textual>=0.1.17",
     "pyperclip>=1.8",
 ]
 
