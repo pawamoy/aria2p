@@ -418,7 +418,7 @@ class API:
                 if not new_download_gid:
                     continue
 
-                self.remove([download], clean)
+                self.remove([download], clean=clean)
                 result.append(True)
 
         return result
