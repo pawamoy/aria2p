@@ -7,6 +7,8 @@ Why does this file exist, and why `__main__`? For more info, read:
 - https://docs.python.org/3/using/cmdline.html#cmdoption-m
 """
 
+from __future__ import annotations
+
 import sys
 
 from aria2p.cli.main import main

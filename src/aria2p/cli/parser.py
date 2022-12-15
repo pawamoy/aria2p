@@ -11,6 +11,8 @@
 
 """Module that contains the command line application."""
 
+from __future__ import annotations
+
 import argparse
 
 from aria2p.client import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_TIMEOUT

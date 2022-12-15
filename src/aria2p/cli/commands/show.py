@@ -1,5 +1,7 @@
 """Command to show downloads."""
 
+from __future__ import annotations
+
 from aria2p.api import API
 
 

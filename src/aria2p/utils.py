@@ -4,6 +4,8 @@ Utils module.
 This module contains simple utility classes and functions.
 """
 
+from __future__ import annotations
+
 import signal
 import textwrap
 from datetime import timedelta

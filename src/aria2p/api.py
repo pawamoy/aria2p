@@ -4,6 +4,9 @@ Aria2 API.
 This module defines the API class, which makes use of a JSON-RPC client to provide higher-level methods to
 interact easily with a remote aria2c process.
 """
+
+from __future__ import annotations
+
 import functools
 import shutil
 import threading

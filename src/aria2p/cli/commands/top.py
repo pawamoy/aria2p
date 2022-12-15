@@ -1,5 +1,7 @@
 """Command to run the text user-interface."""
 
+from __future__ import annotations
+
 import sys
 
 from aria2p.api import API

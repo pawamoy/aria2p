@@ -5,6 +5,8 @@ They respectively hold structured information about
 torrent files, files and downloads in aria2c.
 """
 
+from __future__ import annotations
+
 from contextlib import suppress
 from datetime import datetime, timedelta
 from pathlib import Path

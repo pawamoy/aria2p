@@ -4,6 +4,8 @@ This module defines the Stats class.
 It holds information retrieved with the `get_global_stat` method of the client.
 """
 
+from __future__ import annotations
+
 from aria2p.utils import human_readable_bytes
 
 

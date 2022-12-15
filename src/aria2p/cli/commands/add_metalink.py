@@ -1,5 +1,7 @@
 """Command to add metalinks."""
 
+from __future__ import annotations
+
 import sys
 from typing import List
 

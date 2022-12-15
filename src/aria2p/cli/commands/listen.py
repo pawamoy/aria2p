@@ -1,5 +1,7 @@
 """Command to listen to notifications from the server."""
 
+from __future__ import annotations
+
 import sys
 from importlib import util as importlib_util
 from pathlib import Path

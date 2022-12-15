@@ -12,6 +12,8 @@
 #
 # Well, asciimatics also provides a "top" example, so...
 
+from __future__ import annotations
+
 import os
 import sys
 import time

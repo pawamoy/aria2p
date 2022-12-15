@@ -1,5 +1,9 @@
 """Command to pause downloads."""
 
+from __future__ import annotations
+
+from __future__ import annotations
+
 import sys
 from typing import List
 

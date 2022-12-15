@@ -5,6 +5,8 @@ This module defines the ClientException and Client classes, which are used to co
 process through the JSON-RPC protocol.
 """
 
+from __future__ import annotations
+
 import json
 from typing import Any, Callable, List, Optional, Union
 

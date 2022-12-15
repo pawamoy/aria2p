@@ -5,6 +5,8 @@ This module defines the Options class, which holds information retrieved with th
 `get_global_option` methods of the client.
 """
 
+from __future__ import annotations
+
 from copy import deepcopy
 from typing import Callable, List, Union
 
