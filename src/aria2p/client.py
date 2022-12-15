@@ -357,8 +357,8 @@ class Client:
         """
         return requests.post(self.server, data=payload, timeout=self.timeout).json()
 
-    @staticmethod
-    def response_as_exception(response: dict) -> ClientException:
+    @staticmethod  # noqa: WPS602
+    def response_as_exception(response: dict) -> ClientException:  # noqa: WPS602
         """
         Transform the response as a [`ClientException`][aria2p.client.ClientException] instance and return it.
 
@@ -370,8 +370,8 @@ class Client:
         """
         return ClientException(response["error"]["code"], response["error"]["message"])
 
-    @staticmethod
-    def res_or_raise(response: dict) -> CallReturnType:
+    @staticmethod  # noqa: WPS602
+    def res_or_raise(response: dict) -> CallReturnType:  # noqa: WPS602
         """
         Return the result of the response, or raise an error with code and message.
 
@@ -389,8 +389,8 @@ class Client:
             raise Client.response_as_exception(response)
         return response["result"]
 
-    @staticmethod
-    def get_payload(
+    @staticmethod  # noqa: WPS602
+    def get_payload(  # noqa: WPS602
         method,
         params: List[Any] = None,
         msg_id: Union[int, str] = None,
@@ -420,8 +420,8 @@ class Client:
 
         return json.dumps(payload) if as_json else payload
 
-    @staticmethod
-    def get_params(*args: Any) -> list:
+    @staticmethod  # noqa: WPS602
+    def get_params(*args: Any) -> list:  # noqa: WPS602
         """
         Build the list of parameters.
 
@@ -1797,8 +1797,8 @@ class Notification:
         self.type = event_type
         self.gid = gid
 
-    @staticmethod
-    def get_or_raise(message: dict) -> "Notification":
+    @staticmethod  # noqa: WPS602
+    def get_or_raise(message: dict) -> "Notification":  # noqa: WPS602
         """
         Raise a ClientException when the message is invalid or return a Notification instance.
 
@@ -1815,8 +1815,8 @@ class Notification:
             raise Client.response_as_exception(message)
         return Notification.from_message(message)
 
-    @staticmethod
-    def from_message(message: dict) -> "Notification":
+    @staticmethod  # noqa: WPS602
+    def from_message(message: dict) -> "Notification":  # noqa: WPS602
         """
         Return an instance of Notification.
 
