@@ -9,11 +9,11 @@ def translate_size(size):
         pass
     size = size.lower()
     if size.endswith("k"):
-        multiplier = 2 ** 10
+        multiplier = 2**10
     elif size.endswith("m"):
-        multiplier = 2 ** 20
+        multiplier = 2**20
     elif size.endswith("g"):
-        multiplier = 2 ** 30
+        multiplier = 2**30
     else:
         raise ValueError("size unit not supported:", size)
     return int(size.rstrip("kmg")) * multiplier
