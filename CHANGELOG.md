@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [0.11.3](https://github.com/pawamoy/aria2p/releases/tag/0.11.3) - 2022-12-15
+
+<small>[Compare with 0.11.2](https://github.com/pawamoy/aria2p/compare/0.11.2...0.11.3)</small>
+
+### Bug Fixes
+- Don't clean up when retrying downloads ([37b2253](https://github.com/pawamoy/aria2p/commit/37b22535957ca2e539d521f4c23ceb9fb6071f42) by Timothée Mazzucotelli). [Issue #114](https://github.com/pawamoy/aria2p/issues/114). Thanks [@Links662](https://github.com/Links662)!
+
+### Code Refactoring
+- Import and use future annotations ([721fef2](https://github.com/pawamoy/aria2p/commit/721fef222587c2d7c5758dcc60dfcad0e41400e4) by Timothée Mazzucotelli).
+
+
 ## [0.11.2](https://github.com/pawamoy/aria2p/releases/tag/0.11.2) - 2022-04-17
 
 <small>[Compare with 0.11.1](https://github.com/pawamoy/aria2p/compare/0.11.1...0.11.2)</small>
