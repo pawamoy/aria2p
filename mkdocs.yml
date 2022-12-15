@@ -74,7 +74,18 @@ plugins:
     nav_file: SUMMARY.txt
 - coverage
 - section-index
-- mkdocstrings
+- mkdocstrings:
+    handlers:
+      python:
+        import:
+        - https://docs.python.org/3/objects.inv
+        options:
+          separate_signature: true
+          merge_init_into_class: true
+          line_length: 80
+          docstring_style: google
+          docstring_options:
+            ignore_init_summary: true
 
 extra:
   social:
