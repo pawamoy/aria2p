@@ -12,7 +12,7 @@ import shutil
 import threading
 from base64 import b64encode
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import Callable, Dict, Iterator, List, TextIO, Tuple, Union
 
 from loguru import logger
 
@@ -20,8 +20,10 @@ from aria2p.client import Client, ClientException
 from aria2p.downloads import Download
 from aria2p.options import Options
 from aria2p.stats import Stats
-from aria2p.types import OperationResult, OptionsType, PathOrStr
+from aria2p.types import PathOrStr
 
+OptionsType = Union[Options, dict]
+OperationResult = Union[bool, ClientException]
 InputFileContentsType = List[Tuple[List[str], Dict[str, str]]]
 
 
@@ -36,7 +38,7 @@ class API:
     allowing for even more Pythonic interactions, without worrying about payloads, responses, JSON, etc..
     """
 
-    def __init__(self, client: Optional[Client] = None) -> None:
+    def __init__(self, client: Client | None = None) -> None:
         """
         Initialize the object.
 
@@ -44,7 +46,7 @@ class API:
             client: An instance of the [aria2p.client.Client][] class.
         """
         self.client = client or Client()
-        self.listener: Optional[threading.Thread] = None
+        self.listener: threading.Thread | None = None
 
     def __repr__(self) -> str:
         return f"API({self.client!r})"
@@ -52,9 +54,9 @@ class API:
     def add(  # noqa: WPS231 (not that complex)
         self,
         uri: str,
-        options: OptionsType = None,
-        position: int = None,
-    ) -> List[Download]:
+        options: OptionsType | None = None,
+        position: int | None = None,
+    ) -> list[Download]:
         """
         Add a download (guess its type).
 
@@ -99,7 +101,7 @@ class API:
 
         return new_downloads
 
-    def add_magnet(self, magnet_uri: str, options: OptionsType = None, position: int = None) -> Download:
+    def add_magnet(self, magnet_uri: str, options: OptionsType | None = None, position: int | None = None) -> Download:
         """
         Add a download with a Magnet URI.
 
@@ -127,9 +129,9 @@ class API:
     def add_torrent(
         self,
         torrent_file_path: PathOrStr,
-        uris: List[str] = None,
-        options: OptionsType = None,
-        position: int = None,
+        uris: list[str] | None = None,
+        options: OptionsType | None = None,
+        position: int | None = None,
     ) -> Download:
         """
         Add a download with a torrent file (usually .torrent extension).
@@ -166,9 +168,9 @@ class API:
     def add_metalink(
         self,
         metalink_file_path: PathOrStr,
-        options: OptionsType = None,
-        position: int = None,
-    ) -> List[Download]:
+        options: OptionsType | None = None,
+        position: int | None = None,
+    ) -> list[Download]:
         """
         Add a download with a Metalink file.
 
@@ -199,9 +201,9 @@ class API:
 
     def add_uris(
         self,
-        uris: List[str],
-        options: Optional[OptionsType] = None,
-        position: Optional[int] = None,
+        uris: list[str],
+        options: OptionsType | None = None,
+        position: int | None = None,
     ) -> Download:
         """
         Add a download with a URL (or more).
@@ -228,7 +230,7 @@ class API:
 
         return self.get_download(gid)
 
-    def search(self, patterns: List[str]) -> List[Download]:
+    def search(self, patterns: list[str]) -> list[Download]:
         """
         Not implemented.
 
@@ -284,7 +286,7 @@ class API:
         """
         return Download(self, self.client.tell_status(gid))
 
-    def get_downloads(self, gids: List[str] = None) -> List[Download]:
+    def get_downloads(self, gids: list[str] | None = None) -> list[Download]:
         """
         Get a list of [`Download`][aria2p.downloads.Download] object thanks to their GIDs.
 
@@ -391,9 +393,9 @@ class API:
 
     def retry_downloads(  # noqa: WPS231 (not that complex)
         self,
-        downloads: List[Download],
+        downloads: list[Download],
         clean: bool = False,
-    ) -> List[OperationResult]:
+    ) -> list[OperationResult]:
         """
         Resume failed downloads from where they left off with new GIDs.
 
@@ -404,7 +406,7 @@ class API:
         Returns:
             Success or failure of the operation for each given download.
         """
-        result: List[OperationResult] = []
+        result: list[OperationResult] = []
 
         for download in downloads:
             if not download.has_failed:
@@ -428,11 +430,11 @@ class API:
 
     def remove(  # noqa: WPS231 (complex, maybe we could split it)
         self,
-        downloads: List[Download],
+        downloads: list[Download],
         force: bool = False,
         files: bool = False,
         clean: bool = True,
-    ) -> List[OperationResult]:
+    ) -> list[OperationResult]:
         """
         Remove the given downloads from the list.
 
@@ -451,7 +453,7 @@ class API:
         else:
             remove_func = self.client.remove
 
-        result: List[OperationResult] = []
+        result: list[OperationResult] = []
 
         for download in downloads:
             if download.is_complete or download.is_removed or download.has_failed:
@@ -515,7 +517,7 @@ class API:
         """
         return all(self.remove(self.get_downloads(), force=force))
 
-    def pause(self, downloads: List[Download], force: bool = False) -> List[OperationResult]:
+    def pause(self, downloads: list[Download], force: bool = False) -> list[OperationResult]:
         """
         Pause the given (active) downloads.
 
@@ -532,7 +534,7 @@ class API:
         else:
             pause_func = self.client.pause
 
-        result: List[OperationResult] = []
+        result: list[OperationResult] = []
 
         for download in downloads:
             try:
@@ -562,7 +564,7 @@ class API:
             pause_func = self.client.pause_all
         return pause_func() == "OK"
 
-    def resume(self, downloads: List[Download]) -> List[OperationResult]:
+    def resume(self, downloads: list[Download]) -> list[OperationResult]:
         """
         Resume (unpause) the given downloads.
 
@@ -573,7 +575,7 @@ class API:
             Success or failure of the operation for each given download.
         """
         # Note: batch/multicall candidate
-        result: List[OperationResult] = []
+        result: list[OperationResult] = []
 
         for download in downloads:
             try:
@@ -617,7 +619,7 @@ class API:
         logger.warning("Deprecation warning: API method 'autopurge' is deprecated, use 'purge' instead.")
         return self.purge()
 
-    def get_options(self, downloads: List[Download]) -> List[Options]:
+    def get_options(self, downloads: list[Download]) -> list[Options]:
         """
         Get options for each of the given downloads.
 
@@ -642,7 +644,7 @@ class API:
         """
         return Options(self, self.client.get_global_option())
 
-    def set_options(self, options: OptionsType, downloads: List[Download]) -> List[bool]:
+    def set_options(self, options: OptionsType, downloads: list[Download]) -> list[bool]:
         """
         Set options for specific downloads.
 
@@ -694,9 +696,9 @@ class API:
 
     @staticmethod  # noqa: WPS231,WPS602 (complex method, static method)
     def remove_files(  # noqa: WPS231,WPS602
-        downloads: List[Download],
+        downloads: list[Download],
         force: bool = False,
-    ) -> List[bool]:
+    ) -> list[bool]:
         """
         Remove downloaded files.
 
@@ -714,7 +716,7 @@ class API:
                     if path.is_dir():
                         try:
                             shutil.rmtree(str(path))
-                        except OSError:
+                        except OSError as error:
                             logger.error(f"Could not delete directory '{path}'")
                             logger.opt(exception=True).trace(error)
                             results.append(False)
@@ -723,7 +725,7 @@ class API:
                     else:
                         try:
                             path.unlink()
-                        except FileNotFoundError as error:
+                        except FileNotFoundError as error:  # noqa: WPS440
                             logger.warning(f"File '{path}' did not exist when trying to delete it")
                             logger.opt(exception=True).trace(error)
                         results.append(True)
@@ -733,10 +735,10 @@ class API:
 
     @staticmethod  # noqa: WPS602 (static method)
     def move_files(  # noqa: WPS602
-        downloads: List[Download],
+        downloads: list[Download],
         to_directory: PathOrStr,
         force: bool = False,
-    ) -> List[bool]:
+    ) -> list[bool]:
         """
         Move downloaded files to another directory.
 
@@ -766,10 +768,10 @@ class API:
 
     @staticmethod  # noqa: WPS231,WPS602 (not that complex, static method)
     def copy_files(  # noqa: WPS231,WPS602 (not that complex)
-        downloads: List[Download],
+        downloads: list[Download],
         to_directory: PathOrStr,
         force: bool = False,
-    ) -> List[bool]:
+    ) -> list[bool]:
         """
         Copy downloaded files to another directory.
 
@@ -804,12 +806,12 @@ class API:
     def listen_to_notifications(
         self,
         threaded: bool = False,
-        on_download_start: Callable = None,
-        on_download_pause: Callable = None,
-        on_download_stop: Callable = None,
-        on_download_complete: Callable = None,
-        on_download_error: Callable = None,
-        on_bt_download_complete: Callable = None,
+        on_download_start: Callable | None = None,
+        on_download_pause: Callable | None = None,
+        on_download_stop: Callable | None = None,
+        on_download_complete: Callable | None = None,
+        on_download_error: Callable | None = None,
+        on_bt_download_complete: Callable | None = None,
         timeout: int = 5,
         handle_signals: bool = True,
     ) -> None:
@@ -869,7 +871,7 @@ class API:
             self.listener.join()
         self.listener = None
 
-    def split_input_file(self, lines):  # noqa: WPS231 (not complex)
+    def split_input_file(self, lines: list[str] | TextIO) -> Iterator[list[str]]:  # noqa: WPS231 (not complex)
         """
         Helper to split downloads in an input file.
 
@@ -879,7 +881,7 @@ class API:
         Yields:
             list[str]: Blocks of lines.
         """
-        block = []
+        block: list[str] = []
         for line in lines:
             if line.lstrip().startswith("#"):  # Ignore Comments
                 continue

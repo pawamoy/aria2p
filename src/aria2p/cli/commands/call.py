@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import json
 import sys
-from typing import Any, List, Optional, Union
+from typing import Any
 
 from aria2p.api import API
 from aria2p.client import Client
 
 
-def get_method(name: str) -> Optional[str]:
+def get_method(name: str) -> str | None:
     """
     Return the actual aria2 method name from a differently formatted name.
 
@@ -33,7 +33,7 @@ def get_method(name: str) -> Optional[str]:
     return methods.get(name)
 
 
-def call(api: API, method: str, params: Union[str, List[str]]) -> int:
+def call(api: API, method: str, params: str | list[str]) -> int:
     """
     Call subcommand.
 
@@ -52,7 +52,7 @@ def call(api: API, method: str, params: Union[str, List[str]]) -> int:
         print("  Run 'aria2p call listmethods' to list the available methods.", file=sys.stderr)
         return 1
 
-    call_params: List[Any]
+    call_params: list[Any]
     if isinstance(params, str):
         call_params = json.loads(params)
     elif params is None:

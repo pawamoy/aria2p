@@ -8,7 +8,7 @@ This module defines the Options class, which holds information retrieved with th
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Callable, List, Union
+from typing import TYPE_CHECKING, Callable, Union
 
 import aria2p
 from aria2p.utils import bool_or_value, bool_to_str
@@ -20,6 +20,9 @@ except ImportError:
     class GenericMeta:  # type: ignore  # noqa: WPS440 (block variable overlap)
         """Placeholder."""
 
+
+if TYPE_CHECKING:
+    from aria2p.downloads import Download
 
 OptionType = Union[str, int, bool, float, None]
 
@@ -36,7 +39,7 @@ class Options:
     "max-concurrent-downloads" is used like `options.max_concurrent_downloads = 5`.
     """
 
-    def __init__(self, api: "aria2p.api.API", struct: dict, download: "aria2p.downloads.Download" = None):
+    def __init__(self, api: "aria2p.api.API", struct: dict, download: Download | None = None):
         """
         Initialize the object.
 
@@ -69,7 +72,7 @@ class Options:
         """
         return deepcopy(self._struct)
 
-    def get(self, item: str, class_: Union[GenericMeta, Callable] = None) -> OptionType:
+    def get(self, item: str, class_: GenericMeta | Callable | None = None) -> OptionType:
         """
         Get the value of an option given its name.
 
@@ -85,7 +88,7 @@ class Options:
             return class_(value)
         return value
 
-    def set(self, key: str, value: Union[str, int, float, bool]) -> bool:  # noqa: A003 (shadowing set)
+    def set(self, key: str, value: str | int | float | bool) -> bool:  # noqa: A003 (shadowing set)
         """
         Set the value of an option given its name.
 
@@ -1490,7 +1493,7 @@ class Options:
         self.set("bt-enable-lpd", bool_to_str(value))
 
     @property
-    def bt_exclude_tracker(self) -> List[str]:
+    def bt_exclude_tracker(self) -> list[str]:
         """
         Return the `bt-exclude-tracker` option value.
 
@@ -1798,7 +1801,7 @@ class Options:
         self.set("bt-stop-timeout", value)
 
     @property
-    def bt_tracker(self) -> List[str]:
+    def bt_tracker(self) -> list[str]:
         """
         Return the `bt-tracker` option value.
 
@@ -2317,7 +2320,7 @@ class Options:
         self.set("metalink-language", value)
 
     @property
-    def metalink_location(self) -> List[str]:
+    def metalink_location(self) -> list[str]:
         """
         Return the `metalink-location` option value.
 
@@ -2759,7 +2762,7 @@ class Options:
         self.set("async-dns", bool_to_str(value))
 
     @property
-    def async_dns_server(self) -> List[str]:
+    def async_dns_server(self) -> list[str]:
         """
         Return the `async-dns-server` option value.
 
@@ -3341,7 +3344,7 @@ class Options:
         self.set("min-tls-version", value)
 
     @property
-    def multiple_interface(self) -> List[str]:
+    def multiple_interface(self) -> list[str]:
         """
         Return the `multiple-interface` option value.
 

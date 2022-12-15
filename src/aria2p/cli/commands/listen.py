@@ -5,7 +5,6 @@ from __future__ import annotations
 import sys
 from importlib import util as importlib_util
 from pathlib import Path
-from typing import List
 
 from aria2p.api import API
 from aria2p.types import PathOrStr
@@ -13,8 +12,8 @@ from aria2p.types import PathOrStr
 
 def listen(
     api: API,
-    callbacks_module: PathOrStr = None,
-    event_types: List[str] = None,
+    callbacks_module: PathOrStr | None = None,
+    event_types: list[str] | None = None,
     timeout: int = 5,
 ) -> int:
     """

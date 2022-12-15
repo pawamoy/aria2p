@@ -63,7 +63,7 @@ def check_args(parser: argparse.ArgumentParser, opts: argparse.Namespace) -> Non
                 subparsers[opts.subcommand].error("the following arguments are required: metalink_files")
 
 
-def parse_options_string(options_string: str = None) -> dict:
+def parse_options_string(options_string: str | None = None) -> dict:
     """
     Parse string of options.
 

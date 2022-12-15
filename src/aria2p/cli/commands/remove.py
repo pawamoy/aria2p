@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import sys
-from typing import List
 
 from aria2p.api import API
 from aria2p.client import ClientException
 
 
-def remove(api: API, gids: List[str] = None, do_all: bool = False, force: bool = False) -> int:
+def remove(api: API, gids: list[str] | None = None, do_all: bool = False, force: bool = False) -> int:
     """
     Remove subcommand.
 

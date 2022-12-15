@@ -10,7 +10,6 @@ from __future__ import annotations
 from contextlib import suppress
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Optional
 
 from loguru import logger
 
@@ -37,7 +36,7 @@ class BitTorrent:
         return self.info["name"]
 
     @property  # noqa: WPS234 (not complex type annotation)
-    def announce_list(self) -> Optional[List[List[str]]]:  # noqa: WPS234
+    def announce_list(self) -> list[list[str]] | None:  # noqa: WPS234
         """
         List of lists of announce URIs.
 
@@ -49,7 +48,7 @@ class BitTorrent:
         return self._struct.get("announceList")
 
     @property
-    def comment(self) -> Optional[str]:
+    def comment(self) -> str | None:
         """
         Return the comment of the torrent.
 
@@ -73,7 +72,7 @@ class BitTorrent:
         return datetime.fromtimestamp(self._struct["creationDate"])
 
     @property
-    def mode(self) -> Optional[str]:
+    def mode(self) -> str | None:
         """
         File mode of the torrent.
 
@@ -85,7 +84,7 @@ class BitTorrent:
         return self._struct.get("mode")
 
     @property
-    def info(self) -> Optional[dict]:
+    def info(self) -> dict | None:
         """
         Struct which contains data from Info dictionary.
 
@@ -212,7 +211,7 @@ class File:
         return bool_or_value(self._struct["selected"])
 
     @property
-    def uris(self) -> List[dict]:
+    def uris(self) -> list[dict]:
         """
         Return a list of URIs for this file.
 
@@ -238,14 +237,14 @@ class Download:
         """
         self.api = api
         self._struct = struct or {}
-        self._files: List[File] = []
-        self._root_files_paths: List[Path] = []
-        self._bittorrent: Optional[BitTorrent] = None
+        self._files: list[File] = []
+        self._root_files_paths: list[Path] = []
+        self._bittorrent: BitTorrent | None = None
         self._name = ""
-        self._options: Optional[Options] = None
-        self._followed_by: Optional[List[Download]] = None
-        self._following: Optional[Download] = None
-        self._belongs_to: Optional[Download] = None
+        self._options: Options | None = None
+        self._followed_by: list[Download] | None = None
+        self._following: Download | None = None
+        self._belongs_to: Download | None = None
 
     def __str__(self):
         return self.name
@@ -266,7 +265,7 @@ class Download:
         self._options = None
 
     @property
-    def live(self) -> "Download":
+    def live(self) -> Download:
         """
         Return the same object with updated data.
 
@@ -314,7 +313,7 @@ class Download:
         return self.dir / (self.name + ".aria2")
 
     @property  # noqa: WPS231 (not that complex)
-    def root_files_paths(self) -> List[Path]:  # noqa: WPS231
+    def root_files_paths(self) -> list[Path]:  # noqa: WPS231
         """
         Return the unique set of directories/files for this download.
 
@@ -546,7 +545,7 @@ class Download:
         return str(self.upload_length) + " B"
 
     @property
-    def bitfield(self) -> Optional[str]:
+    def bitfield(self) -> str | None:
         """
         Hexadecimal representation of the download progress.
 
@@ -608,7 +607,7 @@ class Download:
         return str(self.upload_speed) + " B/s"
 
     @property
-    def info_hash(self) -> Optional[str]:
+    def info_hash(self) -> str | None:
         """
         Return the InfoHash.
 
@@ -688,7 +687,7 @@ class Download:
         return int(self._struct["connections"])
 
     @property
-    def error_code(self) -> Optional[str]:
+    def error_code(self) -> str | None:
         """
         Return the code of the last error for this item, if any.
 
@@ -701,7 +700,7 @@ class Download:
         return self._struct.get("errorCode")
 
     @property
-    def error_message(self) -> Optional[str]:
+    def error_message(self) -> str | None:
         """
         Return the (hopefully) human readable error message associated to errorCode.
 
@@ -711,7 +710,7 @@ class Download:
         return self._struct.get("errorMessage")
 
     @property
-    def followed_by_ids(self) -> List[str]:
+    def followed_by_ids(self) -> list[str]:
         """
         List of GIDs which are generated as the result of this download.
 
@@ -725,7 +724,7 @@ class Download:
         return self._struct.get("followedBy", [])
 
     @property
-    def followed_by(self) -> List["Download"]:
+    def followed_by(self) -> list[Download]:
         """
         List of downloads generated as the result of this download.
 
@@ -746,7 +745,7 @@ class Download:
         return self._followed_by
 
     @property
-    def following_id(self) -> Optional[str]:
+    def following_id(self) -> str | None:
         """
         Return the reverse link for followedBy.
 
@@ -758,7 +757,7 @@ class Download:
         return self._struct.get("following")
 
     @property
-    def following(self) -> Optional["Download"]:
+    def following(self) -> Download | None:
         """
         Return the download this download is following.
 
@@ -779,7 +778,7 @@ class Download:
         return self._following
 
     @property
-    def belongs_to_id(self) -> Optional[str]:
+    def belongs_to_id(self) -> str | None:
         """
         GID of a parent download.
 
@@ -793,7 +792,7 @@ class Download:
         return self._struct.get("belongsTo")
 
     @property
-    def belongs_to(self) -> Optional["Download"]:
+    def belongs_to(self) -> Download | None:
         """
         Parent download.
 
@@ -824,7 +823,7 @@ class Download:
         return Path(self._struct["dir"])
 
     @property
-    def files(self) -> List[File]:
+    def files(self) -> list[File]:
         """
         Return the list of files.
 
@@ -838,7 +837,7 @@ class Download:
         return self._files
 
     @property
-    def bittorrent(self) -> Optional[BitTorrent]:
+    def bittorrent(self) -> BitTorrent | None:
         """
         Struct which contains information retrieved from the .torrent (file).
 
@@ -878,7 +877,7 @@ class Download:
         return str(self.verified_length) + " B"
 
     @property
-    def verify_integrity_pending(self) -> Optional[bool]:
+    def verify_integrity_pending(self) -> bool | None:
         """
         Return True if this download is waiting for the hash check in a queue.
 

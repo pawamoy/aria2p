@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import List, Optional
 
 import requests
 from loguru import logger
@@ -54,7 +53,7 @@ commands = {
 }
 
 
-def main(args: Optional[List[str]] = None) -> int:
+def main(args: list[str] | None = None) -> int:
     """
     Run the main program.
 

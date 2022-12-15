@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import sys
-from typing import List
 
 from aria2p.api import API
 from aria2p.client import ClientException
 
 
-def resume(api: API, gids: List[str] = None, do_all: bool = False) -> int:
+def resume(api: API, gids: list[str] | None = None, do_all: bool = False) -> int:
     """
     Resume subcommand.
 

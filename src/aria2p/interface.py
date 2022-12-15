@@ -19,7 +19,7 @@ import sys
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Sequence, Tuple
+from typing import Dict, Sequence
 
 import pyperclip
 import requests
@@ -34,7 +34,7 @@ from aria2p.utils import get_version, load_configuration
 configs = load_configuration()
 
 
-def key_bind_parser(action: str) -> List["Key"]:
+def key_bind_parser(action: str) -> list[Key]:
     """
     Return a list of Key instances.
 
@@ -55,7 +55,7 @@ def key_bind_parser(action: str) -> List["Key"]:
         return [Key(key_binds)]
 
 
-def color_palette_parser(palette: str) -> Tuple[int, int, int]:
+def color_palette_parser(palette: str) -> tuple[int, int, int]:
     """
     Return a color tuple (foreground color, mode, background color).
 
@@ -129,7 +129,7 @@ class Key:
         "ENTER": ord("\n"),
     }
 
-    def __init__(self, name: str, value=None) -> None:
+    def __init__(self, name: str, value: int | None = None) -> None:
         """
         Initialize the object.
 
@@ -142,7 +142,7 @@ class Key:
             value = self.get_value(name)
         self.value = value
 
-    def get_value(self, name):
+    def get_value(self, name: str) -> int:
         try:
             value = ord(name)
         except TypeError:
@@ -150,7 +150,7 @@ class Key:
 
         return value
 
-    def __eq__(self, value):
+    def __eq__(self, value: object) -> bool:
         return self.value == value
 
 
@@ -255,7 +255,7 @@ class HorizontalScroll:
         """Set the scroll value."""
         self.scroll = scroll
 
-    def print_at(self, text, x, y, palette):
+    def print_at(self, text, x, y, palette) -> int:
         """
         Wrapper print_at method.
 
@@ -266,7 +266,7 @@ class HorizontalScroll:
             palette (list | tuple): A length-3 tuple or a list of length-3 tuples representing asciimatics palettes.
 
         Returns:
-            int: The number of characters actually printed.
+            The number of characters actually printed.
         """
         if self.scroll == 0:
             if isinstance(palette, list):
@@ -351,13 +351,13 @@ class Interface:
     width = None
     height = None
     screen = None
-    data: List[Download] = []
-    rows: List[Sequence[str]] = []
+    data: list[Download] = []
+    rows: list[Sequence[str]] = []
     scroller = None
     follow = None
-    bounds: List[Sequence[int]] = []
+    bounds: list[Sequence[int]] = []
 
-    palettes: Dict[str, Tuple[int, int, int]] = defaultdict(lambda: color_palette_parser("UI"))
+    palettes: Dict[str, tuple[int, int, int]] = defaultdict(lambda: color_palette_parser("UI"))
     palettes.update(
         {
             "ui": color_palette_parser("UI"),
@@ -445,7 +445,7 @@ class Interface:
     select_sort_header = "Select sort:"
     select_sort_rows = columns_order
 
-    downloads_uris: List[str] = []
+    downloads_uris: list[str] = []
     downloads_uris_header = (
         f"Add Download: [ Hit ENTER to download; Hit { ','.join(Keys.names(Keys.ADD_DOWNLOADS)) } to download all ]"
     )
@@ -1158,7 +1158,7 @@ class Interface:
                 else:
                     self.bounds.append((self.bounds[-1][1] + 1, self.bounds[-1][1] + 1 + padding))
 
-    def get_data(self) -> List[Download]:
+    def get_data(self) -> list[Download]:
         """Return a list of objects."""
         return self.api.get_downloads()
 

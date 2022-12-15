@@ -8,13 +8,12 @@ process through the JSON-RPC protocol.
 from __future__ import annotations
 
 import json
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, List, Tuple, Union
 
 import requests
 import websocket
 from loguru import logger
 
-from aria2p.types import CallsType, Multicalls2Type
 from aria2p.utils import SignalHandler
 
 DEFAULT_ID = -1
@@ -52,6 +51,8 @@ NOTIFICATION_TYPES = [  # noqa: WPS407 (mutable constant)
     NOTIFICATION_BT_COMPLETE,
 ]
 
+CallsType = List[Tuple[str, List[str], Union[str, int]]]
+Multicalls2Type = List[Tuple[str, List[str]]]
 CallReturnType = Union[dict, list, str, int]
 
 
@@ -235,8 +236,8 @@ class Client:
     def call(
         self,
         method: str,
-        params: List[Any] = None,
-        msg_id: Union[int, str] = None,
+        params: list[Any] | None = None,
+        msg_id: int | str | None = None,
         insert_secret: bool = True,
     ) -> CallReturnType:
         """
@@ -267,7 +268,7 @@ class Client:
         self,
         calls: CallsType,
         insert_secret: bool = True,
-    ) -> List[CallReturnType]:
+    ) -> list[CallReturnType]:
         """
         Call multiple methods in one request.
 
@@ -393,11 +394,11 @@ class Client:
 
     @staticmethod  # noqa: WPS602
     def get_payload(  # noqa: WPS602
-        method,
-        params: List[Any] = None,
-        msg_id: Union[int, str] = None,
+        method: str,
+        params: list[Any] | None = None,
+        msg_id: int | str | None = None,
         as_json: bool = True,
-    ) -> Union[str, dict]:
+    ) -> str | dict:
         """
         Build a payload.
 
@@ -410,12 +411,12 @@ class Client:
         Returns:
             The payload as a JSON string or as Python dictionary.
         """
-        payload = {"jsonrpc": "2.0", "method": method}
+        payload: dict[str, Any] = {"jsonrpc": "2.0", "method": method}
 
-        if msg_id is not None:
-            payload["id"] = msg_id
-        else:
+        if msg_id is None:
             payload["id"] = DEFAULT_ID
+        else:
+            payload["id"] = msg_id
 
         if params:
             payload["params"] = params
@@ -439,9 +440,9 @@ class Client:
 
     def add_uri(
         self,
-        uris: List[str],
-        options: Optional[dict] = None,
-        position: Optional[int] = None,
+        uris: list[str],
+        options: dict | None = None,
+        position: int | None = None,
     ) -> str:
         """
         Add a new download.
@@ -486,9 +487,9 @@ class Client:
     def add_torrent(
         self,
         torrent: str,
-        uris: List[str],
-        options: Optional[dict] = None,
-        position: Optional[int] = None,
+        uris: list[str],
+        options: dict | None = None,
+        position: int | None = None,
     ) -> str:
         """
         Add a BitTorrent download.
@@ -545,9 +546,9 @@ class Client:
     def add_metalink(
         self,
         metalink: str,
-        options: Optional[dict] = None,
-        position: Optional[int] = None,
-    ) -> List[str]:
+        options: dict | None = None,
+        position: int | None = None,
+    ) -> list[str]:
         """
         Add a Metalink download.
 
@@ -756,7 +757,7 @@ class Client:
         """
         return self.call(self.UNPAUSE_ALL)  # type: ignore
 
-    def tell_status(self, gid: str, keys: Optional[dict] = None) -> dict:
+    def tell_status(self, gid: str, keys: dict | None = None) -> dict:
         """
         Tell status of a download.
 
@@ -1074,7 +1075,7 @@ class Client:
         """
         return self.call(self.GET_SERVERS, [gid])  # type: ignore
 
-    def tell_active(self, keys: Optional[dict] = None) -> List[dict]:
+    def tell_active(self, keys: dict | None = None) -> list[dict]:
         """
         Return the list of active downloads.
 
@@ -1090,7 +1091,7 @@ class Client:
         """
         return self.call(self.TELL_ACTIVE, [keys])  # type: ignore
 
-    def tell_waiting(self, offset: int, num: int, keys: Optional[dict] = None) -> List[dict]:
+    def tell_waiting(self, offset: int, num: int, keys: dict | None = None) -> list[dict]:
         """
         Return the list of waiting downloads.
 
@@ -1115,7 +1116,7 @@ class Client:
         """
         return self.call(self.TELL_WAITING, [offset, num, keys])  # type: ignore
 
-    def tell_stopped(self, offset: int, num: int, keys: Optional[dict] = None) -> List[dict]:
+    def tell_stopped(self, offset: int, num: int, keys: dict | None = None) -> list[dict]:
         """
         Return the list of stopped downloads.
 
@@ -1184,10 +1185,10 @@ class Client:
         self,
         gid: str,
         file_index: int,
-        del_uris: List[str],
-        add_uris: List[str],
-        position: Optional[int] = None,
-    ) -> List[int]:
+        del_uris: list[str],
+        add_uris: list[str],
+        position: int | None = None,
+    ) -> list[int]:
         """
         Remove the URIs in `del_uris` from and appends the URIs in `add_uris` to download denoted by gid.
 
@@ -1392,9 +1393,9 @@ class Client:
             - `numActive`: The number of active downloads.
             - `numWaiting`: The number of waiting downloads.
             - `numStopped`: The number of stopped downloads in the current session. This value is capped by the
-              [`--max-download-result`][aria2p.options.Options.max_download_result] option.
+                [`--max-download-result`][aria2p.options.Options.max_download_result] option.
             - `numStoppedTotal`: The number of stopped downloads in the current session and not capped by the
-              [`--max-download-result`][aria2p.options.Options.max_download_result] option.
+                [`--max-download-result`][aria2p.options.Options.max_download_result] option.
 
         Examples:
             **Original JSON-RPC Example**
@@ -1567,7 +1568,7 @@ class Client:
         return self.call(self.SAVE_SESSION)  # type: ignore
 
     # system
-    def multicall(self, methods: List[dict]) -> List[CallReturnType]:
+    def multicall(self, methods: list[dict]) -> list[CallReturnType]:
         """
         Call multiple methods in a single request.
 
@@ -1620,7 +1621,7 @@ class Client:
         """
         return self.call(self.MULTICALL, [methods])  # type: ignore
 
-    def list_methods(self) -> List[str]:
+    def list_methods(self) -> list[str]:
         """
         Return the available RPC methods.
 
@@ -1652,7 +1653,7 @@ class Client:
         """
         return self.call(self.LIST_METHODS)  # type: ignore
 
-    def list_notifications(self) -> List[str]:
+    def list_notifications(self) -> list[str]:
         """
         Return all the available RPC notifications.
 
@@ -1687,12 +1688,12 @@ class Client:
     # notifications
     def listen_to_notifications(  # noqa: WPS231 (false-positive because of logging lines?)
         self,
-        on_download_start: Callable = None,
-        on_download_pause: Callable = None,
-        on_download_stop: Callable = None,
-        on_download_complete: Callable = None,
-        on_download_error: Callable = None,
-        on_bt_download_complete: Callable = None,
+        on_download_start: Callable | None = None,
+        on_download_pause: Callable | None = None,
+        on_download_stop: Callable | None = None,
+        on_download_complete: Callable | None = None,
+        on_download_error: Callable | None = None,
+        on_bt_download_complete: Callable | None = None,
         timeout: int = 5,
         handle_signals: bool = True,
     ) -> None:

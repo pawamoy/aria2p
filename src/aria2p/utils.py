@@ -10,7 +10,8 @@ import signal
 import textwrap
 from datetime import timedelta
 from pathlib import Path
-from typing import Any, Dict, List
+from types import FrameType
+from typing import Any, Dict
 
 import pkg_resources
 import toml
@@ -23,7 +24,7 @@ from aria2p.types import PathOrStr
 class SignalHandler:
     """A helper class to handle signals."""
 
-    def __init__(self, signals: List[str]) -> None:
+    def __init__(self, signals: list[str]) -> None:
         """
         Initialize the object.
 
@@ -34,7 +35,7 @@ class SignalHandler:
         self.triggered = False
         for sig in signals:
             try:
-                signal.signal(signal.Signals[sig], self.trigger)  # noqa: E1101 (signal.Signals)
+                signal.signal(signal.Signals[sig], self.trigger)  # noqa: E1101
             except ValueError as error:
                 logger.error(f"Failed to setup signal handler for {sig}: {error}")
 
@@ -47,7 +48,7 @@ class SignalHandler:
         """
         return self.triggered
 
-    def trigger(self, signum, frame) -> None:  # noqa: W0613 (unused frame)
+    def trigger(self, signum: int, frame: FrameType | None) -> None:  # noqa: W0613 (unused frame)
         """
         Mark this instance as 'triggered' (a specified signal was received).
 
@@ -127,7 +128,7 @@ def human_readable_bytes(value: int, digits: int = 2, delim: str = "", postfix: 
     return f"{hr_value:.{digits}f}" + delim + chosen_unit + postfix  # noqa: WPS221 (not complex)
 
 
-def bool_or_value(value) -> Any:
+def bool_or_value(value: Any) -> Any:
     """
     Return `True` for `"true"`, `False` for `"false"`, original value otherwise.
 
@@ -135,9 +136,11 @@ def bool_or_value(value) -> Any:
         value: Any kind of value.
 
     Returns:
-        - `True` for `"true"`
-        - `False` for `"false"`
-        - Original value otherwise
+        One of these values:
+
+            - `True` for `"true"`
+            - `False` for `"false"`
+            - Original value otherwise
     """
     if value == "true":
         return True
@@ -146,7 +149,7 @@ def bool_or_value(value) -> Any:
     return value
 
 
-def bool_to_str(value) -> Any:
+def bool_to_str(value: Any) -> Any:
     """
     Return `"true"` for `True`, `"false"` for `False`, original value otherwise.
 
@@ -258,7 +261,7 @@ def load_configuration() -> Dict[str, Any]:
     return config_dict
 
 
-def read_lines(path: PathOrStr) -> List[str]:
+def read_lines(path: PathOrStr) -> list[str]:
     """
     Read lines in a file.
 

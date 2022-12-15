@@ -31,7 +31,7 @@ dependencies = [
     "loguru>=0.5",
     "requests>=2.19",
     "toml>=0.10",
-    "websocket_client>=0.58",
+    "websocket-client>=0.58",
 ]
 
 [project.optional-dependencies]

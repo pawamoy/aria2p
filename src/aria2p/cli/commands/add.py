@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import sys
-from typing import List
 
 from loguru import logger
 
@@ -12,10 +11,10 @@ from aria2p.api import API
 
 def add(
     api: API,
-    uris: List[str] = None,
-    from_file: str = None,
-    options: dict = None,
-    position: int = None,
+    uris: list[str] | None = None,
+    from_file: str | None = None,
+    options: dict | None = None,
+    position: int | None = None,
 ) -> int:
     """
     Add magnet subcommand.

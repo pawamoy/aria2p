@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import sys
-from typing import List
 
 from aria2p.api import API
 from aria2p.utils import read_lines
@@ -11,10 +10,10 @@ from aria2p.utils import read_lines
 
 def add_magnets(
     api: API,
-    uris: List[str] = None,
-    from_file: str = None,
-    options: dict = None,
-    position: int = None,
+    uris: list[str] | None = None,
+    from_file: str | None = None,
+    options: dict | None = None,
+    position: int | None = None,
 ) -> int:
     """
     Add magnet subcommand.
