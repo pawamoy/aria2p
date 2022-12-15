@@ -2,8 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for tests/test_api.py: 96.39%</title>
+    <title>Coverage for tests/test_api.py: 94.55%</title>
     <link rel="icon" sizes="32x32" href="favicon_32.png">
     <link rel="stylesheet" href="style.css" type="text/css">
     <script type="text/javascript" src="coverage_html.js" defer></script>
@@ -13,49 +12,73 @@
     <div class="content">
         <h1>
             <span class="text">Coverage for </span><b>tests/test_api.py</b>:
-            <span class="pc_cov">96.39%</span>
+            <span class="pc_cov">94.55%</span>
         </h1>
-        <div id="help_panel_wrapper">
+        <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
             <label for="help_panel_state">
                 <img id="keyboard_icon" src="keybd_closed.png" alt="Show/hide keyboard shortcuts" />
             </label>
             <div id="help_panel">
                 <p class="legend">Shortcuts on this page</p>
-                <div>
-                    <p class="keyhelp">
+                <div class="keyhelp">
+                    <p>
                         <kbd>r</kbd>
                         <kbd>m</kbd>
                         <kbd>x</kbd>
                         <kbd>p</kbd>
                         &nbsp; toggle line displays
                     </p>
-                    <p class="keyhelp">
+                    <p>
                         <kbd>j</kbd>
-                        <kbd>k</kbd> &nbsp; next/prev highlighted chunk
+                        <kbd>k</kbd>
+                        &nbsp; next/prev highlighted chunk
                     </p>
-                    <p class="keyhelp">
+                    <p>
                         <kbd>0</kbd> &nbsp; (zero) top of page
                     </p>
-                    <p class="keyhelp">
+                    <p>
                         <kbd>1</kbd> &nbsp; (one) first highlighted chunk
+                    </p>
+                    <p>
+                        <kbd>[</kbd>
+                        <kbd>]</kbd>
+                        &nbsp; prev/next file
+                    </p>
+                    <p>
+                        <kbd>u</kbd> &nbsp; up to the index
+                    </p>
+                    <p>
+                        <kbd>?</kbd> &nbsp; show/hide this help
                     </p>
                 </div>
             </div>
-        </div>
+        </aside>
         <h2>
             <span class="text">236 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">229<span class="text"> run</span></button>
-            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">7<span class="text"> missing</span></button>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">225<span class="text"> run</span></button>
+            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">11<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
-            <button type="button" class="par run show_par button_toggle_par" value="par" data-shortcut="p" title="Toggle lines partially run">5<span class="text"> partial</span></button>
+            <button type="button" class="par run show_par button_toggle_par" value="par" data-shortcut="p" title="Toggle lines partially run">7<span class="text"> partial</span></button>
         </h2>
-        <div style="display: none;">
-            <button type="button" class="button_next_chunk" data-shortcut="j">Next highlighted chunk</button>
-            <button type="button" class="button_prev_chunk" data-shortcut="k">Previous highlighted chunk</button>
-            <button type="button" class="button_top_of_page" data-shortcut="0">Goto top of page</button>
-            <button type="button" class="button_first_chunk" data-shortcut="1">Goto first highlighted chunk</button>
-        </div>
+        <p class="text">
+            <a id="prevFileLink" class="nav" href="d_a44f0ac069e85531_http_server_py.html">&#xab; prev</a> &nbsp; &nbsp;
+            <a id="indexLink" class="nav" href="covindex.html">&Hat; index</a> &nbsp; &nbsp;
+            <a id="nextFileLink" class="nav" href="d_a44f0ac069e85531_test_cli_py.html">&#xbb; next</a>
+            &nbsp; &nbsp; &nbsp;
+            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v6.5.0</a>,
+            created at 2022-12-15 21:26 +0100
+        </p>
+        <aside class="hidden">
+            <button type="button" class="button_next_chunk" data-shortcut="j"/>
+            <button type="button" class="button_prev_chunk" data-shortcut="k"/>
+            <button type="button" class="button_top_of_page" data-shortcut="0"/>
+            <button type="button" class="button_first_chunk" data-shortcut="1"/>
+            <button type="button" class="button_prev_file" data-shortcut="["/>
+            <button type="button" class="button_next_file" data-shortcut="]"/>
+            <button type="button" class="button_to_index" data-shortcut="u"/>
+            <button type="button" class="button_show_hide_help" data-shortcut="?"/>
+        </aside>
     </div>
 </header>
 <main id="source">
@@ -222,9 +245,9 @@
     <p class="run"><span class="n"><a id="t161" href="#t161">161</a></span><span class="t">        <span class="nam">time</span><span class="op">.</span><span class="nam">sleep</span><span class="op">(</span><span class="num">1</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t162" href="#t162">162</a></span><span class="t">        <span class="nam">download</span> <span class="op">=</span> <span class="nam">server</span><span class="op">.</span><span class="nam">api</span><span class="op">.</span><span class="nam">get_downloads</span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="num">0</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t163" href="#t163">163</a></span><span class="t">        <span class="key">while</span> <span class="key">not</span> <span class="nam">download</span><span class="op">.</span><span class="nam">live</span><span class="op">.</span><span class="nam">is_complete</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="par run show_par"><span class="n"><a id="t164" href="#t164">164</a></span><span class="t">            <span class="key">if</span> <span class="nam">download</span><span class="op">.</span><span class="nam">has_failed</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">164&#x202F;&#x219B;&#x202F;166</span><span class="annotate long">line 164 didn't jump to line 166, because the condition on line 164 was never false</span></span></p>
+    <p class="run"><span class="n"><a id="t164" href="#t164">164</a></span><span class="t">            <span class="key">if</span> <span class="nam">download</span><span class="op">.</span><span class="nam">has_failed</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t165" href="#t165">165</a></span><span class="t">                <span class="nam">pytest</span><span class="op">.</span><span class="nam">xfail</span><span class="op">(</span><span class="str">"Failed to establish connection (sporadic error)"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t166" href="#t166">166</a></span><span class="t">            <span class="nam">time</span><span class="op">.</span><span class="nam">sleep</span><span class="op">(</span><span class="num">0.1</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t166" href="#t166">166</a></span><span class="t">            <span class="nam">time</span><span class="op">.</span><span class="nam">sleep</span><span class="op">(</span><span class="num">0.1</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t167" href="#t167">167</a></span><span class="t">        <span class="key">assert</span> <span class="nam">server</span><span class="op">.</span><span class="nam">api</span><span class="op">.</span><span class="nam">remove</span><span class="op">(</span><span class="op">[</span><span class="nam">download</span><span class="op">]</span><span class="op">,</span> <span class="nam">files</span><span class="op">=</span><span class="key">True</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t168" href="#t168">168</a></span><span class="t">        <span class="key">for</span> <span class="nam">file</span> <span class="key">in</span> <span class="nam">download</span><span class="op">.</span><span class="nam">root_files_paths</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t169" href="#t169">169</a></span><span class="t">            <span class="key">assert</span> <span class="key">not</span> <span class="nam">file</span><span class="op">.</span><span class="nam">exists</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -274,8 +297,8 @@
     <p class="run"><span class="n"><a id="t213" href="#t213">213</a></span><span class="t">        <span class="nam">time</span><span class="op">.</span><span class="nam">sleep</span><span class="op">(</span><span class="num">0.1</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t214" href="#t214">214</a></span><span class="t">        <span class="nam">downloads</span> <span class="op">=</span> <span class="nam">server</span><span class="op">.</span><span class="nam">api</span><span class="op">.</span><span class="nam">get_downloads</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t215" href="#t215">215</a></span><span class="t">        <span class="key">for</span> <span class="nam">download</span> <span class="key">in</span> <span class="nam">downloads</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t216" href="#t216">216</a></span><span class="t">            <span class="key">if</span> <span class="nam">download</span><span class="op">.</span><span class="nam">has_failed</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t217" href="#t217">217</a></span><span class="t">                <span class="nam">pytest</span><span class="op">.</span><span class="nam">xfail</span><span class="op">(</span><span class="str">"Failed to establish connection (sporadic error)"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="par run show_par"><span class="n"><a id="t216" href="#t216">216</a></span><span class="t">            <span class="key">if</span> <span class="nam">download</span><span class="op">.</span><span class="nam">has_failed</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">216&#x202F;&#x219B;&#x202F;217</span><span class="annotate long">line 216 didn't jump to line 217, because the condition on line 216 was never true</span></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t217" href="#t217">217</a></span><span class="t">                <span class="nam">pytest</span><span class="op">.</span><span class="nam">xfail</span><span class="op">(</span><span class="str">"Failed to establish connection (sporadic error)"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t218" href="#t218">218</a></span><span class="t">        <span class="key">assert</span> <span class="nam">all</span><span class="op">(</span><span class="op">[</span><span class="nam">d</span><span class="op">.</span><span class="nam">is_active</span> <span class="key">for</span> <span class="nam">d</span> <span class="key">in</span> <span class="nam">downloads</span><span class="op">]</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t219" href="#t219">219</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t220" href="#t220">220</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -291,8 +314,8 @@
     <p class="run"><span class="n"><a id="t230" href="#t230">230</a></span><span class="t">        <span class="nam">downloads</span> <span class="op">=</span> <span class="nam">server</span><span class="op">.</span><span class="nam">api</span><span class="op">.</span><span class="nam">get_downloads</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t231" href="#t231">231</a></span><span class="t">        <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t232" href="#t232">232</a></span><span class="t">            <span class="key">assert</span> <span class="nam">server</span><span class="op">.</span><span class="nam">api</span><span class="op">.</span><span class="nam">set_options</span><span class="op">(</span><span class="op">{</span><span class="str">"max-download-limit"</span><span class="op">:</span> <span class="str">"20000"</span><span class="op">}</span><span class="op">,</span> <span class="nam">downloads</span><span class="op">)</span><span class="op">[</span><span class="num">0</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t233" href="#t233">233</a></span><span class="t">        <span class="key">except</span> <span class="nam">ClientException</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t234" href="#t234">234</a></span><span class="t">            <span class="nam">pytest</span><span class="op">.</span><span class="nam">xfail</span><span class="op">(</span><span class="str">"Cannot change option for some reason"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t233" href="#t233">233</a></span><span class="t">        <span class="key">except</span> <span class="nam">ClientException</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t234" href="#t234">234</a></span><span class="t">            <span class="nam">pytest</span><span class="op">.</span><span class="nam">xfail</span><span class="op">(</span><span class="str">"Cannot change option for some reason"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t235" href="#t235">235</a></span><span class="t">        <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t236" href="#t236">236</a></span><span class="t">            <span class="nam">options</span> <span class="op">=</span> <span class="nam">server</span><span class="op">.</span><span class="nam">api</span><span class="op">.</span><span class="nam">get_options</span><span class="op">(</span><span class="nam">downloads</span><span class="op">)</span><span class="op">[</span><span class="num">0</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t237" href="#t237">237</a></span><span class="t">        <span class="key">except</span> <span class="nam">ClientException</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -309,8 +332,8 @@
     <p class="pln"><span class="n"><a id="t248" href="#t248">248</a></span><span class="t">        <span class="com"># wait until download is finished</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t249" href="#t249">249</a></span><span class="t">        <span class="nam">download</span> <span class="op">=</span> <span class="nam">server</span><span class="op">.</span><span class="nam">api</span><span class="op">.</span><span class="nam">get_downloads</span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="num">0</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t250" href="#t250">250</a></span><span class="t">        <span class="key">while</span> <span class="key">not</span> <span class="nam">download</span><span class="op">.</span><span class="nam">live</span><span class="op">.</span><span class="nam">is_complete</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t251" href="#t251">251</a></span><span class="t">            <span class="key">if</span> <span class="nam">download</span><span class="op">.</span><span class="nam">has_failed</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t252" href="#t252">252</a></span><span class="t">                <span class="nam">pytest</span><span class="op">.</span><span class="nam">xfail</span><span class="op">(</span><span class="str">"Failed to establish connection (sporadic error)"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="par run show_par"><span class="n"><a id="t251" href="#t251">251</a></span><span class="t">            <span class="key">if</span> <span class="nam">download</span><span class="op">.</span><span class="nam">has_failed</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">251&#x202F;&#x219B;&#x202F;252</span><span class="annotate long">line 251 didn't jump to line 252, because the condition on line 251 was never true</span></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t252" href="#t252">252</a></span><span class="t">                <span class="nam">pytest</span><span class="op">.</span><span class="nam">xfail</span><span class="op">(</span><span class="str">"Failed to establish connection (sporadic error)"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t253" href="#t253">253</a></span><span class="t">            <span class="nam">time</span><span class="op">.</span><span class="nam">sleep</span><span class="op">(</span><span class="num">0.2</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t254" href="#t254">254</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t255" href="#t255">255</a></span><span class="t">        <span class="com"># actual method run</span>&nbsp;</span><span class="r"></span></p>
@@ -342,8 +365,8 @@
     <p class="pln"><span class="n"><a id="t281" href="#t281">281</a></span><span class="t">        <span class="com"># wait until download is finished</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t282" href="#t282">282</a></span><span class="t">        <span class="nam">download</span> <span class="op">=</span> <span class="nam">server</span><span class="op">.</span><span class="nam">api</span><span class="op">.</span><span class="nam">get_downloads</span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="num">0</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t283" href="#t283">283</a></span><span class="t">        <span class="key">while</span> <span class="key">not</span> <span class="nam">download</span><span class="op">.</span><span class="nam">live</span><span class="op">.</span><span class="nam">is_complete</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t284" href="#t284">284</a></span><span class="t">            <span class="key">if</span> <span class="nam">download</span><span class="op">.</span><span class="nam">has_failed</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t285" href="#t285">285</a></span><span class="t">                <span class="nam">pytest</span><span class="op">.</span><span class="nam">xfail</span><span class="op">(</span><span class="str">"Failed to establish connection (sporadic error)"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="par run show_par"><span class="n"><a id="t284" href="#t284">284</a></span><span class="t">            <span class="key">if</span> <span class="nam">download</span><span class="op">.</span><span class="nam">has_failed</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">284&#x202F;&#x219B;&#x202F;285</span><span class="annotate long">line 284 didn't jump to line 285, because the condition on line 284 was never true</span></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t285" href="#t285">285</a></span><span class="t">                <span class="nam">pytest</span><span class="op">.</span><span class="nam">xfail</span><span class="op">(</span><span class="str">"Failed to establish connection (sporadic error)"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t286" href="#t286">286</a></span><span class="t">            <span class="nam">time</span><span class="op">.</span><span class="nam">sleep</span><span class="op">(</span><span class="num">0.2</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t287" href="#t287">287</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t288" href="#t288">288</a></span><span class="t">        <span class="com"># read source contents before move</span>&nbsp;</span><span class="r"></span></p>
@@ -424,8 +447,12 @@
 <footer>
     <div class="content">
         <p>
-            <a class="nav" href="covindex.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v6.2</a>,
-            created at 2022-04-17 21:52 +0200
+            <a id="prevFileLink" class="nav" href="d_a44f0ac069e85531_http_server_py.html">&#xab; prev</a> &nbsp; &nbsp;
+            <a id="indexLink" class="nav" href="covindex.html">&Hat; index</a> &nbsp; &nbsp;
+            <a id="nextFileLink" class="nav" href="d_a44f0ac069e85531_test_cli_py.html">&#xbb; next</a>
+            &nbsp; &nbsp; &nbsp;
+            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v6.5.0</a>,
+            created at 2022-12-15 21:26 +0100
         </p>
     </div>
 </footer>

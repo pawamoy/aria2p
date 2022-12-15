@@ -11,31 +11,44 @@
 <header>
     <div class="content">
         <h1>Coverage report:
-            <span class="pc_cov">93.26%</span>
+            <span class="pc_cov">93.76%</span>
         </h1>
-        <div id="help_panel_wrapper">
+        <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
             <label for="help_panel_state">
                 <img id="keyboard_icon" src="keybd_closed.png" alt="Show/hide keyboard shortcuts" />
             </label>
             <div id="help_panel">
                 <p class="legend">Shortcuts on this page</p>
-                <div>
-                    <p class="keyhelp">
+                <div class="keyhelp">
+                    <p>
                         <kbd>n</kbd>
                         <kbd>s</kbd>
                         <kbd>m</kbd>
                         <kbd>x</kbd>
                         <kbd>b</kbd>
                         <kbd>p</kbd>
-                        <kbd>c</kbd> &nbsp; change column sorting
+                        <kbd>c</kbd>
+                        &nbsp; change column sorting
+                    </p>
+                    <p>
+                        <kbd>[</kbd>
+                        <kbd>]</kbd>
+                        &nbsp; prev/next file
+                    </p>
+                    <p>
+                        <kbd>?</kbd> &nbsp; show/hide this help
                     </p>
                 </div>
             </div>
-        </div>
+        </aside>
         <form id="filter_container">
             <input id="filter" type="text" value="" placeholder="filter..." />
         </form>
+        <p class="text">
+            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v6.5.0</a>,
+            created at 2022-12-15 21:26 +0100
+        </p>
     </div>
 </header>
 <main id="index">
@@ -54,12 +67,12 @@
         <tbody>
             <tr class="file">
                 <td class="name left"><a href="d_a76b8bb0997e2189_api_py.html">src/aria2p/api.py</a></td>
-                <td>327</td>
+                <td>330</td>
                 <td>56</td>
                 <td>0</td>
-                <td>128</td>
+                <td>132</td>
                 <td>25</td>
-                <td class="right" data-ratio="364 455">80.00%</td>
+                <td class="right" data-ratio="371 462">80.30%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_c81860c76280607e_add_py.html">src/aria2p/cli/commands/add.py</a></td>
@@ -99,12 +112,12 @@
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_c81860c76280607e_call_py.html">src/aria2p/cli/commands/call.py</a></td>
-                <td>28</td>
+                <td>29</td>
                 <td>0</td>
                 <td>0</td>
                 <td>8</td>
                 <td>0</td>
-                <td class="right" data-ratio="36 36">100.00%</td>
+                <td class="right" data-ratio="37 37">100.00%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_c81860c76280607e_listen_py.html">src/aria2p/cli/commands/listen.py</a></td>
@@ -126,12 +139,12 @@
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_c81860c76280607e_purge_py.html">src/aria2p/cli/commands/purge.py</a></td>
-                <td>5</td>
+                <td>6</td>
                 <td>1</td>
                 <td>0</td>
                 <td>2</td>
                 <td>1</td>
-                <td class="right" data-ratio="5 7">71.43%</td>
+                <td class="right" data-ratio="6 8">75.00%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_c81860c76280607e_remove_py.html">src/aria2p/cli/commands/remove.py</a></td>
@@ -153,21 +166,21 @@
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_c81860c76280607e_show_py.html">src/aria2p/cli/commands/show.py</a></td>
-                <td>9</td>
+                <td>10</td>
                 <td>0</td>
                 <td>0</td>
                 <td>2</td>
                 <td>0</td>
-                <td class="right" data-ratio="11 11">100.00%</td>
+                <td class="right" data-ratio="12 12">100.00%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_c81860c76280607e_top_py.html">src/aria2p/cli/commands/top.py</a></td>
-                <td>13</td>
+                <td>14</td>
                 <td>5</td>
                 <td>0</td>
                 <td>2</td>
                 <td>1</td>
-                <td class="right" data-ratio="9 15">60.00%</td>
+                <td class="right" data-ratio="10 16">62.50%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_f59263ce22b10dc9_main_py.html">src/aria2p/cli/main.py</a></td>
@@ -180,73 +193,73 @@
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_f59263ce22b10dc9_parser_py.html">src/aria2p/cli/parser.py</a></td>
-                <td>98</td>
+                <td>99</td>
                 <td>0</td>
                 <td>0</td>
                 <td>24</td>
                 <td>4</td>
-                <td class="right" data-ratio="118 122">96.72%</td>
+                <td class="right" data-ratio="119 123">96.75%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_a76b8bb0997e2189_client_py.html">src/aria2p/client.py</a></td>
-                <td>264</td>
+                <td>266</td>
                 <td>0</td>
                 <td>0</td>
-                <td>46</td>
+                <td>56</td>
                 <td>0</td>
-                <td class="right" data-ratio="310 310">100.00%</td>
+                <td class="right" data-ratio="322 322">100.00%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_a76b8bb0997e2189_downloads_py.html">src/aria2p/downloads.py</a></td>
                 <td>357</td>
                 <td>16</td>
                 <td>0</td>
-                <td>74</td>
+                <td>178</td>
                 <td>8</td>
-                <td class="right" data-ratio="405 431">93.97%</td>
+                <td class="right" data-ratio="509 535">95.14%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_a76b8bb0997e2189_interface_py.html">src/aria2p/interface.py</a></td>
-                <td>651</td>
+                <td>652</td>
                 <td>81</td>
                 <td>0</td>
-                <td>301</td>
-                <td>35</td>
-                <td class="right" data-ratio="804 952">84.45%</td>
+                <td>293</td>
+                <td>36</td>
+                <td class="right" data-ratio="796 945">84.23%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_a76b8bb0997e2189_options_py.html">src/aria2p/options.py</a></td>
-                <td>1179</td>
+                <td>1182</td>
+                <td>1</td>
                 <td>0</td>
-                <td>0</td>
-                <td>12</td>
-                <td>0</td>
-                <td class="right" data-ratio="1191 1191">100.00%</td>
+                <td>776</td>
+                <td>1</td>
+                <td class="right" data-ratio="1956 1958">99.90%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_a76b8bb0997e2189_stats_py.html">src/aria2p/stats.py</a></td>
-                <td>30</td>
+                <td>31</td>
                 <td>0</td>
                 <td>0</td>
-                <td>6</td>
+                <td>16</td>
                 <td>0</td>
-                <td class="right" data-ratio="36 36">100.00%</td>
+                <td class="right" data-ratio="47 47">100.00%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_a76b8bb0997e2189_types_py.html">src/aria2p/types.py</a></td>
-                <td>8</td>
+                <td>4</td>
                 <td>0</td>
                 <td>0</td>
                 <td>0</td>
                 <td>0</td>
-                <td class="right" data-ratio="8 8">100.00%</td>
+                <td class="right" data-ratio="4 4">100.00%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_a76b8bb0997e2189_utils_py.html">src/aria2p/utils.py</a></td>
-                <td>85</td>
+                <td>87</td>
                 <td>8</td>
                 <td>0</td>
-                <td>30</td>
+                <td>28</td>
                 <td>1</td>
                 <td class="right" data-ratio="104 115">90.43%</td>
             </tr>
@@ -255,9 +268,9 @@
                 <td>171</td>
                 <td>16</td>
                 <td>0</td>
-                <td>40</td>
+                <td>44</td>
                 <td>10</td>
-                <td class="right" data-ratio="183 211">86.73%</td>
+                <td class="right" data-ratio="187 215">86.98%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_99d3a866d13ae299_callbacks_py.html">tests/data/callbacks.py</a></td>
@@ -271,94 +284,94 @@
             <tr class="file">
                 <td class="name left"><a href="d_a44f0ac069e85531_http_server_py.html">tests/http_server.py</a></td>
                 <td>24</td>
-                <td>23</td>
+                <td>24</td>
                 <td>0</td>
-                <td>8</td>
+                <td>10</td>
                 <td>0</td>
-                <td class="right" data-ratio="1 32">3.12%</td>
+                <td class="right" data-ratio="0 34">0.00%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_a44f0ac069e85531_test_api_py.html">tests/test_api.py</a></td>
                 <td>236</td>
-                <td>7</td>
+                <td>11</td>
                 <td>0</td>
-                <td>96</td>
-                <td>5</td>
-                <td class="right" data-ratio="320 332">96.39%</td>
+                <td>94</td>
+                <td>7</td>
+                <td class="right" data-ratio="312 330">94.55%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_a44f0ac069e85531_test_cli_py.html">tests/test_cli.py</a></td>
                 <td>156</td>
                 <td>0</td>
                 <td>0</td>
-                <td>44</td>
+                <td>50</td>
                 <td>0</td>
-                <td class="right" data-ratio="200 200">100.00%</td>
+                <td class="right" data-ratio="206 206">100.00%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_a44f0ac069e85531_test_client_py.html">tests/test_client.py</a></td>
                 <td>371</td>
-                <td>3</td>
+                <td>9</td>
                 <td>0</td>
-                <td>110</td>
+                <td>124</td>
                 <td>3</td>
-                <td class="right" data-ratio="475 481">98.75%</td>
+                <td class="right" data-ratio="483 495">97.58%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_a44f0ac069e85531_test_downloads_py.html">tests/test_downloads.py</a></td>
                 <td>253</td>
                 <td>0</td>
                 <td>0</td>
-                <td>32</td>
+                <td>26</td>
                 <td>0</td>
-                <td class="right" data-ratio="285 285">100.00%</td>
+                <td class="right" data-ratio="279 279">100.00%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_a44f0ac069e85531_test_interface_py.html">tests/test_interface.py</a></td>
                 <td>264</td>
-                <td>3</td>
+                <td>6</td>
                 <td>0</td>
-                <td>86</td>
-                <td>7</td>
-                <td class="right" data-ratio="340 350">97.14%</td>
+                <td>92</td>
+                <td>9</td>
+                <td class="right" data-ratio="341 356">95.79%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_a44f0ac069e85531_test_options_py.html">tests/test_options.py</a></td>
                 <td>997</td>
                 <td>0</td>
                 <td>0</td>
-                <td>12</td>
+                <td>8</td>
                 <td>0</td>
-                <td class="right" data-ratio="1009 1009">100.00%</td>
+                <td class="right" data-ratio="1005 1005">100.00%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_a44f0ac069e85531_test_stats_py.html">tests/test_stats.py</a></td>
                 <td>25</td>
                 <td>0</td>
                 <td>0</td>
+                <td>2</td>
                 <td>0</td>
-                <td>0</td>
-                <td class="right" data-ratio="25 25">100.00%</td>
+                <td class="right" data-ratio="27 27">100.00%</td>
             </tr>
             <tr class="file">
                 <td class="name left"><a href="d_a44f0ac069e85531_test_utils_py.html">tests/test_utils.py</a></td>
                 <td>15</td>
                 <td>0</td>
                 <td>0</td>
+                <td>8</td>
                 <td>0</td>
-                <td>0</td>
-                <td class="right" data-ratio="15 15">100.00%</td>
+                <td class="right" data-ratio="23 23">100.00%</td>
             </tr>
         </tbody>
         <tfoot>
             <tr class="total">
                 <td class="name left">Total</td>
-                <td>5798</td>
-                <td>278</td>
+                <td>5811</td>
+                <td>293</td>
                 <td>0</td>
-                <td>1147</td>
-                <td>118</td>
-                <td class="right" data-ratio="6477 6945">93.26%</td>
+                <td>2059</td>
+                <td>124</td>
+                <td class="right" data-ratio="7379 7870">93.76%</td>
             </tr>
         </tfoot>
     </table>
@@ -369,10 +382,17 @@
 <footer>
     <div class="content">
         <p>
-            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v6.2</a>,
-            created at 2022-04-17 21:52 +0200
+            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v6.5.0</a>,
+            created at 2022-12-15 21:26 +0100
         </p>
     </div>
+    <aside class="hidden">
+        <a id="prevFileLink" class="nav" href="d_a44f0ac069e85531_test_utils_py.html"/>
+        <a id="nextFileLink" class="nav" href="d_a76b8bb0997e2189_api_py.html"/>
+        <button type="button" class="button_prev_file" data-shortcut="["/>
+        <button type="button" class="button_next_file" data-shortcut="]"/>
+        <button type="button" class="button_show_hide_help" data-shortcut="?"/>
+    </aside>
 </footer>
 </body>
 </html>
