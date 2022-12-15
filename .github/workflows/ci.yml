@@ -25,29 +25,15 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up PDM
-      uses: pdm-project/setup-pdm@v2.6
+      uses: pdm-project/setup-pdm@v3
       with:
         python-version: "3.8"
 
-    - name: Set cache variables
-      id: set_variables
-      run: |
-        echo "::set-output name=PIP_CACHE::$(pip cache dir)"
-        echo "::set-output name=PDM_CACHE::$(pdm config cache_dir)"
-
-    - name: Set up cache
-      uses: actions/cache@v2
-      with:
-        path: |
-          ${{ steps.set_variables.outputs.PIP_CACHE }}
-          ${{ steps.set_variables.outputs.PDM_CACHE }}
-        key: checks-cache
-
     - name: Resolving dependencies
-      run: pdm lock
+      run: pdm lock -v
 
     - name: Install dependencies
       run: pdm install -G duty -G docs -G quality -G typing -G security
@@ -78,7 +64,7 @@ jobs:
         - "3.8"
         - "3.9"
         - "3.10"
-        - "3.11-dev"
+        - "3.11"
 
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.os == 'windows-latest' }}
@@ -99,30 +85,19 @@ jobs:
       run: brew install aria2
 
     - name: Checkout
-      uses: actions/checkout@v2    
+      uses: actions/checkout@v3
 
     - name: Set up PDM
-      uses: pdm-project/setup-pdm@v2.6
+      uses: pdm-project/setup-pdm@v3
       with:
         python-version: ${{ matrix.python-version }}
         version: 1.5.0b1
 
-    - name: Set cache variables
-      id: set_variables
-      run: |
-        echo "::set-output name=PIP_CACHE::$(pip cache dir)"
-        echo "::set-output name=PDM_CACHE::$(pdm config cache_dir)"
-
-    - name: Set up cache
-      uses: actions/cache@v2
-      with:
-        path: |
-          ${{ steps.set_variables.outputs.PIP_CACHE }}
-          ${{ steps.set_variables.outputs.PDM_CACHE }}
-        key: tests-cache-${{ runner.os }}-${{ matrix.python-version }}
+    - name: Resolving dependencies
+      run: pdm lock -v
 
     - name: Install dependencies
-      run: pdm install -G tui -G duty -G tests
+      run: pdm install --no-editable -G tui -G duty -G tests
 
     - name: Run the test suite
       run: pdm run duty test

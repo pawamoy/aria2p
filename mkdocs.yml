@@ -3,6 +3,8 @@ site_description: "Command-line tool and Python library to interact with an aria
 site_url: "https://pawamoy.github.io/aria2p"
 repo_url: "https://github.com/pawamoy/aria2p"
 repo_name: "pawamoy/aria2p"
+site_dir: "site"
+watch: [README.md, CONTRIBUTING.md, CHANGELOG.md, src/aria2p]
 
 nav:
 - Home:
@@ -26,6 +28,7 @@ theme:
     logo: material/currency-sign
   features:
   - navigation.tabs
+  - navigation.tabs.sticky
   - navigation.top
   palette:
   - media: "(prefers-color-scheme: light)"
@@ -49,6 +52,7 @@ extra_css:
 
 markdown_extensions:
 - admonition
+- callouts
 - pymdownx.emoji
 - pymdownx.magiclink
 - pymdownx.snippets:
@@ -62,23 +66,15 @@ markdown_extensions:
 
 plugins:
 - search
+- markdown-exec
 - gen-files:
     scripts:
-    - docs/gen_credits.py
     - docs/gen_ref_nav.py
 - literate-nav:
-    nav_file: SUMMARY.md
+    nav_file: SUMMARY.txt
 - coverage
 - section-index
-- mkdocstrings:
-    # handlers:
-    #   python:
-    #     import:
-    #     - https://docs.python.org/3/objects.inv
-    #     rendering:
-    #       show_submodules: no
-    watch:
-    - src/aria2p
+- mkdocstrings
 
 extra:
   social:
