@@ -18,7 +18,10 @@ demo.gif
 .mypy_cache/
 *.sw[po]
 pdm.lock
-.pdm.toml
+pdm.toml
+.pdm-plugins/
+.pdm-python
 __pypackages__/
 .venv/
 .ports.json
+.cache/

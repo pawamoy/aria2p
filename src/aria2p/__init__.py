@@ -1,5 +1,4 @@
-"""
-aria2p package.
+"""aria2p package.
 
 Command-line tool and library to interact with an aria2c daemon process with JSON-RPC.
 """

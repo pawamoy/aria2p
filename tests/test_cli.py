@@ -1,5 +1,7 @@
 """Tests for the `cli` module."""
 
+from __future__ import annotations
+
 import threading
 import time
 
@@ -39,11 +41,10 @@ def first_err_line(cs):
     return err_lines(cs)[0]
 
 
-def test_show_help(capsys):
-    """
-    Show help.
+def test_show_help(capsys: pytest.CaptureFixture) -> None:
+    """Show help.
 
-    Arguments:
+    Parameters:
         capsys: Pytest fixture to capture output.
     """
     with pytest.raises(SystemExit):
