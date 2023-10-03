@@ -19,8 +19,7 @@ logger.disable("aria2p")
 
 
 def enable_logger(sink=sys.stderr, level="WARNING"):
-    """
-    Enable the logging of messages.
+    """Enable the logging of messages.
 
     Configure the `logger` variable imported from `loguru`.
 

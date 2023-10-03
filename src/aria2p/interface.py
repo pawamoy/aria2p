@@ -14,12 +14,13 @@
 
 from __future__ import annotations
 
+import contextlib
 import os
 import sys
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, Sequence
+from typing import TYPE_CHECKING, Sequence
 
 import pyperclip
 import requests
@@ -28,15 +29,17 @@ from asciimatics.screen import ManagedScreen, Screen
 from loguru import logger
 
 from aria2p.api import API
-from aria2p.downloads import Download
 from aria2p.utils import get_version, load_configuration
+
+if TYPE_CHECKING:
+    from aria2p.downloads import Download
+
 
 configs = load_configuration()
 
 
 def key_bind_parser(action: str) -> list[Key]:
-    """
-    Return a list of Key instances.
+    """Return a list of Key instances.
 
     Arguments:
         action: The action name.
@@ -56,8 +59,7 @@ def key_bind_parser(action: str) -> list[Key]:
 
 
 def color_palette_parser(palette: str) -> tuple[int, int, int]:
-    """
-    Return a color tuple (foreground color, mode, background color).
+    """Return a color tuple (foreground color, mode, background color).
 
     Arguments:
         palette: The palette name.
@@ -65,7 +67,6 @@ def color_palette_parser(palette: str) -> tuple[int, int, int]:
     Returns:
         Foreground color, mode, background color.
     """
-
     default_colors = configs["DEFAULT"]["colors"]
     colors = configs.get("USER", {}).get("colors", default_colors)
 
@@ -130,8 +131,7 @@ class Key:
     }
 
     def __init__(self, name: str, value: int | None = None) -> None:
-        """
-        Initialize the object.
+        """Initialize the object.
 
         Arguments:
             name: The key name.
@@ -206,8 +206,7 @@ class Exit(Exception):
 
 
 class Column:
-    """
-    A class to specify a column in the interface.
+    """A class to specify a column in the interface.
 
     It's composed of a header (the string to display on top), a padding (how to align the text),
     and three callable functions to get the text from a Python object, to sort between these objects,
@@ -215,8 +214,7 @@ class Column:
     """
 
     def __init__(self, header, padding, get_text, get_sort, get_palette):
-        """
-        Initialize the object.
+        """Initialize the object.
 
         Arguments:
             header (str): The string to display on top.
@@ -233,16 +231,14 @@ class Column:
 
 
 class HorizontalScroll:
-    """
-    A wrapper around asciimatics' Screen.print_at and Screen.paint methods.
+    """A wrapper around asciimatics' Screen.print_at and Screen.paint methods.
 
     It allows scroll the rows horizontally, used when moving left and right:
     the first N characters will not be printed.
     """
 
     def __init__(self, screen, scroll=0):
-        """
-        Initialize the object.
+        """Initialize the object.
 
         Arguments:
             screen (Screen): The asciimatics screen object.
@@ -256,8 +252,7 @@ class HorizontalScroll:
         self.scroll = scroll
 
     def print_at(self, text, x, y, palette) -> int:
-        """
-        Wrapper print_at method.
+        """Wrapper print_at method.
 
         Arguments:
             text (str): Text to print.
@@ -312,8 +307,7 @@ class Palette:
 
 
 class Interface:
-    """
-    The main class responsible for drawing the HTOP-like interface.
+    """The main class responsible for drawing the HTOP-like interface.
 
     It should be instantiated with an API instance, and then ran with its `run` method.
 
@@ -357,7 +351,7 @@ class Interface:
     follow = None
     bounds: list[Sequence[int]] = []
 
-    palettes: Dict[str, tuple[int, int, int]] = defaultdict(lambda: color_palette_parser("UI"))
+    palettes: dict[str, tuple[int, int, int]] = defaultdict(lambda: color_palette_parser("UI"))
     palettes.update(
         {
             "ui": color_palette_parser("UI"),
@@ -374,13 +368,17 @@ class Interface:
             "side_column_row": color_palette_parser("SIDE_COLUMN_ROW"),
             "side_column_focused_row": color_palette_parser("SIDE_COLUMN_FOCUSED_ROW"),
             "bright_help": color_palette_parser("BRIGHT_HELP"),
-        }
+        },
     )
 
     columns_order = ["gid", "status", "progress", "size", "down_speed", "up_speed", "eta", "name"]
     columns = {
         "gid": Column(
-            header="GID", padding=">16", get_text=lambda d: d.gid, get_sort=lambda d: d.gid, get_palette=lambda d: "gid"
+            header="GID",
+            padding=">16",
+            get_text=lambda d: d.gid,
+            get_sort=lambda d: d.gid,
+            get_palette=lambda d: "gid",
         ),
         "status": Column(
             header="STATUS",
@@ -451,8 +449,7 @@ class Interface:
     )
 
     def __init__(self, api=None):
-        """
-        Initialize the object.
+        """Initialize the object.
 
         Arguments:
             api (API): An instance of API.
@@ -524,7 +521,7 @@ class Interface:
                             try:
                                 self.process_event(event)
                             except Exit:
-                                logger.debug(f"Received exit command")
+                                logger.debug("Received exit command")
                                 return True
                             except Exception as error:
                                 # TODO: display error in status bar
@@ -534,14 +531,14 @@ class Interface:
 
                         # time to update data and rows
                         if self.frame == 0:
-                            logger.debug(f"Tick! Updating data and rows")
+                            logger.debug("Tick! Updating data and rows")
                             self.update_data()
                             self.update_rows()
                             self.refresh = True
 
                         # time to refresh the screen
                         if self.refresh:
-                            logger.debug(f"Refresh! Printing text")
+                            logger.debug("Refresh! Printing text")
                             # sort if needed, unless it was just done at frame 0 when updating
                             if (self.sort, self.reverse) != previous_sort and self.frame != 0:
                                 self.sort_data()
@@ -562,7 +559,7 @@ class Interface:
             return False
 
     def post_resize(self):
-        logger.debug(f"Running post-resize function")
+        logger.debug("Running post-resize function")
         logger.debug("Trying to re-apply pywal color theme")
         wal_sequences = Path.home() / ".cache" / "wal" / "sequences"
         try:
@@ -576,8 +573,7 @@ class Interface:
         self.select_sort_rows = self.columns_order
 
     def process_event(self, event):
-        """
-        Process an event.
+        """Process an event.
 
         For reactivity purpose, this method should not compute expensive stuff, only change the state of the interface,
         changes that will be applied by update_data and update_rows methods.
@@ -789,14 +785,12 @@ class Interface:
             copied_lines = set()
             for line in pyperclip.paste().split("\n") + pyperclip.paste(primary=True).split("\n"):
                 copied_lines.add(line.strip())
-            try:
+            with contextlib.suppress(KeyError):
                 copied_lines.remove("")
-            except KeyError:
-                pass
 
             # add lines to download uris
             if copied_lines:
-                self.downloads_uris = list(sorted(copied_lines))
+                self.downloads_uris = sorted(copied_lines)
 
         elif event.key_code in Keys.QUIT:
             raise Exit()
@@ -940,7 +934,7 @@ class Interface:
         return max(len(self.remove_ask_header), max(len(row[0]) for row in self.remove_ask_rows))
 
     def width_select_sort(self):
-        return max(len(column_name) for column_name in self.columns_order + [self.select_sort_header])
+        return max(len(column_name) for column_name in [*self.columns_order, self.select_sort_header])
 
     def follow_focused(self):
         if self.focused < len(self.data):
@@ -1110,7 +1104,6 @@ class Interface:
         """Print the rows."""
         y = self.y_offset + 1
         for row in self.rows[self.row_offset : self.row_offset + self.height]:
-
             self.scroller.set_scroll(self.x_scroll)
             x = self.x_offset
 

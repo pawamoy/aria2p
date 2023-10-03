@@ -14,9 +14,8 @@ from responses import mock as responses
 
 from aria2p import Client, ClientException
 from aria2p.client import JSONRPC_CODES, JSONRPC_PARSER_ERROR, Notification
-
-from . import BUNSENLABS_MAGNET, BUNSENLABS_TORRENT, CONFIGS_DIR, DEBIAN_METALINK, SESSIONS_DIR, XUBUNTU_MIRRORS
-from .conftest import Aria2Server
+from tests import BUNSENLABS_MAGNET, BUNSENLABS_TORRENT, CONFIGS_DIR, DEBIAN_METALINK, SESSIONS_DIR, XUBUNTU_MIRRORS
+from tests.conftest import Aria2Server
 
 
 class TestParameters:
@@ -65,7 +64,7 @@ class TestParameters:
             [
                 {"methodName": client.ADD_URI, "params": ["param1", "param2"]},
                 {"methodName": client.ADD_URI, "params": ["param3", "param4"]},
-            ]
+            ],
         ]
         # copy params and insert secret
         expected_params = deepcopy(params)
@@ -146,7 +145,8 @@ class TestParameters:
 
         # call function and assert result
         resp = client.batch_call(
-            [(client.ADD_URI, params_1, 0), (client.ADD_METALINK, params_2, 1)], insert_secret=True
+            [(client.ADD_URI, params_1, 0), (client.ADD_METALINK, params_2, 1)],
+            insert_secret=True,
         )
         assert resp == expected_params
 
@@ -165,7 +165,7 @@ class TestParameters:
             [
                 {"methodName": client.REMOVE, "params": deepcopy(params_1)},
                 {"methodName": client.REMOVE, "params": deepcopy(params_2)},
-            ]
+            ],
         ]
 
         # call function and assert result
@@ -189,7 +189,7 @@ class TestParameters:
             [
                 {"methodName": client.REMOVE, "params": deepcopy(params_1)},
                 {"methodName": client.REMOVE, "params": deepcopy(params_2)},
-            ]
+            ],
         ]
         for param in expected_params[0]:
             param["params"].insert(0, f"token:{secret}")
@@ -204,7 +204,10 @@ class TestClientExceptionClass:
     def test_call_raises_custom_error(self):
         client = Client()
         responses.add(
-            responses.POST, client.server, json={"error": {"code": 1, "message": "Custom message"}}, status=200
+            responses.POST,
+            client.server,
+            json={"error": {"code": 1, "message": "Custom message"}},
+            status=200,
         )
         with pytest.raises(ClientException, match=r"Custom message") as e:
             client.call("aria2.method")
@@ -273,7 +276,7 @@ class TestClientClass:
     def test_position_method(self, tmp_path, port):
         with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
             gids = server.client.tell_waiting(0, 5, keys=["gid"])
-            first, second = [r["gid"] for r in gids]
+            first, second = (r["gid"] for r in gids)
             assert server.client.change_position(second, 0, "POS_SET") == 0
             assert server.client.change_position(second, 5, "POS_CUR") == 1
 
@@ -311,7 +314,7 @@ class TestClientClass:
     def test_force_shutdown_method(self, server):
         assert server.client.force_shutdown() == "OK"
         with pytest.raises(requests.ConnectionError):
-            for retry in range(10):
+            for _retry in range(10):
                 server.client.list_methods()
                 time.sleep(1)
 
@@ -363,7 +366,7 @@ class TestClientClass:
 
     def test_multicall_method(self, server):
         assert server.client.multicall(
-            [[{"methodName": server.client.LIST_METHODS}, {"methodName": server.client.LIST_NOTIFICATIONS}]]
+            [[{"methodName": server.client.LIST_METHODS}, {"methodName": server.client.LIST_NOTIFICATIONS}]],
         )
 
     def test_multicall2_method(self, server):
@@ -422,7 +425,7 @@ class TestClientClass:
     def test_shutdown_method(self, server):
         assert server.client.shutdown() == "OK"
         with pytest.raises(requests.ConnectionError):
-            for retry in range(10):
+            for _retry in range(10):
                 server.client.list_methods()
                 time.sleep(1)
 
@@ -484,7 +487,9 @@ class TestClientClass:
 
             def thread_target():
                 server.client.listen_to_notifications(
-                    on_download_start=lambda gid: print("started " + gid), timeout=1, handle_signals=False
+                    on_download_start=lambda gid: print("started " + gid),
+                    timeout=1,
+                    handle_signals=False,
                 )
 
             thread = threading.Thread(target=thread_target)

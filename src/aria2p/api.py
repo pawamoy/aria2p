@@ -1,5 +1,4 @@
-"""
-Aria2 API.
+"""Aria2 API.
 
 This module defines the API class, which makes use of a JSON-RPC client to provide higher-level methods to
 interact easily with a remote aria2c process.
@@ -12,7 +11,7 @@ import shutil
 import threading
 from base64 import b64encode
 from pathlib import Path
-from typing import Callable, Dict, Iterator, List, TextIO, Tuple, Union
+from typing import TYPE_CHECKING, Callable, Dict, Iterator, List, TextIO, Tuple, Union
 
 from loguru import logger
 
@@ -20,7 +19,9 @@ from aria2p.client import Client, ClientException
 from aria2p.downloads import Download
 from aria2p.options import Options
 from aria2p.stats import Stats
-from aria2p.types import PathOrStr
+
+if TYPE_CHECKING:
+    from aria2p.types import PathOrStr
 
 OptionsType = Union[Options, dict]
 OperationResult = Union[bool, ClientException]
@@ -28,8 +29,7 @@ InputFileContentsType = List[Tuple[List[str], Dict[str, str]]]
 
 
 class API:
-    """
-    A class providing high-level methods to interact with a remote aria2c process.
+    """A class providing high-level methods to interact with a remote aria2c process.
 
     This class is instantiated with a reference to a [`Client`][aria2p.client.Client] instance. It then uses this client
     to call remote procedures, or remote methods. While the client methods reflect exactly what aria2c is providing
@@ -39,8 +39,7 @@ class API:
     """
 
     def __init__(self, client: Client | None = None) -> None:
-        """
-        Initialize the object.
+        """Initialize the object.
 
         Arguments:
             client: An instance of the [aria2p.client.Client][] class.
@@ -51,14 +50,13 @@ class API:
     def __repr__(self) -> str:
         return f"API({self.client!r})"
 
-    def add(  # noqa: WPS231 (not that complex)
+    def add(
         self,
         uri: str,
         options: OptionsType | None = None,
         position: int | None = None,
     ) -> list[Download]:
-        """
-        Add a download (guess its type).
+        """Add a download (guess its type).
 
         If the provided URI is in fact a file-path, and is neither a torrent or a metalink,
         then we read its lines and try to add each line as a download, recursively.
@@ -102,8 +100,7 @@ class API:
         return new_downloads
 
     def add_magnet(self, magnet_uri: str, options: OptionsType | None = None, position: int | None = None) -> Download:
-        """
-        Add a download with a Magnet URI.
+        """Add a download with a Magnet URI.
 
         Arguments:
             magnet_uri: The Magnet URI.
@@ -117,10 +114,7 @@ class API:
         if options is None:
             options = {}
 
-        if isinstance(options, Options):
-            client_options = options.get_struct()
-        else:
-            client_options = options
+        client_options = options.get_struct() if isinstance(options, Options) else options
 
         gid = self.client.add_uri([magnet_uri], client_options, position)
 
@@ -133,8 +127,7 @@ class API:
         options: OptionsType | None = None,
         position: int | None = None,
     ) -> Download:
-        """
-        Add a download with a torrent file (usually .torrent extension).
+        """Add a download with a torrent file (usually .torrent extension).
 
         Arguments:
             torrent_file_path: The path to the torrent file.
@@ -152,10 +145,7 @@ class API:
         if options is None:
             options = {}
 
-        if isinstance(options, Options):
-            client_options = options.get_struct()
-        else:
-            client_options = options
+        client_options = options.get_struct() if isinstance(options, Options) else options
 
         with open(torrent_file_path, "rb") as stream:
             torrent_contents = stream.read()
@@ -171,8 +161,7 @@ class API:
         options: OptionsType | None = None,
         position: int | None = None,
     ) -> list[Download]:
-        """
-        Add a download with a Metalink file.
+        """Add a download with a Metalink file.
 
         Arguments:
             metalink_file_path: The path to the Metalink file.
@@ -186,10 +175,7 @@ class API:
         if options is None:
             options = {}
 
-        if isinstance(options, Options):
-            client_options = options.get_struct()
-        else:
-            client_options = options
+        client_options = options.get_struct() if isinstance(options, Options) else options
 
         with open(metalink_file_path, "rb") as stream:
             metalink_contents = stream.read()
@@ -205,8 +191,7 @@ class API:
         options: OptionsType | None = None,
         position: int | None = None,
     ) -> Download:
-        """
-        Add a download with a URL (or more).
+        """Add a download with a URL (or more).
 
         Arguments:
             uris: A list of URIs that point to the same resource.
@@ -221,18 +206,14 @@ class API:
         if options is None:
             options = {}
 
-        if isinstance(options, Options):
-            client_options = options.get_struct()
-        else:
-            client_options = options
+        client_options = options.get_struct() if isinstance(options, Options) else options
 
         gid = self.client.add_uri(uris, client_options, position)
 
         return self.get_download(gid)
 
     def search(self, patterns: list[str]) -> list[Download]:
-        """
-        Not implemented.
+        """Not implemented.
 
         Search and return [`Download`][aria2p.downloads.Download] objects based on multiple patterns.
 
@@ -275,8 +256,7 @@ class API:
         raise NotImplementedError
 
     def get_download(self, gid: str) -> Download:
-        """
-        Get a [`Download`][aria2p.downloads.Download] object thanks to its GID.
+        """Get a [`Download`][aria2p.downloads.Download] object thanks to its GID.
 
         Arguments:
             gid: The GID of the download to get.
@@ -287,8 +267,7 @@ class API:
         return Download(self, self.client.tell_status(gid))
 
     def get_downloads(self, gids: list[str] | None = None) -> list[Download]:
-        """
-        Get a list of [`Download`][aria2p.downloads.Download] object thanks to their GIDs.
+        """Get a list of [`Download`][aria2p.downloads.Download] object thanks to their GIDs.
 
         Arguments:
             gids: The GIDs of the downloads to get. If None, return all the downloads.
@@ -311,8 +290,7 @@ class API:
         return downloads
 
     def move(self, download: Download, pos: int) -> int:
-        """
-        Move a download in the queue, relatively to its current position.
+        """Move a download in the queue, relatively to its current position.
 
         Arguments:
             download: The download object to move.
@@ -324,8 +302,7 @@ class API:
         return self.client.change_position(download.gid, pos, "POS_CUR")
 
     def move_to(self, download: Download, pos: int) -> int:
-        """
-        Move a download in the queue, with absolute positioning.
+        """Move a download in the queue, with absolute positioning.
 
         Arguments:
             download: The download object to move.
@@ -336,14 +313,13 @@ class API:
         """
         if pos < 0:
             how = "POS_END"
-            pos = -pos  # noqa: WPS434
+            pos = -pos
         else:
             how = "POS_SET"
         return self.client.change_position(download.gid, pos, how)
 
     def move_up(self, download: Download, pos: int = 1) -> int:
-        """
-        Move a download up in the queue.
+        """Move a download up in the queue.
 
         Arguments:
             download: The download object to move.
@@ -355,8 +331,7 @@ class API:
         return self.client.change_position(download.gid, -pos, "POS_CUR")
 
     def move_down(self, download: Download, pos: int = 1) -> int:
-        """
-        Move a download down in the queue.
+        """Move a download down in the queue.
 
         Arguments:
             download: The download object to move.
@@ -368,8 +343,7 @@ class API:
         return self.client.change_position(download.gid, pos, "POS_CUR")
 
     def move_to_top(self, download: Download) -> int:
-        """
-        Move a download to the top of the queue.
+        """Move a download to the top of the queue.
 
         Arguments:
             download: The download object to move.
@@ -380,8 +354,7 @@ class API:
         return self.client.change_position(download.gid, 0, "POS_SET")
 
     def move_to_bottom(self, download: Download) -> int:
-        """
-        Move a download to the bottom of the queue.
+        """Move a download to the bottom of the queue.
 
         Arguments:
             download: The download object to move.
@@ -391,13 +364,12 @@ class API:
         """
         return self.client.change_position(download.gid, 0, "POS_END")
 
-    def retry_downloads(  # noqa: WPS231 (not that complex)
+    def retry_downloads(
         self,
         downloads: list[Download],
         clean: bool = False,
     ) -> list[OperationResult]:
-        """
-        Resume failed downloads from where they left off with new GIDs.
+        """Resume failed downloads from where they left off with new GIDs.
 
         Arguments:
             downloads: The list of downloads to remove.
@@ -412,7 +384,7 @@ class API:
             if not download.has_failed:
                 continue
             try:
-                uri = download.files[0].uris[0]["uri"]  # noqa: WPS219 (deep access)
+                uri = download.files[0].uris[0]["uri"]
             except IndexError:
                 continue
             try:
@@ -428,15 +400,14 @@ class API:
 
         return result
 
-    def remove(  # noqa: WPS231 (complex, maybe we could split it)
+    def remove(
         self,
         downloads: list[Download],
         force: bool = False,
         files: bool = False,
         clean: bool = True,
     ) -> list[OperationResult]:
-        """
-        Remove the given downloads from the list.
+        """Remove the given downloads from the list.
 
         Arguments:
             downloads: The list of downloads to remove.
@@ -448,10 +419,7 @@ class API:
             Success or failure of the operation for each given download.
         """
         # Note: batch/multicall candidate
-        if force:
-            remove_func = self.client.force_remove
-        else:
-            remove_func = self.client.remove
+        remove_func = self.client.force_remove if force else self.client.remove
 
         result: list[OperationResult] = []
 
@@ -470,35 +438,30 @@ class API:
                 logger.debug(f"Try to remove download {download.gid}")
                 try:
                     removed_gid = remove_func(download.gid)
-                except ClientException as error:  # noqa: WPS440 (block variable overlap)
+                except ClientException as error:
                     logger.exception(error)
                     result.append(error)
                 else:
                     logger.success(f"Removed download {download.gid}")
                     result.append(True)
-                    try:  # noqa: WPS505 (nested try)
+                    try:  # (nested try)
                         self.client.remove_download_result(download.gid)
-                    except ClientException as error:  # noqa: WPS440 (block variable overlap)
+                    except ClientException as error:
                         logger.debug(f"Failed to remove download result {download.gid}")
                         logger.opt(exception=True).trace(error)
                     if removed_gid != download.gid:
                         logger.debug(
                             f"Removed download GID#{removed_gid} is different than download GID#{download.gid}",
                         )
-                        try:  # noqa: WPS505 (nested try)
+                        try:
                             self.client.remove_download_result(removed_gid)
-                        except ClientException as error:  # noqa: WPS440 (block variable overlap)
+                        except ClientException as error:
                             logger.debug(f"Failed to remove download result {removed_gid}")
                             logger.opt(exception=True).trace(error)
 
             if clean:
-                # FUTURE: use missing_ok parameter on Python 3.8
-                try:
-                    download.control_file_path.unlink()
-                except FileNotFoundError:
-                    logger.debug(f"aria2 control file {download.control_file_path} was not found")
-                else:
-                    logger.debug(f"Removed control file {download.control_file_path}")
+                download.control_file_path.unlink(missing_ok=True)
+                logger.debug(f"Removed control file {download.control_file_path}")
 
             if files and result[-1]:
                 self.remove_files([download], force=True)
@@ -506,8 +469,7 @@ class API:
         return result
 
     def remove_all(self, force: bool = False) -> bool:
-        """
-        Remove all downloads from the list.
+        """Remove all downloads from the list.
 
         Arguments:
             force: Whether to force the removal or not.
@@ -518,8 +480,7 @@ class API:
         return all(self.remove(self.get_downloads(), force=force))
 
     def pause(self, downloads: list[Download], force: bool = False) -> list[OperationResult]:
-        """
-        Pause the given (active) downloads.
+        """Pause the given (active) downloads.
 
         Arguments:
             downloads: The list of downloads to pause.
@@ -529,10 +490,7 @@ class API:
             Success or failure of the operation for each given download.
         """
         # Note: batch/multicall candidate
-        if force:
-            pause_func = self.client.force_pause
-        else:
-            pause_func = self.client.pause
+        pause_func = self.client.force_pause if force else self.client.pause
 
         result: list[OperationResult] = []
 
@@ -549,8 +507,7 @@ class API:
         return result
 
     def pause_all(self, force: bool = False) -> bool:
-        """
-        Pause all (active) downloads.
+        """Pause all (active) downloads.
 
         Arguments:
             force: Whether to pause immediately without contacting servers or not.
@@ -558,15 +515,11 @@ class API:
         Returns:
             Success or failure of the operation to pause all downloads.
         """
-        if force:
-            pause_func = self.client.force_pause_all
-        else:
-            pause_func = self.client.pause_all
+        pause_func = self.client.force_pause_all if force else self.client.pause_all
         return pause_func() == "OK"
 
     def resume(self, downloads: list[Download]) -> list[OperationResult]:
-        """
-        Resume (unpause) the given downloads.
+        """Resume (unpause) the given downloads.
 
         Arguments:
             downloads: The list of downloads to resume.
@@ -590,8 +543,7 @@ class API:
         return result
 
     def resume_all(self) -> bool:
-        """
-        Resume (unpause) all downloads.
+        """Resume (unpause) all downloads.
 
         Returns:
             Success or failure of the operation to resume all downloads.
@@ -599,8 +551,7 @@ class API:
         return self.client.unpause_all() == "OK"
 
     def purge(self) -> bool:
-        """
-        Purge completed, removed or failed downloads from the queue.
+        """Purge completed, removed or failed downloads from the queue.
 
         Returns:
             Success or failure of the operation.
@@ -608,8 +559,7 @@ class API:
         return self.client.purge_download_result() == "OK"
 
     def autopurge(self) -> bool:
-        """
-        Purge completed, removed or failed downloads from the queue.
+        """Purge completed, removed or failed downloads from the queue.
 
         Deprecated. Use [`purge`][aria2p.api.API.purge] instead.
 
@@ -620,8 +570,7 @@ class API:
         return self.purge()
 
     def get_options(self, downloads: list[Download]) -> list[Options]:
-        """
-        Get options for each of the given downloads.
+        """Get options for each of the given downloads.
 
         Arguments:
             downloads: The list of downloads to get the options of.
@@ -636,8 +585,7 @@ class API:
         return options
 
     def get_global_options(self) -> Options:
-        """
-        Get the global options.
+        """Get the global options.
 
         Returns:
             The global aria2c options.
@@ -645,8 +593,7 @@ class API:
         return Options(self, self.client.get_global_option())
 
     def set_options(self, options: OptionsType, downloads: list[Download]) -> list[bool]:
-        """
-        Set options for specific downloads.
+        """Set options for specific downloads.
 
         Arguments:
             options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
@@ -656,10 +603,7 @@ class API:
         Returns:
             Success or failure of the operation for changing options for each given download.
         """
-        if isinstance(options, Options):
-            client_options = options.get_struct()
-        else:
-            client_options = options
+        client_options = options.get_struct() if isinstance(options, Options) else options
 
         # Note: batch/multicall candidate
         results = []
@@ -668,8 +612,7 @@ class API:
         return results
 
     def set_global_options(self, options: OptionsType) -> bool:
-        """
-        Set global options.
+        """Set global options.
 
         Arguments:
             options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
@@ -678,29 +621,24 @@ class API:
         Returns:
             Success or failure of the operation for changing global options.
         """
-        if isinstance(options, Options):
-            client_options = options.get_struct()
-        else:
-            client_options = options
+        client_options = options.get_struct() if isinstance(options, Options) else options
 
         return self.client.change_global_option(client_options) == "OK"
 
     def get_stats(self) -> Stats:
-        """
-        Get the stats of the remote aria2c process.
+        """Get the stats of the remote aria2c process.
 
         Returns:
             The global stats returned by the remote process.
         """
         return Stats(self.client.get_global_stat())
 
-    @staticmethod  # noqa: WPS231,WPS602 (complex method, static method)
-    def remove_files(  # noqa: WPS231,WPS602
+    @staticmethod
+    def remove_files(
         downloads: list[Download],
         force: bool = False,
     ) -> list[bool]:
-        """
-        Remove downloaded files.
+        """Remove downloaded files.
 
         Arguments:
             downloads:  the list of downloads for which to remove files.
@@ -725,7 +663,7 @@ class API:
                     else:
                         try:
                             path.unlink()
-                        except FileNotFoundError as error:  # noqa: WPS440
+                        except FileNotFoundError as error:
                             logger.warning(f"File '{path}' did not exist when trying to delete it")
                             logger.opt(exception=True).trace(error)
                         results.append(True)
@@ -733,14 +671,13 @@ class API:
                 results.append(False)
         return results
 
-    @staticmethod  # noqa: WPS602 (static method)
-    def move_files(  # noqa: WPS602
+    @staticmethod
+    def move_files(
         downloads: list[Download],
         to_directory: PathOrStr,
         force: bool = False,
     ) -> list[bool]:
-        """
-        Move downloaded files to another directory.
+        """Move downloaded files to another directory.
 
         Arguments:
             downloads:  the list of downloads for which to move files.
@@ -766,14 +703,13 @@ class API:
                 results.append(False)
         return results
 
-    @staticmethod  # noqa: WPS231,WPS602 (not that complex, static method)
-    def copy_files(  # noqa: WPS231,WPS602 (not that complex)
+    @staticmethod
+    def copy_files(
         downloads: list[Download],
         to_directory: PathOrStr,
         force: bool = False,
     ) -> list[bool]:
-        """
-        Copy downloaded files to another directory.
+        """Copy downloaded files to another directory.
 
         Arguments:
             downloads:  the list of downloads for which to move files.
@@ -815,8 +751,7 @@ class API:
         timeout: int = 5,
         handle_signals: bool = True,
     ) -> None:
-        """
-        Start listening to aria2 notifications via WebSocket.
+        """Start listening to aria2 notifications via WebSocket.
 
         This method differs from [`Client.listen_to_notifications`][aria2p.client.Client.listen_to_notifications]
         in that it expects callbacks accepting two arguments, `api` and `gid`, instead of only `gid`.
@@ -837,7 +772,7 @@ class API:
             handle_signals: Whether to add signal handlers to gracefully stop the loop on SIGTERM and SIGINT.
         """
 
-        def closure(callback):  # noqa: WPS430 (nested function)
+        def closure(callback):
             return functools.partial(callback, self) if callable(callback) else None
 
         kwargs = {
@@ -859,8 +794,7 @@ class API:
             self.client.listen_to_notifications(**kwargs)
 
     def stop_listening(self) -> None:
-        """
-        Stop listening to notifications.
+        """Stop listening to notifications.
 
         If the listening loop was threaded, this method will wait for the thread to finish.
         The time it takes for the thread to finish will depend on the timeout given while calling
@@ -871,9 +805,8 @@ class API:
             self.listener.join()
         self.listener = None
 
-    def split_input_file(self, lines: list[str] | TextIO) -> Iterator[list[str]]:  # noqa: WPS231 (not complex)
-        """
-        Helper to split downloads in an input file.
+    def split_input_file(self, lines: list[str] | TextIO) -> Iterator[list[str]]:
+        """Helper to split downloads in an input file.
 
         Arguments:
              lines: The lines of the input file.
@@ -896,8 +829,7 @@ class API:
             yield block
 
     def parse_input_file(self, input_file: PathOrStr) -> InputFileContentsType:
-        """
-        Parse a file with URIs or an aria2c input file.
+        """Parse a file with URIs or an aria2c input file.
 
         Arguments:
             input_file: Path to file with URIs or aria2c input file.
@@ -910,12 +842,12 @@ class API:
             for download_lines in self.split_input_file(fd):
                 uris = download_lines[0].split("\t")
                 options = {}
-                try:  # noqa: WPS229
+                try:
                     for option_line in download_lines[1:]:
                         option_name, option_value = option_line.split("=", 1)
                         options[option_name.lstrip()] = option_value
                     downloads.append((uris, options))
                 except ValueError as error:
-                    logger.error(f"Skipping download because of invalid option line '{option_line}'")  # noqa: WPS441
+                    logger.error(f"Skipping download because of invalid option line '{option_line}'")
                     logger.opt(exception=True).trace(error)
         return downloads

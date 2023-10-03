@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import sys
+from typing import TYPE_CHECKING
 
-from aria2p.api import API
 from aria2p.utils import read_lines
+
+if TYPE_CHECKING:
+    from aria2p.api import API
 
 
 def add_metalinks(
@@ -15,8 +18,7 @@ def add_metalinks(
     options: dict | None = None,
     position: int | None = None,
 ) -> int:
-    """
-    Add metalink subcommand.
+    """Add metalink subcommand.
 
     Arguments:
         api: The API instance to use.

@@ -12,8 +12,7 @@ import pytest
 import requests
 
 from aria2p import API, Client, enable_logger
-
-from . import CONFIGS_DIR, SESSIONS_DIR
+from tests import CONFIGS_DIR, SESSIONS_DIR
 
 
 @pytest.fixture(autouse=True)
@@ -255,14 +254,14 @@ def release_port(port_number):
     release_lock()
 
 
-@pytest.fixture
+@pytest.fixture()
 def port():
     port_number = reserve_port()
     yield port_number
     release_port(port_number)
 
 
-@pytest.fixture
+@pytest.fixture()
 def server(tmp_path, port):
     with Aria2Server(tmp_path, port) as server:
         yield server

@@ -6,14 +6,13 @@ from pathlib import Path
 import pytest
 
 from aria2p import API, BitTorrent, ClientException, Download, File
-
-from .conftest import Aria2Server
+from tests.conftest import Aria2Server
 
 
 class TestBitTorrentClass:
     def setup_method(self):
         self.bittorrent = BitTorrent(
-            {"announceList": [], "comment": "", "creationDate": 10, "mode": "single", "info": {"name": ""}}
+            {"announceList": [], "comment": "", "creationDate": 10, "mode": "single", "info": {"name": ""}},
         )
 
     def test_init_method(self):
@@ -380,7 +379,7 @@ class TestFileClass:
                 "completedLength": "2048",
                 "selected": "true",
                 "uris": [{"uri": "some uri", "status": "used"}, {"uri": "some other uri", "status": "waiting"}],
-            }
+            },
         )
 
     def test_eq_method(self):

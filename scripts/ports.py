@@ -41,7 +41,7 @@ def check(ports):
 
 def get_unused(ports):
     finalists = []
-    sorted_ports = list(sorted(ports.keys()))
+    sorted_ports = sorted(ports.keys())
     following = False
     for candidate in range(sorted_ports[0], sorted_ports[-1] + 2):
         if candidate not in sorted_ports:

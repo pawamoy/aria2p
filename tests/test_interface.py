@@ -11,9 +11,8 @@ from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import Screen
 
 from aria2p import interface as tui
-
-from . import TESTS_DATA_DIR
-from .conftest import Aria2Server
+from tests import TESTS_DATA_DIR
+from tests.conftest import Aria2Server
 
 tui.Interface.frames = 20  # reduce tests time
 
@@ -403,14 +402,18 @@ def test_side_column_edges(tmp_path, port, monkeypatch):
 def test_click_row(tmp_path, port, monkeypatch):
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         interface = run_interface(
-            monkeypatch, server.api, events=[Event.pass_frame, MouseEvent(x=10, y=2, buttons=MouseEvent.LEFT_CLICK)]
+            monkeypatch,
+            server.api,
+            events=[Event.pass_frame, MouseEvent(x=10, y=2, buttons=MouseEvent.LEFT_CLICK)],
         )
     assert interface.focused == 1
 
 
 def test_click_out_bounds(server, monkeypatch):
     run_interface(
-        monkeypatch, server.api, events=[Event.pass_frame, MouseEvent(x=1000, y=0, buttons=MouseEvent.LEFT_CLICK)]
+        monkeypatch,
+        server.api,
+        events=[Event.pass_frame, MouseEvent(x=1000, y=0, buttons=MouseEvent.LEFT_CLICK)],
     )
     with open(Path("tests") / "logs" / "test_interface" / "test_click_out_bounds.log") as log_file:
         lines = log_file.readlines()

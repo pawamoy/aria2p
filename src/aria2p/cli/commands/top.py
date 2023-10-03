@@ -3,18 +3,19 @@
 from __future__ import annotations
 
 import sys
+from typing import TYPE_CHECKING
 
-from aria2p.api import API
+if TYPE_CHECKING:
+    from aria2p.api import API
 
 try:
     from aria2p.interface import Interface
 except ImportError:
-    Interface = None  # type: ignore  # noqa: WPS440 (variable overlap)
+    Interface = None
 
 
 def top(api: API) -> int:
-    """
-    Top subcommand.
+    """Top subcommand.
 
     Arguments:
         api: The API instance to use.

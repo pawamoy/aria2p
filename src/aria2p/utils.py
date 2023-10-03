@@ -1,5 +1,4 @@
-"""
-Utils module.
+"""Utils module.
 
 This module contains simple utility classes and functions.
 """
@@ -8,25 +7,26 @@ from __future__ import annotations
 
 import signal
 import textwrap
-from datetime import timedelta
 from pathlib import Path
-from types import FrameType
-from typing import Any, Dict
+from typing import TYPE_CHECKING, Any
 
 import pkg_resources
 import toml
 from appdirs import user_config_dir
 from loguru import logger
 
-from aria2p.types import PathOrStr
+if TYPE_CHECKING:
+    from datetime import timedelta
+    from types import FrameType
+
+    from aria2p.types import PathOrStr
 
 
 class SignalHandler:
     """A helper class to handle signals."""
 
     def __init__(self, signals: list[str]) -> None:
-        """
-        Initialize the object.
+        """Initialize the object.
 
         Arguments:
             signals: List of signals names as found in the `signal` module (example: SIGTERM).
@@ -35,36 +35,33 @@ class SignalHandler:
         self.triggered = False
         for sig in signals:
             try:
-                signal.signal(signal.Signals[sig], self.trigger)  # noqa: E1101
+                signal.signal(signal.Signals[sig], self.trigger)
             except ValueError as error:
                 logger.error(f"Failed to setup signal handler for {sig}: {error}")
 
     def __bool__(self) -> bool:
-        """
-        Return True when one of the given signal was received, False otherwise.
+        """Return True when one of the given signal was received, False otherwise.
 
         Returns:
             True when signal received, False otherwise.
         """
         return self.triggered
 
-    def trigger(self, signum: int, frame: FrameType | None) -> None:  # noqa: W0613 (unused frame)
-        """
-        Mark this instance as 'triggered' (a specified signal was received).
+    def trigger(self, signum: int, frame: FrameType | None) -> None:
+        """Mark this instance as 'triggered' (a specified signal was received).
 
         Arguments:
             signum: The signal code.
             frame: The signal frame (unused).
         """
         logger.debug(
-            f"Signal handler: caught signal {signal.Signals(signum).name} ({signum})",  # noqa: E1101 (signal.Signals)
+            f"Signal handler: caught signal {signal.Signals(signum).name} ({signum})",
         )
         self.triggered = True
 
 
 def human_readable_timedelta(value: timedelta, precision: int = 0) -> str:
-    """
-    Return a human-readable time delta as a string.
+    """Return a human-readable time delta as a string.
 
     Arguments:
         value: The timedelta.
@@ -85,10 +82,10 @@ def human_readable_timedelta(value: timedelta, precision: int = 0) -> str:
 
     seconds = value.seconds
 
-    if seconds >= 3600:  # noqa: WPS432 (magic number)
-        hours = int(seconds / 3600)  # noqa: WPS432
+    if seconds >= 3600:
+        hours = int(seconds / 3600)
         pieces.append(f"{hours}h")
-        seconds -= hours * 3600  # noqa: WPS432
+        seconds -= hours * 3600
 
     if seconds >= 60:
         minutes = int(seconds / 60)
@@ -105,8 +102,7 @@ def human_readable_timedelta(value: timedelta, precision: int = 0) -> str:
 
 
 def human_readable_bytes(value: int, digits: int = 2, delim: str = "", postfix: str = "") -> str:
-    """
-    Return a human-readable bytes value as a string.
+    """Return a human-readable bytes value as a string.
 
     Arguments:
         value: The bytes value.
@@ -125,12 +121,11 @@ def human_readable_bytes(value: int, digits: int = 2, delim: str = "", postfix: 
             chosen_unit = unit
         else:
             break
-    return f"{hr_value:.{digits}f}" + delim + chosen_unit + postfix  # noqa: WPS221 (not complex)
+    return f"{hr_value:.{digits}f}" + delim + chosen_unit + postfix
 
 
 def bool_or_value(value: Any) -> Any:
-    """
-    Return `True` for `"true"`, `False` for `"false"`, original value otherwise.
+    """Return `True` for `"true"`, `False` for `"false"`, original value otherwise.
 
     Arguments:
         value: Any kind of value.
@@ -150,8 +145,7 @@ def bool_or_value(value: Any) -> Any:
 
 
 def bool_to_str(value: Any) -> Any:
-    """
-    Return `"true"` for `True`, `"false"` for `False`, original value otherwise.
+    """Return `"true"` for `True`, `"false"` for `False`, original value otherwise.
 
     Arguments:
         value: Any kind of value.
@@ -169,8 +163,7 @@ def bool_to_str(value: Any) -> Any:
 
 
 def get_version() -> str:
-    """
-    Return the current `aria2p` version.
+    """Return the current `aria2p` version.
 
     Returns:
         The current `aria2p` version.
@@ -182,9 +175,8 @@ def get_version() -> str:
     return distribution.version
 
 
-def load_configuration() -> Dict[str, Any]:
-    """
-    Return dict from TOML formatted string or file.
+def load_configuration() -> dict[str, Any]:
+    """Return dict from TOML formatted string or file.
 
     Returns:
         The dict configuration.
@@ -251,7 +243,7 @@ def load_configuration() -> Dict[str, Any]:
     if config_file_path.exists():
         try:
             config_dict["USER"] = toml.load(config_file_path)
-        except Exception as error:  # noqa: W0703 (too broad exception)
+        except Exception as error:
             logger.error(f"Failed to load configuration file: {error}")
     else:
         # Write initial configuration file if it does not exist
@@ -262,8 +254,7 @@ def load_configuration() -> Dict[str, Any]:
 
 
 def read_lines(path: PathOrStr) -> list[str]:
-    """
-    Read lines in a file.
+    """Read lines in a file.
 
     Arguments:
         path: The file path.

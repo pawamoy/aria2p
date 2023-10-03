@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
-from aria2p.api import API
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from aria2p.api import API
 
 
 def purge(api: API) -> int:
-    """
-    Purge subcommand.
+    """Purge subcommand.
 
     Arguments:
         api: The API instance to use.

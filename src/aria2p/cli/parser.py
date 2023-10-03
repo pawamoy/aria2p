@@ -18,19 +18,16 @@ import argparse
 from aria2p.client import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_TIMEOUT
 
 
-def check_args(parser: argparse.ArgumentParser, opts: argparse.Namespace) -> None:  # noqa: WPS231 (complex)
-    """
-    Additional checks for command line arguments.
+def check_args(parser: argparse.ArgumentParser, opts: argparse.Namespace) -> None:  # (complex)
+    """Additional checks for command line arguments.
 
     Arguments:
         parser: An argument parser.
         opts: Parsed options.
     """
-    subparsers = [
-        action
-        for action in parser._actions  # noqa: WPS437 (protected attribute)
-        if isinstance(action, argparse._SubParsersAction)  # noqa: WPS437
-    ][0].choices
+    subparsers = next(
+        action for action in parser._actions if isinstance(action, argparse._SubParsersAction)
+    ).choices
 
     gid_commands = (
         "pause",
@@ -52,20 +49,16 @@ def check_args(parser: argparse.ArgumentParser, opts: argparse.Namespace) -> Non
         elif opts.do_all and opts.gids:
             subparsers[opts.subcommand].error("argument -a/--all: not allowed with arguments gids")
     elif opts.subcommand:
-        if opts.subcommand in {"add", "add-magnet", "add-magnets"}:
-            if not opts.uris and not opts.from_file:
-                subparsers[opts.subcommand].error("the following arguments are required: uris")
-        elif opts.subcommand.startswith("add-torrent"):
-            if not opts.torrent_files and not opts.from_file:
-                subparsers[opts.subcommand].error("the following arguments are required: torrent_files")
-        elif opts.subcommand.startswith("add-metalink"):
-            if not opts.metalink_files and not opts.from_file:
-                subparsers[opts.subcommand].error("the following arguments are required: metalink_files")
+        if opts.subcommand in {"add", "add-magnet", "add-magnets"} and opts.uris and not opts.from_file:
+            subparsers[opts.subcommand].error("the following arguments are required: uris")
+        elif opts.subcommand.startswith("add-torrent") and not opts.torrent_files and not opts.from_file:
+            subparsers[opts.subcommand].error("the following arguments are required: torrent_files")
+        elif opts.subcommand.startswith("add-metalink") and not opts.metalink_files and not opts.from_file:
+            subparsers[opts.subcommand].error("the following arguments are required: metalink_files")
 
 
 def parse_options_string(options_string: str | None = None) -> dict:
-    """
-    Parse string of options.
+    """Parse string of options.
 
     Arguments:
         options_string: String of aria2c options.
@@ -83,20 +76,19 @@ def parse_options_string(options_string: str | None = None) -> dict:
             opt, val = download_option.split("=", 1)
         except ValueError:
             raise argparse.ArgumentTypeError(
-                "Options strings must follow this format:\nopt-name=opt-value;opt-name2=opt-value2"
+                "Options strings must follow this format:\nopt-name=opt-value;opt-name2=opt-value2",
             )
         options[opt.strip()] = val.strip()
     return options
 
 
 def get_parser() -> argparse.ArgumentParser:
-    """
-    Return a parser for the command-line options and arguments.
+    """Return a parser for the command-line options and arguments.
 
     Returns:
         An argument parser.
     """
-    usage = "%(prog)s [GLOBAL_OPTS...] COMMAND [COMMAND_OPTS...]"  # noqa: WPS323 (%-formatting)
+    usage = "%(prog)s [GLOBAL_OPTS...] COMMAND [COMMAND_OPTS...]"
     description = "Command-line tool and Python library to interact with an `aria2c` daemon process through JSON-RPC."
     parser = argparse.ArgumentParser(add_help=False, usage=usage, description=description, prog="aria2p")
 
@@ -156,7 +148,7 @@ def get_parser() -> argparse.ArgumentParser:
     # ========= SUBPARSERS ========= #
     subparsers = parser.add_subparsers(dest="subcommand", title="Commands", metavar="", prog="aria2p")
 
-    def subparser(command: str, text: str, **kwargs) -> argparse.ArgumentParser:  # noqa: WPS430 (nested function)
+    def subparser(command: str, text: str, **kwargs) -> argparse.ArgumentParser:
         sub = subparsers.add_parser(command, add_help=False, help=text, description=text, **kwargs)
         sub.add_argument("-h", "--help", action="help", help=subcommand_help)
         return sub
@@ -179,7 +171,7 @@ def get_parser() -> argparse.ArgumentParser:
     listen_parser = subparser("listen", "Listen to notifications.")
 
     # ========= REUSABLE OPTIONS ========= #
-    def add_options_argument(_parser):  # noqa: WPS430
+    def add_options_argument(_parser):
         _parser.add_argument(
             "-o",
             "--options",
@@ -189,7 +181,7 @@ def get_parser() -> argparse.ArgumentParser:
             "Example: 'dir=~/aria2_downloads;max-download-limit=100K'",
         )
 
-    def add_position_argument(_parser):  # noqa: WPS430
+    def add_position_argument(_parser):
         _parser.add_argument(
             "-p",
             "--position",

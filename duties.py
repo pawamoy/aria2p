@@ -61,8 +61,7 @@ def mkdocs_config() -> str:  # noqa: D103
 
 @duty
 def bundle(ctx):
-    """
-    Build a standalone executable.
+    """Build a standalone executable.
 
     Arguments:
         ctx: The [context][duty.logic.Context] instance (passed automatically).
@@ -195,8 +194,7 @@ def check_api(ctx: Context) -> None:
 
 @duty(silent=True)
 def clean_tests(ctx):
-    """
-    Delete temporary tests files.
+    """Delete temporary tests files.
 
     Arguments:
         ctx: The context instance (passed automatically).
@@ -257,7 +255,6 @@ def docs_deploy(ctx: Context) -> None:
 
 
 @duty
-
 def format(ctx: Context) -> None:
     """Run formatting tools on the code.
 
@@ -320,22 +317,6 @@ def test(ctx: Context, match: str = "") -> None:
     """
     py_version = f"{sys.version_info.major}{sys.version_info.minor}"
     os.environ["COVERAGE_FILE"] = f".coverage.{py_version}"
-
-    if WINDOWS and CI:
-        cpus_opts = ["--dist", "no"]
-        verbose_opts = ["-vv"]
-        sugar_opts = ["-p", "no:sugar"]
-        cov_opts = ["--no-cov"]
-    else:
-        cpus_opts = ["--dist", "no"] if cpus == "no" else ["-n", cpus]
-        sugar_opts = [] if sugar is True else ["-p", "no:sugar"]
-        verbose_opts = [] if verbose is False else ["-vv"]
-        cov_opts = [] if cov is True else ["--no-cov"]
-
-    match = ["-k", match] if match else []
-    markers = ["-m", markers] if markers else []
-    options = [*cov_opts, *verbose_opts, *sugar_opts, *cpus_opts, *match, *markers]  # noqa: WPS221
-
     ctx.run(
         pytest.run("-n", "auto", "tests", config_file="config/pytest.ini", select=match, color="yes"),
         title=pyprefix("Running tests"),

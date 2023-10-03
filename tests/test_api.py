@@ -6,9 +6,8 @@ import time
 import pytest
 
 from aria2p import API, Client, ClientException, Download
-
-from . import BUNSENLABS_MAGNET, BUNSENLABS_TORRENT, CONFIGS_DIR, DEBIAN_METALINK, INPUT_FILES, XUBUNTU_MIRRORS
-from .conftest import Aria2Server
+from tests import BUNSENLABS_MAGNET, BUNSENLABS_TORRENT, CONFIGS_DIR, DEBIAN_METALINK, INPUT_FILES, XUBUNTU_MIRRORS
+from tests.conftest import Aria2Server
 
 
 def test_add_magnet_method(server):
@@ -203,7 +202,7 @@ def test_resume_method(tmp_path, port):
         downloads = server.api.get_downloads()
         assert server.api.resume(downloads)
         downloads = server.api.get_downloads()
-        assert all([d.is_active for d in downloads])
+        assert all(d.is_active for d in downloads)
 
 
 def test_resume_all_method(tmp_path, port):
@@ -215,7 +214,7 @@ def test_resume_all_method(tmp_path, port):
         for download in downloads:
             if download.has_failed:
                 pytest.xfail("Failed to establish connection (sporadic error)")
-        assert all([d.is_active for d in downloads])
+        assert all(d.is_active for d in downloads)
 
 
 def test_set_global_options_method(tmp_path, port):
@@ -325,7 +324,9 @@ def test_listen_to_notifications_then_stop(port):
 def test_listen_to_notifications_callbacks(tmp_path, port, capsys):
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         server.api.listen_to_notifications(
-            on_download_start=lambda api, gid: print("started " + gid), threaded=True, timeout=1
+            on_download_start=lambda api, gid: print("started " + gid),
+            threaded=True,
+            timeout=1,
         )
         time.sleep(1)
         server.api.resume_all()

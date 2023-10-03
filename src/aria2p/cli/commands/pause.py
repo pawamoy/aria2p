@@ -3,14 +3,16 @@
 from __future__ import annotations
 
 import sys
+from typing import TYPE_CHECKING
 
-from aria2p.api import API
 from aria2p.client import ClientException
+
+if TYPE_CHECKING:
+    from aria2p.api import API
 
 
 def pause(api: API, gids: list[str] | None = None, do_all: bool = False, force: bool = False) -> int:
-    """
-    Pause subcommand.
+    """Pause subcommand.
 
     Arguments:
         api: The API instance to use.

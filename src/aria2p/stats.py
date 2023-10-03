@@ -1,5 +1,4 @@
-"""
-This module defines the Stats class.
+"""This module defines the Stats class.
 
 It holds information retrieved with the `get_global_stat` method of the client.
 """
@@ -13,8 +12,7 @@ class Stats:
     """This class holds information retrieved with the `get_global_stat` method of the client."""
 
     def __init__(self, struct: dict) -> None:
-        """
-        Initialize the object.
+        """Initialize the object.
 
         Arguments:
             struct: A dictionary Python object returned by the JSON-RPC client.
@@ -23,8 +21,7 @@ class Stats:
 
     @property
     def download_speed(self) -> int:
-        """
-        Overall download speed (byte/sec).
+        """Overall download speed (byte/sec).
 
         Returns:
             The overall download speed in bytes per second.
@@ -32,8 +29,7 @@ class Stats:
         return int(self._struct["downloadSpeed"])
 
     def download_speed_string(self, human_readable: bool = True) -> str:
-        """
-        Return the download speed as string.
+        """Return the download speed as string.
 
         Arguments:
             human_readable: Return in human readable format or not.
@@ -47,8 +43,7 @@ class Stats:
 
     @property
     def upload_speed(self) -> int:
-        """
-        Overall upload speed (byte/sec).
+        """Overall upload speed (byte/sec).
 
         Returns:
             The overall upload speed in bytes per second.
@@ -56,8 +51,7 @@ class Stats:
         return int(self._struct["uploadSpeed"])
 
     def upload_speed_string(self, human_readable: bool = True) -> str:
-        """
-        Return the upload speed as string.
+        """Return the upload speed as string.
 
         Arguments:
             human_readable: Return in human readable format or not.
@@ -71,8 +65,7 @@ class Stats:
 
     @property
     def num_active(self) -> int:
-        """
-        Return the number of active downloads.
+        """Return the number of active downloads.
 
         Returns:
             The number of active downloads.
@@ -81,8 +74,7 @@ class Stats:
 
     @property
     def num_waiting(self) -> int:
-        """
-        Return the number of waiting downloads.
+        """Return the number of waiting downloads.
 
         Returns:
             The number of waiting downloads.
@@ -91,8 +83,7 @@ class Stats:
 
     @property
     def num_stopped(self) -> int:
-        """
-        Return the number of stopped downloads in the current session.
+        """Return the number of stopped downloads in the current session.
 
         This value is capped by the [`--max-download-result`][aria2p.options.Options.max_download_result] option.
 
@@ -103,8 +94,7 @@ class Stats:
 
     @property
     def num_stopped_total(self) -> int:
-        """
-        Return the number of stopped downloads in the current session.
+        """Return the number of stopped downloads in the current session.
 
         This value is not capped by the [`--max-download-result`][aria2p.options.Options.max_download_result] option.
 

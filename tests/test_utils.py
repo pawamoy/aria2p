@@ -22,8 +22,7 @@ from aria2p.utils import bool_or_value, bool_to_str, human_readable_bytes, human
     ],
 )
 def test_human_readable_bytes(args, kwargs, expected):
-    """
-    Test the `human_readable_bytes` function.
+    """Test the `human_readable_bytes` function.
 
     Arguments:
         args: Positional arguments passed to the function.
@@ -49,8 +48,7 @@ def test_human_readable_bytes(args, kwargs, expected):
     ],
 )
 def test_human_readable_timedelta_force_print_0_seconds(td, expected):
-    """
-    Test the `human_readable_timedelta` function.
+    """Test the `human_readable_timedelta` function.
 
     Arguments:
         td: A timedelta.
@@ -71,8 +69,7 @@ def test_human_readable_timedelta_force_print_0_seconds(td, expected):
     ],
 )
 def test_bool_or_value_true_is_true(value, expected):
-    """
-    Test the `bool_or_value` function.
+    """Test the `bool_or_value` function.
 
     Arguments:
         value: Value passed to the function.
@@ -92,8 +89,7 @@ def test_bool_or_value_true_is_true(value, expected):
     ],
 )
 def test_bool_to_str_true_gives_true(value, expected):
-    """
-    Test the `bool_to_str` function.
+    """Test the `bool_to_str` function.
 
     Arguments:
         value: Value passed to the function.

@@ -20,9 +20,8 @@ from aria2p.cli.commands.resume import resume
 from aria2p.cli.commands.show import show
 from aria2p.cli.main import main
 from aria2p.cli.parser import get_parser
-
-from . import BUNSENLABS_MAGNET, TESTS_DATA_DIR
-from .conftest import Aria2Server
+from tests import BUNSENLABS_MAGNET, TESTS_DATA_DIR
+from tests.conftest import Aria2Server
 
 
 def out_lines(cs):
@@ -245,7 +244,7 @@ def test_parse_valid_options(command):
 def test_parse_invalid_options(command, capsys):
     parser = get_parser()
     with pytest.raises(SystemExit):
-        opts = parser.parse_args([command, "http://example.com", "-o", "opt1"])
+        parser.parse_args([command, "http://example.com", "-o", "opt1"])
     assert "Options strings must follow this format" in capsys.readouterr().err
 
 
