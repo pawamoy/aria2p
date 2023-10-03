@@ -1,9 +1,9 @@
 import re
 from itertools import chain
 from pathlib import Path
+import sys
 from textwrap import dedent
 
-import toml
 from jinja2 import StrictUndefined
 from jinja2.sandbox import SandboxedEnvironment
 
@@ -12,11 +12,18 @@ try:
 except ImportError:
     from importlib_metadata import metadata, PackageNotFoundError
 
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
+
 project_dir = Path(".")
-pyproject = toml.load(project_dir / "pyproject.toml")
+with (project_dir / "pyproject.toml").open("rb") as pyproject_file:
+    pyproject = tomllib.load(pyproject_file)
 project = pyproject["project"]
 pdm = pyproject["tool"]["pdm"]
-lock_data = toml.load(project_dir / "pdm.lock")
+with (project_dir / "pdm.lock").open("rb") as lock_file:
+    lock_data = tomllib.load(lock_file)
 lock_pkgs = {pkg["name"].lower(): pkg for pkg in lock_data["package"]}
 project_name = project["name"]
 regex = re.compile(r"(?P<dist>[\w.-]+)(?P<spec>.*)$")

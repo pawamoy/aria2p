@@ -30,7 +30,7 @@ dependencies = [
     "appdirs>=1.4",
     "loguru>=0.5",
     "requests>=2.19",
-    "toml>=0.10",
+    "tomli>=2.0.1",
     "websocket-client>=0.58",
 ]
 
@@ -72,7 +72,7 @@ docs = [
     "mkdocstrings[python]>=0.18",
     "markdown-callouts>=0.2",
     "markdown-exec>=0.5",
-    "toml>=0.10",
+    "tomli>=2.0.1",
 ]
 format = [
     "autoflake>=1.4",
@@ -114,7 +114,6 @@ tests = [
 typing = [
     "mypy>=0.910",
     "types-markdown>=3.3",
-    "types-toml>=0.10",
     "types-setuptools",
     "types-requests",
 ]

@@ -7,6 +7,7 @@ This module contains simple utility classes and functions.
 from __future__ import annotations
 
 import signal
+import sys
 import textwrap
 from datetime import timedelta
 from pathlib import Path
@@ -14,11 +15,15 @@ from types import FrameType
 from typing import Any, Dict
 
 import pkg_resources
-import toml
 from appdirs import user_config_dir
 from loguru import logger
 
 from aria2p.types import PathOrStr
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib  # noqa: WPS440 (variables overlap)
 
 
 class SignalHandler:
@@ -243,14 +248,15 @@ def load_configuration() -> Dict[str, Any]:
     """
 
     config_dict = {}
-    config_dict["DEFAULT"] = toml.loads(default_config)
+    config_dict["DEFAULT"] = tomllib.loads(default_config)
 
     # Check for configuration file
     config_file_path = Path(user_config_dir("aria2p")) / "config.toml"
 
     if config_file_path.exists():
         try:
-            config_dict["USER"] = toml.load(config_file_path)
+            with config_file_path.open("rb") as config_file:
+                config_dict["USER"] = tomllib.load(config_file)
         except Exception as error:  # noqa: W0703 (too broad exception)
             logger.error(f"Failed to load configuration file: {error}")
     else:
