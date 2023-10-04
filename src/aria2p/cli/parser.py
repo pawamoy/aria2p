@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 import argparse
+from typing import Any
 
 from aria2p.client import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_TIMEOUT
 
@@ -21,13 +22,11 @@ from aria2p.client import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_TIMEOUT
 def check_args(parser: argparse.ArgumentParser, opts: argparse.Namespace) -> None:  # (complex)
     """Additional checks for command line arguments.
 
-    Arguments:
+    Parameters:
         parser: An argument parser.
         opts: Parsed options.
     """
-    subparsers = next(
-        action for action in parser._actions if isinstance(action, argparse._SubParsersAction)
-    ).choices
+    subparsers = next(action for action in parser._actions if isinstance(action, argparse._SubParsersAction)).choices
 
     gid_commands = (
         "pause",
@@ -60,7 +59,7 @@ def check_args(parser: argparse.ArgumentParser, opts: argparse.Namespace) -> Non
 def parse_options_string(options_string: str | None = None) -> dict:
     """Parse string of options.
 
-    Arguments:
+    Parameters:
         options_string: String of aria2c options.
 
     Raises:
@@ -75,7 +74,7 @@ def parse_options_string(options_string: str | None = None) -> dict:
         try:
             opt, val = download_option.split("=", 1)
         except ValueError:
-            raise argparse.ArgumentTypeError(
+            raise argparse.ArgumentTypeError(  # noqa: B904,TRY200
                 "Options strings must follow this format:\nopt-name=opt-value;opt-name2=opt-value2",
             )
         options[opt.strip()] = val.strip()
@@ -148,7 +147,7 @@ def get_parser() -> argparse.ArgumentParser:
     # ========= SUBPARSERS ========= #
     subparsers = parser.add_subparsers(dest="subcommand", title="Commands", metavar="", prog="aria2p")
 
-    def subparser(command: str, text: str, **kwargs) -> argparse.ArgumentParser:
+    def subparser(command: str, text: str, **kwargs: Any) -> argparse.ArgumentParser:
         sub = subparsers.add_parser(command, add_help=False, help=text, description=text, **kwargs)
         sub.add_argument("-h", "--help", action="help", help=subcommand_help)
         return sub
@@ -171,7 +170,7 @@ def get_parser() -> argparse.ArgumentParser:
     listen_parser = subparser("listen", "Listen to notifications.")
 
     # ========= REUSABLE OPTIONS ========= #
-    def add_options_argument(_parser):
+    def add_options_argument(_parser: argparse.ArgumentParser) -> None:
         _parser.add_argument(
             "-o",
             "--options",
@@ -181,7 +180,7 @@ def get_parser() -> argparse.ArgumentParser:
             "Example: 'dir=~/aria2_downloads;max-download-limit=100K'",
         )
 
-    def add_position_argument(_parser):
+    def add_position_argument(_parser: argparse.ArgumentParser) -> None:
         _parser.add_argument(
             "-p",
             "--position",

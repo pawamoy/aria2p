@@ -20,7 +20,7 @@ def add_torrents(
 ) -> int:
     """Add torrent subcommand.
 
-    Arguments:
+    Parameters:
         api: The API instance to use.
         torrent_files: The paths to the torrent files.
         from_file: Path to the file to read torrent files paths from.

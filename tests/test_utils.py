@@ -1,6 +1,9 @@
 """Tests for the `utils` module."""
 
+from __future__ import annotations
+
 from datetime import timedelta
+from typing import Any
 
 import pytest
 
@@ -21,10 +24,10 @@ from aria2p.utils import bool_or_value, bool_to_str, human_readable_bytes, human
         ([2048 * 1024 * 1024 * 1024], {}, "2.00TiB"),
     ],
 )
-def test_human_readable_bytes(args, kwargs, expected):
+def test_human_readable_bytes(args: list[int], kwargs: Any, expected: str) -> None:
     """Test the `human_readable_bytes` function.
 
-    Arguments:
+    Parameters:
         args: Positional arguments passed to the function.
         kwargs: Keyword arguments passed to the function.
         expected: The expected result.
@@ -47,10 +50,10 @@ def test_human_readable_bytes(args, kwargs, expected):
         (timedelta(seconds=60 * 3), "3m"),
     ],
 )
-def test_human_readable_timedelta_force_print_0_seconds(td, expected):
+def test_human_readable_timedelta_force_print_0_seconds(td: timedelta, expected: str) -> None:
     """Test the `human_readable_timedelta` function.
 
-    Arguments:
+    Parameters:
         td: A timedelta.
         expected: The expected result.
     """
@@ -68,10 +71,10 @@ def test_human_readable_timedelta_force_print_0_seconds(td, expected):
         (1, 1),
     ],
 )
-def test_bool_or_value_true_is_true(value, expected):
+def test_bool_or_value_true_is_true(value: str | int | None, expected: bool | str | int | None) -> None:
     """Test the `bool_or_value` function.
 
-    Arguments:
+    Parameters:
         value: Value passed to the function.
         expected: The expected result.
     """
@@ -88,10 +91,10 @@ def test_bool_or_value_true_is_true(value, expected):
         (1, 1),
     ],
 )
-def test_bool_to_str_true_gives_true(value, expected):
+def test_bool_to_str_true_gives_true(value: bool | int | None, expected: str | int | None) -> None:
     """Test the `bool_to_str` function.
 
-    Arguments:
+    Parameters:
         value: Value passed to the function.
         expected: The expected result.
     """

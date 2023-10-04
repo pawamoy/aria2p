@@ -58,8 +58,8 @@ def main(args: list[str] | None = None) -> int:
 
     This function is executed when you type `aria2p` or `python -m aria2p`.
 
-    Arguments:
-        args: Arguments passed from the command line.
+    Parameters:
+        args: Parameters passed from the command line.
 
     Returns:
         An exit code.

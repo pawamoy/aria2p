@@ -20,7 +20,7 @@ def add_metalinks(
 ) -> int:
     """Add metalink subcommand.
 
-    Arguments:
+    Parameters:
         api: The API instance to use.
         metalink_files: The paths to the metalink files.
         from_file: Path to the file to metalink files paths from.

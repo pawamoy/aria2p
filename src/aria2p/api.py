@@ -41,7 +41,7 @@ class API:
     def __init__(self, client: Client | None = None) -> None:
         """Initialize the object.
 
-        Arguments:
+        Parameters:
             client: An instance of the [aria2p.client.Client][] class.
         """
         self.client = client or Client()
@@ -61,7 +61,7 @@ class API:
         If the provided URI is in fact a file-path, and is neither a torrent or a metalink,
         then we read its lines and try to add each line as a download, recursively.
 
-        Arguments:
+        Parameters:
             uri: The URI or file-path to add.
             options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
                 containing aria2c options to create the download with.
@@ -102,7 +102,7 @@ class API:
     def add_magnet(self, magnet_uri: str, options: OptionsType | None = None, position: int | None = None) -> Download:
         """Add a download with a Magnet URI.
 
-        Arguments:
+        Parameters:
             magnet_uri: The Magnet URI.
             options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
                 containing aria2c options to create the download with.
@@ -129,7 +129,7 @@ class API:
     ) -> Download:
         """Add a download with a torrent file (usually .torrent extension).
 
-        Arguments:
+        Parameters:
             torrent_file_path: The path to the torrent file.
             uris: A list of URIs used for Web-seeding.
             options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
@@ -163,7 +163,7 @@ class API:
     ) -> list[Download]:
         """Add a download with a Metalink file.
 
-        Arguments:
+        Parameters:
             metalink_file_path: The path to the Metalink file.
             options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
                 containing aria2c options to create the download with.
@@ -193,7 +193,7 @@ class API:
     ) -> Download:
         """Add a download with a URL (or more).
 
-        Arguments:
+        Parameters:
             uris: A list of URIs that point to the same resource.
             options: An instance of the `Options` class or a dictionary
                 containing aria2c options to create the download with.
@@ -217,7 +217,7 @@ class API:
 
         Search and return [`Download`][aria2p.downloads.Download] objects based on multiple patterns.
 
-        Arguments:
+        Parameters:
             patterns: The patterns used to filter the download list.
 
         Raises:
@@ -258,7 +258,7 @@ class API:
     def get_download(self, gid: str) -> Download:
         """Get a [`Download`][aria2p.downloads.Download] object thanks to its GID.
 
-        Arguments:
+        Parameters:
             gid: The GID of the download to get.
 
         Returns:
@@ -269,7 +269,7 @@ class API:
     def get_downloads(self, gids: list[str] | None = None) -> list[Download]:
         """Get a list of [`Download`][aria2p.downloads.Download] object thanks to their GIDs.
 
-        Arguments:
+        Parameters:
             gids: The GIDs of the downloads to get. If None, return all the downloads.
 
         Returns:
@@ -292,7 +292,7 @@ class API:
     def move(self, download: Download, pos: int) -> int:
         """Move a download in the queue, relatively to its current position.
 
-        Arguments:
+        Parameters:
             download: The download object to move.
             pos: The relative position (1 to move down, -1 to move up, -2 to move up two times, etc.).
 
@@ -304,7 +304,7 @@ class API:
     def move_to(self, download: Download, pos: int) -> int:
         """Move a download in the queue, with absolute positioning.
 
-        Arguments:
+        Parameters:
             download: The download object to move.
             pos: The absolute position in the queue where to move the download. 0 for top, -1 for bottom.
 
@@ -321,7 +321,7 @@ class API:
     def move_up(self, download: Download, pos: int = 1) -> int:
         """Move a download up in the queue.
 
-        Arguments:
+        Parameters:
             download: The download object to move.
             pos: Number of times to move up. With negative values, will move down (use move or move_down instead).
 
@@ -333,7 +333,7 @@ class API:
     def move_down(self, download: Download, pos: int = 1) -> int:
         """Move a download down in the queue.
 
-        Arguments:
+        Parameters:
             download: The download object to move.
             pos: Number of times to move down. With negative values, will move up (use move or move_up instead).
 
@@ -345,7 +345,7 @@ class API:
     def move_to_top(self, download: Download) -> int:
         """Move a download to the top of the queue.
 
-        Arguments:
+        Parameters:
             download: The download object to move.
 
         Returns:
@@ -356,7 +356,7 @@ class API:
     def move_to_bottom(self, download: Download) -> int:
         """Move a download to the bottom of the queue.
 
-        Arguments:
+        Parameters:
             download: The download object to move.
 
         Returns:
@@ -367,11 +367,11 @@ class API:
     def retry_downloads(
         self,
         downloads: list[Download],
-        clean: bool = False,
+        clean: bool = False,  # noqa: FBT001,FBT002
     ) -> list[OperationResult]:
         """Resume failed downloads from where they left off with new GIDs.
 
-        Arguments:
+        Parameters:
             downloads: The list of downloads to remove.
             clean: Whether to remove the aria2 control file as well.
 
@@ -403,13 +403,13 @@ class API:
     def remove(
         self,
         downloads: list[Download],
-        force: bool = False,
-        files: bool = False,
-        clean: bool = True,
+        force: bool = False,  # noqa: FBT001,FBT002
+        files: bool = False,  # noqa: FBT001,FBT002
+        clean: bool = True,  # noqa: FBT001,FBT002
     ) -> list[OperationResult]:
         """Remove the given downloads from the list.
 
-        Arguments:
+        Parameters:
             downloads: The list of downloads to remove.
             force: Whether to force the removal or not.
             files: Whether to remove downloads files as well.
@@ -468,10 +468,10 @@ class API:
 
         return result
 
-    def remove_all(self, force: bool = False) -> bool:
+    def remove_all(self, force: bool = False) -> bool:  # noqa: FBT001,FBT002
         """Remove all downloads from the list.
 
-        Arguments:
+        Parameters:
             force: Whether to force the removal or not.
 
         Returns:
@@ -479,10 +479,10 @@ class API:
         """
         return all(self.remove(self.get_downloads(), force=force))
 
-    def pause(self, downloads: list[Download], force: bool = False) -> list[OperationResult]:
+    def pause(self, downloads: list[Download], force: bool = False) -> list[OperationResult]:  # noqa: FBT001,FBT002
         """Pause the given (active) downloads.
 
-        Arguments:
+        Parameters:
             downloads: The list of downloads to pause.
             force: Whether to pause immediately without contacting servers or not.
 
@@ -506,10 +506,10 @@ class API:
 
         return result
 
-    def pause_all(self, force: bool = False) -> bool:
+    def pause_all(self, force: bool = False) -> bool:  # noqa: FBT001,FBT002
         """Pause all (active) downloads.
 
-        Arguments:
+        Parameters:
             force: Whether to pause immediately without contacting servers or not.
 
         Returns:
@@ -521,7 +521,7 @@ class API:
     def resume(self, downloads: list[Download]) -> list[OperationResult]:
         """Resume (unpause) the given downloads.
 
-        Arguments:
+        Parameters:
             downloads: The list of downloads to resume.
 
         Returns:
@@ -572,7 +572,7 @@ class API:
     def get_options(self, downloads: list[Download]) -> list[Options]:
         """Get options for each of the given downloads.
 
-        Arguments:
+        Parameters:
             downloads: The list of downloads to get the options of.
 
         Returns:
@@ -595,7 +595,7 @@ class API:
     def set_options(self, options: OptionsType, downloads: list[Download]) -> list[bool]:
         """Set options for specific downloads.
 
-        Arguments:
+        Parameters:
             options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
                 containing aria2c options to create the download with.
             downloads: The list of downloads to set the options for.
@@ -614,7 +614,7 @@ class API:
     def set_global_options(self, options: OptionsType) -> bool:
         """Set global options.
 
-        Arguments:
+        Parameters:
             options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
                 containing aria2c options to create the download with.
 
@@ -636,11 +636,11 @@ class API:
     @staticmethod
     def remove_files(
         downloads: list[Download],
-        force: bool = False,
+        force: bool = False,  # noqa: FBT001,FBT002
     ) -> list[bool]:
         """Remove downloaded files.
 
-        Arguments:
+        Parameters:
             downloads:  the list of downloads for which to remove files.
             force: Whether to remove files even if download is not complete.
 
@@ -675,11 +675,11 @@ class API:
     def move_files(
         downloads: list[Download],
         to_directory: PathOrStr,
-        force: bool = False,
+        force: bool = False,  # noqa: FBT001,FBT002
     ) -> list[bool]:
         """Move downloaded files to another directory.
 
-        Arguments:
+        Parameters:
             downloads:  the list of downloads for which to move files.
             to_directory: The target directory to move files to.
             force: Whether to move files even if download is not complete.
@@ -707,11 +707,11 @@ class API:
     def copy_files(
         downloads: list[Download],
         to_directory: PathOrStr,
-        force: bool = False,
+        force: bool = False,  # noqa: FBT001,FBT002
     ) -> list[bool]:
         """Copy downloaded files to another directory.
 
-        Arguments:
+        Parameters:
             downloads:  the list of downloads for which to move files.
             to_directory: The target directory to copy files into.
             force: Whether to move files even if download is not complete.
@@ -741,7 +741,7 @@ class API:
 
     def listen_to_notifications(
         self,
-        threaded: bool = False,
+        threaded: bool = False,  # noqa: FBT001,FBT002
         on_download_start: Callable | None = None,
         on_download_pause: Callable | None = None,
         on_download_stop: Callable | None = None,
@@ -749,7 +749,7 @@ class API:
         on_download_error: Callable | None = None,
         on_bt_download_complete: Callable | None = None,
         timeout: int = 5,
-        handle_signals: bool = True,
+        handle_signals: bool = True,  # noqa: FBT001,FBT002
     ) -> None:
         """Start listening to aria2 notifications via WebSocket.
 
@@ -759,7 +759,7 @@ class API:
 
         Stop listening to notifications with the [`API.stop_listening`][aria2p.api.API.stop_listening] method.
 
-        Arguments:
+        Parameters:
             threaded: Whether to start the listening loop in a thread or not (non-blocking or blocking).
             on_download_start: Callback for the `onDownloadStart` event.
             on_download_pause: Callback for the `onDownloadPause` event.
@@ -772,7 +772,7 @@ class API:
             handle_signals: Whether to add signal handlers to gracefully stop the loop on SIGTERM and SIGINT.
         """
 
-        def closure(callback):
+        def closure(callback: Callable) -> Callable:
             return functools.partial(callback, self) if callable(callback) else None
 
         kwargs = {
@@ -808,7 +808,7 @@ class API:
     def split_input_file(self, lines: list[str] | TextIO) -> Iterator[list[str]]:
         """Helper to split downloads in an input file.
 
-        Arguments:
+        Parameters:
              lines: The lines of the input file.
 
         Yields:
@@ -820,10 +820,9 @@ class API:
                 continue
             if not line.strip():  # Ignore empty line
                 continue
-            if not line.startswith(" "):  # URIs line
-                if block:
-                    yield block
-                    block = []
+            if not line.startswith(" ") and block:  # URIs line
+                yield block
+                block = []
             block.append(line.rstrip("\n"))
         if block:
             yield block
@@ -831,7 +830,7 @@ class API:
     def parse_input_file(self, input_file: PathOrStr) -> InputFileContentsType:
         """Parse a file with URIs or an aria2c input file.
 
-        Arguments:
+        Parameters:
             input_file: Path to file with URIs or aria2c input file.
 
         Returns:

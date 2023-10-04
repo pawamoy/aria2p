@@ -7,7 +7,7 @@ process through the JSON-RPC protocol.
 from __future__ import annotations
 
 import json
-from typing import Any, Callable, List, Tuple, Union
+from typing import Any, Callable, ClassVar, List, Tuple, Union
 
 import requests
 import websocket
@@ -61,7 +61,7 @@ class ClientException(Exception):  # noqa: N818
     def __init__(self, code: int, message: str) -> None:
         """Initialize the exception.
 
-        Arguments:
+        Parameters:
             code: The error code.
             message: The error message.
         """
@@ -141,7 +141,7 @@ class Client:
     LIST_METHODS = "system.listMethods"
     LIST_NOTIFICATIONS = "system.listNotifications"
 
-    METHODS = [
+    METHODS: ClassVar[list[str]] = [
         ADD_URI,
         ADD_TORRENT,
         ADD_METALINK,
@@ -189,7 +189,7 @@ class Client:
     ) -> None:
         """Initialize the object.
 
-        Arguments:
+        Parameters:
             host: The remote process address.
             port: The remote process port.
             secret: The secret token.
@@ -232,11 +232,11 @@ class Client:
         method: str,
         params: list[Any] | None = None,
         msg_id: int | str | None = None,
-        insert_secret: bool = True,
+        insert_secret: bool = True,  # noqa: FBT001,FBT002
     ) -> CallReturnType:
         """Call a single JSON-RPC method.
 
-        Arguments:
+        Parameters:
             method: The method name. You can use the constant defined in [`Client`][aria2p.client.Client].
             params: A list of parameters.
             msg_id: The ID of the call, sent back with the server's answer.
@@ -260,7 +260,7 @@ class Client:
     def batch_call(
         self,
         calls: CallsType,
-        insert_secret: bool = True,
+        insert_secret: bool = True,  # noqa: FBT001,FBT002
     ) -> list[CallReturnType]:
         """Call multiple methods in one request.
 
@@ -273,7 +273,7 @@ class Client:
         - as a result of the previous line, you must pass different IDs to the batch_call methods, whereas the
           ID in multicall is optional
 
-        Arguments:
+        Parameters:
             calls: A list of tuples composed of method name, parameters and ID.
             insert_secret: Whether to insert the secret token in the parameters or not.
 
@@ -283,7 +283,7 @@ class Client:
         payloads = []
 
         for method, params, msg_id in calls:
-            params = self.get_params(*params)
+            params = self.get_params(*params)  # noqa: PLW2901
             if insert_secret and self.secret and method.startswith("aria2."):
                 params.insert(0, f"token:{self.secret}")
             payloads.append(self.get_payload(method, params, msg_id, as_json=False))
@@ -292,7 +292,7 @@ class Client:
         responses = self.post(payload)
         return [self.res_or_raise(resp) for resp in responses]
 
-    def multicall2(self, calls: Multicalls2Type, insert_secret: bool = True) -> CallReturnType:
+    def multicall2(self, calls: Multicalls2Type, insert_secret: bool = True) -> CallReturnType:  # noqa: FBT001,FBT002
         """Call multiple methods in one request.
 
         A method equivalent to multicall, but with a simplified usage.
@@ -318,7 +318,7 @@ class Client:
             multicall2 is not part of the JSON-RPC protocol specification.
             It is implemented here as a simple convenience method.
 
-        Arguments:
+        Parameters:
             calls: List of tuples composed of method name and parameters.
             insert_secret: Whether to insert the secret token in the parameters or not.
 
@@ -328,7 +328,7 @@ class Client:
         multicall_params = []
 
         for method, params in calls:
-            params = self.get_params(*params)
+            params = self.get_params(*params)  # noqa: PLW2901
             if insert_secret and self.secret and method.startswith("aria2."):
                 params.insert(0, f"token:{self.secret}")
             multicall_params.append({"methodName": method, "params": params})
@@ -341,7 +341,7 @@ class Client:
 
         The response is a JSON string, which we then load as a Python object.
 
-        Arguments:
+        Parameters:
             payload: The payload / data to send to the remote process. It contains the following key-value pairs:
                 "jsonrpc": "2.0", "method": method, "id": id, "params": params (optional).
 
@@ -354,7 +354,7 @@ class Client:
     def response_as_exception(response: dict) -> ClientException:
         """Transform the response as a [`ClientException`][aria2p.client.ClientException] instance and return it.
 
-        Arguments:
+        Parameters:
             response: A response sent by the server.
 
         Returns:
@@ -366,7 +366,7 @@ class Client:
     def res_or_raise(response: dict) -> CallReturnType:
         """Return the result of the response, or raise an error with code and message.
 
-        Arguments:
+        Parameters:
             response: A response sent by the server.
 
         Returns:
@@ -385,11 +385,11 @@ class Client:
         method: str,
         params: list[Any] | None = None,
         msg_id: int | str | None = None,
-        as_json: bool = True,
+        as_json: bool = True,  # noqa: FBT001,FBT002
     ) -> str | dict:
         """Build a payload.
 
-        Arguments:
+        Parameters:
             method: The method name. You can use the constant defined in [`Client`][aria2p.client.Client].
             params: The list of parameters.
             msg_id: The ID of the call, sent back with the server's answer.
@@ -416,7 +416,7 @@ class Client:
 
         This method simply removes the `None` values from the given arguments.
 
-        Arguments:
+        Parameters:
             *args: List of parameters.
 
         Returns:
@@ -438,7 +438,7 @@ class Client:
 
             aria2.addUri([secret], uris[, options[, position]])
 
-        Arguments:
+        Parameters:
             uris: `uris` is an array of HTTP/FTP/SFTP/BitTorrent URIs (strings) pointing to the same resource.
                 If you mix URIs pointing to different resources,
                 then the download may fail or be corrupted without aria2 complaining.
@@ -496,7 +496,7 @@ class Client:
         or [`--rpc-save-upload-metadata`][aria2p.options.Options.rpc_save_upload_metadata] is false,
         the downloads added by this method are not saved by [`--save-session`][aria2p.options.Options.save_session].
 
-        Arguments:
+        Parameters:
             torrent: `torrent` must be a base64-encoded string containing the contents of the ".torrent" file.
             uris: `uris` is an array of URIs (string). `uris` is used for Web-seeding.
                 For single file torrents, the URI can be a complete URI pointing to the resource; if URI ends with /,
@@ -551,7 +551,7 @@ class Client:
         or [`--rpc-save-upload-metadata`][aria2p.options.Options.rpc_save_upload_metadata] is false,
         the downloads added by this method are not saved by [`--save-session`][aria2p.options.Options.save_session].
 
-        Arguments:
+        Parameters:
             metalink: `metalink` is a base64-encoded string which contains the contents of the ".metalink" file.
             options: `options` is a struct and its members are pairs of option name and value.
                 See [Options][aria2p.options.Options] for more details.
@@ -590,7 +590,7 @@ class Client:
 
             aria2.remove([secret], gid)
 
-        Arguments:
+        Parameters:
             gid: The download to remove.
 
         Returns:
@@ -623,7 +623,7 @@ class Client:
 
             aria2.forceRemove([secret], gid)
 
-        Arguments:
+        Parameters:
             gid: The download to force remove.
 
         Returns:
@@ -644,7 +644,7 @@ class Client:
 
             aria2.pause([secret], gid)
 
-        Arguments:
+        Parameters:
             gid: The download to pause.
 
         Returns:
@@ -678,7 +678,7 @@ class Client:
 
             aria2.forcePause([secret], gid)
 
-        Arguments:
+        Parameters:
             gid: The download to force pause.
 
         Returns:
@@ -710,7 +710,7 @@ class Client:
 
             aria2.unpause([secret], gid)
 
-        Arguments:
+        Parameters:
             gid: The download to resume.
 
         Returns:
@@ -794,7 +794,7 @@ class Client:
 
             aria2.tellStatus([secret], gid[, keys])
 
-        Arguments:
+        Parameters:
             gid: The download to tell status of.
             keys: The keys to return.
 
@@ -866,7 +866,7 @@ class Client:
 
             aria2.getUris([secret], gid)
 
-        Arguments:
+        Parameters:
             gid: The download to list URIs of.
 
         Returns:
@@ -914,7 +914,7 @@ class Client:
 
             aria2.getFiles([secret], gid)
 
-        Arguments:
+        Parameters:
             gid: The download to list files of.
 
         Returns:
@@ -964,7 +964,7 @@ class Client:
 
             aria2.getPeers([secret], gid)
 
-        Arguments:
+        Parameters:
             gid: The download to get peers from.
 
         Returns:
@@ -1020,7 +1020,7 @@ class Client:
 
             aria2.getServers([secret], gid)
 
-        Arguments:
+        Parameters:
             gid: The download to get servers from.
 
         Returns:
@@ -1052,7 +1052,7 @@ class Client:
 
             aria2.tellActive([secret][, keys])
 
-        Arguments:
+        Parameters:
             keys: The keys to return. Please refer to the [`tell_status()`][aria2p.client.Client.tell_status] method.
 
         Returns:
@@ -1069,7 +1069,7 @@ class Client:
 
             aria2.tellWaiting([secret], offset, num[, keys])
 
-        Arguments:
+        Parameters:
             offset: An integer to specify the offset from the download waiting at the front.
                 If `offset` is a positive integer, this method returns downloads in the range of [`offset`, `offset` + `num`).
                 `offset` can be a negative integer. `offset == -1` points last download in the waiting queue and `offset == -2`
@@ -1094,7 +1094,7 @@ class Client:
 
             aria2.tellStopped([secret], offset, num[, keys])
 
-        Arguments:
+        Parameters:
             offset: Same semantics as described in the [`tell_waiting()`][aria2p.client.Client.tell_waiting] method.
             num: An integer to specify the maximum number of downloads to be returned.
             keys: The keys to return. Please refer to the [`tell_status()`][aria2p.client.Client.tell_status] method.
@@ -1113,7 +1113,7 @@ class Client:
 
             aria2.changePosition([secret], gid, pos, how)
 
-        Arguments:
+        Parameters:
             gid: The download to change the position of.
             pos: An integer.
             how: `POS_SET`, `POS_CUR` or `POS_END`.
@@ -1161,7 +1161,7 @@ class Client:
 
             aria2.changeUri([secret], gid, fileIndex, delUris, addUris[, position])
 
-        Arguments:
+        Parameters:
             gid: The download to change URIs of.
             file_index: Used to select which file to remove/attach given URIs. `file_index` is 1-based.
             del_uris: List of strings.
@@ -1207,7 +1207,7 @@ class Client:
 
             aria2.getOption([secret], gid)
 
-        Arguments:
+        Parameters:
             gid: The download to get the options of.
 
         Returns:
@@ -1244,7 +1244,7 @@ class Client:
 
             aria2.changeOption([secret], gid, options)
 
-        Arguments:
+        Parameters:
             gid: The download to change options of.
             options: The options listed in Input File subsection are available, except for following options:
 
@@ -1310,7 +1310,7 @@ class Client:
 
             aria2.changeGlobalOption([secret], options)
 
-        Arguments:
+        Parameters:
             options: The following options are available:
 
                 - `bt-max-open-files`
@@ -1395,7 +1395,7 @@ class Client:
 
             aria2.removeDownloadResult([secret], gid)
 
-        Arguments:
+        Parameters:
             gid: The download result to remove.
 
         Returns:
@@ -1530,7 +1530,7 @@ class Client:
 
             system.multicall(methods)
 
-        Arguments:
+        Parameters:
             methods: An array of structs. The structs contain two keys: `methodName` and `params`.
                 - `methodName` is the method name to call and
                 - `params` is array containing parameters to the method call.
@@ -1645,7 +1645,7 @@ class Client:
         on_download_error: Callable | None = None,
         on_bt_download_complete: Callable | None = None,
         timeout: int = 5,
-        handle_signals: bool = True,
+        handle_signals: bool = True,  # noqa: FBT001,FBT002
     ) -> None:
         """Start listening to aria2 notifications via WebSocket.
 
@@ -1655,7 +1655,7 @@ class Client:
 
         Stop listening to notifications with the [`stop_listening`][aria2p.client.Client.stop_listening] method.
 
-        Arguments:
+        Parameters:
             on_download_start: Callback for the `onDownloadStart` event.
             on_download_pause: Callback for the `onDownloadPause` event.
             on_download_stop: Callback for the `onDownloadStop` event.
@@ -1739,7 +1739,7 @@ class Notification:
     def __init__(self, event_type: str, gid: str) -> None:
         """Initialize the object.
 
-        Arguments:
+        Parameters:
             event_type: The notification type. Possible types are available in the NOTIFICATION_TYPES variable.
             gid: The GID of the download related to the notification.
         """
@@ -1750,7 +1750,7 @@ class Notification:
     def get_or_raise(message: dict) -> Notification:
         """Raise a ClientException when the message is invalid or return a Notification instance.
 
-        Arguments:
+        Parameters:
             message: The JSON-loaded message received over WebSocket.
 
         Returns:
@@ -1769,7 +1769,7 @@ class Notification:
 
         This method expects a valid message (not containing errors).
 
-        Arguments:
+        Parameters:
             message: A valid message received over WebSocket.
 
         Returns:

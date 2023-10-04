@@ -20,7 +20,7 @@ def add_magnets(
 ) -> int:
     """Add magnet subcommand.
 
-    Arguments:
+    Parameters:
         api: The API instance to use.
         uris: The URIs of the magnets.
         from_file: Path to the file to read uris from.

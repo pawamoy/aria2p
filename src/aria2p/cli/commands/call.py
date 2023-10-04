@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 def get_method(name: str) -> str | None:
     """Return the actual aria2 method name from a differently formatted name.
 
-    Arguments:
+    Parameters:
         name: A method name.
 
     Returns:
@@ -37,7 +37,7 @@ def get_method(name: str) -> str | None:
 def call(api: API, method: str, params: str | list[str]) -> int:
     """Call subcommand.
 
-    Arguments:
+    Parameters:
         api: The API instance to use.
         method: Name of the method to call.
         params: Parameters to use when calling method.

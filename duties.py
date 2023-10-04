@@ -60,10 +60,10 @@ def mkdocs_config() -> str:  # noqa: D103
 
 
 @duty
-def bundle(ctx):
+def bundle(ctx: Context) -> None:
     """Build a standalone executable.
 
-    Arguments:
+    Parameters:
         ctx: The [context][duty.logic.Context] instance (passed automatically).
     """
     ctx.run(
@@ -193,10 +193,10 @@ def check_api(ctx: Context) -> None:
 
 
 @duty(silent=True)
-def clean_tests(ctx):
+def clean_tests(ctx: Context) -> None:
     """Delete temporary tests files.
 
-    Arguments:
+    Parameters:
         ctx: The context instance (passed automatically).
     """
     ctx.run("rm -rf .ports.json")

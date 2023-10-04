@@ -17,7 +17,7 @@ except ImportError:
 def top(api: API) -> int:
     """Top subcommand.
 
-    Arguments:
+    Parameters:
         api: The API instance to use.
 
     Returns:

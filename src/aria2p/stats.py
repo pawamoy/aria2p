@@ -14,7 +14,7 @@ class Stats:
     def __init__(self, struct: dict) -> None:
         """Initialize the object.
 
-        Arguments:
+        Parameters:
             struct: A dictionary Python object returned by the JSON-RPC client.
         """
         self._struct = struct or {}
@@ -28,10 +28,10 @@ class Stats:
         """
         return int(self._struct["downloadSpeed"])
 
-    def download_speed_string(self, human_readable: bool = True) -> str:
+    def download_speed_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
         """Return the download speed as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -50,10 +50,10 @@ class Stats:
         """
         return int(self._struct["uploadSpeed"])
 
-    def upload_speed_string(self, human_readable: bool = True) -> str:
+    def upload_speed_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
         """Return the upload speed as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 def purge(api: API) -> int:
     """Purge subcommand.
 
-    Arguments:
+    Parameters:
         api: The API instance to use.
 
     Returns:

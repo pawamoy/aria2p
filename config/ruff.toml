@@ -1,6 +1,7 @@
 target-version = "py38"
 line-length = 132
 exclude = [
+    "tests/data",
     "fixtures",
     "site",
 ]
@@ -61,6 +62,7 @@ ignore = [
     "ARG005",  # Unused lambda argument
     "C901",  # Too complex
     "D105",  # Missing docstring in magic method
+    "D214",  # Section is over-indented
     "D417",  # Missing argument description in the docstring
     "E501",  # Line too long
     "ERA001",  # Commented out code
@@ -70,11 +72,12 @@ ignore = [
     "PLR0913",  # Too many arguments to function call
     "PLR0915",  # Too many statements
     "SLF001", # Private member accessed
-    "TRY003",  # Avoid specifying long messages outside the exception class
+    "TRY003",  # Avoid specifying long messages outside the exception class,
+    "PGH003",
 ]
 
 [per-file-ignores]
-"src/*/cli.py" = [
+"src/*/cli/*.py" = [
     "T201",  # Print statement
 ]
 "scripts/*.py" = [
@@ -83,6 +86,9 @@ ignore = [
 ]
 "tests/*.py" = [
     "ARG005",  # Unused lambda argument
+    "D101",  # Missing docstring in public class
+    "D102",  # Missing docstring in public method
+    "D103",  # Missing docstring in public function
     "FBT001",  # Boolean positional arg in function definition
     "PLR2004",  # Magic value used in comparison
     "S101",  # Use of assert detected

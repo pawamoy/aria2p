@@ -20,7 +20,7 @@ import sys
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import TYPE_CHECKING, Sequence
+from typing import TYPE_CHECKING, Callable, ClassVar, Sequence
 
 import pyperclip
 import requests
@@ -41,7 +41,7 @@ configs = load_configuration()
 def key_bind_parser(action: str) -> list[Key]:
     """Return a list of Key instances.
 
-    Arguments:
+    Parameters:
         action: The action name.
 
     Returns:
@@ -54,14 +54,13 @@ def key_bind_parser(action: str) -> list[Key]:
 
     if isinstance(key_binds, list):
         return [Key(k) for k in key_binds]
-    else:
-        return [Key(key_binds)]
+    return [Key(key_binds)]
 
 
 def color_palette_parser(palette: str) -> tuple[int, int, int]:
     """Return a color tuple (foreground color, mode, background color).
 
-    Arguments:
+    Parameters:
         palette: The palette name.
 
     Returns:
@@ -101,7 +100,7 @@ def color_palette_parser(palette: str) -> tuple[int, int, int]:
 class Key:
     """A class to represent an input key."""
 
-    OTHER_KEY_VALUES = {
+    OTHER_KEY_VALUES: ClassVar[dict[str, int]] = {
         "F1": Screen.KEY_F1,
         "F2": Screen.KEY_F2,
         "F3": Screen.KEY_F3,
@@ -133,7 +132,7 @@ class Key:
     def __init__(self, name: str, value: int | None = None) -> None:
         """Initialize the object.
 
-        Arguments:
+        Parameters:
             name: The key name.
             value: The key value.
         """
@@ -142,7 +141,7 @@ class Key:
             value = self.get_value(name)
         self.value = value
 
-    def get_value(self, name: str) -> int:
+    def get_value(self, name: str) -> int:  # noqa: D102
         try:
             value = ord(name)
         except TypeError:
@@ -187,21 +186,20 @@ class Keys:
     MOVE_END = key_bind_parser("MOVE_END")
     MOVE_UP_STEP = key_bind_parser("MOVE_UP_STEP")
     MOVE_DOWN_STEP = key_bind_parser("MOVE_DOWN_STEP")
-    TOGGLE_RESUME_PAUSE_ALL = key_bind_parser("TOGGLE_RESUME_PAUSE_ALL")
     RETRY = key_bind_parser("RETRY")
     RETRY_ALL = key_bind_parser("RETRY_ALL")
     ADD_DOWNLOADS = key_bind_parser("ADD_DOWNLOADS")
 
     @staticmethod
-    def names(keys_list):
+    def names(keys_list: list[Key]) -> list[str]:  # noqa: D102
         return [key.name for key in keys_list]
 
     @staticmethod
-    def values(keys_list):
+    def values(keys_list: list[Key]) -> list[int]:  # noqa: D102
         return [key.value for key in keys_list]
 
 
-class Exit(Exception):
+class Exit(Exception):  # noqa: N818
     """A simple exception to exit the interactive interface."""
 
 
@@ -213,15 +211,22 @@ class Column:
     and to get a color palette based on the text.
     """
 
-    def __init__(self, header, padding, get_text, get_sort, get_palette):
+    def __init__(
+        self,
+        header: str,
+        padding: str,
+        get_text: Callable,
+        get_sort: Callable,
+        get_palette: Callable,
+    ) -> None:
         """Initialize the object.
 
-        Arguments:
-            header (str): The string to display on top.
-            padding (str): How to align the text.
-            get_text (func): Function accepting a Download as argument and returning the text to display.
-            get_sort (func): Function accepting a Download as argument and returning the attribute used to sort.
-            get_palette (func): Function accepting text as argument and returning a palette or a palette identifier.
+        Parameters:
+            header: The string to display on top.
+            padding: How to align the text.
+            get_text: Function accepting a Download as argument and returning the text to display.
+            get_sort: Function accepting a Download as argument and returning the attribute used to sort.
+            get_palette: Function accepting text as argument and returning a palette or a palette identifier.
         """
         self.header = header
         self.padding = padding
@@ -237,28 +242,28 @@ class HorizontalScroll:
     the first N characters will not be printed.
     """
 
-    def __init__(self, screen, scroll=0):
+    def __init__(self, screen: Screen, scroll: int = 0) -> None:
         """Initialize the object.
 
-        Arguments:
+        Parameters:
             screen (Screen): The asciimatics screen object.
             scroll (int): Base scroll to use when printing. Will decrease by one with each character skipped.
         """
         self.screen = screen
         self.scroll = scroll
 
-    def set_scroll(self, scroll):
+    def set_scroll(self, scroll: int) -> None:
         """Set the scroll value."""
         self.scroll = scroll
 
-    def print_at(self, text, x, y, palette) -> int:
+    def print_at(self, text: str, x: int, y: int, palette: list | tuple) -> int:
         """Wrapper print_at method.
 
-        Arguments:
-            text (str): Text to print.
-            x (int): X axis position / column.
-            y (int): Y axis position / row.
-            palette (list | tuple): A length-3 tuple or a list of length-3 tuples representing asciimatics palettes.
+        Parameters:
+            text: Text to print.
+            x: X axis position / column.
+            y: Y axis position / row.
+            palette: A length-3 tuple or a list of length-3 tuples representing asciimatics palettes.
 
         Returns:
             The number of characters actually printed.
@@ -290,12 +295,12 @@ class Palette:
     """A simple class to hold palettes getters."""
 
     @staticmethod
-    def status(value):
+    def status(value: str) -> str:
         """Return the palette for a STATUS cell."""
         return "status_" + value
 
     @staticmethod
-    def name(value):
+    def name(value: str) -> str:
         """Return the palette for a NAME cell."""
         if value.startswith("[METADATA]"):
             return (
@@ -321,7 +326,7 @@ class Interface:
     - remove/change the few events with "download" or "self.api" in the process_event method
     """
 
-    class State:
+    class State:  # noqa: D106
         MAIN = 0
         HELP = 1
         SETUP = 2
@@ -345,13 +350,13 @@ class Interface:
     width = None
     height = None
     screen = None
-    data: list[Download] = []
-    rows: list[Sequence[str]] = []
+    data: ClassVar[list[Download]] = []
+    rows: ClassVar[list[Sequence[str]]] = []
     scroller = None
     follow = None
-    bounds: list[Sequence[int]] = []
+    bounds: ClassVar[list[Sequence[int]]] = []
 
-    palettes: dict[str, tuple[int, int, int]] = defaultdict(lambda: color_palette_parser("UI"))
+    palettes: ClassVar[dict[str, tuple[int, int, int]]] = defaultdict(lambda: color_palette_parser("UI"))
     palettes.update(
         {
             "ui": color_palette_parser("UI"),
@@ -371,8 +376,8 @@ class Interface:
         },
     )
 
-    columns_order = ["gid", "status", "progress", "size", "down_speed", "up_speed", "eta", "name"]
-    columns = {
+    columns_order: ClassVar[list[str]] = ["gid", "status", "progress", "size", "down_speed", "up_speed", "eta", "name"]
+    columns: ClassVar[dict[str, Column]] = {
         "gid": Column(
             header="GID",
             padding=">16",
@@ -432,7 +437,7 @@ class Interface:
     }
 
     remove_ask_header = "Remove:"
-    remove_ask_rows = [
+    remove_ask_rows: ClassVar[list[tuple]] = [
         ("Remove", lambda d: d.remove(force=False, files=False)),
         ("Remove with files", lambda d: d.remove(force=False, files=True)),
         ("Force remove", lambda d: d.remove(force=True, files=False)),
@@ -443,16 +448,16 @@ class Interface:
     select_sort_header = "Select sort:"
     select_sort_rows = columns_order
 
-    downloads_uris: list[str] = []
+    downloads_uris: ClassVar[list[str]] = []
     downloads_uris_header = (
         f"Add Download: [ Hit ENTER to download; Hit { ','.join(Keys.names(Keys.ADD_DOWNLOADS)) } to download all ]"
     )
 
-    def __init__(self, api=None):
+    def __init__(self, api: API | None = None) -> None:
         """Initialize the object.
 
-        Arguments:
-            api (API): An instance of API.
+        Parameters:
+            api: An instance of API.
         """
         if api is None:
             api = API()
@@ -494,7 +499,7 @@ class Interface:
             },
         }
 
-    def run(self):
+    def run(self) -> bool:
         """The main drawing loop."""
         try:
             # outer loop to support screen resize
@@ -523,7 +528,7 @@ class Interface:
                             except Exit:
                                 logger.debug("Received exit command")
                                 return True
-                            except Exception as error:
+                            except Exception as error:  # noqa: BLE001
                                 # TODO: display error in status bar
                                 logger.exception(error)
                             event = screen.get_event()
@@ -554,11 +559,11 @@ class Interface:
                         self.frame = (self.frame + 1) % self.frames
                     logger.debug("Screen has resized")
                     self.post_resize()
-        except Exception as error:
+        except Exception as error:  # noqa: BLE001
             logger.exception(error)
             return False
 
-    def post_resize(self):
+    def post_resize(self) -> None:  # noqa: D102
         logger.debug("Running post-resize function")
         logger.debug("Trying to re-apply pywal color theme")
         wal_sequences = Path.home() / ".cache" / "wal" / "sequences"
@@ -566,19 +571,19 @@ class Interface:
             with wal_sequences.open("rb") as fd:
                 contents = fd.read()
                 sys.stdout.buffer.write(contents)
-        except Exception:  # nosec
+        except Exception:  # noqa: BLE001,S110
             pass
 
-    def update_select_sort_rows(self):
+    def update_select_sort_rows(self) -> None:  # noqa: D102
         self.select_sort_rows = self.columns_order
 
-    def process_event(self, event):
+    def process_event(self, event: KeyboardEvent | MouseEvent) -> None:
         """Process an event.
 
         For reactivity purpose, this method should not compute expensive stuff, only change the state of the interface,
         changes that will be applied by update_data and update_rows methods.
 
-        Arguments:
+        Parameters:
             event (KeyboardEvent | MouseEvent): The event to process.
         """
         if isinstance(event, KeyboardEvent):
@@ -587,10 +592,10 @@ class Interface:
         elif isinstance(event, MouseEvent):
             self.process_mouse_event(event)
 
-    def process_keyboard_event(self, event):
+    def process_keyboard_event(self, event: KeyboardEvent) -> None:  # noqa: D102
         self.state_mapping[self.state]["process_keyboard_event"](event)
 
-    def process_keyboard_event_main(self, event):
+    def process_keyboard_event_main(self, event: KeyboardEvent) -> None:  # noqa: D102
         if event.key_code in Keys.MOVE_UP:
             if self.focused > 0:
                 self.focused -= 1
@@ -683,7 +688,7 @@ class Interface:
             else:
                 logger.debug("Could not focus download")
 
-        elif event.key_code in Keys.TOGGLE_EXPAND_COLLAPSE:
+        elif event.key_code in Keys.TOGGLE_EXPAND_COLLAPSE:  # noqa: SIM114
             pass  # TODO
 
         elif event.key_code in Keys.TOGGLE_EXPAND_COLLAPSE_ALL:
@@ -695,13 +700,13 @@ class Interface:
         elif event.key_code in Keys.FOLLOW_ROW:
             self.follow_focused()
 
-        elif event.key_code in Keys.SEARCH:
+        elif event.key_code in Keys.SEARCH:  # noqa: SIM114
             pass  # TODO
 
-        elif event.key_code in Keys.FILTER:
+        elif event.key_code in Keys.FILTER:  # noqa: SIM114
             pass  # TODO
 
-        elif event.key_code in Keys.TOGGLE_SELECT:
+        elif event.key_code in Keys.TOGGLE_SELECT:  # noqa: SIM114
             pass  # TODO
 
         elif event.key_code in Keys.UN_SELECT_ALL:
@@ -793,16 +798,16 @@ class Interface:
                 self.downloads_uris = sorted(copied_lines)
 
         elif event.key_code in Keys.QUIT:
-            raise Exit()
+            raise Exit
 
-    def process_keyboard_event_help(self, event):
+    def process_keyboard_event_help(self, event: KeyboardEvent) -> None:  # noqa: ARG002,D102
         self.state = self.State.MAIN
         self.refresh = True
 
-    def process_keyboard_event_setup(self, event):
+    def process_keyboard_event_setup(self, event: KeyboardEvent) -> None:  # noqa: D102
         pass
 
-    def process_keyboard_event_remove_ask(self, event):
+    def process_keyboard_event_remove_ask(self, event: KeyboardEvent) -> None:  # noqa: D102
         if event.key_code in Keys.CANCEL:
             logger.debug("Canceling removal")
             self.state = self.State.MAIN
@@ -829,13 +834,13 @@ class Interface:
                 logger.debug(f"Moving side focus up: {self.side_focused}")
                 self.refresh = True
 
-        elif event.key_code in Keys.MOVE_DOWN:
+        elif event.key_code in Keys.MOVE_DOWN:  # noqa: SIM102
             if self.side_focused < len(self.remove_ask_rows) - 1:
                 self.side_focused += 1
                 logger.debug(f"Moving side focus down: {self.side_focused}")
                 self.refresh = True
 
-    def process_keyboard_event_select_sort(self, event):
+    def process_keyboard_event_select_sort(self, event: KeyboardEvent) -> None:  # noqa: D102
         if event.key_code in Keys.CANCEL:
             self.state = self.State.MAIN
             self.x_offset = 0
@@ -852,12 +857,12 @@ class Interface:
                 self.side_focused -= 1
                 self.refresh = True
 
-        elif event.key_code in Keys.MOVE_DOWN:
+        elif event.key_code in Keys.MOVE_DOWN:  # noqa: SIM102
             if self.side_focused < len(self.select_sort_rows) - 1:
                 self.side_focused += 1
                 self.refresh = True
 
-    def process_keyboard_event_add_downloads(self, event):
+    def process_keyboard_event_add_downloads(self, event: KeyboardEvent) -> None:  # noqa: D102
         if event.key_code in Keys.CANCEL:
             self.state = self.State.MAIN
             self.x_offset = 0
@@ -897,10 +902,10 @@ class Interface:
             self.downloads_uris.clear()
             self.refresh = True
 
-    def process_mouse_event(self, event):
+    def process_mouse_event(self, event: MouseEvent) -> None:  # noqa: D102
         self.state_mapping[self.state]["process_mouse_event"](event)
 
-    def process_mouse_event_main(self, event):
+    def process_mouse_event_main(self, event: MouseEvent) -> None:  # noqa: D102
         if event.buttons & MouseEvent.LEFT_CLICK:
             if event.y == 0:
                 new_sort = self.get_column_at_x(event.x)
@@ -915,34 +920,34 @@ class Interface:
         # elif event.buttons & MouseEvent.RIGHT_CLICK:
         #     pass  # TODO: expand/collapse
 
-    def process_mouse_event_help(self, event):
+    def process_mouse_event_help(self, event: MouseEvent) -> None:  # noqa: D102
         pass
 
-    def process_mouse_event_setup(self, event):
+    def process_mouse_event_setup(self, event: MouseEvent) -> None:  # noqa: D102
         pass
 
-    def process_mouse_event_remove_ask(self, event):
+    def process_mouse_event_remove_ask(self, event: MouseEvent) -> None:  # noqa: D102
         pass
 
-    def process_mouse_event_select_sort(self, event):
+    def process_mouse_event_select_sort(self, event: MouseEvent) -> None:  # noqa: D102
         pass
 
-    def process_mouse_event_add_downloads(self, event):
+    def process_mouse_event_add_downloads(self, event: MouseEvent) -> None:  # noqa: D102
         pass
 
-    def width_remove_ask(self):
-        return max(len(self.remove_ask_header), max(len(row[0]) for row in self.remove_ask_rows))
+    def width_remove_ask(self) -> int:  # noqa: D102
+        return max(len(self.remove_ask_header), max(len(row[0]) for row in self.remove_ask_rows))  # noqa: PLW3301
 
-    def width_select_sort(self):
+    def width_select_sort(self) -> int:  # noqa: D102
         return max(len(column_name) for column_name in [*self.columns_order, self.select_sort_header])
 
-    def follow_focused(self):
+    def follow_focused(self) -> bool:  # noqa: D102
         if self.focused < len(self.data):
             self.follow = self.data[self.focused]
             return True
         return False
 
-    def print_add_downloads(self):
+    def print_add_downloads(self) -> None:  # noqa: D102
         y = self.y_offset
         padding = self.width
         header_string = f"{self.downloads_uris_header:<{padding}}"
@@ -960,10 +965,7 @@ class Interface:
             )
             if len(uri) > self.width:
                 # print part of uri string
-                uri = f"{ uri[:(self.width//2)-len(separator)] } {separator} { uri[-(self.width//2)+len(separator):] }"
-
-            else:
-                uri = f"{uri}"
+                uri = f"{uri[:(self.width//2)-len(separator)]} {separator} {uri[-(self.width//2)+len(separator):]}"  # noqa: PLW2901
 
             self.screen.print_at(uri, 0, y, *palette)
             self.screen.print_at(" ", len(uri), y, *self.palettes["default"])
@@ -971,7 +973,7 @@ class Interface:
         for i in range(1, self.height - y):
             self.screen.print_at(" " * (padding + 1), 0, y + i, *self.palettes["ui"])
 
-    def print_help(self):
+    def print_help(self) -> None:  # noqa: D102
         version = get_version()
         lines = [
             f"aria2p {version} — (C) 2018-2020 Timothée Mazzucotelli and contributors",
@@ -1025,16 +1027,16 @@ class Interface:
         for i in range(self.height - y):
             self.screen.print_at(" " * self.width, 0, y + i, *self.palettes["ui"])
 
-    def print_keys(self, keys, text, y):
+    def print_keys(self, keys: list[Key], text: str, y: int) -> None:  # noqa: D102
         self.print_keys_text(" ".join(Keys.names(keys)) + ":", text, y)
 
-    def print_keys_text(self, keys_text, text, y):
+    def print_keys_text(self, keys_text: str, text: str, y: int) -> None:  # noqa: D102
         length = 8
         padding = self.width - length
         self.screen.print_at(f"{keys_text:>{length}}", 0, y, *self.palettes["bright_help"])
         self.screen.print_at(f"{text:<{padding}}", length, y, *self.palettes["default"])
 
-    def print_remove_ask_column(self):
+    def print_remove_ask_column(self) -> None:  # noqa: D102
         y = self.y_offset
         padding = self.width_remove_ask()
         header_string = f"{self.remove_ask_header:<{padding}}"
@@ -1054,7 +1056,7 @@ class Interface:
         for i in range(1, self.height - y):
             self.screen.print_at(" " * (padding + 1), 0, y + i, *self.palettes["ui"])
 
-    def print_select_sort_column(self):
+    def print_select_sort_column(self) -> None:  # noqa: D102
         y = self.y_offset
         padding = self.width_select_sort()
         header_string = f"{self.select_sort_header:<{padding}}"
@@ -1074,11 +1076,11 @@ class Interface:
         for i in range(1, self.height - y):
             self.screen.print_at(" " * (padding + 1), 0, y + i, *self.palettes["ui"])
 
-    def print_table(self):
+    def print_table(self) -> None:  # noqa: D102
         self.print_headers()
         self.print_rows()
 
-    def print_headers(self):
+    def print_headers(self) -> None:
         """Print the headers (columns names)."""
         self.scroller.set_scroll(self.x_scroll)
         x, y, c = self.x_offset, self.y_offset, 0
@@ -1100,7 +1102,7 @@ class Interface:
             x += written
             c += 1
 
-    def print_rows(self):
+    def print_rows(self) -> None:
         """Print the rows."""
         y = self.y_offset + 1
         for row in self.rows[self.row_offset : self.row_offset + self.height]:
@@ -1127,14 +1129,14 @@ class Interface:
         for i in range(self.height - y):
             self.screen.print_at(" " * self.width, self.x_offset, y + i, *self.palettes["ui"])
 
-    def get_column_at_x(self, x):
+    def get_column_at_x(self, x: int) -> int:
         """For an horizontal position X, return the column index."""
         for i, bound in enumerate(self.bounds):
             if bound[0] <= x <= bound[1]:
                 return i
         raise ValueError("clicked outside of boundaries")
 
-    def set_screen(self, screen):
+    def set_screen(self, screen: Screen) -> None:
         """Set the screen object, its scroller wrapper, width, height, and columns bounds."""
         self.screen = screen
         self.height, self.width = screen.dimensions

@@ -7,7 +7,7 @@ torrent files, files and downloads in aria2c.
 from __future__ import annotations
 
 from contextlib import suppress
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -28,7 +28,7 @@ class BitTorrent:
     def __init__(self, struct: dict) -> None:
         """Initialize the object.
 
-        Arguments:
+        Parameters:
             struct: A dictionary Python object returned by the JSON-RPC client.
         """
         self._struct = struct or {}
@@ -67,7 +67,7 @@ class BitTorrent:
         Returns:
             The creation date.
         """
-        return datetime.fromtimestamp(self._struct["creationDate"])
+        return datetime.fromtimestamp(self._struct["creationDate"], tz=timezone.utc)
 
     @property
     def mode(self) -> str | None:
@@ -98,7 +98,7 @@ class File:
     def __init__(self, struct: dict) -> None:
         """Initialize the object.
 
-        Arguments:
+        Parameters:
             struct: A dictionary Python object returned by the JSON-RPC client.
         """
         self._struct = struct or {}
@@ -106,7 +106,7 @@ class File:
     def __str__(self):
         return str(self.path)
 
-    def __eq__(self, other):
+    def __eq__(self, other: File) -> bool:
         return self.path == other.path
 
     @property
@@ -145,10 +145,10 @@ class File:
         """
         return int(self._struct["length"])
 
-    def length_string(self, human_readable: bool = True) -> str:
+    def length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
         """Return the length as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -171,10 +171,10 @@ class File:
         """
         return int(self._struct["completedLength"])
 
-    def completed_length_string(self, human_readable: bool = True) -> str:
+    def completed_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
         """Return the completed length as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -216,7 +216,7 @@ class Download:
     def __init__(self, api: API, struct: dict) -> None:
         """Initialize the object.
 
-        Arguments:
+        Parameters:
             api: The reference to an [`API`][aria2p.api.API] instance.
             struct: A dictionary Python object returned by the JSON-RPC client.
         """
@@ -234,7 +234,7 @@ class Download:
     def __str__(self):
         return self.name
 
-    def __eq__(self, other):
+    def __eq__(self, other: Download) -> bool:
         return self.gid == other.gid
 
     def update(self) -> None:
@@ -345,7 +345,7 @@ class Download:
         return self._options  # type: ignore
 
     @options.setter
-    def options(self, value):
+    def options(self, value: Options) -> None:
         self._options = value
 
     def update_options(self) -> None:
@@ -451,10 +451,10 @@ class Download:
         """
         return int(self._struct["totalLength"])
 
-    def total_length_string(self, human_readable: bool = True) -> str:
+    def total_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
         """Return the total length as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -473,10 +473,10 @@ class Download:
         """
         return int(self._struct["completedLength"])
 
-    def completed_length_string(self, human_readable: bool = True) -> str:
+    def completed_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
         """Return the completed length as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -495,10 +495,10 @@ class Download:
         """
         return int(self._struct["uploadLength"])
 
-    def upload_length_string(self, human_readable: bool = True) -> str:
+    def upload_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
         """Return the upload length as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -530,10 +530,10 @@ class Download:
         """
         return int(self._struct["downloadSpeed"])
 
-    def download_speed_string(self, human_readable: bool = True) -> str:
+    def download_speed_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
         """Return the download speed as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -552,10 +552,10 @@ class Download:
         """
         return int(self._struct["uploadSpeed"])
 
-    def upload_speed_string(self, human_readable: bool = True) -> str:
+    def upload_speed_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
         """Return the upload speed as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -607,10 +607,10 @@ class Download:
         """
         return int(self._struct["pieceLength"])
 
-    def piece_length_string(self, human_readable: bool = True) -> str:
+    def piece_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
         """Return the piece length as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -802,10 +802,10 @@ class Download:
         """
         return int(self._struct.get("verifiedLength", 0))
 
-    def verified_length_string(self, human_readable: bool = True) -> str:
+    def verified_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
         """Return the verified length as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -841,7 +841,7 @@ class Download:
     def progress_string(self, digits: int = 2) -> str:
         """Return the progress percentage as string.
 
-        Arguments:
+        Parameters:
             digits: Number of decimal digits to use.
 
         Returns:
@@ -864,7 +864,7 @@ class Download:
     def eta_string(self, precision: int = 0) -> str:
         """Return the Estimated Time of Arrival as a string.
 
-        Arguments:
+        Parameters:
             precision: The precision to use, see [aria2p.utils.human_readable_timedelta].
 
         Returns:
@@ -880,7 +880,7 @@ class Download:
     def move(self, pos: int) -> int:
         """Move the download in the queue, relatively.
 
-        Arguments:
+        Parameters:
             pos: Number of times to move.
 
         Returns:
@@ -891,7 +891,7 @@ class Download:
     def move_to(self, pos: int) -> int:
         """Move the download in the queue, absolutely.
 
-        Arguments:
+        Parameters:
             pos: The absolute position in the queue to take.
 
         Returns:
@@ -902,7 +902,7 @@ class Download:
     def move_up(self, pos: int = 1) -> int:
         """Move the download up in the queue.
 
-        Arguments:
+        Parameters:
             pos: Number of times to move up.
 
         Returns:
@@ -913,7 +913,7 @@ class Download:
     def move_down(self, pos: int = 1) -> int:
         """Move the download down in the queue.
 
-        Arguments:
+        Parameters:
             pos: Number of times to move down.
 
         Returns:
@@ -937,10 +937,10 @@ class Download:
         """
         return self.api.move_to_bottom(self)
 
-    def remove(self, force: bool = False, files: bool = False) -> bool:
+    def remove(self, force: bool = False, files: bool = False) -> bool:  # noqa: FBT001,FBT002
         """Remove the download from the queue (even if active).
 
-        Arguments:
+        Parameters:
             force: Whether to force removal.
             files: Whether to remove files as well.
 
@@ -955,10 +955,10 @@ class Download:
             raise result  # type: ignore  # we know it's a ClientException
         return True
 
-    def pause(self, force: bool = False) -> bool:
+    def pause(self, force: bool = False) -> bool:  # noqa: FBT001,FBT002
         """Pause the download.
 
-        Arguments:
+        Parameters:
             force: Whether to force pause (don't contact servers).
 
         Returns:
@@ -994,10 +994,10 @@ class Download:
         """
         return self.api.client.remove_download_result(self.gid) == "OK"
 
-    def move_files(self, to_directory: PathOrStr, force: bool = False) -> bool:
+    def move_files(self, to_directory: PathOrStr, force: bool = False) -> bool:  # noqa: FBT001,FBT002
         """Move downloaded files to another directory.
 
-        Arguments:
+        Parameters:
             to_directory: The target directory to move files to.
             force: Whether to move files even if download is not complete.
 
@@ -1006,10 +1006,10 @@ class Download:
         """
         return self.api.move_files([self], to_directory, force)[0]
 
-    def copy_files(self, to_directory: PathOrStr, force: bool = False) -> bool:
+    def copy_files(self, to_directory: PathOrStr, force: bool = False) -> bool:  # noqa: FBT001,FBT002
         """Copy downloaded files to another directory.
 
-        Arguments:
+        Parameters:
             to_directory: The target directory to copy files into.
             force: Whether to move files even if download is not complete.
 

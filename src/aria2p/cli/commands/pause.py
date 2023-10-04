@@ -11,10 +11,15 @@ if TYPE_CHECKING:
     from aria2p.api import API
 
 
-def pause(api: API, gids: list[str] | None = None, do_all: bool = False, force: bool = False) -> int:
+def pause(
+    api: API,
+    gids: list[str] | None = None,
+    do_all: bool = False,  # noqa: FBT001,FBT002
+    force: bool = False,  # noqa: FBT001,FBT002
+) -> int:
     """Pause subcommand.
 
-    Arguments:
+    Parameters:
         api: The API instance to use.
         gids: The GIDs of the downloads to pause.
         do_all: Pause all downloads if True.

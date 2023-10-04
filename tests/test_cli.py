@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import threading
 import time
+from typing import TYPE_CHECKING
 
 import pytest
 
@@ -23,20 +24,23 @@ from aria2p.cli.parser import get_parser
 from tests import BUNSENLABS_MAGNET, TESTS_DATA_DIR
 from tests.conftest import Aria2Server
 
+if TYPE_CHECKING:
+    from pathlib import Path
 
-def out_lines(cs):
+
+def out_lines(cs: pytest.CaptureFixture) -> str:
     return cs.readouterr().out.split("\n")
 
 
-def err_lines(cs):
+def err_lines(cs: pytest.CaptureFixture) -> str:
     return cs.readouterr().err.split("\n")
 
 
-def first_out_line(cs):
+def first_out_line(cs: pytest.CaptureFixture) -> str:
     return out_lines(cs)[0]
 
 
-def first_err_line(cs):
+def first_err_line(cs: pytest.CaptureFixture) -> str:
     return err_lines(cs)[0]
 
 
@@ -52,12 +56,12 @@ def test_show_help(capsys: pytest.CaptureFixture) -> None:
     assert "aria2p" in captured.out
 
 
-def test_main_returns_2_when_no_remote_running(port):
+def test_main_returns_2_when_no_remote_running(port: int) -> None:
     assert main([f"--port={port}"]) == 2
 
 
-def test_parser_error_when_gids_and_all_option(capsys):
-    with pytest.raises(SystemExit) as e:
+def test_parser_error_when_gids_and_all_option(capsys: pytest.CaptureFixture) -> None:
+    with pytest.raises(SystemExit) as e:  # noqa: PT012
         main(["pause", "-a", "0000000000000001"])
         assert e.value.code == 2
     lines = err_lines(capsys)
@@ -65,9 +69,9 @@ def test_parser_error_when_gids_and_all_option(capsys):
     assert lines[1].endswith("-a/--all: not allowed with arguments gids")
 
 
-def test_parser_error_when_no_gid_and_no_all_option(capsys):
-    def assert_func(command, alias):
-        with pytest.raises(SystemExit) as e:
+def test_parser_error_when_no_gid_and_no_all_option(capsys: pytest.CaptureFixture) -> None:
+    def assert_func(command: str, alias: str) -> None:
+        with pytest.raises(SystemExit) as e:  # noqa: PT012
             main([alias])
             assert e.value.code == 2
         lines = err_lines(capsys)
@@ -84,32 +88,36 @@ def test_parser_error_when_no_gid_and_no_all_option(capsys):
             assert_func(command, alias)
 
 
-def test_no_interface_deps_print_error(server, monkeypatch, capsys):
+def test_no_interface_deps_print_error(
+    server: Aria2Server,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture,
+) -> None:
     monkeypatch.setattr(top, "Interface", None)
     main(["-p", str(server.port)])
     line = first_err_line(capsys)
     assert "aria2p[tui]" in line
 
 
-def test_main_show_subcommand(server, capsys):
+def test_main_show_subcommand(server: Aria2Server, capsys: pytest.CaptureFixture) -> None:
     main(["-p", str(server.port), "show"])
     first_line = first_out_line(capsys)
     for word in ("GID", "STATUS", "PROGRESS", "DOWN_SPEED", "UP_SPEED", "ETA", "NAME"):
         assert word in first_line
 
 
-def test_errors_and_print_message(server, capsys):
+def test_errors_and_print_message(server: Aria2Server, capsys: pytest.CaptureFixture) -> None:
     assert main(["-p", str(server.port), "call", "tellstatus", "-P", "invalid gid"]) > 0
     assert capsys.readouterr().err == "Invalid GID invalid gid\n"
 
 
-def test_show_subcommand(tmp_path, port, capsys):
+def test_show_subcommand(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
     with Aria2Server(tmp_path, port, session="1-dl-paused.txt") as server:
         assert show(server.api) == 0
         assert len(capsys.readouterr().out.rstrip("\n").split("\n")) == 2
 
 
-def test_call_subcommand(server, capsys):
+def test_call_subcommand(server: Aria2Server, capsys: pytest.CaptureFixture) -> None:
     assert call(server.api, "wrongMethod", []) == 1
     assert (
         capsys.readouterr().err == "aria2p: call: Unknown method wrongMethod.\n"
@@ -117,33 +125,33 @@ def test_call_subcommand(server, capsys):
     )
 
 
-def test_call_subcommand_with_json_params(tmp_path, port):
+def test_call_subcommand_with_json_params(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="1-dl-paused.txt") as server:
         assert call(server.api, "tellstatus", '["0000000000000001"]') == 0
 
 
-def test_call_subcommand_with_no_params(server):
+def test_call_subcommand_with_no_params(server: Aria2Server) -> None:
     assert call(server.api, "listmethods", None) == 0
 
 
-def test_add_magnet_subcommand(server):
+def test_add_magnet_subcommand(server: Aria2Server) -> None:
     assert add_magnets(server.api, [BUNSENLABS_MAGNET]) == 0
 
 
-def test_add_torrent_subcommand(server):
+def test_add_torrent_subcommand(server: Aria2Server) -> None:
     assert add_torrents(server.api, [TESTS_DATA_DIR / "bunsenlabs-helium-4.iso.torrent"]) == 0
 
 
-def test_add_metalink_subcommand(server):
+def test_add_metalink_subcommand(server: Aria2Server) -> None:
     assert add_metalinks(server.api, [TESTS_DATA_DIR / "debian.metalink"]) == 0
 
 
-def test_pause_subcommand(tmp_path, port):
+def test_pause_subcommand(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="1-dl.txt") as server:
         assert pause(server.api, ["0000000000000001"]) == 0
 
 
-def test_pause_subcommand_already_paused(tmp_path, port, capsys):
+def test_pause_subcommand_already_paused(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         assert pause(server.api, ["0000000000000001", "0000000000000002"]) == 1
         assert (
@@ -152,27 +160,27 @@ def test_pause_subcommand_already_paused(tmp_path, port, capsys):
         )
 
 
-def test_pause_subcommand_one_paused(tmp_path, port, capsys):
+def test_pause_subcommand_one_paused(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
     with Aria2Server(tmp_path, port, session="one-active-one-paused.txt") as server:
         assert pause(server.api, ["0000000000000001", "0000000000000002"]) == 1
         assert "GID#0000000000000002 cannot be paused now" in capsys.readouterr().err
 
 
-def test_pause_all_subcommand(server):
+def test_pause_all_subcommand(server: Aria2Server) -> None:
     assert pause(server.api, do_all=True) == 0
 
 
-def test_pause_all_subcommand_doesnt_fail_with_already_paused_downloads(tmp_path, port):
+def test_pause_all_subcommand_doesnt_fail_with_already_paused_downloads(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         assert pause(server.api, do_all=True) == 0
 
 
-def test_resume_subcommand(tmp_path, port, capsys):
+def test_resume_subcommand(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="1-dl-paused.txt") as server:
         assert resume(server.api, ["0000000000000001"]) == 0
 
 
-def test_resume_subcommand_already_unpaused(tmp_path, port, capsys):
+def test_resume_subcommand_already_unpaused(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
     with Aria2Server(tmp_path, port, session="2-dls.txt") as server:
         assert resume(server.api, ["0000000000000001", "0000000000000002"]) == 1
         assert (
@@ -181,45 +189,45 @@ def test_resume_subcommand_already_unpaused(tmp_path, port, capsys):
         )
 
 
-def test_resume_subcommand_one_unpaused(tmp_path, port, capsys):
+def test_resume_subcommand_one_unpaused(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
     with Aria2Server(tmp_path, port, session="one-active-one-paused.txt") as server:
         assert resume(server.api, ["0000000000000001", "0000000000000002"]) == 1
         assert capsys.readouterr().err == "GID#0000000000000001 cannot be unpaused now\n"
 
 
-def test_resume_all_subcommand(server):
+def test_resume_all_subcommand(server: Aria2Server) -> None:
     assert resume(server.api, do_all=True) == 0
 
 
-def test_resume_all_subcommand_doesnt_fail_with_already_active_downloads(tmp_path, port):
+def test_resume_all_subcommand_doesnt_fail_with_already_active_downloads(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="2-dls.txt") as server:
         assert resume(server.api, do_all=True) == 0
 
 
-def test_remove_subcommand(tmp_path, port):
+def test_remove_subcommand(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="1-dl-paused.txt") as server:
         assert remove(server.api, ["0000000000000001"]) == 0
 
 
-def test_remove_subcommand_one_failure(tmp_path, port, capsys):
+def test_remove_subcommand_one_failure(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
     with Aria2Server(tmp_path, port, session="1-dl-paused.txt") as server:
         assert remove(server.api, ["0000000000000001", "0000000000000002"]) == 1
         assert capsys.readouterr().err == "GID 0000000000000002 is not found\n"
 
 
-def test_remove_all_subcommand(server):
+def test_remove_all_subcommand(server: Aria2Server) -> None:
     assert remove(server.api, do_all=True) == 0
 
 
-def test_purge_subcommand(tmp_path, port):
+def test_purge_subcommand(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="very-small-download.txt") as server:
         assert purge(server.api) == 0
 
 
-def test_listen_subcommand(tmp_path, port, capsys):
+def test_listen_subcommand(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
 
-        def thread_target():
+        def thread_target() -> None:
             time.sleep(2)
             server.api.resume_all()
             time.sleep(3)
@@ -234,14 +242,14 @@ def test_listen_subcommand(tmp_path, port, capsys):
 
 
 @pytest.mark.parametrize("command", ["add", "add-magnet", "add-torrent", "add-metalink"])
-def test_parse_valid_options(command):
+def test_parse_valid_options(command: str) -> None:
     parser = get_parser()
     opts = parser.parse_args([command, "/some/file/on/the/disk", "-o", "opt1=val;opt2=val2, val3=val4"])
     assert opts.options == {"opt1": "val", "opt2": "val2, val3=val4"}
 
 
 @pytest.mark.parametrize("command", ["add", "add-magnet", "add-torrent", "add-metalink"])
-def test_parse_invalid_options(command, capsys):
+def test_parse_invalid_options(command: str, capsys: pytest.CaptureFixture) -> None:
     parser = get_parser()
     with pytest.raises(SystemExit):
         parser.parse_args([command, "http://example.com", "-o", "opt1"])
@@ -252,7 +260,7 @@ def test_parse_invalid_options(command, capsys):
     ("command", "option"),
     [("add", "uris"), ("add-magnet", "uris"), ("add-torrent", "torrent_files"), ("add-metalink", "metalink_files")],
 )
-def test_error_when_missing_arg(command, option, capsys):
+def test_error_when_missing_arg(command: str, option: str, capsys: pytest.CaptureFixture) -> None:
     with pytest.raises(SystemExit):
         main([command])
     assert option in capsys.readouterr().err

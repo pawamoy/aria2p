@@ -1,5 +1,7 @@
 """Tests for the `stats` module."""
 
+from __future__ import annotations
+
 import pytest
 
 from aria2p import Stats
@@ -24,91 +26,91 @@ def stats() -> Stats:
     )
 
 
-def test_download_speed(stats):
+def test_download_speed(stats: Stats) -> None:
     """Test the `download_speed` property.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.download_speed == 0
 
 
-def test_download_speed_string(stats):
+def test_download_speed_string(stats: Stats) -> None:
     """Test the `download_speed_string` method.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.download_speed_string() == "0.00 B/s"
 
 
-def test_download_speed_string_not_human_readable(stats):
+def test_download_speed_string_not_human_readable(stats: Stats) -> None:
     """Test the `download_speed_string` method with human readable option.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.download_speed_string(human_readable=False) == "0 B/s"
 
 
-def test_upload_speed(stats):
+def test_upload_speed(stats: Stats) -> None:
     """Test the `upload_speed` property.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.upload_speed == 0
 
 
-def test_upload_speed_string(stats):
+def test_upload_speed_string(stats: Stats) -> None:
     """Test the `upload_speed_string` method.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.upload_speed_string() == "0.00 B/s"
 
 
-def test_upload_speed_string_not_human_readable(stats):
+def test_upload_speed_string_not_human_readable(stats: Stats) -> None:
     """Test the `upload_speed_string` method with human readable option.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.upload_speed_string(human_readable=False) == "0 B/s"
 
 
-def test_num_active(stats):
+def test_num_active(stats: Stats) -> None:
     """Test the `numnum_active_waiting` property.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.num_active == 0
 
 
-def test_num_stopped(stats):
+def test_num_stopped(stats: Stats) -> None:
     """Test the `num_stopped` property.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.num_stopped == 0
 
 
-def test_num_stopped_total(stats):
+def test_num_stopped_total(stats: Stats) -> None:
     """Test the `num_stopped_total` property.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.num_stopped_total == 0
 
 
-def test_num_waiting(stats):
+def test_num_waiting(stats: Stats) -> None:
     """Test the `num_waiting` property.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.num_waiting == 0

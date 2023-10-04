@@ -20,7 +20,7 @@ def listen(
 ) -> int:
     """Listen subcommand.
 
-    Arguments:
+    Parameters:
         api: The API instance to use.
         callbacks_module: The path to the module to import, containing the callbacks as functions.
         event_types: The event types to process.

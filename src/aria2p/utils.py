@@ -28,7 +28,7 @@ class SignalHandler:
     def __init__(self, signals: list[str]) -> None:
         """Initialize the object.
 
-        Arguments:
+        Parameters:
             signals: List of signals names as found in the `signal` module (example: SIGTERM).
         """
         logger.debug("Signal handler: handling signals " + ", ".join(signals))
@@ -47,10 +47,10 @@ class SignalHandler:
         """
         return self.triggered
 
-    def trigger(self, signum: int, frame: FrameType | None) -> None:
+    def trigger(self, signum: int, frame: FrameType | None) -> None:  # noqa: ARG002
         """Mark this instance as 'triggered' (a specified signal was received).
 
-        Arguments:
+        Parameters:
             signum: The signal code.
             frame: The signal frame (unused).
         """
@@ -63,7 +63,7 @@ class SignalHandler:
 def human_readable_timedelta(value: timedelta, precision: int = 0) -> str:
     """Return a human-readable time delta as a string.
 
-    Arguments:
+    Parameters:
         value: The timedelta.
         precision: The precision to use:
 
@@ -82,12 +82,12 @@ def human_readable_timedelta(value: timedelta, precision: int = 0) -> str:
 
     seconds = value.seconds
 
-    if seconds >= 3600:
+    if seconds >= 3600:  # noqa: PLR2004
         hours = int(seconds / 3600)
         pieces.append(f"{hours}h")
         seconds -= hours * 3600
 
-    if seconds >= 60:
+    if seconds >= 60:  # noqa: PLR2004
         minutes = int(seconds / 60)
         pieces.append(f"{minutes}m")
         seconds -= minutes * 60
@@ -104,7 +104,7 @@ def human_readable_timedelta(value: timedelta, precision: int = 0) -> str:
 def human_readable_bytes(value: int, digits: int = 2, delim: str = "", postfix: str = "") -> str:
     """Return a human-readable bytes value as a string.
 
-    Arguments:
+    Parameters:
         value: The bytes value.
         digits: How many decimal digits to use.
         delim: String to add between value and unit.
@@ -116,7 +116,7 @@ def human_readable_bytes(value: int, digits: int = 2, delim: str = "", postfix: 
     hr_value: float = value
     chosen_unit = "B"
     for unit in ("KiB", "MiB", "GiB", "TiB"):
-        if hr_value > 1000:
+        if hr_value > 1000:  # noqa: PLR2004
             hr_value /= 1024
             chosen_unit = unit
         else:
@@ -127,7 +127,7 @@ def human_readable_bytes(value: int, digits: int = 2, delim: str = "", postfix: 
 def bool_or_value(value: Any) -> Any:
     """Return `True` for `"true"`, `False` for `"false"`, original value otherwise.
 
-    Arguments:
+    Parameters:
         value: Any kind of value.
 
     Returns:
@@ -147,7 +147,7 @@ def bool_or_value(value: Any) -> Any:
 def bool_to_str(value: Any) -> Any:
     """Return `"true"` for `True`, `"false"` for `False`, original value otherwise.
 
-    Arguments:
+    Parameters:
         value: Any kind of value.
 
     Returns:
@@ -243,7 +243,7 @@ def load_configuration() -> dict[str, Any]:
     if config_file_path.exists():
         try:
             config_dict["USER"] = toml.load(config_file_path)
-        except Exception as error:
+        except Exception as error:  # noqa: BLE001
             logger.error(f"Failed to load configuration file: {error}")
     else:
         # Write initial configuration file if it does not exist
@@ -256,7 +256,7 @@ def load_configuration() -> dict[str, Any]:
 def read_lines(path: PathOrStr) -> list[str]:
     """Read lines in a file.
 
-    Arguments:
+    Parameters:
         path: The file path.
 
     Returns:
