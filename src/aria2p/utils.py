@@ -7,11 +7,10 @@ from __future__ import annotations
 
 import signal
 import textwrap
+from importlib import metadata
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-import pkg_resources
-import toml
 from appdirs import user_config_dir
 from loguru import logger
 
@@ -167,10 +166,9 @@ def get_version() -> str:
         The current `aria2p` version.
     """
     try:
-        distribution = pkg_resources.get_distribution("aria2p")
-    except pkg_resources.DistributionNotFound:
+        return metadata.version("aria2p")
+    except metadata.PackageNotFoundError:
         return "0.0.0"
-    return distribution.version
 
 
 def load_configuration() -> dict[str, Any]:
