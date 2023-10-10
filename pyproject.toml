@@ -29,7 +29,7 @@ dependencies = [
     "appdirs>=1.4",
     "loguru>=0.5",
     "requests>=2.19",
-    "toml>=0.10",
+    "tomli>=2.0; python_version < '3.11'",
     "websocket-client>=0.58",
 ]
 
@@ -78,7 +78,7 @@ docs = [
     "mkdocs-material>=7.3",
     "mkdocs-minify-plugin>=0.6.4",
     "mkdocstrings[python]>=0.18",
-    "toml>=0.10",
+    "tomli>=2.0; python_version < '3.11'",
 ]
 maintain = [
     "black>=23.1",
@@ -103,8 +103,6 @@ typing = [
     "mypy>=0.910",
     "types-markdown>=3.3",
     "types-pyyaml>=6.0",
-    "types-toml>=0.10",
-    "types-setuptools",
     "types-requests",
 ]
 security = [

@@ -3,21 +3,28 @@
 from __future__ import annotations
 
 import re
+import sys
 from importlib.metadata import PackageNotFoundError, metadata
 from itertools import chain
 from pathlib import Path
 from textwrap import dedent
 from typing import Mapping, cast
 
-import toml
 from jinja2 import StrictUndefined
 from jinja2.sandbox import SandboxedEnvironment
 
+if sys.version_info < (3, 11):
+    import tomli as tomllib
+else:
+    import tomllib
+
 project_dir = Path(".")
-pyproject = toml.load(project_dir / "pyproject.toml")
+with (project_dir / "pyproject.toml").open("rb") as pyproject_file:
+    pyproject = tomllib.load(pyproject_file)
 project = pyproject["project"]
 pdm = pyproject["tool"]["pdm"]
-lock_data = toml.load(project_dir / "pdm.lock")
+with (project_dir / "pdm.lock").open("rb") as lock_file:
+    lock_data = tomllib.load(lock_file)
 lock_pkgs = {pkg["name"].lower(): pkg for pkg in lock_data["package"]}
 project_name = project["name"]
 regex = re.compile(r"(?P<dist>[\w.-]+)(?P<spec>.*)$")
