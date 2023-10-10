@@ -29,7 +29,7 @@ dependencies = [
     "appdirs>=1.4",
     "loguru>=0.5",
     "requests>=2.19",
-    "tomli>=2.0.1",
+    "tomli>=2.0.1; python_version < '3.11'",
     "websocket-client>=0.58",
 ]
 
