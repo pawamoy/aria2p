@@ -247,7 +247,7 @@ def load_configuration() -> dict[str, Any]:
         try:
             with config_file_path.open("rb") as config_file:
                 config_dict["USER"] = tomllib.load(config_file)
-        except Exception as error:  # noqa: W0703 (too broad exception)
+        except Exception as error:
             logger.error(f"Failed to load configuration file: {error}")
     else:
         # Write initial configuration file if it does not exist

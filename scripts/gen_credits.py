@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import re
+import sys
 from importlib.metadata import PackageNotFoundError, metadata
 from itertools import chain
 from pathlib import Path
-import sys
 from textwrap import dedent
 from typing import Mapping, cast
 
