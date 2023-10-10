@@ -48,7 +48,7 @@ def check_args(parser: argparse.ArgumentParser, opts: argparse.Namespace) -> Non
         elif opts.do_all and opts.gids:
             subparsers[opts.subcommand].error("argument -a/--all: not allowed with arguments gids")
     elif opts.subcommand:
-        if opts.subcommand in {"add", "add-magnet", "add-magnets"} and opts.uris and not opts.from_file:
+        if opts.subcommand in {"add", "add-magnet", "add-magnets"} and not opts.uris and not opts.from_file:
             subparsers[opts.subcommand].error("the following arguments are required: uris")
         elif opts.subcommand.startswith("add-torrent") and not opts.torrent_files and not opts.from_file:
             subparsers[opts.subcommand].error("the following arguments are required: torrent_files")

@@ -1,5 +1,7 @@
 """Port-related utilities."""
 
+from __future__ import annotations
+
 import re
 import sys
 from collections import defaultdict
@@ -8,7 +10,7 @@ from os.path import isfile, join
 from pathlib import Path
 
 
-def get_ports() -> dict[int, list[int]]:  # noqa: D103
+def get_ports() -> dict[int, list[tuple[str, int, str]]]:  # noqa: D103
     port_regex = re.compile(r"port=[0-9]{4}")
     test_files = [Path("tests") / f for f in listdir("tests") if isfile(join("tests", f))]
     used_ports = defaultdict(list)
@@ -22,7 +24,7 @@ def get_ports() -> dict[int, list[int]]:  # noqa: D103
     return used_ports
 
 
-def check(ports: dict[int, list[int]]) -> int:  # noqa: D103
+def check(ports: dict[int, list[tuple[str, int, str]]]) -> int:  # noqa: D103
     check_ok = True
     for port, matches in ports.items():
         if port in blacklisted_ports:
@@ -41,7 +43,7 @@ def check(ports: dict[int, list[int]]) -> int:  # noqa: D103
     return 0 if check_ok else 1
 
 
-def get_unused(ports: dict[int, list[int]]) -> list[int]:  # noqa: D103
+def get_unused(ports: dict[int, list[tuple[str, int, str]]]) -> list[int]:  # noqa: D103
     finalists = []
     sorted_ports = sorted(ports.keys())
     following = False

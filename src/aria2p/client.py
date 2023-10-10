@@ -609,7 +609,7 @@ class Client:
             >>> c.read()
             '{"id":"qwer","jsonrpc":"2.0","result":"0000000000000001"}'
         """
-        return self.call(self.REMOVE, [gid])
+        return self.call(self.REMOVE, [gid])  # type: ignore[return-value]
 
     def force_remove(self, gid: str) -> str:
         """Force remove a download.
@@ -732,7 +732,7 @@ class Client:
         """
         return self.call(self.UNPAUSE_ALL)  # type: ignore
 
-    def tell_status(self, gid: str, keys: dict | None = None) -> dict:
+    def tell_status(self, gid: str, keys: list[str] | None = None) -> dict:
         """Tell status of a download.
 
         This method returns the progress of the download denoted by gid (string). keys is an array of strings. If
@@ -1045,7 +1045,7 @@ class Client:
         """
         return self.call(self.GET_SERVERS, [gid])  # type: ignore
 
-    def tell_active(self, keys: dict | None = None) -> list[dict]:
+    def tell_active(self, keys: list[str] | None = None) -> list[dict]:
         """Return the list of active downloads.
 
         Original signature:
@@ -1060,7 +1060,7 @@ class Client:
         """
         return self.call(self.TELL_ACTIVE, [keys])  # type: ignore
 
-    def tell_waiting(self, offset: int, num: int, keys: dict | None = None) -> list[dict]:
+    def tell_waiting(self, offset: int, num: int, keys: list[str] | None = None) -> list[dict]:
         """Return the list of waiting downloads.
 
         This method returns a list of waiting downloads, including paused ones.
@@ -1084,7 +1084,7 @@ class Client:
         """
         return self.call(self.TELL_WAITING, [offset, num, keys])  # type: ignore
 
-    def tell_stopped(self, offset: int, num: int, keys: dict | None = None) -> list[dict]:
+    def tell_stopped(self, offset: int, num: int, keys: list[str] | None = None) -> list[dict]:
         """Return the list of stopped downloads.
 
         This method returns a list of stopped downloads. offset is an integer and specifies the offset from the
@@ -1673,7 +1673,7 @@ class Client:
         logger.debug(f"{log_prefix}: opening WebSocket with timeout={timeout}")
         try:
             socket = websocket.create_connection(ws_server, timeout=timeout)
-        except ConnectionRefusedError:
+        except (ConnectionRefusedError, ConnectionResetError):
             logger.error(f"{log_prefix}: connection refused. Is the server running?")
             return
 

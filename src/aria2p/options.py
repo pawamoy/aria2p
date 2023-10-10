@@ -74,7 +74,7 @@ class Options:
             return class_(value)
         return value
 
-    def set(self, key: str, value: str | float | bool) -> bool:  # noqa: A003 (shadowing set)
+    def set(self, key: str, value: str | float | bool | list[str]) -> bool:  # noqa: A003 (shadowing set)
         """Set the value of an option given its name.
 
         Parameters:
@@ -104,7 +104,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dir")
+        return self.get("dir")  # type: ignore[return-value]
 
     @dir.setter
     def dir(self, value: str) -> None:  # noqa: A003
@@ -125,7 +125,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("input-file")
+        return self.get("input-file")  # type: ignore[return-value]
 
     @input_file.setter
     def input_file(self, value: str) -> None:
@@ -143,7 +143,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("log")
+        return self.get("log")  # type: ignore[return-value]
 
     @log.setter
     def log(self, value: str) -> None:
@@ -160,7 +160,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-concurrent-downloads", int)
+        return self.get("max-concurrent-downloads", int)  # type: ignore[return-value]
 
     @max_concurrent_downloads.setter
     def max_concurrent_downloads(self, value: int) -> None:
@@ -181,7 +181,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("check-integrity", bool_or_value)
+        return self.get("check-integrity", bool_or_value)  # type: ignore[return-value]
 
     @check_integrity.setter
     def check_integrity(self, value: bool) -> None:
@@ -199,7 +199,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("continue", bool_or_value)
+        return self.get("continue", bool_or_value)  # type: ignore[return-value]
 
     @continue_downloads.setter
     def continue_downloads(self, value: bool) -> None:
@@ -234,7 +234,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("all-proxy")
+        return self.get("all-proxy")  # type: ignore[return-value]
 
     @all_proxy.setter
     def all_proxy(self, value: str) -> None:
@@ -249,7 +249,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("all-proxy-passwd")
+        return self.get("all-proxy-passwd")  # type: ignore[return-value]
 
     @all_proxy_passwd.setter
     def all_proxy_passwd(self, value: str) -> None:
@@ -264,7 +264,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("all-proxy-user")
+        return self.get("all-proxy-user")  # type: ignore[return-value]
 
     @all_proxy_user.setter
     def all_proxy_user(self, value: str) -> None:
@@ -283,7 +283,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("checksum")
+        return self.get("checksum")  # type: ignore[return-value]
 
     @checksum.setter
     def checksum(self, value: str) -> None:
@@ -301,7 +301,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("connect-timeout", int)
+        return self.get("connect-timeout", int)  # type: ignore[return-value]
 
     @connect_timeout.setter
     def connect_timeout(self, value: int) -> None:
@@ -319,7 +319,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("dry-run", bool_or_value)
+        return self.get("dry-run", bool_or_value)  # type: ignore[return-value]
 
     @dry_run.setter
     def dry_run(self, value: bool) -> None:
@@ -337,7 +337,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("lowest-speed-limit", int)
+        return self.get("lowest-speed-limit", int)  # type: ignore[return-value]
 
     @lowest_speed_limit.setter
     def lowest_speed_limit(self, value: int) -> None:
@@ -354,7 +354,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-connection-per-server", int)
+        return self.get("max-connection-per-server", int)  # type: ignore[return-value]
 
     @max_connection_per_server.setter
     def max_connection_per_server(self, value: int) -> None:
@@ -375,7 +375,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-file-not-found", int)
+        return self.get("max-file-not-found", int)  # type: ignore[return-value]
 
     @max_file_not_found.setter
     def max_file_not_found(self, value: int) -> None:
@@ -392,7 +392,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-tries", int)
+        return self.get("max-tries", int)  # type: ignore[return-value]
 
     @max_tries.setter
     def max_tries(self, value: int) -> None:
@@ -412,7 +412,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("min-split-size", int)
+        return self.get("min-split-size", int)  # type: ignore[return-value]
 
     @min_split_size.setter
     def min_split_size(self, value: int) -> None:
@@ -432,7 +432,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("netrc-path")
+        return self.get("netrc-path")  # type: ignore[return-value]
 
     @netrc_path.setter
     def netrc_path(self, value: str) -> None:
@@ -454,7 +454,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("no-netrc", bool_or_value)
+        return self.get("no-netrc", bool_or_value)  # type: ignore[return-value]
 
     @no_netrc.setter
     def no_netrc(self, value: bool) -> None:
@@ -475,7 +475,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("no-proxy")
+        return self.get("no-proxy")  # type: ignore[return-value]
 
     @no_proxy.setter
     def no_proxy(self, value: str) -> None:
@@ -502,7 +502,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("out")
+        return self.get("out")  # type: ignore[return-value]
 
     @out.setter
     def out(self, value: str) -> None:
@@ -519,7 +519,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("proxy-method")
+        return self.get("proxy-method")  # type: ignore[return-value]
 
     @proxy_method.setter
     def proxy_method(self, value: str) -> None:
@@ -537,7 +537,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("remote-time", bool_or_value)
+        return self.get("remote-time", bool_or_value)  # type: ignore[return-value]
 
     @remote_time.setter
     def remote_time(self, value: bool) -> None:
@@ -554,7 +554,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("reuse-uri", bool_or_value)
+        return self.get("reuse-uri", bool_or_value)  # type: ignore[return-value]
 
     @reuse_uri.setter
     def reuse_uri(self, value: bool) -> None:
@@ -571,7 +571,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("retry-wait", int)
+        return self.get("retry-wait", int)  # type: ignore[return-value]
 
     @retry_wait.setter
     def retry_wait(self, value: int) -> None:
@@ -589,7 +589,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("server-stat-of")
+        return self.get("server-stat-of")  # type: ignore[return-value]
 
     @server_stat_of.setter
     def server_stat_of(self, value: str) -> None:
@@ -607,7 +607,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("server-stat-if")
+        return self.get("server-stat-if")  # type: ignore[return-value]
 
     @server_stat_if.setter
     def server_stat_if(self, value: str) -> None:
@@ -625,7 +625,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("server-stat-timeout", int)
+        return self.get("server-stat-timeout", int)  # type: ignore[return-value]
 
     @server_stat_timeout.setter
     def server_stat_timeout(self, value: int) -> None:
@@ -650,7 +650,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("split", int)
+        return self.get("split", int)  # type: ignore[return-value]
 
     @split.setter
     def split(self, value: int) -> None:
@@ -677,7 +677,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("stream-piece-selector")
+        return self.get("stream-piece-selector")  # type: ignore[return-value]
 
     @stream_piece_selector.setter
     def stream_piece_selector(self, value: str) -> None:
@@ -694,7 +694,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("timeout", int)
+        return self.get("timeout", int)  # type: ignore[return-value]
 
     @timeout.setter
     def timeout(self, value: int) -> None:
@@ -718,7 +718,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("uri-selector")
+        return self.get("uri-selector")  # type: ignore[return-value]
 
     @uri_selector.setter
     def uri_selector(self, value: str) -> None:
@@ -746,7 +746,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ca-certificate")
+        return self.get("ca-certificate")  # type: ignore[return-value]
 
     @ca_certificate.setter
     def ca_certificate(self, value: str) -> None:
@@ -776,7 +776,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("certificate")
+        return self.get("certificate")  # type: ignore[return-value]
 
     @certificate.setter
     def certificate(self, value: str) -> None:
@@ -793,7 +793,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("check-certificate", bool_or_value)
+        return self.get("check-certificate", bool_or_value)  # type: ignore[return-value]
 
     @check_certificate.setter
     def check_certificate(self, value: bool) -> None:
@@ -815,7 +815,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("http-accept-gzip", bool_or_value)
+        return self.get("http-accept-gzip", bool_or_value)  # type: ignore[return-value]
 
     @http_accept_gzip.setter
     def http_accept_gzip(self, value: bool) -> None:
@@ -834,7 +834,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("http-auth-challenge", bool_or_value)
+        return self.get("http-auth-challenge", bool_or_value)  # type: ignore[return-value]
 
     @http_auth_challenge.setter
     def http_auth_challenge(self, value: bool) -> None:
@@ -852,7 +852,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("http-no-cache", bool_or_value)
+        return self.get("http-no-cache", bool_or_value)  # type: ignore[return-value]
 
     @http_no_cache.setter
     def http_no_cache(self, value: bool) -> None:
@@ -867,7 +867,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("http-user")
+        return self.get("http-user")  # type: ignore[return-value]
 
     @http_user.setter
     def http_user(self, value: str) -> None:
@@ -882,7 +882,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("http-passwd")
+        return self.get("http-passwd")  # type: ignore[return-value]
 
     @http_passwd.setter
     def http_passwd(self, value: str) -> None:
@@ -900,7 +900,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("http-proxy")
+        return self.get("http-proxy")  # type: ignore[return-value]
 
     @http_proxy.setter
     def http_proxy(self, value: str) -> None:
@@ -915,7 +915,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("http-proxy-passwd")
+        return self.get("http-proxy-passwd")  # type: ignore[return-value]
 
     @http_proxy_passwd.setter
     def http_proxy_passwd(self, value: str) -> None:
@@ -930,7 +930,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("http-proxy-user")
+        return self.get("http-proxy-user")  # type: ignore[return-value]
 
     @http_proxy_user.setter
     def http_proxy_user(self, value: str) -> None:
@@ -948,7 +948,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("https-proxy")
+        return self.get("https-proxy")  # type: ignore[return-value]
 
     @https_proxy.setter
     def https_proxy(self, value: str) -> None:
@@ -963,7 +963,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("https-proxy-passwd")
+        return self.get("https-proxy-passwd")  # type: ignore[return-value]
 
     @https_proxy_passwd.setter
     def https_proxy_passwd(self, value: str) -> None:
@@ -978,7 +978,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("https-proxy-user")
+        return self.get("https-proxy-user")  # type: ignore[return-value]
 
     @https_proxy_user.setter
     def https_proxy_user(self, value: str) -> None:
@@ -996,7 +996,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("private-key")
+        return self.get("private-key")  # type: ignore[return-value]
 
     @private_key.setter
     def private_key(self, value: str) -> None:
@@ -1014,7 +1014,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("referer")
+        return self.get("referer")  # type: ignore[return-value]
 
     @referer.setter
     def referer(self, value: str) -> None:
@@ -1031,7 +1031,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-http-keep-alive", bool_or_value)
+        return self.get("enable-http-keep-alive", bool_or_value)  # type: ignore[return-value]
 
     @enable_http_keep_alive.setter
     def enable_http_keep_alive(self, value: bool) -> None:
@@ -1051,7 +1051,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-http-pipelining", bool_or_value)
+        return self.get("enable-http-pipelining", bool_or_value)  # type: ignore[return-value]
 
     @enable_http_pipelining.setter
     def enable_http_pipelining(self, value: bool) -> None:
@@ -1070,7 +1070,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("header")
+        return self.get("header")  # type: ignore[return-value]
 
     @header.setter
     def header(self, value: str) -> None:
@@ -1090,7 +1090,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("load-cookies")
+        return self.get("load-cookies")  # type: ignore[return-value]
 
     @load_cookies.setter
     def load_cookies(self, value: str) -> None:
@@ -1108,7 +1108,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("save-cookies")
+        return self.get("save-cookies")  # type: ignore[return-value]
 
     @save_cookies.setter
     def save_cookies(self, value: str) -> None:
@@ -1125,7 +1125,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("use-head", bool_or_value)
+        return self.get("use-head", bool_or_value)  # type: ignore[return-value]
 
     @use_head.setter
     def use_head(self, value: bool) -> None:
@@ -1142,7 +1142,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("user-agent")
+        return self.get("user-agent")  # type: ignore[return-value]
 
     @user_agent.setter
     def user_agent(self, value: str) -> None:
@@ -1160,7 +1160,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ftp-user")
+        return self.get("ftp-user")  # type: ignore[return-value]
 
     @ftp_user.setter
     def ftp_user(self, value: str) -> None:
@@ -1179,7 +1179,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ftp-passwd")
+        return self.get("ftp-passwd")  # type: ignore[return-value]
 
     @ftp_passwd.setter
     def ftp_passwd(self, value: str) -> None:
@@ -1199,7 +1199,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("ftp-pasv", bool_or_value)
+        return self.get("ftp-pasv", bool_or_value)  # type: ignore[return-value]
 
     @ftp_pasv.setter
     def ftp_pasv(self, value: bool) -> None:
@@ -1217,7 +1217,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ftp-proxy")
+        return self.get("ftp-proxy")  # type: ignore[return-value]
 
     @ftp_proxy.setter
     def ftp_proxy(self, value: str) -> None:
@@ -1232,7 +1232,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ftp-proxy-passwd")
+        return self.get("ftp-proxy-passwd")  # type: ignore[return-value]
 
     @ftp_proxy_passwd.setter
     def ftp_proxy_passwd(self, value: str) -> None:
@@ -1247,7 +1247,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ftp-proxy-user")
+        return self.get("ftp-proxy-user")  # type: ignore[return-value]
 
     @ftp_proxy_user.setter
     def ftp_proxy_user(self, value: str) -> None:
@@ -1267,7 +1267,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ftp-type")
+        return self.get("ftp-type")  # type: ignore[return-value]
 
     @ftp_type.setter
     def ftp_type(self, value: str) -> None:
@@ -1284,7 +1284,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("ftp-reuse-connection", bool_or_value)
+        return self.get("ftp-reuse-connection", bool_or_value)  # type: ignore[return-value]
 
     @ftp_reuse_connection.setter
     def ftp_reuse_connection(self, value: bool) -> None:
@@ -1303,7 +1303,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ssh-host-key-md")
+        return self.get("ssh-host-key-md")  # type: ignore[return-value]
 
     @ssh_host_key_md.setter
     def ssh_host_key_md(self, value: str) -> None:
@@ -1328,7 +1328,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("select-file")
+        return self.get("select-file")  # type: ignore[return-value]
 
     @select_file.setter
     def select_file(self, value: str) -> None:
@@ -1345,7 +1345,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("show-files", bool_or_value)
+        return self.get("show-files", bool_or_value)  # type: ignore[return-value]
 
     @show_files.setter
     def show_files(self, value: bool) -> None:
@@ -1366,7 +1366,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-detach-seed-only", bool_or_value)
+        return self.get("bt-detach-seed-only", bool_or_value)  # type: ignore[return-value]
 
     @bt_detach_seed_only.setter
     def bt_detach_seed_only(self, value: bool) -> None:
@@ -1384,7 +1384,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt_enable_hook_after_hash_check", bool_or_value)
+        return self.get("bt_enable_hook_after_hash_check", bool_or_value)  # type: ignore[return-value]
 
     @bt_enable_hook_after_hash_check.setter
     def bt_enable_hook_after_hash_check(self, value: bool) -> None:
@@ -1402,7 +1402,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-enable-lpd", bool_or_value)
+        return self.get("bt-enable-lpd", bool_or_value)  # type: ignore[return-value]
 
     @bt_enable_lpd.setter
     def bt_enable_lpd(self, value: bool) -> None:
@@ -1420,7 +1420,7 @@ class Options:
         Returns:
             list of str
         """
-        return self.get("bt-exclude-tracker")
+        return self.get("bt-exclude-tracker")  # type: ignore[return-value]
 
     @bt_exclude_tracker.setter
     def bt_exclude_tracker(self, value: list[str]) -> None:
@@ -1439,7 +1439,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("bt-external-ip")
+        return self.get("bt-external-ip")  # type: ignore[return-value]
 
     @bt_external_ip.setter
     def bt_external_ip(self, value: str) -> None:
@@ -1458,7 +1458,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-force-encryption", bool_or_value)
+        return self.get("bt-force-encryption", bool_or_value)  # type: ignore[return-value]
 
     @bt_force_encryption.setter
     def bt_force_encryption(self, value: bool) -> None:
@@ -1477,7 +1477,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-hash-check-seed", bool_or_value)
+        return self.get("bt-hash-check-seed", bool_or_value)  # type: ignore[return-value]
 
     @bt_hash_check_seed.setter
     def bt_hash_check_seed(self, value: bool) -> None:
@@ -1495,7 +1495,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("bt-lpd-interface")
+        return self.get("bt-lpd-interface")  # type: ignore[return-value]
 
     @bt_lpd_interface.setter
     def bt_lpd_interface(self, value: str) -> None:
@@ -1512,7 +1512,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-max-open-files", int)
+        return self.get("bt-max-open-files", int)  # type: ignore[return-value]
 
     @bt_max_open_files.setter
     def bt_max_open_files(self, value: int) -> None:
@@ -1529,7 +1529,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-max-peers", int)
+        return self.get("bt-max-peers", int)  # type: ignore[return-value]
 
     @bt_max_peers.setter
     def bt_max_peers(self, value: int) -> None:
@@ -1547,7 +1547,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-metadata-only", bool_or_value)
+        return self.get("bt-metadata-only", bool_or_value)  # type: ignore[return-value]
 
     @bt_metadata_only.setter
     def bt_metadata_only(self, value: bool) -> None:
@@ -1565,7 +1565,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("bt-min-crypto-level")
+        return self.get("bt-min-crypto-level")  # type: ignore[return-value]
 
     @bt_min_crypto_level.setter
     def bt_min_crypto_level(self, value: str) -> None:
@@ -1586,7 +1586,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("bt-prioritize-piece")
+        return self.get("bt-prioritize-piece")  # type: ignore[return-value]
 
     @bt_prioritize_piece.setter
     def bt_prioritize_piece(self, value: str) -> None:
@@ -1604,7 +1604,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-remove-unselected-file", bool_or_value)
+        return self.get("bt-remove-unselected-file", bool_or_value)  # type: ignore[return-value]
 
     @bt_remove_unselected_file.setter
     def bt_remove_unselected_file(self, value: bool) -> None:
@@ -1622,7 +1622,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-require-crypto", bool_or_value)
+        return self.get("bt-require-crypto", bool_or_value)  # type: ignore[return-value]
 
     @bt_require_crypto.setter
     def bt_require_crypto(self, value: bool) -> None:
@@ -1641,7 +1641,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-request-peer-speed-limit", int)
+        return self.get("bt-request-peer-speed-limit", int)  # type: ignore[return-value]
 
     @bt_request_peer_speed_limit.setter
     def bt_request_peer_speed_limit(self, value: int) -> None:
@@ -1660,7 +1660,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-save-metadata", bool_or_value)
+        return self.get("bt-save-metadata", bool_or_value)  # type: ignore[return-value]
 
     @bt_save_metadata.setter
     def bt_save_metadata(self, value: bool) -> None:
@@ -1677,7 +1677,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-seed-unverified", bool_or_value)
+        return self.get("bt-seed-unverified", bool_or_value)  # type: ignore[return-value]
 
     @bt_seed_unverified.setter
     def bt_seed_unverified(self, value: bool) -> None:
@@ -1694,7 +1694,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-stop-timeout", int)
+        return self.get("bt-stop-timeout", int)  # type: ignore[return-value]
 
     @bt_stop_timeout.setter
     def bt_stop_timeout(self, value: int) -> None:
@@ -1712,7 +1712,7 @@ class Options:
         Returns:
             list of str
         """
-        return self.get("bt-tracker")
+        return self.get("bt-tracker")  # type: ignore[return-value]
 
     @bt_tracker.setter
     def bt_tracker(self, value: list[str]) -> None:
@@ -1730,7 +1730,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-tracker-connect-timeout", int)
+        return self.get("bt-tracker-connect-timeout", int)  # type: ignore[return-value]
 
     @bt_tracker_connect_timeout.setter
     def bt_tracker_connect_timeout(self, value: int) -> None:
@@ -1749,7 +1749,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-tracker-interval", int)
+        return self.get("bt-tracker-interval", int)  # type: ignore[return-value]
 
     @bt_tracker_interval.setter
     def bt_tracker_interval(self, value: int) -> None:
@@ -1766,7 +1766,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-tracker-timeout", int)
+        return self.get("bt-tracker-timeout", int)  # type: ignore[return-value]
 
     @bt_tracker_timeout.setter
     def bt_tracker_timeout(self, value: int) -> None:
@@ -1781,7 +1781,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dht-entry-point")
+        return self.get("dht-entry-point")  # type: ignore[return-value]
 
     @dht_entry_point.setter
     def dht_entry_point(self, value: str) -> None:
@@ -1796,7 +1796,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dht-entry-point6")
+        return self.get("dht-entry-point6")  # type: ignore[return-value]
 
     @dht_entry_point6.setter
     def dht_entry_point6(self, value: str) -> None:
@@ -1813,7 +1813,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dht-file-path")
+        return self.get("dht-file-path")  # type: ignore[return-value]
 
     @dht_file_path.setter
     def dht_file_path(self, value: str) -> None:
@@ -1830,7 +1830,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dht-file-path6")
+        return self.get("dht-file-path6")  # type: ignore[return-value]
 
     @dht_file_path6.setter
     def dht_file_path6(self, value: str) -> None:
@@ -1847,7 +1847,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dht-listen-addr6")
+        return self.get("dht-listen-addr6")  # type: ignore[return-value]
 
     @dht_listen_addr6.setter
     def dht_listen_addr6(self, value: str) -> None:
@@ -1868,7 +1868,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dht-listen-port")
+        return self.get("dht-listen-port")  # type: ignore[return-value]
 
     @dht_listen_port.setter
     def dht_listen_port(self, value: str) -> None:
@@ -1885,7 +1885,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("dht-message-timeout", int)
+        return self.get("dht-message-timeout", int)  # type: ignore[return-value]
 
     @dht_message_timeout.setter
     def dht_message_timeout(self, value: int) -> None:
@@ -1903,7 +1903,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-dht", bool_or_value)
+        return self.get("enable-dht", bool_or_value)  # type: ignore[return-value]
 
     @enable_dht.setter
     def enable_dht(self, value: bool) -> None:
@@ -1921,7 +1921,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-dht6", bool_or_value)
+        return self.get("enable-dht6", bool_or_value)  # type: ignore[return-value]
 
     @enable_dht6.setter
     def enable_dht6(self, value: bool) -> None:
@@ -1939,7 +1939,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-peer-exchange", bool_or_value)
+        return self.get("enable-peer-exchange", bool_or_value)  # type: ignore[return-value]
 
     @enable_peer_exchange.setter
     def enable_peer_exchange(self, value: bool) -> None:
@@ -1959,7 +1959,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("follow-torrent")
+        return self.get("follow-torrent")  # type: ignore[return-value]
 
     @follow_torrent.setter
     def follow_torrent(self, value: str) -> None:
@@ -1978,7 +1978,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("index-out")
+        return self.get("index-out")  # type: ignore[return-value]
 
     @index_out.setter
     def index_out(self, value: str) -> None:
@@ -1999,7 +1999,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("listen-port")
+        return self.get("listen-port")  # type: ignore[return-value]
 
     @listen_port.setter
     def listen_port(self, value: str) -> None:
@@ -2017,7 +2017,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-overall-upload-limit", int)
+        return self.get("max-overall-upload-limit", int)  # type: ignore[return-value]
 
     @max_overall_upload_limit.setter
     def max_overall_upload_limit(self, value: int) -> None:
@@ -2035,7 +2035,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-upload-limit", int)
+        return self.get("max-upload-limit", int)  # type: ignore[return-value]
 
     @max_upload_limit.setter
     def max_upload_limit(self, value: int) -> None:
@@ -2056,7 +2056,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("peer-id-prefix")
+        return self.get("peer-id-prefix")  # type: ignore[return-value]
 
     @peer_id_prefix.setter
     def peer_id_prefix(self, value: str) -> None:
@@ -2076,7 +2076,7 @@ class Options:
         Returns:
             float
         """
-        return self.get("seed-ratio")
+        return self.get("seed-ratio")  # type: ignore[return-value]
 
     @seed_ratio.setter
     def seed_ratio(self, value: float) -> None:
@@ -2096,7 +2096,7 @@ class Options:
         Returns:
             float
         """
-        return self.get("seed-time")
+        return self.get("seed-time")  # type: ignore[return-value]
 
     @seed_time.setter
     def seed_time(self, value: float) -> None:
@@ -2113,7 +2113,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("torrent-file")
+        return self.get("torrent-file")  # type: ignore[return-value]
 
     @torrent_file.setter
     def torrent_file(self, value: str) -> None:
@@ -2135,7 +2135,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("follow-metalink")
+        return self.get("follow-metalink")  # type: ignore[return-value]
 
     @follow_metalink.setter
     def follow_metalink(self, value: str) -> None:
@@ -2153,7 +2153,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("metalink-base-uri")
+        return self.get("metalink-base-uri")  # type: ignore[return-value]
 
     @metalink_base_uri.setter
     def metalink_base_uri(self, value: str) -> None:
@@ -2171,7 +2171,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("metalink-file")
+        return self.get("metalink-file")  # type: ignore[return-value]
 
     @metalink_file.setter
     def metalink_file(self, value: str) -> None:
@@ -2186,7 +2186,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("metalink-language")
+        return self.get("metalink-language")  # type: ignore[return-value]
 
     @metalink_language.setter
     def metalink_language(self, value: str) -> None:
@@ -2203,7 +2203,7 @@ class Options:
         Returns:
             list of str
         """
-        return self.get("metalink-location")
+        return self.get("metalink-location")  # type: ignore[return-value]
 
     @metalink_location.setter
     def metalink_location(self, value: list[str]) -> None:
@@ -2218,7 +2218,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("metalink-os")
+        return self.get("metalink-os")  # type: ignore[return-value]
 
     @metalink_os.setter
     def metalink_os(self, value: str) -> None:
@@ -2233,7 +2233,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("metalink-version")
+        return self.get("metalink-version")  # type: ignore[return-value]
 
     @metalink_version.setter
     def metalink_version(self, value: str) -> None:
@@ -2250,7 +2250,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("metalink-preferred-protocol")
+        return self.get("metalink-preferred-protocol")  # type: ignore[return-value]
 
     @metalink_preferred_protocol.setter
     def metalink_preferred_protocol(self, value: str) -> None:
@@ -2267,7 +2267,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("metalink_enable_unique_protocol", bool_or_value)
+        return self.get("metalink_enable_unique_protocol", bool_or_value)  # type: ignore[return-value]
 
     @metalink_enable_unique_protocol.setter
     def metalink_enable_unique_protocol(self, value: bool) -> None:
@@ -2286,7 +2286,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-rpc", bool_or_value)
+        return self.get("enable-rpc", bool_or_value)  # type: ignore[return-value]
 
     @enable_rpc.setter
     def enable_rpc(self, value: bool) -> None:
@@ -2303,7 +2303,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("pause", bool_or_value)
+        return self.get("pause", bool_or_value)  # type: ignore[return-value]
 
     @pause.setter
     def pause(self, value: bool) -> None:
@@ -2323,7 +2323,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("pause-metadata", bool_or_value)
+        return self.get("pause-metadata", bool_or_value)  # type: ignore[return-value]
 
     @pause_metadata.setter
     def pause_metadata(self, value: bool) -> None:
@@ -2340,7 +2340,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-allow-origin-all", bool_or_value)
+        return self.get("rpc-allow-origin-all", bool_or_value)  # type: ignore[return-value]
 
     @rpc_allow_origin_all.setter
     def rpc_allow_origin_all(self, value: bool) -> None:
@@ -2372,7 +2372,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-certificate")
+        return self.get("rpc-certificate")  # type: ignore[return-value]
 
     @rpc_certificate.setter
     def rpc_certificate(self, value: str) -> None:
@@ -2389,7 +2389,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-listen-all", bool_or_value)
+        return self.get("rpc-listen-all", bool_or_value)  # type: ignore[return-value]
 
     @rpc_listen_all.setter
     def rpc_listen_all(self, value: bool) -> None:
@@ -2406,7 +2406,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("rpc-listen-port", int)
+        return self.get("rpc-listen-port", int)  # type: ignore[return-value]
 
     @rpc_listen_port.setter
     def rpc_listen_port(self, value: int) -> None:
@@ -2423,7 +2423,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-max-request-size")
+        return self.get("rpc-max-request-size")  # type: ignore[return-value]
 
     @rpc_max_request_size.setter
     def rpc_max_request_size(self, value: str) -> None:
@@ -2442,7 +2442,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-passwd")
+        return self.get("rpc-passwd")  # type: ignore[return-value]
 
     @rpc_passwd.setter
     def rpc_passwd(self, value: str) -> None:
@@ -2460,7 +2460,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-private-key")
+        return self.get("rpc-private-key")  # type: ignore[return-value]
 
     @rpc_private_key.setter
     def rpc_private_key(self, value: str) -> None:
@@ -2479,7 +2479,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-save-upload-metadata", bool_or_value)
+        return self.get("rpc-save-upload-metadata", bool_or_value)  # type: ignore[return-value]
 
     @rpc_save_upload_metadata.setter
     def rpc_save_upload_metadata(self, value: bool) -> None:
@@ -2496,7 +2496,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-secret")
+        return self.get("rpc-secret")  # type: ignore[return-value]
 
     @rpc_secret.setter
     def rpc_secret(self, value: str) -> None:
@@ -2514,7 +2514,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-secure", bool_or_value)
+        return self.get("rpc-secure", bool_or_value)  # type: ignore[return-value]
 
     @rpc_secure.setter
     def rpc_secure(self, value: bool) -> None:
@@ -2533,7 +2533,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-user")
+        return self.get("rpc-user")  # type: ignore[return-value]
 
     @rpc_user.setter
     def rpc_user(self, value: str) -> None:
@@ -2551,7 +2551,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("allow-overwrite", bool_or_value)
+        return self.get("allow-overwrite", bool_or_value)  # type: ignore[return-value]
 
     @allow_overwrite.setter
     def allow_overwrite(self, value: bool) -> None:
@@ -2568,7 +2568,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("allow-piece-length-change", bool_or_value)
+        return self.get("allow-piece-length-change", bool_or_value)  # type: ignore[return-value]
 
     @allow_piece_length_change.setter
     def allow_piece_length_change(self, value: bool) -> None:
@@ -2588,7 +2588,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("always-resume", bool_or_value)
+        return self.get("always-resume", bool_or_value)  # type: ignore[return-value]
 
     @always_resume.setter
     def always_resume(self, value: bool) -> None:
@@ -2605,7 +2605,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("async-dns", bool_or_value)
+        return self.get("async-dns", bool_or_value)  # type: ignore[return-value]
 
     @async_dns.setter
     def async_dns(self, value: bool) -> None:
@@ -2625,7 +2625,7 @@ class Options:
         Returns:
             list of str
         """
-        return self.get("async-dns-server")
+        return self.get("async-dns-server")  # type: ignore[return-value]
 
     @async_dns_server.setter
     def async_dns_server(self, value: list[str]) -> None:
@@ -2643,7 +2643,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("auto-file-renaming", bool_or_value)
+        return self.get("auto-file-renaming", bool_or_value)  # type: ignore[return-value]
 
     @auto_file_renaming.setter
     def auto_file_renaming(self, value: bool) -> None:
@@ -2659,7 +2659,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("auto-save-interval", int)
+        return self.get("auto-save-interval", int)  # type: ignore[return-value]
 
     @auto_save_interval.setter
     def auto_save_interval(self, value: int) -> None:
@@ -2680,7 +2680,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("conditional-get", bool_or_value)
+        return self.get("conditional-get", bool_or_value)  # type: ignore[return-value]
 
     @conditional_get.setter
     def conditional_get(self, value: bool) -> None:
@@ -2697,7 +2697,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("conf-path")
+        return self.get("conf-path")  # type: ignore[return-value]
 
     @conf_path.setter
     def conf_path(self, value: str) -> None:
@@ -2714,7 +2714,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("console-log-level")
+        return self.get("console-log-level")  # type: ignore[return-value]
 
     @console_log_level.setter
     def console_log_level(self, value: str) -> None:
@@ -2732,7 +2732,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("daemon", bool_or_value)
+        return self.get("daemon", bool_or_value)  # type: ignore[return-value]
 
     @daemon.setter
     def daemon(self, value: bool) -> None:
@@ -2754,7 +2754,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("deferred-input", bool_or_value)
+        return self.get("deferred-input", bool_or_value)  # type: ignore[return-value]
 
     @deferred_input.setter
     def deferred_input(self, value: bool) -> None:
@@ -2771,7 +2771,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("disable-ipv6", bool_or_value)
+        return self.get("disable-ipv6", bool_or_value)  # type: ignore[return-value]
 
     @disable_ipv6.setter
     def disable_ipv6(self, value: bool) -> None:
@@ -2792,7 +2792,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("disk-cache", int)
+        return self.get("disk-cache", int)  # type: ignore[return-value]
 
     @disk_cache.setter
     def disk_cache(self, value: int) -> None:
@@ -2812,7 +2812,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("download-result")
+        return self.get("download-result")  # type: ignore[return-value]
 
     @download_result.setter
     def download_result(self, value: str) -> None:
@@ -2832,7 +2832,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dscp")
+        return self.get("dscp")  # type: ignore[return-value]
 
     @dscp.setter
     def dscp(self, value: str) -> None:
@@ -2859,7 +2859,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("rlimit-nofile", int)
+        return self.get("rlimit-nofile", int)  # type: ignore[return-value]
 
     @rlimit_nofile.setter
     def rlimit_nofile(self, value: int) -> None:
@@ -2876,7 +2876,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-color", bool_or_value)
+        return self.get("enable-color", bool_or_value)  # type: ignore[return-value]
 
     @enable_color.setter
     def enable_color(self, value: bool) -> None:
@@ -2893,7 +2893,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-mmap", bool_or_value)
+        return self.get("enable-mmap", bool_or_value)  # type: ignore[return-value]
 
     @enable_mmap.setter
     def enable_mmap(self, value: bool) -> None:
@@ -2911,7 +2911,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("event-poll")
+        return self.get("event-poll")  # type: ignore[return-value]
 
     @event_poll.setter
     def event_poll(self, value: str) -> None:
@@ -2950,7 +2950,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("file-allocation")
+        return self.get("file-allocation")  # type: ignore[return-value]
 
     @file_allocation.setter
     def file_allocation(self, value: str) -> None:
@@ -2968,7 +2968,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("force-save", bool_or_value)
+        return self.get("force-save", bool_or_value)  # type: ignore[return-value]
 
     @force_save.setter
     def force_save(self, value: bool) -> None:
@@ -2985,7 +2985,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("save-not-found", bool_or_value)
+        return self.get("save-not-found", bool_or_value)  # type: ignore[return-value]
 
     @save_not_found.setter
     def save_not_found(self, value: bool) -> None:
@@ -3006,7 +3006,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("gid")
+        return self.get("gid")  # type: ignore[return-value]
 
     @gid.setter
     def gid(self, value: str) -> None:
@@ -3024,7 +3024,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("hash-check-only", bool_or_value)
+        return self.get("hash-check-only", bool_or_value)  # type: ignore[return-value]
 
     @hash_check_only.setter
     def hash_check_only(self, value: bool) -> None:
@@ -3041,7 +3041,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("human-readable", bool_or_value)
+        return self.get("human-readable", bool_or_value)  # type: ignore[return-value]
 
     @human_readable.setter
     def human_readable(self, value: bool) -> None:
@@ -3063,7 +3063,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("interface")
+        return self.get("interface")  # type: ignore[return-value]
 
     @interface.setter
     def interface(self, value: str) -> None:
@@ -3082,7 +3082,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("keep_unfinished_download_result", bool_or_value)
+        return self.get("keep_unfinished_download_result", bool_or_value)  # type: ignore[return-value]
 
     @keep_unfinished_download_result.setter
     def keep_unfinished_download_result(self, value: bool) -> None:
@@ -3104,7 +3104,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-download-result", int)
+        return self.get("max-download-result", int)  # type: ignore[return-value]
 
     @max_download_result.setter
     def max_download_result(self, value: int) -> None:
@@ -3123,7 +3123,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-mmap-limit", int)
+        return self.get("max-mmap-limit", int)  # type: ignore[return-value]
 
     @max_mmap_limit.setter
     def max_mmap_limit(self, value: int) -> None:
@@ -3142,7 +3142,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-resume-failure-tries", int)
+        return self.get("max-resume-failure-tries", int)  # type: ignore[return-value]
 
     @max_resume_failure_tries.setter
     def max_resume_failure_tries(self, value: int) -> None:
@@ -3159,7 +3159,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("min-tls-version")
+        return self.get("min-tls-version")  # type: ignore[return-value]
 
     @min_tls_version.setter
     def min_tls_version(self, value: str) -> None:
@@ -3178,7 +3178,7 @@ class Options:
         Returns:
             list of str
         """
-        return self.get("multiple-interface")
+        return self.get("multiple-interface")  # type: ignore[return-value]
 
     @multiple_interface.setter
     def multiple_interface(self, value: list[str]) -> None:
@@ -3195,7 +3195,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("log-level")
+        return self.get("log-level")  # type: ignore[return-value]
 
     @log_level.setter
     def log_level(self, value: str) -> None:
@@ -3214,7 +3214,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-bt-download-complete")
+        return self.get("on-bt-download-complete")  # type: ignore[return-value]
 
     @on_bt_download_complete.setter
     def on_bt_download_complete(self, value: str) -> None:
@@ -3232,7 +3232,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-download-complete")
+        return self.get("on-download-complete")  # type: ignore[return-value]
 
     @on_download_complete.setter
     def on_download_complete(self, value: str) -> None:
@@ -3250,7 +3250,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-download-error")
+        return self.get("on-download-error")  # type: ignore[return-value]
 
     @on_download_error.setter
     def on_download_error(self, value: str) -> None:
@@ -3267,7 +3267,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-download-pause")
+        return self.get("on-download-pause")  # type: ignore[return-value]
 
     @on_download_pause.setter
     def on_download_pause(self, value: str) -> None:
@@ -3284,7 +3284,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-download-start")
+        return self.get("on-download-start")  # type: ignore[return-value]
 
     @on_download_start.setter
     def on_download_start(self, value: str) -> None:
@@ -3303,7 +3303,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-download-stop")
+        return self.get("on-download-stop")  # type: ignore[return-value]
 
     @on_download_stop.setter
     def on_download_stop(self, value: str) -> None:
@@ -3325,7 +3325,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("optimize-concurrent-downloads")
+        return self.get("optimize-concurrent-downloads")  # type: ignore[return-value]
 
     @optimize_concurrent_downloads.setter
     def optimize_concurrent_downloads(self, value: str) -> None:
@@ -3347,7 +3347,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("piece-length")
+        return self.get("piece-length")  # type: ignore[return-value]
 
     @piece_length.setter
     def piece_length(self, value: str) -> None:
@@ -3364,7 +3364,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("show-console-readout", bool_or_value)
+        return self.get("show-console-readout", bool_or_value)  # type: ignore[return-value]
 
     @show_console_readout.setter
     def show_console_readout(self, value: bool) -> None:
@@ -3381,7 +3381,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("stderr", bool_or_value)
+        return self.get("stderr", bool_or_value)  # type: ignore[return-value]
 
     @stderr.setter
     def stderr(self, value: bool) -> None:
@@ -3398,7 +3398,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("summary-interval", int)
+        return self.get("summary-interval", int)  # type: ignore[return-value]
 
     @summary_interval.setter
     def summary_interval(self, value: int) -> None:
@@ -3416,7 +3416,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("force-sequential", bool_or_value)
+        return self.get("force-sequential", bool_or_value)  # type: ignore[return-value]
 
     @force_sequential.setter
     def force_sequential(self, value: bool) -> None:
@@ -3434,7 +3434,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-overall-download-limit", int)
+        return self.get("max-overall-download-limit", int)  # type: ignore[return-value]
 
     @max_overall_download_limit.setter
     def max_overall_download_limit(self, value: int) -> None:
@@ -3452,7 +3452,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-download-limit", int)
+        return self.get("max-download-limit", int)  # type: ignore[return-value]
 
     @max_download_limit.setter
     def max_download_limit(self, value: int) -> None:
@@ -3467,7 +3467,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("no-conf", bool_or_value)
+        return self.get("no-conf", bool_or_value)  # type: ignore[return-value]
 
     @no_conf.setter
     def no_conf(self, value: bool) -> None:
@@ -3484,7 +3484,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("no-file-allocation-limit", int)
+        return self.get("no-file-allocation-limit", int)  # type: ignore[return-value]
 
     @no_file_allocation_limit.setter
     def no_file_allocation_limit(self, value: int) -> None:
@@ -3503,7 +3503,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("parameterized-uri", bool_or_value)
+        return self.get("parameterized-uri", bool_or_value)  # type: ignore[return-value]
 
     @parameterized_uri.setter
     def parameterized_uri(self, value: bool) -> None:
@@ -3520,7 +3520,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("quiet", bool_or_value)
+        return self.get("quiet", bool_or_value)  # type: ignore[return-value]
 
     @quiet.setter
     def quiet(self, value: bool) -> None:
@@ -3537,7 +3537,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("realtime-chunk-checksum", bool_or_value)
+        return self.get("realtime-chunk-checksum", bool_or_value)  # type: ignore[return-value]
 
     @realtime_chunk_checksum.setter
     def realtime_chunk_checksum(self, value: bool) -> None:
@@ -3555,7 +3555,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("remove-control-file", bool_or_value)
+        return self.get("remove-control-file", bool_or_value)  # type: ignore[return-value]
 
     @remove_control_file.setter
     def remove_control_file(self, value: bool) -> None:
@@ -3595,7 +3595,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("save-session")
+        return self.get("save-session")  # type: ignore[return-value]
 
     @save_session.setter
     def save_session(self, value: str) -> None:
@@ -3612,7 +3612,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("save-session-interval", int)
+        return self.get("save-session-interval", int)  # type: ignore[return-value]
 
     @save_session_interval.setter
     def save_session_interval(self, value: int) -> None:
@@ -3630,7 +3630,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("socket-recv-buffer-size", int)
+        return self.get("socket-recv-buffer-size", int)  # type: ignore[return-value]
 
     @socket_recv_buffer_size.setter
     def socket_recv_buffer_size(self, value: int) -> None:
@@ -3647,7 +3647,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("stop", int)
+        return self.get("stop", int)  # type: ignore[return-value]
 
     @stop.setter
     def stop(self, value: int) -> None:
@@ -3665,7 +3665,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("stop-with-process", int)
+        return self.get("stop-with-process", int)  # type: ignore[return-value]
 
     @stop_with_process.setter
     def stop_with_process(self, value: int) -> None:
@@ -3682,7 +3682,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("truncate-console-readout", bool_or_value)
+        return self.get("truncate-console-readout", bool_or_value)  # type: ignore[return-value]
 
     @truncate_console_readout.setter
     def truncate_console_readout(self, value: bool) -> None:

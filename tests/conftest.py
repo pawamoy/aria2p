@@ -19,7 +19,7 @@ from tests import CONFIGS_DIR, SESSIONS_DIR
 
 
 @pytest.fixture(autouse=True)
-def tests_logs(request: pytest.RequestFixture) -> None:  # noqa: PT004
+def tests_logs(request: pytest.FixtureRequest) -> None:  # noqa: PT004
     # put logs in tests/logs
     log_path = Path("tests") / "logs"
 
@@ -39,10 +39,10 @@ def tests_logs(request: pytest.RequestFixture) -> None:  # noqa: PT004
     log_path /= name
     if log_path.exists():
         log_path.unlink()
-    enable_logger(sink=log_path, level=os.environ.get("PYTEST_LOG_LEVEL", "TRACE"))
+    enable_logger(sink=str(log_path), level=os.environ.get("PYTEST_LOG_LEVEL", "TRACE"))
 
 
-def spawn_and_wait_server(port: int = 8779) -> subprocess.Process:
+def spawn_and_wait_server(port: int = 8779) -> subprocess.Popen:
     process = subprocess.Popen(
         [  # noqa: S603
             sys.executable,
@@ -66,7 +66,7 @@ def spawn_and_wait_server(port: int = 8779) -> subprocess.Process:
 
 
 @pytest.fixture(scope="session", autouse=True)
-def http_server(tmp_path_factory: pytest.TmpPathFactory, worker_id: str) -> Iterator:
+def http_server(tmp_path_factory: pytest.TempPathFactory, worker_id: str) -> Iterator:
     if worker_id == "master":
         # single worker: just run the HTTP server
         process = spawn_and_wait_server()
@@ -93,15 +93,24 @@ def http_server(tmp_path_factory: pytest.TmpPathFactory, worker_id: str) -> Iter
     process.wait()
 
 
-class _Aria2Server:
+class Aria2Server:
     def __init__(
         self,
         tmp_dir: Path,
         port: int,
-        config: str | None = None,
-        session: str | list[str] | None = None,
+        config: str | Path | None = None,
+        session: str | Path | list[str] | None = None,
         secret: str = "",
     ) -> None:
+        """Initialize the server.
+
+        Parameters:
+            tmp_dir: Temporary download directory.
+            port: Server port.
+            config: aria2c configuration file.
+            session: aria2c session file.
+            secret: Server secret.
+        """
         self.tmp_dir = tmp_dir
         self.port = port
 
@@ -135,13 +144,20 @@ class _Aria2Server:
             command.append(f"--rpc-secret={secret}")
 
         self.command = command
-        self.process = None
+        self.process: subprocess.Popen | None = None
 
         # create the client with port
         self.client = Client(port=self.port, secret=secret, timeout=20)
 
         # create the API instance
         self.api = API(self.client)
+
+    def __enter__(self) -> Aria2Server:  # noqa: PYI034
+        self.start()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):  # noqa: ANN001
+        self.destroy(force=True)
 
     def start(self) -> None:
         while True:
@@ -163,20 +179,23 @@ class _Aria2Server:
                 break
 
     def wait(self) -> None:
-        while True:
-            try:
-                self.process.wait()
-            except subprocess.TimeoutExpired:
-                pass
-            else:
-                break
+        if self.process:
+            while True:
+                try:
+                    self.process.wait()
+                except subprocess.TimeoutExpired:
+                    pass
+                else:
+                    break
 
     def terminate(self) -> None:
-        self.process.terminate()
+        if self.process:
+            self.process.terminate()
         self.wait()
 
     def kill(self) -> None:
-        self.process.kill()
+        if self.process:
+            self.process.kill()
         self.wait()
 
     def rmdir(self, directory: Path | None = None) -> None:
@@ -195,25 +214,6 @@ class _Aria2Server:
         else:
             self.terminate()
         self.rmdir()
-
-
-class Aria2Server:
-    def __init__(  # noqa: D107
-        self,
-        tmp_dir: Path,
-        port: int,
-        config: str | None = None,
-        session: str | list[str] | None = None,
-        secret: str = "",
-    ) -> None:
-        self.server = _Aria2Server(tmp_dir, port, config, session, secret)
-
-    def __enter__(self) -> _Aria2Server:
-        self.server.start()
-        return self.server
-
-    def __exit__(self, exc_type, exc_val, exc_tb):  # noqa: ANN001
-        self.server.destroy(force=True)
 
 
 ports_file = Path(".ports.json")
@@ -272,13 +272,13 @@ def release_port(port_number: int) -> None:
 
 
 @pytest.fixture()
-def port() -> int:
+def port() -> Iterator[int]:
     port_number = reserve_port()
     yield port_number
     release_port(port_number)
 
 
 @pytest.fixture()
-def server(tmp_path: Path, port: int) -> Aria2Server:
+def server(tmp_path: Path, port: int) -> Iterator[Aria2Server]:
     with Aria2Server(tmp_path, port) as server:
         yield server

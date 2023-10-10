@@ -8,13 +8,15 @@ from typing import TYPE_CHECKING
 from aria2p.utils import read_lines
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from aria2p.api import API
 
 
 def add_torrents(
     api: API,
-    torrent_files: list[str] | None = None,
-    from_file: str | None = None,
+    torrent_files: list[str | Path] | None = None,
+    from_file: str | Path | None = None,
     options: dict | None = None,
     position: int | None = None,
 ) -> int:

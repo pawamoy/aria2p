@@ -11,7 +11,7 @@ import shutil
 import threading
 from base64 import b64encode
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable, Dict, Iterator, List, TextIO, Tuple, Union
+from typing import Callable, Dict, Iterator, List, TextIO, Tuple, Union
 
 from loguru import logger
 
@@ -19,9 +19,6 @@ from aria2p.client import Client, ClientException
 from aria2p.downloads import Download
 from aria2p.options import Options
 from aria2p.stats import Stats
-
-if TYPE_CHECKING:
-    from aria2p.types import PathOrStr
 
 OptionsType = Union[Options, dict]
 OperationResult = Union[bool, ClientException]
@@ -122,7 +119,7 @@ class API:
 
     def add_torrent(
         self,
-        torrent_file_path: PathOrStr,
+        torrent_file_path: str | Path,
         uris: list[str] | None = None,
         options: OptionsType | None = None,
         position: int | None = None,
@@ -157,7 +154,7 @@ class API:
 
     def add_metalink(
         self,
-        metalink_file_path: PathOrStr,
+        metalink_file_path: str | Path,
         options: OptionsType | None = None,
         position: int | None = None,
     ) -> list[Download]:
@@ -674,7 +671,7 @@ class API:
     @staticmethod
     def move_files(
         downloads: list[Download],
-        to_directory: PathOrStr,
+        to_directory: str | Path,
         force: bool = False,  # noqa: FBT001,FBT002
     ) -> list[bool]:
         """Move downloaded files to another directory.
@@ -706,7 +703,7 @@ class API:
     @staticmethod
     def copy_files(
         downloads: list[Download],
-        to_directory: PathOrStr,
+        to_directory: str | Path,
         force: bool = False,  # noqa: FBT001,FBT002
     ) -> list[bool]:
         """Copy downloaded files to another directory.
@@ -772,7 +769,7 @@ class API:
             handle_signals: Whether to add signal handlers to gracefully stop the loop on SIGTERM and SIGINT.
         """
 
-        def closure(callback: Callable) -> Callable:
+        def closure(callback: Callable | None) -> Callable | None:
             return functools.partial(callback, self) if callable(callback) else None
 
         kwargs = {
@@ -791,7 +788,7 @@ class API:
             self.listener = threading.Thread(target=self.client.listen_to_notifications, kwargs=kwargs)
             self.listener.start()
         else:
-            self.client.listen_to_notifications(**kwargs)
+            self.client.listen_to_notifications(**kwargs)  # type: ignore[arg-type]
 
     def stop_listening(self) -> None:
         """Stop listening to notifications.
@@ -827,7 +824,7 @@ class API:
         if block:
             yield block
 
-    def parse_input_file(self, input_file: PathOrStr) -> InputFileContentsType:
+    def parse_input_file(self, input_file: str | Path) -> InputFileContentsType:
         """Parse a file with URIs or an aria2c input file.
 
         Parameters:

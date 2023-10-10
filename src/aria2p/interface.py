@@ -20,7 +20,7 @@ import sys
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable, ClassVar, Sequence
+from typing import TYPE_CHECKING, Callable, ClassVar, Sequence, TypedDict
 
 import pyperclip
 import requests
@@ -300,7 +300,7 @@ class Palette:
         return "status_" + value
 
     @staticmethod
-    def name(value: str) -> str:
+    def name(value: str) -> str | list[tuple[int, int, int]]:
         """Return the palette for a NAME cell."""
         if value.startswith("[METADATA]"):
             return (
@@ -347,14 +347,14 @@ class Interface:
     y_offset = 0
     row_offset = 0
     refresh = False
-    width = None
-    height = None
-    screen = None
-    data: ClassVar[list[Download]] = []
-    rows: ClassVar[list[Sequence[str]]] = []
-    scroller = None
+    width: int
+    height: int
+    screen: Screen
+    data: list[Download]
+    rows: list[Sequence[str]]
+    scroller: HorizontalScroll
     follow = None
-    bounds: ClassVar[list[Sequence[int]]] = []
+    bounds: list[Sequence[int]]
 
     palettes: ClassVar[dict[str, tuple[int, int, int]]] = defaultdict(lambda: color_palette_parser("UI"))
     palettes.update(
@@ -448,10 +448,16 @@ class Interface:
     select_sort_header = "Select sort:"
     select_sort_rows = columns_order
 
-    downloads_uris: ClassVar[list[str]] = []
+    downloads_uris: list[str]
     downloads_uris_header = (
         f"Add Download: [ Hit ENTER to download; Hit { ','.join(Keys.names(Keys.ADD_DOWNLOADS)) } to download all ]"
     )
+
+    class StateConf(TypedDict):  # noqa: D106
+        process_keyboard_event: Callable
+        process_mouse_event: Callable
+        print_functions: list[Callable]
+
 
     def __init__(self, api: API | None = None) -> None:
         """Initialize the object.
@@ -463,10 +469,17 @@ class Interface:
             api = API()
         self.api = api
 
+        self.rows = []
+        self.data = []
+        self.bounds = []
+        self.downloads_uris = []
+        self.height = 20
+        self.width = 80
+
         # reduce curses' 1 second delay when hitting escape to 25 ms
         os.environ.setdefault("ESCDELAY", "25")
 
-        self.state_mapping = {
+        self.state_mapping: dict[int, Interface.StateConf] = {
             self.State.MAIN: {
                 "process_keyboard_event": self.process_keyboard_event_main,
                 "process_mouse_event": self.process_mouse_event_main,

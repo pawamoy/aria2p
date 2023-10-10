@@ -22,23 +22,21 @@ class TestGeneralMethods:
         assert not options.are_global
 
     def test_get_struct_method(self) -> None:
-        options = Options(self.api, {0: 1})
-        assert options.get_struct() == {0: 1}
+        options = Options(self.api, {"0": 1})
+        assert options.get_struct() == {"0": 1}
 
     def test_get_method(self) -> None:
-        options = Options(self.api, {0: 1})
-        assert options.get(0) == 1
+        options = Options(self.api, {"0": 1})
+        assert options.get("0") == 1
 
     def test_set_method(self) -> None:
-        self.api.set_global_options = lambda x: True
+        self.api.set_global_options = lambda x: True  # type: ignore[method-assign]
         options = Options(self.api, {})
         assert options.set("0", 0)
         assert options.get("0") == "0"
-        assert options.set(1, "1")
-        assert options.get(1) == "1"
 
     def test_set_method_failure(self) -> None:
-        self.api.set_global_options = lambda x: False
+        self.api.set_global_options = lambda x: False  # type: ignore[method-assign]
         options = Options(self.api, {"0": "0"})
         assert not options.set("0", "1")
         assert not options.set("1", "1")
@@ -46,7 +44,7 @@ class TestGeneralMethods:
         assert options.get("1") is None
 
     def test_set_method_for_download(self) -> None:
-        self.api.set_options = lambda x, y: [True]
+        self.api.set_options = lambda x, y: [True]  # type: ignore[method-assign]
         options = Options(self.api, {}, Download(self.api, {}))
         assert options.set("0", 0)
         assert options.get("0") == "0"
@@ -56,7 +54,7 @@ class TestGeneralMethods:
 class TestOptionsProperties:
     def setup_method(self) -> None:
         self.api = API()
-        self.api.set_global_options = lambda x: True
+        self.api.set_global_options = lambda x: True  # type: ignore[method-assign]
         self.options = Options(self.api, {})
 
     def test_all_proxy_properties(self) -> None:

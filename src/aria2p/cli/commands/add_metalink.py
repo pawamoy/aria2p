@@ -8,12 +8,14 @@ from typing import TYPE_CHECKING
 from aria2p.utils import read_lines
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from aria2p.api import API
 
 
 def add_metalinks(
     api: API,
-    metalink_files: list[str] | None = None,
+    metalink_files: list[str | Path] | None = None,
     from_file: str | None = None,
     options: dict | None = None,
     position: int | None = None,

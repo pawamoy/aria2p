@@ -11,20 +11,20 @@ from aria2p.utils import bool_or_value, bool_to_str, human_readable_bytes, human
 
 
 @pytest.mark.parametrize(
-    ("args", "kwargs", "expected"),
+    ("value", "kwargs", "expected"),
     [
-        ([0], {}, "0.00B"),
-        ([0], {"digits": 0}, "0B"),
-        ([0], {"digits": 0, "delim": " "}, "0 B"),
-        ([0], {"digits": 0, "delim": " ", "postfix": "/s"}, "0 B/s"),
-        ([1024], {"digits": 0, "delim": " ", "postfix": "/s"}, "1 KiB/s"),
-        ([2048], {}, "2.00KiB"),
-        ([2048 * 1024], {}, "2.00MiB"),
-        ([2048 * 1024 * 1024], {}, "2.00GiB"),
-        ([2048 * 1024 * 1024 * 1024], {}, "2.00TiB"),
+        (0, {}, "0.00B"),
+        (0, {"digits": 0}, "0B"),
+        (0, {"digits": 0, "delim": " "}, "0 B"),
+        (0, {"digits": 0, "delim": " ", "postfix": "/s"}, "0 B/s"),
+        (1024, {"digits": 0, "delim": " ", "postfix": "/s"}, "1 KiB/s"),
+        (2048, {}, "2.00KiB"),
+        (2048 * 1024, {}, "2.00MiB"),
+        (2048 * 1024 * 1024, {}, "2.00GiB"),
+        (2048 * 1024 * 1024 * 1024, {}, "2.00TiB"),
     ],
 )
-def test_human_readable_bytes(args: list[int], kwargs: Any, expected: str) -> None:
+def test_human_readable_bytes(value: int, kwargs: Any, expected: str) -> None:
     """Test the `human_readable_bytes` function.
 
     Parameters:
@@ -32,7 +32,7 @@ def test_human_readable_bytes(args: list[int], kwargs: Any, expected: str) -> No
         kwargs: Keyword arguments passed to the function.
         expected: The expected result.
     """
-    assert human_readable_bytes(*args, **kwargs) == expected
+    assert human_readable_bytes(value, **kwargs) == expected
 
 
 @pytest.mark.parametrize(

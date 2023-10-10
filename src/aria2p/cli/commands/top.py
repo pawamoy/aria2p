@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 try:
     from aria2p.interface import Interface
 except ImportError:
-    Interface = None
+    Interface = None  # type: ignore[assignment,misc]
 
 
 def top(api: API) -> int:

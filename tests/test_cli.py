@@ -131,7 +131,7 @@ def test_call_subcommand_with_json_params(tmp_path: Path, port: int) -> None:
 
 
 def test_call_subcommand_with_no_params(server: Aria2Server) -> None:
-    assert call(server.api, "listmethods", None) == 0
+    assert call(server.api, "listmethods", []) == 0
 
 
 def test_add_magnet_subcommand(server: Aria2Server) -> None:

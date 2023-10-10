@@ -27,15 +27,15 @@ if TYPE_CHECKING:
 class TestParameters:
     # callback that return params of a single call as result
     @staticmethod
-    def call_params_callback(request: pytest.RequestFixture) -> tuple[int, dict, list]:
-        payload = json.loads(request.body)
+    def call_params_callback(request: requests.PreparedRequest) -> tuple[int, dict, str]:
+        payload = json.loads(request.body)  # type: ignore[arg-type]
         resp_body = {"result": payload["params"]}
         return 200, {}, json.dumps(resp_body)
 
     # callback that return params of a batch call as result
     @staticmethod
-    def batch_call_params_callback(request: pytest.RequestFixture) -> tuple[int, dict, list]:
-        payload = json.loads(request.body)
+    def batch_call_params_callback(request: requests.PreparedRequest) -> tuple[int, dict, str]:
+        payload = json.loads(request.body)  # type: ignore[arg-type]
         resp_body = [{"result": method["params"]} for method in payload]
         return 200, {}, json.dumps(resp_body)
 
@@ -75,7 +75,7 @@ class TestParameters:
         # copy params and insert secret
         expected_params = deepcopy(params)
         for param in expected_params[0]:
-            param["params"].insert(0, f"token:{secret}")
+            param["params"].insert(0, f"token:{secret}")  # type: ignore[attr-defined]
 
         # call function and assert result
         resp = client.call(client.MULTICALL, params, insert_secret=True)
@@ -94,7 +94,7 @@ class TestParameters:
 
         # call function and assert result
         resp = client.call("other.method", params, insert_secret=True)
-        assert secret not in resp
+        assert secret not in resp  # type: ignore[operator]
 
     @responses.activate
     def test_does_not_insert_secret_if_told_so(self) -> None:
@@ -109,7 +109,7 @@ class TestParameters:
 
         # call function and assert result
         resp = client.call("other.method", params, insert_secret=False)
-        assert secret not in resp
+        assert secret not in resp  # type: ignore[operator]
 
     def test_client_str_returns_client_server(self) -> None:
         host = "https://localhost:8779/"
@@ -198,7 +198,7 @@ class TestParameters:
             ],
         ]
         for param in expected_params[0]:
-            param["params"].insert(0, f"token:{secret}")
+            param["params"].insert(0, f"token:{secret}")  # type: ignore[attr-defined]
 
         # call function and assert result
         resp = client.multicall2(calls, insert_secret=True)
@@ -217,7 +217,7 @@ class TestClientExceptionClass:
         )
         with pytest.raises(ClientException, match=r"Custom message") as e:  # noqa: PT012
             client.call("aria2.method")
-            assert e.code == 1
+            assert e.code == 1  # type: ignore[attr-defined]
 
     @responses.activate
     def test_call_raises_known_error(self) -> None:
@@ -233,7 +233,7 @@ class TestClientExceptionClass:
             match=rf"{JSONRPC_CODES[JSONRPC_PARSER_ERROR]}\nCustom message",
         ) as e:
             client.call("aria2.method")
-            assert e.code == JSONRPC_PARSER_ERROR
+            assert e.code == JSONRPC_PARSER_ERROR  # type: ignore[attr-defined]
 
 
 class TestClientClass:
@@ -375,7 +375,7 @@ class TestClientClass:
 
     def test_multicall_method(self, server: Aria2Server) -> None:
         assert server.client.multicall(
-            [[{"methodName": server.client.LIST_METHODS}, {"methodName": server.client.LIST_NOTIFICATIONS}]],
+            [{"methodName": server.client.LIST_METHODS}, {"methodName": server.client.LIST_NOTIFICATIONS}],
         )
 
     def test_multicall2_method(self, server: Aria2Server) -> None:

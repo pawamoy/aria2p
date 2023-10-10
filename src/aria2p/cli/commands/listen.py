@@ -9,12 +9,11 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from aria2p.api import API
-    from aria2p.types import PathOrStr
 
 
 def listen(
     api: API,
-    callbacks_module: PathOrStr | None = None,
+    callbacks_module: str | Path | None = None,
     event_types: list[str] | None = None,
     timeout: int = 5,
 ) -> int:

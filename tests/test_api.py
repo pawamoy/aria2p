@@ -191,7 +191,7 @@ def test_remove_files_tree(server: Aria2Server) -> None:
         is_complete = True
         root_files_paths = [directory]  # noqa: RUF012
 
-    assert server.api.remove_files([_Download])
+    assert server.api.remove_files([_Download])  # type: ignore[list-item]
     assert not directory.exists()
 
 
@@ -245,7 +245,7 @@ def test_set_options_method(tmp_path: Path, port: int) -> None:
 
 
 # @pytest.mark.flaky(reruns=5)
-def test_copy_files_method(tmp_path_factory: pytest.TmpPathFactory, port: int) -> None:
+def test_copy_files_method(tmp_path_factory: pytest.TempPathFactory, port: int) -> None:
     with Aria2Server(tmp_path_factory.mktemp("copy_files"), port, session="very-small-download.txt") as server:
         # initialize temp dir to copy to
         tmp_dir = tmp_path_factory.mktemp("copy_files")
@@ -278,7 +278,7 @@ def test_copy_files_method(tmp_path_factory: pytest.TmpPathFactory, port: int) -
         tmp_dir.rmdir()
 
 
-def test_move_files_method(tmp_path_factory: pytest.TmpPathFactory, port: int) -> None:
+def test_move_files_method(tmp_path_factory: pytest.TempPathFactory, port: int) -> None:
     with Aria2Server(tmp_path_factory.mktemp("move_files"), port, session="very-small-download.txt") as server:
         # initialize temp dir to copy to
         tmp_dir = tmp_path_factory.mktemp("move_files")
@@ -317,6 +317,7 @@ def test_listen_to_notifications(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         server.api.listen_to_notifications(threaded=True, timeout=1)
     time.sleep(3)
+    assert server.api.listener
     assert not server.api.listener.is_alive()
 
 

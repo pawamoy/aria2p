@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from aria2p import API, BitTorrent, ClientException, Download, File
+from aria2p import API, BitTorrent, ClientException, Download, File, Options
 from tests.conftest import Aria2Server
 
 
@@ -22,6 +22,7 @@ class TestBitTorrentClass:
         assert BitTorrent(self.bittorrent._struct)
 
     def test_str_method(self) -> None:
+        assert self.bittorrent.info
         assert str(self.bittorrent) == self.bittorrent.info["name"]
 
     def test_announce_list_property(self) -> None:
@@ -274,17 +275,18 @@ class TestDownloadClass:
 
         def mocked() -> None:
             witness.append(0)
-            self.download._options = True
+            self.download._options = True  # type: ignore[assignment]
 
-        self.download.update_options = mocked
+        self.download.update_options = mocked  # type: ignore[method-assign]
         assert self.download.options is True
         assert witness == [0]
         assert self.download.options is True
         assert witness == [0]
 
     def test_set_options(self) -> None:
-        self.download.options = "options"
-        assert self.download.options == "options"
+        options = Options(self.download.api, {})
+        self.download.options = options
+        assert self.download.options is options
 
     def test_pause(self, server: Aria2Server) -> None:
         self.download.api = server.api

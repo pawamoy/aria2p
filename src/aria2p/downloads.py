@@ -19,7 +19,6 @@ from aria2p.utils import bool_or_value, human_readable_bytes, human_readable_tim
 if TYPE_CHECKING:
     from aria2p.api import API
     from aria2p.options import Options
-    from aria2p.types import PathOrStr
 
 
 class BitTorrent:
@@ -106,8 +105,10 @@ class File:
     def __str__(self):
         return str(self.path)
 
-    def __eq__(self, other: File) -> bool:
-        return self.path == other.path
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, File):
+            return self.path == other.path
+        return NotImplemented
 
     @property
     def index(self) -> int:
@@ -234,8 +235,10 @@ class Download:
     def __str__(self):
         return self.name
 
-    def __eq__(self, other: Download) -> bool:
-        return self.gid == other.gid
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, Download):
+            return self.gid == other.gid
+        return NotImplemented
 
     def update(self) -> None:
         """Update the internal values of the download with more recent values."""
@@ -994,7 +997,7 @@ class Download:
         """
         return self.api.client.remove_download_result(self.gid) == "OK"
 
-    def move_files(self, to_directory: PathOrStr, force: bool = False) -> bool:  # noqa: FBT001,FBT002
+    def move_files(self, to_directory: str | Path, force: bool = False) -> bool:  # noqa: FBT001,FBT002
         """Move downloaded files to another directory.
 
         Parameters:
@@ -1006,7 +1009,7 @@ class Download:
         """
         return self.api.move_files([self], to_directory, force)[0]
 
-    def copy_files(self, to_directory: PathOrStr, force: bool = False) -> bool:  # noqa: FBT001,FBT002
+    def copy_files(self, to_directory: str | Path, force: bool = False) -> bool:  # noqa: FBT001,FBT002
         """Copy downloaded files to another directory.
 
         Parameters:

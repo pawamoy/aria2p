@@ -6,7 +6,7 @@ import os
 import sys
 import time
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 import pyperclip
 import pytest
@@ -74,7 +74,7 @@ class Event:
         return KeyboardEvent(ord(letter))
 
     @staticmethod
-    def exc(value: type[Exception]) -> SpecialEvent:
+    def exc(value: Exception | type[Exception]) -> SpecialEvent:
         return SpecialEvent(SpecialEvent.RAISE, value)
 
     @staticmethod
@@ -87,9 +87,9 @@ class Event:
 
 
 def get_interface(
-    patcher: Callable,
+    patcher: pytest.MonkeyPatch,
     api: API | None = None,
-    events: list[Event] | None = None,
+    events: list[KeyboardEvent | MouseEvent | SpecialEvent] | None = None,
     *,
     append_q: bool = True,
 ) -> tui.Interface:
@@ -111,14 +111,14 @@ def get_interface(
 
 
 def run_interface(
-    patcher: Callable,
+    patcher: pytest.MonkeyPatch,
     api: API | None = None,
-    events: list[Event] | None = None,
+    events: list[KeyboardEvent | MouseEvent | SpecialEvent] | None = None,
     *,
     append_q: bool = True,
     **kwargs: Any,
 ) -> tui.Interface:
-    interface = get_interface(patcher, api, events, append_q)
+    interface = get_interface(patcher, api, events, append_q=append_q)
     for key, value in kwargs.items():
         setattr(interface, key, value)
     interface.run()
@@ -135,8 +135,8 @@ class MockedScreen:
         self.events = events
         self._has_resized = False
         self._pass_n_frames = 0
-        self.print_at_calls = []
-        self.paint_calls = []
+        self.print_at_calls: list[dict[str, Any]] = []
+        self.paint_calls: list[dict[str, Any]] = []
         self.n_refresh = 0
 
     @property
@@ -255,7 +255,7 @@ def test_log_exception(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatc
         assert not interface.run()
     with open(Path("tests") / "logs" / "test_interface" / "test_log_exception.log") as log_file:
         lines = log_file.readlines()
-    first_line = None
+    first_line = ""
     for line in lines:
         if "ERROR" in line:
             first_line = line

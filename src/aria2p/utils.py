@@ -19,8 +19,6 @@ if TYPE_CHECKING:
     from datetime import timedelta
     from types import FrameType
 
-    from aria2p.types import PathOrStr
-
 
 class SignalHandler:
     """A helper class to handle signals."""
@@ -253,7 +251,7 @@ def load_configuration() -> dict[str, Any]:
     return config_dict
 
 
-def read_lines(path: PathOrStr) -> list[str]:
+def read_lines(path: str | Path) -> list[str]:
     """Read lines in a file.
 
     Parameters:
