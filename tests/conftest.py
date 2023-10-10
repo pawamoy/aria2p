@@ -11,6 +11,7 @@ import time
 from pathlib import Path
 from typing import Iterator
 
+import psutil
 import pytest
 import requests
 
@@ -159,24 +160,38 @@ class Aria2Server:
     def __exit__(self, exc_type, exc_val, exc_tb):  # noqa: ANN001
         self.destroy(force=True)
 
-    def start(self) -> None:
-        while True:
-            # create the subprocess
-            self.process = subprocess.Popen(self.command)  # noqa: S603
-
-            # make sure the server is running
-            retries = 5
-            while retries:
-                try:
-                    self.client.list_methods()
-                except requests.ConnectionError:
-                    time.sleep(0.1)
-                    retries -= 1
-                else:
-                    break
-
-            if retries:
+    def reach(self, retries: int = 5) -> None:
+        while retries:
+            try:
+                self.client.list_methods()
+            except requests.ConnectionError:
+                time.sleep(0.1)
+                retries -= 1
+            else:
                 break
+        else:
+            return False
+        return True
+
+    def start(self) -> None:
+        # Make sure we kill any remaining aria2c process using the same port.
+        for proc in psutil.process_iter():
+            try:
+                cmdline = proc.cmdline()
+                if "aria2c" in cmdline and f"--rpc-listen-port={self.port}" in cmdline:
+                    proc.kill()
+                    proc.wait()
+                    break
+            except psutil.NoSuchProcess:
+                pass
+
+        # Make sure we start the new process.
+        while True:
+            self.process = subprocess.Popen(self.command)  # noqa: S603
+            if self.reach(retries=10):
+                break
+            else:
+                self.kill()
 
     def wait(self) -> None:
         if self.process:

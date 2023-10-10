@@ -90,6 +90,7 @@ quality = [
 ]
 tests = [
     "fastapi~=0.61",
+    "psutil>=5.9.5",
     "pytest>=6.2",
     "pytest-cov>=3.0",
     "pytest-randomly>=3.10",
