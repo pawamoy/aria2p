@@ -97,7 +97,7 @@ jobs:
         allow-python-prereleases: true
 
     - name: Resolving dependencies
-      run: pdm lock -v --no-cross-platform -G ci-tests
+      run: pdm lock -v --no-cross-platform -G ci-tests -G tui
 
     - name: Install dependencies
       run: pdm install --no-editable -G ci-tests -G tui
