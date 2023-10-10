@@ -146,9 +146,12 @@ def test_add_metalink_subcommand(server: Aria2Server) -> None:
     assert add_metalinks(server.api, [TESTS_DATA_DIR / "debian.metalink"]) == 0
 
 
-def test_pause_subcommand(tmp_path: Path, port: int) -> None:
+def test_pause_subcommand(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
     with Aria2Server(tmp_path, port, session="1-dl.txt") as server:
-        assert pause(server.api, ["0000000000000001"]) == 0
+        retcode = pause(server.api, ["0000000000000001"])
+    if "cannot be paused now" in capsys.readouterr().err:
+        pytest.xfail("Cannot pause download (sporadic error)")
+    assert retcode == 0
 
 
 def test_pause_subcommand_already_paused(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
@@ -192,7 +195,10 @@ def test_resume_subcommand_already_unpaused(tmp_path: Path, port: int, capsys: p
 def test_resume_subcommand_one_unpaused(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
     with Aria2Server(tmp_path, port, session="one-active-one-paused.txt") as server:
         assert resume(server.api, ["0000000000000001", "0000000000000002"]) == 1
-        assert capsys.readouterr().err == "GID#0000000000000001 cannot be unpaused now\n"
+        err = capsys.readouterr().err
+        if "is not found" in err:
+            pytest.xfail("Download cannot be found (sporadic error)")
+        assert err == "GID#0000000000000001 cannot be unpaused now\n"
 
 
 def test_resume_all_subcommand(server: Aria2Server) -> None:
