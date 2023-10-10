@@ -86,27 +86,25 @@ maintain = [
     "git-changelog>=1.0",
 ]
 quality = [
-    "ruff>=0.0.246",
+    "ruff>=0.0",
 ]
 tests = [
-    "fastapi~=0.61",
+    "fastapi>=0.100",
     "psutil>=5.9.5",
     "pytest>=6.2",
     "pytest-cov>=3.0",
     "pytest-randomly>=3.10",
-    "pytest-rerunfailures~=9.1",
+    "pytest-rerunfailures>=9.1",
     "pytest-xdist>=2.4",
-    "responses~=0.10",
-    "uvicorn~=0.12",
+    "responses>=0.23",
+    "uvicorn>=0.23",
 ]
 typing = [
     "mypy>=0.910",
     "types-markdown>=3.3",
     "types-pyyaml>=6.0",
-    "types-toml>=0.10",
-    "types-setuptools",
-    "types-requests",
+    "types-requests>=2.31",
 ]
 security = [
-    "safety>=2",
+    "safety>=2.3",
 ]
