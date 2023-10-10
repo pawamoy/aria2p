@@ -458,7 +458,6 @@ class Interface:
         process_mouse_event: Callable
         print_functions: list[Callable]
 
-
     def __init__(self, api: API | None = None) -> None:
         """Initialize the object.
 

@@ -160,7 +160,7 @@ class Aria2Server:
     def __exit__(self, exc_type, exc_val, exc_tb):  # noqa: ANN001
         self.destroy(force=True)
 
-    def reach(self, retries: int = 5) -> None:
+    def reach(self, retries: int = 5) -> bool:
         while retries:
             try:
                 self.client.list_methods()
@@ -190,8 +190,7 @@ class Aria2Server:
             self.process = subprocess.Popen(self.command)  # noqa: S603
             if self.reach(retries=10):
                 break
-            else:
-                self.kill()
+            self.kill()
 
     def wait(self) -> None:
         if self.process:
