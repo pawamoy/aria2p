@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import sys
+from typing import TYPE_CHECKING
 
 from loguru import logger
 
-from aria2p.api import API
+if TYPE_CHECKING:
+    from aria2p.api import API
 
 
 def add(
@@ -16,10 +18,9 @@ def add(
     options: dict | None = None,
     position: int | None = None,
 ) -> int:
-    """
-    Add magnet subcommand.
+    """Add magnet subcommand.
 
-    Arguments:
+    Parameters:
         api: The API instance to use.
         uris: The URIs or file-paths to add.
         from_file: Path to the file to read uris from.

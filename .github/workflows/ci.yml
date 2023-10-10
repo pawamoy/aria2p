@@ -2,11 +2,9 @@ name: ci
 
 on:
   push:
-    branches:
-      - master
   pull_request:
     branches:
-      - master
+    - main
 
 defaults:
   run:
@@ -27,16 +25,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Fetch all tags
+      run: git fetch --depth=1 --tags
+
     - name: Set up PDM
       uses: pdm-project/setup-pdm@v3
       with:
         python-version: "3.8"
 
     - name: Resolving dependencies
-      run: pdm lock -v
+      run: pdm lock -v --no-cross-platform -G ci-quality
 
     - name: Install dependencies
-      run: pdm install -G duty -G docs -G quality -G typing -G security
+      run: pdm install -G ci-quality
 
     - name: Check if the documentation builds correctly
       run: pdm run duty check-docs
@@ -50,24 +51,26 @@ jobs:
     - name: Check for vulnerabilities in dependencies
       run: pdm run duty check-dependencies
 
+    - name: Check for breaking changes in the API
+      run: pdm run duty check-api
+
   tests:
 
     strategy:
-      fail-fast: false
+      max-parallel: 4
       matrix:
         os:
         - ubuntu-latest
         - macos-latest
         - windows-latest
         python-version:
-        - "3.7"
         - "3.8"
         - "3.9"
         - "3.10"
         - "3.11"
-
+        - "3.12"
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.os == 'windows-latest' }}
+    continue-on-error: ${{ matrix.python-version == '3.12' || matrix.os == 'windows-latest' }}
 
     steps:
     - name: Install aria2 on Ubuntu
@@ -91,13 +94,13 @@ jobs:
       uses: pdm-project/setup-pdm@v3
       with:
         python-version: ${{ matrix.python-version }}
-        version: 1.5.0b1
+        allow-python-prereleases: true
 
     - name: Resolving dependencies
-      run: pdm lock -v
+      run: pdm lock -v --no-cross-platform -G ci-tests
 
     - name: Install dependencies
-      run: pdm install --no-editable -G tui -G duty -G tests
+      run: pdm install --no-editable -G ci-tests -G tui
 
     - name: Run the test suite
       run: pdm run duty test

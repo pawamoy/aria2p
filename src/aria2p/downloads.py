@@ -1,5 +1,4 @@
-"""
-This module defines the BitTorrent, File and Download classes.
+"""This module defines the BitTorrent, File and Download classes.
 
 They respectively hold structured information about
 torrent files, files and downloads in aria2c.
@@ -8,26 +7,27 @@ torrent files, files and downloads in aria2c.
 from __future__ import annotations
 
 from contextlib import suppress
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from loguru import logger
 
-import aria2p
 from aria2p.client import ClientException
-from aria2p.options import Options
-from aria2p.types import PathOrStr
 from aria2p.utils import bool_or_value, human_readable_bytes, human_readable_timedelta
+
+if TYPE_CHECKING:
+    from aria2p.api import API
+    from aria2p.options import Options
 
 
 class BitTorrent:
     """Information retrieved from a torrent file."""
 
     def __init__(self, struct: dict) -> None:
-        """
-        Initialize the object.
+        """Initialize the object.
 
-        Arguments:
+        Parameters:
             struct: A dictionary Python object returned by the JSON-RPC client.
         """
         self._struct = struct or {}
@@ -35,10 +35,9 @@ class BitTorrent:
     def __str__(self):
         return self.info["name"]
 
-    @property  # noqa: WPS234 (not complex type annotation)
-    def announce_list(self) -> list[list[str]] | None:  # noqa: WPS234
-        """
-        List of lists of announce URIs.
+    @property
+    def announce_list(self) -> list[list[str]] | None:
+        """List of lists of announce URIs.
 
         If the torrent contains announce and no announce-list, announce is converted to the announce-list format.
 
@@ -49,8 +48,7 @@ class BitTorrent:
 
     @property
     def comment(self) -> str | None:
-        """
-        Return the comment of the torrent.
+        """Return the comment of the torrent.
 
         comment.utf-8 is used if available.
 
@@ -61,20 +59,18 @@ class BitTorrent:
 
     @property
     def creation_date(self) -> datetime:
-        """
-        Return the creation time of the torrent.
+        """Return the creation time of the torrent.
 
         The value is an integer since the epoch, measured in seconds.
 
         Returns:
             The creation date.
         """
-        return datetime.fromtimestamp(self._struct["creationDate"])
+        return datetime.fromtimestamp(self._struct["creationDate"], tz=timezone.utc)
 
     @property
     def mode(self) -> str | None:
-        """
-        File mode of the torrent.
+        """File mode of the torrent.
 
         The value is either single or multi.
 
@@ -85,8 +81,7 @@ class BitTorrent:
 
     @property
     def info(self) -> dict | None:
-        """
-        Struct which contains data from Info dictionary.
+        """Struct which contains data from Info dictionary.
 
         It contains the `name` key: name in info dictionary. `name.utf-8` is used if available.
 
@@ -100,10 +95,9 @@ class File:
     """Information about a download's file."""
 
     def __init__(self, struct: dict) -> None:
-        """
-        Initialize the object.
+        """Initialize the object.
 
-        Arguments:
+        Parameters:
             struct: A dictionary Python object returned by the JSON-RPC client.
         """
         self._struct = struct or {}
@@ -111,13 +105,14 @@ class File:
     def __str__(self):
         return str(self.path)
 
-    def __eq__(self, other):
-        return self.path == other.path
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, File):
+            return self.path == other.path
+        return NotImplemented
 
     @property
     def index(self) -> int:
-        """
-        Index of the file, starting at 1, in the same order as files appear in the multi-file torrent.
+        """Index of the file, starting at 1, in the same order as files appear in the multi-file torrent.
 
         Returns:
             The index of the file.
@@ -126,8 +121,7 @@ class File:
 
     @property
     def path(self) -> Path:
-        """
-        File path.
+        """File path.
 
         Returns:
             The file path.
@@ -136,8 +130,7 @@ class File:
 
     @property
     def is_metadata(self) -> bool:
-        """
-        Return True if this file is aria2 metadata and not an actual file.
+        """Return True if this file is aria2 metadata and not an actual file.
 
         Returns:
             If the file is metadata.
@@ -146,19 +139,17 @@ class File:
 
     @property
     def length(self) -> int:
-        """
-        Return the file size in bytes.
+        """Return the file size in bytes.
 
         Returns:
             The file size in bytes.
         """
         return int(self._struct["length"])
 
-    def length_string(self, human_readable: bool = True) -> str:
-        """
-        Return the length as string.
+    def length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+        """Return the length as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -170,8 +161,7 @@ class File:
 
     @property
     def completed_length(self) -> int:
-        """
-        Completed length of this file in bytes.
+        """Completed length of this file in bytes.
 
         Please note that it is possible that sum of completedLength is less than the completedLength returned by the
         aria2.tellStatus() method. This is because completedLength in aria2.getFiles() only includes completed
@@ -182,11 +172,10 @@ class File:
         """
         return int(self._struct["completedLength"])
 
-    def completed_length_string(self, human_readable: bool = True) -> str:
-        """
-        Return the completed length as string.
+    def completed_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+        """Return the completed length as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -198,8 +187,7 @@ class File:
 
     @property
     def selected(self) -> bool:
-        """
-        Return True if this file is selected by [`--select-file`][aria2p.options.Options.select_file] option.
+        """Return True if this file is selected by [`--select-file`][aria2p.options.Options.select_file] option.
 
         If [`--select-file`][aria2p.options.Options.select_file] is not specified
         or this is single-file torrent or not a torrent download at all, this value is always true.
@@ -212,8 +200,7 @@ class File:
 
     @property
     def uris(self) -> list[dict]:
-        """
-        Return a list of URIs for this file.
+        """Return a list of URIs for this file.
 
         The element type is the same struct
         used in the [`client.get_uris()`][aria2p.client.Client.get_uris] method.
@@ -227,11 +214,10 @@ class File:
 class Download:
     """Class containing all information about a download, as retrieved with the client."""
 
-    def __init__(self, api: "aria2p.api.API", struct: dict) -> None:
-        """
-        Initialize the object.
+    def __init__(self, api: API, struct: dict) -> None:
+        """Initialize the object.
 
-        Arguments:
+        Parameters:
             api: The reference to an [`API`][aria2p.api.API] instance.
             struct: A dictionary Python object returned by the JSON-RPC client.
         """
@@ -249,8 +235,10 @@ class Download:
     def __str__(self):
         return self.name
 
-    def __eq__(self, other):
-        return self.gid == other.gid
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, Download):
+            return self.gid == other.gid
+        return NotImplemented
 
     def update(self) -> None:
         """Update the internal values of the download with more recent values."""
@@ -266,8 +254,7 @@ class Download:
 
     @property
     def live(self) -> Download:
-        """
-        Return the same object with updated data.
+        """Return the same object with updated data.
 
         Returns:
             Itself.
@@ -275,10 +262,9 @@ class Download:
         self.update()
         return self
 
-    @property  # noqa: WPS231 (not that complex)
-    def name(self) -> str:  # noqa: WPS231
-        """
-        Return the name of the download.
+    @property
+    def name(self) -> str:
+        """Return the name of the download.
 
         Name is the name of the file if single-file, first file's directory name if multi-file.
 
@@ -299,23 +285,21 @@ class Download:
                         self._name = Path(file_path[start_pos:]).parts[0]
                 else:
                     with suppress(IndexError):
-                        self._name = self.files[0].uris[0]["uri"].split("/")[-1]  # noqa: WPS219
+                        self._name = self.files[0].uris[0]["uri"].split("/")[-1]
         return self._name
 
     @property
     def control_file_path(self) -> Path:
-        """
-        Return the path to the aria2 control file for this download.
+        """Return the path to the aria2 control file for this download.
 
         Returns:
             The control file path.
         """
         return self.dir / (self.name + ".aria2")
 
-    @property  # noqa: WPS231 (not that complex)
-    def root_files_paths(self) -> list[Path]:  # noqa: WPS231
-        """
-        Return the unique set of directories/files for this download.
+    @property
+    def root_files_paths(self) -> list[Path]:
+        """Return the unique set of directories/files for this download.
 
         Instead of returning all the leaves like self.files,
         return the relative root directories if any, and relative root files.
@@ -337,7 +321,7 @@ class Download:
         """
         if not self._root_files_paths:
             paths = []
-            for file in self.files:  # noqa: VNE002 (file)
+            for file in self.files:
                 if file.is_metadata:
                     continue
                 try:
@@ -354,8 +338,7 @@ class Download:
 
     @property
     def options(self) -> Options:
-        """
-        Options specific to this download.
+        """Options specific to this download.
 
         Returns:
             The download options.
@@ -365,7 +348,7 @@ class Download:
         return self._options  # type: ignore
 
     @options.setter
-    def options(self, value):
+    def options(self, value: Options) -> None:
         self._options = value
 
     def update_options(self) -> None:
@@ -374,8 +357,7 @@ class Download:
 
     @property
     def gid(self) -> str:
-        """
-        GID of the download.
+        """GID of the download.
 
         Returns:
             The download GID.
@@ -384,8 +366,7 @@ class Download:
 
     @property
     def status(self) -> str:
-        """
-        Return the status of the download.
+        """Return the status of the download.
 
         Returns:
             `active`, `waiting`, `paused`, `error`, `complete` or `removed`.
@@ -394,8 +375,7 @@ class Download:
 
     @property
     def is_active(self) -> bool:
-        """
-        Return True if download is active.
+        """Return True if download is active.
 
         Returns:
             If this download is active.
@@ -404,8 +384,7 @@ class Download:
 
     @property
     def is_waiting(self) -> bool:
-        """
-        Return True if download is waiting.
+        """Return True if download is waiting.
 
         Returns:
             If this download is waiting.
@@ -414,8 +393,7 @@ class Download:
 
     @property
     def is_paused(self) -> bool:
-        """
-        Return True if download is paused.
+        """Return True if download is paused.
 
         Returns:
             If this download is paused.
@@ -424,8 +402,7 @@ class Download:
 
     @property
     def has_failed(self) -> bool:
-        """
-        Return True if download has errored.
+        """Return True if download has errored.
 
         Returns:
             If this download has failed.
@@ -434,8 +411,7 @@ class Download:
 
     @property
     def is_complete(self) -> bool:
-        """
-        Return True if download is complete.
+        """Return True if download is complete.
 
         Returns:
             If this download is complete.
@@ -444,8 +420,7 @@ class Download:
 
     @property
     def is_removed(self) -> bool:
-        """
-        Return True if download was removed.
+        """Return True if download was removed.
 
         Returns:
             If this download was removed.
@@ -454,8 +429,7 @@ class Download:
 
     @property
     def is_metadata(self) -> bool:
-        """
-        Return True if this download is only composed of metadata, and no actual files.
+        """Return True if this download is only composed of metadata, and no actual files.
 
         Returns:
             If this is a metadata download.
@@ -464,8 +438,7 @@ class Download:
 
     @property
     def is_torrent(self) -> bool:
-        """
-        Return true if this download is a torrent.
+        """Return true if this download is a torrent.
 
         Returns:
             If this is a torrent downlaod.
@@ -474,19 +447,17 @@ class Download:
 
     @property
     def total_length(self) -> int:
-        """
-        Total length of the download in bytes.
+        """Total length of the download in bytes.
 
         Returns:
             The total length in bytes.
         """
         return int(self._struct["totalLength"])
 
-    def total_length_string(self, human_readable: bool = True) -> str:
-        """
-        Return the total length as string.
+    def total_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+        """Return the total length as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -498,19 +469,17 @@ class Download:
 
     @property
     def completed_length(self) -> int:
-        """
-        Completed length of the download in bytes.
+        """Completed length of the download in bytes.
 
         Returns:
             The completed length in bytes.
         """
         return int(self._struct["completedLength"])
 
-    def completed_length_string(self, human_readable: bool = True) -> str:
-        """
-        Return the completed length as string.
+    def completed_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+        """Return the completed length as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -522,19 +491,17 @@ class Download:
 
     @property
     def upload_length(self) -> int:
-        """
-        Return the uploaded length of the download in bytes.
+        """Return the uploaded length of the download in bytes.
 
         Returns:
             The uploaded length in bytes.
         """
         return int(self._struct["uploadLength"])
 
-    def upload_length_string(self, human_readable: bool = True) -> str:
-        """
-        Return the upload length as string.
+    def upload_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+        """Return the upload length as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -546,8 +513,7 @@ class Download:
 
     @property
     def bitfield(self) -> str | None:
-        """
-        Hexadecimal representation of the download progress.
+        """Hexadecimal representation of the download progress.
 
         The highest bit corresponds to the piece at index 0. Any set bits indicate loaded pieces, while unset bits
         indicate not yet loaded and/or missing pieces. Any overflow bits at the end are set to zero. When the
@@ -560,19 +526,17 @@ class Download:
 
     @property
     def download_speed(self) -> int:
-        """
-        Download speed of this download measured in bytes/sec.
+        """Download speed of this download measured in bytes/sec.
 
         Returns:
             The download speed in bytes/sec.
         """
         return int(self._struct["downloadSpeed"])
 
-    def download_speed_string(self, human_readable: bool = True) -> str:
-        """
-        Return the download speed as string.
+    def download_speed_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+        """Return the download speed as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -584,19 +548,17 @@ class Download:
 
     @property
     def upload_speed(self) -> int:
-        """
-        Upload speed of this download measured in bytes/sec.
+        """Upload speed of this download measured in bytes/sec.
 
         Returns:
             The upload speed in bytes/sec.
         """
         return int(self._struct["uploadSpeed"])
 
-    def upload_speed_string(self, human_readable: bool = True) -> str:
-        """
-        Return the upload speed as string.
+    def upload_speed_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+        """Return the upload speed as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -608,8 +570,7 @@ class Download:
 
     @property
     def info_hash(self) -> str | None:
-        """
-        Return the InfoHash.
+        """Return the InfoHash.
 
         BitTorrent only.
 
@@ -620,8 +581,7 @@ class Download:
 
     @property
     def num_seeders(self) -> int:
-        """
-        Return the number of seeders aria2 has connected to.
+        """Return the number of seeders aria2 has connected to.
 
         BitTorrent only.
 
@@ -632,8 +592,7 @@ class Download:
 
     @property
     def seeder(self) -> bool:
-        """
-        Return True if the local endpoint is a seeder, otherwise false.
+        """Return True if the local endpoint is a seeder, otherwise false.
 
         BitTorrent only.
 
@@ -644,19 +603,17 @@ class Download:
 
     @property
     def piece_length(self) -> int:
-        """
-        Piece length in bytes.
+        """Piece length in bytes.
 
         Returns:
             The piece length in bytes.
         """
         return int(self._struct["pieceLength"])
 
-    def piece_length_string(self, human_readable: bool = True) -> str:
-        """
-        Return the piece length as string.
+    def piece_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+        """Return the piece length as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -668,8 +625,7 @@ class Download:
 
     @property
     def num_pieces(self) -> int:
-        """
-        Return the number of pieces.
+        """Return the number of pieces.
 
         Returns:
             The number of pieces.
@@ -678,8 +634,7 @@ class Download:
 
     @property
     def connections(self) -> int:
-        """
-        Return the number of peers/servers aria2 has connected to.
+        """Return the number of peers/servers aria2 has connected to.
 
         Returns:
             The number of connected peers/servers.
@@ -688,8 +643,7 @@ class Download:
 
     @property
     def error_code(self) -> str | None:
-        """
-        Return the code of the last error for this item, if any.
+        """Return the code of the last error for this item, if any.
 
         The value is a string. The error codes are defined in the EXIT STATUS section. This value is only available
         for stopped/completed downloads.
@@ -701,8 +655,7 @@ class Download:
 
     @property
     def error_message(self) -> str | None:
-        """
-        Return the (hopefully) human readable error message associated to errorCode.
+        """Return the (hopefully) human readable error message associated to errorCode.
 
         Returns:
             The error message.
@@ -711,8 +664,7 @@ class Download:
 
     @property
     def followed_by_ids(self) -> list[str]:
-        """
-        List of GIDs which are generated as the result of this download.
+        """List of GIDs which are generated as the result of this download.
 
         For example, when aria2 downloads a Metalink file, it generates downloads described in the Metalink (see the
         --follow-metalink option). This value is useful to track auto-generated downloads. If there are no such
@@ -725,8 +677,7 @@ class Download:
 
     @property
     def followed_by(self) -> list[Download]:
-        """
-        List of downloads generated as the result of this download.
+        """List of downloads generated as the result of this download.
 
         Returns:
             A list of instances of [`Download`][aria2p.downloads.Download].
@@ -738,7 +689,7 @@ class Download:
                     result.append(self.api.get_download(gid))
                 except ClientException as error:
                     logger.warning(
-                        f"Can't find download with GID {gid}, try to update download {self.gid} ({id(self)}",  # noqa: WPS221
+                        f"Can't find download with GID {gid}, try to update download {self.gid} ({id(self)}",
                     )
                     logger.opt(exception=True).trace(error)
             self._followed_by = result
@@ -746,8 +697,7 @@ class Download:
 
     @property
     def following_id(self) -> str | None:
-        """
-        Return the reverse link for followedBy.
+        """Return the reverse link for followedBy.
 
         A download included in followedBy has this object's GID in its following value.
 
@@ -758,8 +708,7 @@ class Download:
 
     @property
     def following(self) -> Download | None:
-        """
-        Return the download this download is following.
+        """Return the download this download is following.
 
         Returns:
             An instance of [`Download`][aria2p.downloads.Download].
@@ -779,8 +728,7 @@ class Download:
 
     @property
     def belongs_to_id(self) -> str | None:
-        """
-        GID of a parent download.
+        """GID of a parent download.
 
         Some downloads are a part of another download. For example, if a file in a Metalink has BitTorrent resources,
         The downloads of ".torrent" files are parts of that parent. If this download has no parent, this key will not
@@ -793,8 +741,7 @@ class Download:
 
     @property
     def belongs_to(self) -> Download | None:
-        """
-        Parent download.
+        """Parent download.
 
         Returns:
             An instance of [`Download`][aria2p.downloads.Download].
@@ -812,10 +759,9 @@ class Download:
                     self._belongs_to = None
         return self._belongs_to
 
-    @property  # noqa: A003 (shadowing dir)
+    @property
     def dir(self) -> Path:  # noqa: A003
-        """
-        Directory to save files.
+        """Directory to save files.
 
         Returns:
             The directory where the files are saved.
@@ -824,8 +770,7 @@ class Download:
 
     @property
     def files(self) -> list[File]:
-        """
-        Return the list of files.
+        """Return the list of files.
 
         The elements of this list are the same structs used in aria2.getFiles() method.
 
@@ -838,8 +783,7 @@ class Download:
 
     @property
     def bittorrent(self) -> BitTorrent | None:
-        """
-        Struct which contains information retrieved from the .torrent (file).
+        """Struct which contains information retrieved from the .torrent (file).
 
         BitTorrent only.
 
@@ -852,8 +796,7 @@ class Download:
 
     @property
     def verified_length(self) -> int:
-        """
-        Return the number of verified number of bytes while the files are being hash checked.
+        """Return the number of verified number of bytes while the files are being hash checked.
 
         This key exists only when this download is being hash checked.
 
@@ -862,11 +805,10 @@ class Download:
         """
         return int(self._struct.get("verifiedLength", 0))
 
-    def verified_length_string(self, human_readable: bool = True) -> str:
-        """
-        Return the verified length as string.
+    def verified_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+        """Return the verified length as string.
 
-        Arguments:
+        Parameters:
             human_readable: Return in human readable format or not.
 
         Returns:
@@ -878,8 +820,7 @@ class Download:
 
     @property
     def verify_integrity_pending(self) -> bool | None:
-        """
-        Return True if this download is waiting for the hash check in a queue.
+        """Return True if this download is waiting for the hash check in a queue.
 
         This key exists only when this download is in the queue.
 
@@ -890,8 +831,7 @@ class Download:
 
     @property
     def progress(self) -> float:
-        """
-        Return the progress of the download as float.
+        """Return the progress of the download as float.
 
         Returns:
             Progress percentage.
@@ -902,10 +842,9 @@ class Download:
             return 0.0
 
     def progress_string(self, digits: int = 2) -> str:
-        """
-        Return the progress percentage as string.
+        """Return the progress percentage as string.
 
-        Arguments:
+        Parameters:
             digits: Number of decimal digits to use.
 
         Returns:
@@ -915,8 +854,7 @@ class Download:
 
     @property
     def eta(self) -> timedelta:
-        """
-        Return the Estimated Time of Arrival (a timedelta).
+        """Return the Estimated Time of Arrival (a timedelta).
 
         Returns:
             ETA or `timedelta.max` if unknown.
@@ -927,10 +865,9 @@ class Download:
             return timedelta.max
 
     def eta_string(self, precision: int = 0) -> str:
-        """
-        Return the Estimated Time of Arrival as a string.
+        """Return the Estimated Time of Arrival as a string.
 
-        Arguments:
+        Parameters:
             precision: The precision to use, see [aria2p.utils.human_readable_timedelta].
 
         Returns:
@@ -944,10 +881,9 @@ class Download:
         return human_readable_timedelta(eta, precision=precision)
 
     def move(self, pos: int) -> int:
-        """
-        Move the download in the queue, relatively.
+        """Move the download in the queue, relatively.
 
-        Arguments:
+        Parameters:
             pos: Number of times to move.
 
         Returns:
@@ -956,10 +892,9 @@ class Download:
         return self.api.move(self, pos)
 
     def move_to(self, pos: int) -> int:
-        """
-        Move the download in the queue, absolutely.
+        """Move the download in the queue, absolutely.
 
-        Arguments:
+        Parameters:
             pos: The absolute position in the queue to take.
 
         Returns:
@@ -968,10 +903,9 @@ class Download:
         return self.api.move_to(self, pos)
 
     def move_up(self, pos: int = 1) -> int:
-        """
-        Move the download up in the queue.
+        """Move the download up in the queue.
 
-        Arguments:
+        Parameters:
             pos: Number of times to move up.
 
         Returns:
@@ -980,10 +914,9 @@ class Download:
         return self.api.move_up(self, pos)
 
     def move_down(self, pos: int = 1) -> int:
-        """
-        Move the download down in the queue.
+        """Move the download down in the queue.
 
-        Arguments:
+        Parameters:
             pos: Number of times to move down.
 
         Returns:
@@ -992,8 +925,7 @@ class Download:
         return self.api.move_down(self, pos)
 
     def move_to_top(self) -> int:
-        """
-        Move the download to the top of the queue.
+        """Move the download to the top of the queue.
 
         Returns:
             The new position of the download.
@@ -1001,19 +933,17 @@ class Download:
         return self.api.move_to_top(self)
 
     def move_to_bottom(self) -> int:
-        """
-        Move the download to the bottom of the queue.
+        """Move the download to the bottom of the queue.
 
         Returns:
             The new position of the download.
         """
         return self.api.move_to_bottom(self)
 
-    def remove(self, force: bool = False, files: bool = False) -> bool:
-        """
-        Remove the download from the queue (even if active).
+    def remove(self, force: bool = False, files: bool = False) -> bool:  # noqa: FBT001,FBT002
+        """Remove the download from the queue (even if active).
 
-        Arguments:
+        Parameters:
             force: Whether to force removal.
             files: Whether to remove files as well.
 
@@ -1022,17 +952,16 @@ class Download:
 
         Raises:
             ClientException: When removal failed.
-        """  # noqa: DAR401,DAR402 (raise result)
+        """
         result = self.api.remove([self], force=force, files=files)[0]
         if not result:
             raise result  # type: ignore  # we know it's a ClientException
         return True
 
-    def pause(self, force: bool = False) -> bool:
-        """
-        Pause the download.
+    def pause(self, force: bool = False) -> bool:  # noqa: FBT001,FBT002
+        """Pause the download.
 
-        Arguments:
+        Parameters:
             force: Whether to force pause (don't contact servers).
 
         Returns:
@@ -1040,41 +969,38 @@ class Download:
 
         Raises:
             ClientException: When pausing failed.
-        """  # noqa: DAR401,DAR402 (raise result)
+        """
         result = self.api.pause([self], force=force)[0]
         if not result:
             raise result  # type: ignore  # we know it's a ClientException
         return True
 
     def resume(self) -> bool:
-        """
-        Resume the download.
+        """Resume the download.
 
         Returns:
             Always True (raises exception otherwise).
 
         Raises:
             ClientException: When resuming failed.
-        """  # noqa: DAR401,DAR402 (raise result)
+        """
         result = self.api.resume([self])[0]
         if not result:
             raise result  # type: ignore  # we know it's a ClientException
         return True
 
     def purge(self) -> bool:
-        """
-        Purge itself from the results.
+        """Purge itself from the results.
 
         Returns:
             Success or failure of the operation.
         """
         return self.api.client.remove_download_result(self.gid) == "OK"
 
-    def move_files(self, to_directory: PathOrStr, force: bool = False) -> bool:
-        """
-        Move downloaded files to another directory.
+    def move_files(self, to_directory: str | Path, force: bool = False) -> bool:  # noqa: FBT001,FBT002
+        """Move downloaded files to another directory.
 
-        Arguments:
+        Parameters:
             to_directory: The target directory to move files to.
             force: Whether to move files even if download is not complete.
 
@@ -1083,11 +1009,10 @@ class Download:
         """
         return self.api.move_files([self], to_directory, force)[0]
 
-    def copy_files(self, to_directory: PathOrStr, force: bool = False) -> bool:
-        """
-        Copy downloaded files to another directory.
+    def copy_files(self, to_directory: str | Path, force: bool = False) -> bool:  # noqa: FBT001,FBT002
+        """Copy downloaded files to another directory.
 
-        Arguments:
+        Parameters:
             to_directory: The target directory to copy files into.
             force: Whether to move files even if download is not complete.
 

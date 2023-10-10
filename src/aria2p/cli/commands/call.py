@@ -4,17 +4,18 @@ from __future__ import annotations
 
 import json
 import sys
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from aria2p.api import API
 from aria2p.client import Client
+
+if TYPE_CHECKING:
+    from aria2p.api import API
 
 
 def get_method(name: str) -> str | None:
-    """
-    Return the actual aria2 method name from a differently formatted name.
+    """Return the actual aria2 method name from a differently formatted name.
 
-    Arguments:
+    Parameters:
         name: A method name.
 
     Returns:
@@ -34,10 +35,9 @@ def get_method(name: str) -> str | None:
 
 
 def call(api: API, method: str, params: str | list[str]) -> int:
-    """
-    Call subcommand.
+    """Call subcommand.
 
-    Arguments:
+    Parameters:
         api: The API instance to use.
         method: Name of the method to call.
         params: Parameters to use when calling method.

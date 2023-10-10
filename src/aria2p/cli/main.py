@@ -54,20 +54,19 @@ commands = {
 
 
 def main(args: list[str] | None = None) -> int:
-    """
-    Run the main program.
+    """Run the main program.
 
     This function is executed when you type `aria2p` or `python -m aria2p`.
 
-    Arguments:
-        args: Arguments passed from the command line.
+    Parameters:
+        args: Parameters passed from the command line.
 
     Returns:
         An exit code.
     """
     parser = get_parser()
     opts = parser.parse_args(args=args)
-    kwargs = opts.__dict__  # noqa: WPS609 (special attribute)
+    kwargs = opts.__dict__
 
     log_level = kwargs.pop("log_level")
     log_path = kwargs.pop("log_path")
@@ -113,6 +112,6 @@ def main(args: list[str] | None = None) -> int:
         logger.debug("Running subcommand " + subcommand)
     try:
         return commands[subcommand](api, **kwargs)  # type: ignore
-    except ClientException as error:  # noqa: WPS440 (variable overlap)
+    except ClientException as error:
         print(str(error), file=sys.stderr)
         return error.code

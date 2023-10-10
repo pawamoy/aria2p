@@ -2,93 +2,68 @@
 
 from __future__ import annotations
 
-import importlib
 import os
-import re
 import sys
-from io import StringIO
+from importlib.metadata import version as pkgversion
 from pathlib import Path
-from typing import Pattern
-from urllib.request import urlopen
+from typing import TYPE_CHECKING, Any
 
 from duty import duty
+from duty.callables import black, blacken_docs, coverage, lazy, mkdocs, mypy, pytest, ruff, safety
 
-PY_SRC_PATHS = (Path(_) for _ in ("src", "tests", "duties.py", "docs"))
+if TYPE_CHECKING:
+    from duty.context import Context
+
+
+PY_SRC_PATHS = (Path(_) for _ in ("src", "tests", "duties.py", "scripts"))
 PY_SRC_LIST = tuple(str(_) for _ in PY_SRC_PATHS)
 PY_SRC = " ".join(PY_SRC_LIST)
-TESTING = os.environ.get("TESTING", "0") in {"1", "true"}
 CI = os.environ.get("CI", "0") in {"1", "true", "yes", ""}
 WINDOWS = os.name == "nt"
 PTY = not WINDOWS and not CI
+MULTIRUN = os.environ.get("PDM_MULTIRUN", "0") == "1"
 
 
-def _latest(lines: list[str], regex: Pattern) -> str | None:
-    for line in lines:
-        match = regex.search(line)
-        if match:
-            return match.groupdict()["version"]
-    return None
+def pyprefix(title: str) -> str:  # noqa: D103
+    if MULTIRUN:
+        prefix = f"(python{sys.version_info.major}.{sys.version_info.minor})"
+        return f"{prefix:14}{title}"
+    return title
 
 
-def _unreleased(versions, last_release):
-    for index, version in enumerate(versions):
-        if version.tag == last_release:
-            return versions[:index]
-    return versions
+def merge(d1: Any, d2: Any) -> Any:  # noqa: D103
+    basic_types = (int, float, str, bool, complex)
+    if isinstance(d1, dict) and isinstance(d2, dict):
+        for key, value in d2.items():
+            if key in d1:
+                if isinstance(d1[key], basic_types):
+                    d1[key] = value
+                else:
+                    d1[key] = merge(d1[key], value)
+            else:
+                d1[key] = value
+        return d1
+    if isinstance(d1, list) and isinstance(d2, list):
+        return d1 + d2
+    return d2
 
 
-def update_changelog(
-    inplace_file: str,
-    marker: str,
-    version_regex: str,
-    template_url: str,
-) -> None:
-    """
-    Update the given changelog file in place.
+def mkdocs_config() -> str:  # noqa: D103
+    import mergedeep
 
-    Arguments:
-        inplace_file: The file to update in-place.
-        marker: The line after which to insert new contents.
-        version_regex: A regular expression to find currently documented versions in the file.
-        template_url: The URL to the Jinja template used to render contents.
-    """
-    from git_changelog.build import Changelog
-    from git_changelog.commit import AngularStyle
-    from jinja2.sandbox import SandboxedEnvironment
+    # force YAML loader to merge arrays
+    mergedeep.merge = merge
 
-    AngularStyle.DEFAULT_RENDER.insert(0, AngularStyle.TYPES["build"])
-    env = SandboxedEnvironment(autoescape=False)
-    template_text = urlopen(template_url).read().decode("utf8")  # noqa: S310
-    template = env.from_string(template_text)
-    changelog = Changelog(".", style="angular")
-
-    if len(changelog.versions_list) == 1:
-        last_version = changelog.versions_list[0]
-        if last_version.planned_tag is None:
-            planned_tag = "0.1.0"
-            last_version.tag = planned_tag
-            last_version.url += planned_tag
-            last_version.compare_url = last_version.compare_url.replace("HEAD", planned_tag)
-
-    with open(inplace_file, "r") as changelog_file:
-        lines = changelog_file.read().splitlines()
-
-    last_released = _latest(lines, re.compile(version_regex))
-    if last_released:
-        changelog.versions_list = _unreleased(changelog.versions_list, last_released)
-    rendered = template.render(changelog=changelog, inplace=True)
-    lines[lines.index(marker)] = rendered
-
-    with open(inplace_file, "w") as changelog_file:  # noqa: WPS440
-        changelog_file.write("\n".join(lines).rstrip("\n") + "\n")
+    if "+insiders" in pkgversion("mkdocs-material"):
+        return "mkdocs.insiders.yml"
+    return "mkdocs.yml"
 
 
 @duty
-def bundle(ctx):
-    """
-    Build a standalone executable.
+def bundle(ctx: Context) -> None:
+    """Build a standalone executable.
 
-    Arguments:
+    Parameters:
         ctx: The [context][duty.logic.Context] instance (passed automatically).
     """
     ctx.run(
@@ -99,72 +74,61 @@ def bundle(ctx):
 
 
 @duty
-def changelog(ctx):
-    """
-    Update the changelog in-place with latest commits.
+def changelog(ctx: Context) -> None:
+    """Update the changelog in-place with latest commits.
 
-    Arguments:
+    Parameters:
         ctx: The context instance (passed automatically).
     """
-    commit = "166758a98d5e544aaa94fda698128e00733497f4"
-    template_url = f"https://raw.githubusercontent.com/pawamoy/jinja-templates/{commit}/keepachangelog.md"
+    from git_changelog.cli import build_and_render
+
+    git_changelog = lazy(build_and_render, name="git_changelog")
     ctx.run(
-        update_changelog,
-        kwargs={
-            "inplace_file": "CHANGELOG.md",
-            "marker": "<!-- insertion marker -->",
-            "version_regex": r"^## \[v?(?P<version>[^\]]+)",
-            "template_url": template_url,
-        },
+        git_changelog(
+            repository=".",
+            output="CHANGELOG.md",
+            convention="angular",
+            template="keepachangelog",
+            parse_trailers=True,
+            parse_refs=False,
+            sections=["build", "deps", "feat", "fix", "refactor"],
+            bump_latest=True,
+            in_place=True,
+        ),
         title="Updating changelog",
-        pty=PTY,
     )
 
 
-@duty(pre=["check_quality", "check_types", "check_docs", "check_dependencies"])
-def check(ctx):
-    """
-    Check it all!
+@duty(pre=["check_quality", "check_types", "check_docs", "check_dependencies", "check-api"])
+def check(ctx: Context) -> None:  # noqa: ARG001
+    """Check it all!
 
-    Arguments:
+    Parameters:
         ctx: The context instance (passed automatically).
     """
 
 
 @duty
-def check_quality(ctx, files=PY_SRC):
-    """
-    Check the code quality.
+def check_quality(ctx: Context) -> None:
+    """Check the code quality.
 
-    Arguments:
+    Parameters:
         ctx: The context instance (passed automatically).
-        files: The files to check.
     """
-    ctx.run(f"flake8 --config=config/flake8.ini {files}", title="Checking code quality", pty=PTY)
+    ctx.run(
+        ruff.check(*PY_SRC_LIST, config="config/ruff.toml"),
+        title=pyprefix("Checking code quality"),
+        command=f"ruff check --config config/ruff.toml {PY_SRC}",
+    )
 
 
 @duty
-def check_dependencies(ctx):
-    """
-    Check for vulnerabilities in dependencies.
+def check_dependencies(ctx: Context) -> None:
+    """Check for vulnerabilities in dependencies.
 
-    Arguments:
+    Parameters:
         ctx: The context instance (passed automatically).
     """
-    # undo possible patching
-    # see https://github.com/pyupio/safety/issues/348
-    for module in sys.modules:  # noqa: WPS528
-        if module.startswith("safety.") or module == "safety":
-            del sys.modules[module]  # noqa: WPS420
-
-    importlib.invalidate_caches()
-
-    # reload original, unpatched safety
-    from safety.formatter import SafetyFormatter
-    from safety.safety import calculate_remediations
-    from safety.safety import check as safety_check
-    from safety.util import read_requirements
-
     # retrieve the list of dependencies
     requirements = ctx.run(
         ["pdm", "export", "-f", "requirements", "--without-hashes"],
@@ -172,56 +136,67 @@ def check_dependencies(ctx):
         allow_overrides=False,
     )
 
-    # check using safety as a library
-    def safety():  # noqa: WPS430
-        packages = list(read_requirements(StringIO(requirements)))
-        vulns, db_full = safety_check(packages=packages, ignore_vulns="")
-        remediations = calculate_remediations(vulns, db_full)
-        output_report = SafetyFormatter("text").render_vulnerabilities(
-            announcements=[],
-            vulnerabilities=vulns,
-            remediations=remediations,
-            full=True,
-            packages=packages,
-        )
-        if vulns:
-            print(output_report)
-            return False
-        return True
-
-    ctx.run(safety, title="Checking dependencies")
+    ctx.run(
+        safety.check(requirements),
+        title="Checking dependencies",
+        command="pdm export -f requirements --without-hashes | safety check --stdin",
+    )
 
 
 @duty
-def check_docs(ctx):
-    """
-    Check if the documentation builds correctly.
+def check_docs(ctx: Context) -> None:
+    """Check if the documentation builds correctly.
 
-    Arguments:
+    Parameters:
         ctx: The context instance (passed automatically).
     """
     Path("htmlcov").mkdir(parents=True, exist_ok=True)
     Path("htmlcov/index.html").touch(exist_ok=True)
-    ctx.run("mkdocs build -s", title="Building documentation", pty=PTY)
+    config = mkdocs_config()
+    ctx.run(
+        mkdocs.build(strict=True, config_file=config, verbose=True),
+        title=pyprefix("Building documentation"),
+        command=f"mkdocs build -vsf {config}",
+    )
 
 
-@duty  # noqa: WPS231
-def check_types(ctx):  # noqa: WPS231
-    """
-    Check that the code is correctly typed.
+@duty
+def check_types(ctx: Context) -> None:
+    """Check that the code is correctly typed.
 
-    Arguments:
+    Parameters:
         ctx: The context instance (passed automatically).
     """
-    ctx.run(f"mypy --config-file config/mypy.ini {PY_SRC}", title="Type-checking", pty=PTY)
+    ctx.run(
+        mypy.run(*PY_SRC_LIST, config_file="config/mypy.ini"),
+        title=pyprefix("Type-checking"),
+        command=f"mypy --config-file config/mypy.ini {PY_SRC}",
+    )
+
+
+@duty
+def check_api(ctx: Context) -> None:
+    """Check for API breaking changes.
+
+    Parameters:
+        ctx: The context instance (passed automatically).
+    """
+    from griffe.cli import check as g_check
+
+    griffe_check = lazy(g_check, name="griffe.check")
+    ctx.run(
+        griffe_check("aria2p", search_paths=["src"], color=True),
+        title="Checking for API breaking changes",
+        command="griffe check -ssrc aria2p",
+        nofail=True,
+    )
 
 
 @duty(silent=True)
-def clean_tests(ctx):
-    """
-    Delete temporary tests files.
+def clean_tests(ctx: Context) -> None:
+    """Delete temporary tests files.
 
-    Arguments:
+    Parameters:
         ctx: The context instance (passed automatically).
     """
     ctx.run("rm -rf .ports.json")
@@ -232,11 +207,10 @@ def clean_tests(ctx):
 
 
 @duty(silent=True, post=["clean_tests"])
-def clean(ctx):
-    """
-    Delete temporary files.
+def clean(ctx: Context) -> None:
+    """Delete temporary files.
 
-    Arguments:
+    Parameters:
         ctx: The context instance (passed automatically).
     """
     ctx.run("rm -rf .mypy_cache")
@@ -251,96 +225,88 @@ def clean(ctx):
 
 
 @duty
-def docs(ctx):
-    """
-    Build the documentation locally.
+def docs(ctx: Context, host: str = "127.0.0.1", port: int = 8000) -> None:
+    """Serve the documentation (localhost:8000).
 
-    Arguments:
-        ctx: The context instance (passed automatically).
-    """
-    ctx.run("mkdocs build", title="Building documentation")
-
-
-@duty
-def docs_serve(ctx, host="127.0.0.1", port=8000):
-    """
-    Serve the documentation (localhost:8000).
-
-    Arguments:
+    Parameters:
         ctx: The context instance (passed automatically).
         host: The host to serve the docs from.
         port: The port to serve the docs on.
     """
-    ctx.run(f"mkdocs serve -a {host}:{port}", title="Serving documentation", capture=False)
+    ctx.run(
+        mkdocs.serve(dev_addr=f"{host}:{port}", config_file=mkdocs_config()),
+        title="Serving documentation",
+        capture=False,
+    )
 
 
 @duty
-def docs_deploy(ctx):
-    """
-    Deploy the documentation on GitHub pages.
+def docs_deploy(ctx: Context) -> None:
+    """Deploy the documentation on GitHub pages.
 
-    Arguments:
+    Parameters:
         ctx: The context instance (passed automatically).
     """
-    ctx.run("mkdocs gh-deploy", title="Deploying documentation")
+    os.environ["DEPLOY"] = "true"
+    config_file = mkdocs_config()
+    if config_file == "mkdocs.yml":
+        ctx.run(lambda: False, title="Not deploying docs without Material for MkDocs Insiders!")
+    ctx.run(mkdocs.gh_deploy(config_file=config_file), title="Deploying documentation")
 
 
 @duty
-def format(ctx):  # noqa: W0622 (we don't mind shadowing the format builtin)
-    """
-    Run formatting tools on the code.
+def format(ctx: Context) -> None:
+    """Run formatting tools on the code.
 
-    Arguments:
+    Parameters:
         ctx: The context instance (passed automatically).
     """
     ctx.run(
-        f"autoflake -ir --exclude tests/fixtures --remove-all-unused-imports {PY_SRC}",
-        title="Removing unused imports",
-        pty=PTY,
+        ruff.check(*PY_SRC_LIST, config="config/ruff.toml", fix_only=True, exit_zero=True),
+        title="Auto-fixing code",
     )
-    ctx.run(f"isort {PY_SRC}", title="Ordering imports", pty=PTY)
-    ctx.run(f"black {PY_SRC}", title="Formatting code", pty=PTY)
+    ctx.run(black.run(*PY_SRC_LIST, config="config/black.toml"), title="Formatting code")
+    ctx.run(
+        blacken_docs.run(*PY_SRC_LIST, "docs", exts=["py", "md"], line_length=120),
+        title="Formatting docs",
+        nofail=True,
+    )
 
 
-@duty
-def release(ctx, version):
-    """
-    Release a new Python package.
+@duty(post=["docs-deploy"])
+def release(ctx: Context, version: str) -> None:
+    """Release a new Python package.
 
-    Arguments:
+    Parameters:
         ctx: The context instance (passed automatically).
         version: The new version number to use.
     """
     ctx.run("git add pyproject.toml CHANGELOG.md", title="Staging files", pty=PTY)
     ctx.run(["git", "commit", "-m", f"chore: Prepare release {version}"], title="Committing changes", pty=PTY)
     ctx.run(f"git tag {version}", title="Tagging commit", pty=PTY)
-    if not TESTING:
-        ctx.run("git push", title="Pushing commits", pty=False)
-        ctx.run("git push --tags", title="Pushing tags", pty=False)
-        ctx.run("pdm build", title="Building dist/wheel", pty=PTY)
-        ctx.run("twine upload --skip-existing dist/*", title="Publishing version", pty=PTY)
-        docs_deploy.run()
+    ctx.run("git push", title="Pushing commits", pty=False)
+    ctx.run("git push --tags", title="Pushing tags", pty=False)
+    ctx.run("pdm build", title="Building dist/wheel", pty=PTY)
+    ctx.run("twine upload --skip-existing dist/*", title="Publishing version", pty=PTY)
 
 
-@duty(silent=True)
-def coverage(ctx):
-    """
-    Report coverage as text and HTML.
+@duty(silent=True, aliases=["coverage"])
+def cov(ctx: Context) -> None:
+    """Report coverage as text and HTML.
 
-    Arguments:
+    Parameters:
         ctx: The context instance (passed automatically).
     """
-    ctx.run("coverage combine", nofail=True)
-    ctx.run("coverage report --rcfile=config/coverage.ini", capture=False)
-    ctx.run("coverage html --rcfile=config/coverage.ini")
+    ctx.run(coverage.combine, nofail=True)
+    ctx.run(coverage.report(rcfile="config/coverage.ini"), capture=False)
+    ctx.run(coverage.html(rcfile="config/coverage.ini"))
 
 
-@duty(pre=[lambda _: clean_tests.run()])  # type: ignore[union-attr]
-def test(ctx, match="", markers="", cpus="auto", sugar: bool = True, verbose: bool = False, cov: bool = True):
-    """
-    Run the test suite.
+@duty(pre=[lambda _: clean_tests.run()])
+def test(ctx: Context, match: str = "") -> None:
+    """Run the test suite.
 
-    Arguments:
+    Parameters:
         ctx: The context instance (passed automatically).
         match: A pytest expression to filter selected tests.
         markers: A pytest expression to filter selected tests based on markers.
@@ -351,25 +317,8 @@ def test(ctx, match="", markers="", cpus="auto", sugar: bool = True, verbose: bo
     """
     py_version = f"{sys.version_info.major}{sys.version_info.minor}"
     os.environ["COVERAGE_FILE"] = f".coverage.{py_version}"
-
-    if WINDOWS and CI:
-        cpus_opts = ["--dist", "no"]
-        verbose_opts = ["-vv"]
-        sugar_opts = ["-p", "no:sugar"]
-        cov_opts = ["--no-cov"]
-    else:
-        cpus_opts = ["--dist", "no"] if cpus == "no" else ["-n", cpus]
-        sugar_opts = [] if sugar is True else ["-p", "no:sugar"]
-        verbose_opts = [] if verbose is False else ["-vv"]
-        cov_opts = [] if cov is True else ["--no-cov"]
-
-    match = ["-k", match] if match else []
-    markers = ["-m", markers] if markers else []
-    options = [*cov_opts, *verbose_opts, *sugar_opts, *cpus_opts, *match, *markers]  # noqa: WPS221
-
     ctx.run(
-        ["pytest", "-c", "config/pytest.ini", *options, "tests"],
-        title="Running tests",
-        capture=False,
-        pty=PTY,
+        pytest.run("-n", "auto", "tests", config_file="config/pytest.ini", select=match, color="yes"),
+        title=pyprefix("Running tests"),
+        command=f"pytest -c config/pytest.ini -n auto -k{match!r} --color=yes tests",
     )

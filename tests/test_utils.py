@@ -1,6 +1,9 @@
 """Tests for the `utils` module."""
 
+from __future__ import annotations
+
 from datetime import timedelta
+from typing import Any
 
 import pytest
 
@@ -8,29 +11,28 @@ from aria2p.utils import bool_or_value, bool_to_str, human_readable_bytes, human
 
 
 @pytest.mark.parametrize(
-    ("args", "kwargs", "expected"),
+    ("value", "kwargs", "expected"),
     [
-        ([0], {}, "0.00B"),
-        ([0], {"digits": 0}, "0B"),
-        ([0], {"digits": 0, "delim": " "}, "0 B"),
-        ([0], {"digits": 0, "delim": " ", "postfix": "/s"}, "0 B/s"),
-        ([1024], {"digits": 0, "delim": " ", "postfix": "/s"}, "1 KiB/s"),
-        ([2048], {}, "2.00KiB"),
-        ([2048 * 1024], {}, "2.00MiB"),
-        ([2048 * 1024 * 1024], {}, "2.00GiB"),
-        ([2048 * 1024 * 1024 * 1024], {}, "2.00TiB"),
+        (0, {}, "0.00B"),
+        (0, {"digits": 0}, "0B"),
+        (0, {"digits": 0, "delim": " "}, "0 B"),
+        (0, {"digits": 0, "delim": " ", "postfix": "/s"}, "0 B/s"),
+        (1024, {"digits": 0, "delim": " ", "postfix": "/s"}, "1 KiB/s"),
+        (2048, {}, "2.00KiB"),
+        (2048 * 1024, {}, "2.00MiB"),
+        (2048 * 1024 * 1024, {}, "2.00GiB"),
+        (2048 * 1024 * 1024 * 1024, {}, "2.00TiB"),
     ],
 )
-def test_human_readable_bytes(args, kwargs, expected):
-    """
-    Test the `human_readable_bytes` function.
+def test_human_readable_bytes(value: int, kwargs: Any, expected: str) -> None:
+    """Test the `human_readable_bytes` function.
 
-    Arguments:
+    Parameters:
         args: Positional arguments passed to the function.
         kwargs: Keyword arguments passed to the function.
         expected: The expected result.
     """
-    assert human_readable_bytes(*args, **kwargs) == expected
+    assert human_readable_bytes(value, **kwargs) == expected
 
 
 @pytest.mark.parametrize(
@@ -48,11 +50,10 @@ def test_human_readable_bytes(args, kwargs, expected):
         (timedelta(seconds=60 * 3), "3m"),
     ],
 )
-def test_human_readable_timedelta_force_print_0_seconds(td, expected):
-    """
-    Test the `human_readable_timedelta` function.
+def test_human_readable_timedelta_force_print_0_seconds(td: timedelta, expected: str) -> None:
+    """Test the `human_readable_timedelta` function.
 
-    Arguments:
+    Parameters:
         td: A timedelta.
         expected: The expected result.
     """
@@ -70,11 +71,10 @@ def test_human_readable_timedelta_force_print_0_seconds(td, expected):
         (1, 1),
     ],
 )
-def test_bool_or_value_true_is_true(value, expected):
-    """
-    Test the `bool_or_value` function.
+def test_bool_or_value_true_is_true(value: str | int | None, expected: bool | str | int | None) -> None:
+    """Test the `bool_or_value` function.
 
-    Arguments:
+    Parameters:
         value: Value passed to the function.
         expected: The expected result.
     """
@@ -91,11 +91,10 @@ def test_bool_or_value_true_is_true(value, expected):
         (1, 1),
     ],
 )
-def test_bool_to_str_true_gives_true(value, expected):
-    """
-    Test the `bool_to_str` function.
+def test_bool_to_str_true_gives_true(value: bool | int | None, expected: str | int | None) -> None:
+    """Test the `bool_to_str` function.
 
-    Arguments:
+    Parameters:
         value: Value passed to the function.
         expected: The expected result.
     """

@@ -2,14 +2,16 @@
 
 from __future__ import annotations
 
-from aria2p.api import API
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from aria2p.api import API
 
 
 def show(api: API) -> int:
-    """
-    Show subcommand.
+    """Show subcommand.
 
-    Arguments:
+    Parameters:
         api: The API instance to use.
 
     Returns:
@@ -17,8 +19,8 @@ def show(api: API) -> int:
     """
     downloads = api.get_downloads()
 
-    def print_line(*args):  # noqa: WPS430 (nested function)
-        print("{:<17} {:<9} {:>8} {:>12} {:>12} {:>8}  {}".format(*args))  # noqa: P101 (unindexed params)
+    def print_line(*args: Any) -> None:
+        print("{:<17} {:<9} {:>8} {:>12} {:>12} {:>8}  {}".format(*args))
 
     print_line("GID", "STATUS", "PROGRESS", "DOWN_SPEED", "UP_SPEED", "ETA", "NAME")
 

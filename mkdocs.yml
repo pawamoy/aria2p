@@ -4,7 +4,14 @@ site_url: "https://pawamoy.github.io/aria2p"
 repo_url: "https://github.com/pawamoy/aria2p"
 repo_name: "pawamoy/aria2p"
 site_dir: "site"
-watch: [README.md, CONTRIBUTING.md, CHANGELOG.md, src/aria2p]
+watch: [mkdocs.yml, README.md, CONTRIBUTING.md, CHANGELOG.md, src/aria2p]
+copyright: Copyright &copy; 2020 Timothée Mazzucotelli
+edit_uri: edit/main/docs/
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
 
 nav:
 - Home:
@@ -15,7 +22,8 @@ nav:
   - Credits: credits.md
   - License: license.md
 # defer to gen-files + literate-nav
-- Code Reference: reference/
+- API reference:
+  - aria2p: reference/
 - Development:
   - Contributing: contributing.md
   - Code of Conduct: code_of_conduct.md
@@ -24,13 +32,30 @@ nav:
 
 theme:
   name: material
+  custom_dir: docs/.overrides
   icon:
     logo: material/currency-sign
   features:
+  - announce.dismiss
+  - content.action.edit
+  - content.action.view
+  - content.code.annotate
+  - content.code.copy
+  - content.tooltips
+  - navigation.footer
+  - navigation.indexes
+  - navigation.sections
   - navigation.tabs
   - navigation.tabs.sticky
   - navigation.top
+  - search.highlight
+  - search.suggest
+  - toc.follow
   palette:
+  - media: "(prefers-color-scheme)"
+    toggle:
+      icon: material/brightness-auto
+      name: Switch to light mode
   - media: "(prefers-color-scheme: light)"
     scheme: default
     primary: teal
@@ -44,23 +69,31 @@ theme:
     accent: lime
     toggle:
       icon: material/weather-night
-      name: Switch to light mode
+      name: Switch to system preference
 
 extra_css:
 - css/material.css
 - css/mkdocstrings.css
 
 markdown_extensions:
+- attr_list
 - admonition
 - callouts
-- pymdownx.emoji
+- footnotes
+- pymdownx.emoji:
+    emoji_index: !!python/name:materialx.emoji.twemoji
+    emoji_generator: !!python/name:materialx.emoji.to_svg
 - pymdownx.magiclink
 - pymdownx.snippets:
     check_paths: true
 - pymdownx.superfences
 - pymdownx.tabbed:
     alternate_style: true
-- pymdownx.tasklist
+    slugify: !!python/object/apply:pymdownx.slugs.slugify
+      kwds:
+        case: lower
+- pymdownx.tasklist:
+    custom_checkbox: true
 - toc:
     permalink: "¤"
 
@@ -69,27 +102,47 @@ plugins:
 - markdown-exec
 - gen-files:
     scripts:
-    - docs/gen_ref_nav.py
+    - scripts/gen_ref_nav.py
 - literate-nav:
     nav_file: SUMMARY.txt
 - coverage
-- section-index
 - mkdocstrings:
     handlers:
       python:
         import:
         - https://docs.python.org/3/objects.inv
+        paths: [src]
         options:
-          separate_signature: true
-          merge_init_into_class: true
-          line_length: 80
-          docstring_style: google
           docstring_options:
             ignore_init_summary: true
+          docstring_section_style: list
+          filters: ["!^_"]
+          heading_level: 1
+          inherited_members: true
+          merge_init_into_class: true
+          separate_signature: true
+          show_root_heading: true
+          show_root_full_path: false
+          show_signature_annotations: true
+          show_symbol_type_heading: true
+          show_symbol_type_toc: true
+          signature_crossrefs: true
+          summary: true
+- git-committers:
+    enabled: !ENV [DEPLOY, false]
+    repository: pawamoy/aria2p
+- minify:
+    minify_html: !ENV [DEPLOY, false]
 
 extra:
   social:
   - icon: fontawesome/brands/github
     link: https://github.com/pawamoy
+  - icon: fontawesome/brands/mastodon
+    link: https://fosstodon.org/@pawamoy
   - icon: fontawesome/brands/twitter
     link: https://twitter.com/pawamoy
+  - icon: fontawesome/brands/gitter
+    link: https://gitter.im/aria2p/community
+  - icon: fontawesome/brands/python
+    link: https://pypi.org/project/aria2p/

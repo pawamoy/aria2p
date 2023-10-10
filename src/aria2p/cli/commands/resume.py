@@ -3,16 +3,18 @@
 from __future__ import annotations
 
 import sys
+from typing import TYPE_CHECKING
 
-from aria2p.api import API
 from aria2p.client import ClientException
 
+if TYPE_CHECKING:
+    from aria2p.api import API
 
-def resume(api: API, gids: list[str] | None = None, do_all: bool = False) -> int:
-    """
-    Resume subcommand.
 
-    Arguments:
+def resume(api: API, gids: list[str] | None = None, do_all: bool = False) -> int:  # noqa: FBT001,FBT002
+    """Resume subcommand.
+
+    Parameters:
         api: The API instance to use.
         gids: The GIDs of the downloads to resume.
         do_all: Pause all downloads if True.

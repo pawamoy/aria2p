@@ -1,5 +1,4 @@
-"""
-Module for aria2c options.
+"""Module for aria2c options.
 
 This module defines the Options class, which holds information retrieved with the `get_option` or
 `get_global_option` methods of the client.
@@ -10,26 +9,17 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import TYPE_CHECKING, Callable, Union
 
-import aria2p
 from aria2p.utils import bool_or_value, bool_to_str
 
-try:
-    from typing import GenericMeta  # type: ignore
-except ImportError:
-    # in 3.7, GenericMeta doesn't exist but we don't need it
-    class GenericMeta:  # type: ignore  # noqa: WPS440 (block variable overlap)
-        """Placeholder."""
-
-
 if TYPE_CHECKING:
+    from aria2p.api import API
     from aria2p.downloads import Download
 
 OptionType = Union[str, int, bool, float, None]
 
 
 class Options:
-    """
-    This class holds information retrieved with the `get_option` or `get_global_option` methods of the client.
+    """This class holds information retrieved with the `get_option` or `get_global_option` methods of the client.
 
     Instances are given a reference to an [`API`][aria2p.api.API] instance to be able to change their values both
     locally and remotely, by using the API client and calling remote methods to change options.
@@ -39,11 +29,10 @@ class Options:
     "max-concurrent-downloads" is used like `options.max_concurrent_downloads = 5`.
     """
 
-    def __init__(self, api: "aria2p.api.API", struct: dict, download: Download | None = None):
-        """
-        Initialize the object.
+    def __init__(self, api: API, struct: dict, download: Download | None = None):
+        """Initialize the object.
 
-        Arguments:
+        Parameters:
             api: The reference to an [`API`][aria2p.api.API] instance.
             struct: A dictionary Python object returned by the JSON-RPC client.
             download: An optional [`Download`][aria2p.downloads.Download] object
@@ -55,8 +44,7 @@ class Options:
 
     @property
     def are_global(self) -> bool:
-        """
-        Tell if options are global, or tied to a Download object.
+        """Tell if options are global, or tied to a Download object.
 
         Returns:
             Whether these options are global.
@@ -64,19 +52,17 @@ class Options:
         return self.download is None
 
     def get_struct(self) -> dict:
-        """
-        Return a copy of the struct dictionary of this Options object.
+        """Return a copy of the struct dictionary of this Options object.
 
         Returns:
             A copy of the struct dictionary.
         """
         return deepcopy(self._struct)
 
-    def get(self, item: str, class_: GenericMeta | Callable | None = None) -> OptionType:
-        """
-        Get the value of an option given its name.
+    def get(self, item: str, class_: Callable | None = None) -> OptionType:
+        """Get the value of an option given its name.
 
-        Arguments:
+        Parameters:
             item: The name of the option (example: "input-file").
             class_: Pass the value through this class/function to change its type.
 
@@ -88,11 +74,10 @@ class Options:
             return class_(value)
         return value
 
-    def set(self, key: str, value: str | int | float | bool) -> bool:  # noqa: A003 (shadowing set)
-        """
-        Set the value of an option given its name.
+    def set(self, key: str, value: str | float | bool | list[str]) -> bool:  # noqa: A003 (shadowing set)
+        """Set the value of an option given its name.
 
-        Arguments:
+        Parameters:
             key: The name of the option (example: "input-file").
             value: The value to set.
 
@@ -110,26 +95,24 @@ class Options:
         return success
 
     # Basic Options
-    @property  # noqa: A003 (shadowing dir, valid aria2c option)
+    @property
     def dir(self) -> str:  # noqa: A003
-        """
-        Return the `dir` option value.
+        """Return the `dir` option value.
 
         The directory to store the downloaded file.
 
         Returns:
             str
         """
-        return self.get("dir")  # type: ignore
+        return self.get("dir")  # type: ignore[return-value]
 
-    @dir.setter  # noqa: A003
-    def dir(self, value):  # noqa: A003
+    @dir.setter
+    def dir(self, value: str) -> None:  # noqa: A003
         self.set("dir", value)
 
     @property
     def input_file(self) -> str:
-        """
-        Return the `input-file` option value.
+        """Return the `input-file` option value.
 
         Downloads the URIs listed in FILE.
 
@@ -142,16 +125,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("input-file")  # type: ignore
+        return self.get("input-file")  # type: ignore[return-value]
 
     @input_file.setter
-    def input_file(self, value):
+    def input_file(self, value: str) -> None:
         self.set("input-file", value)
 
     @property
     def log(self) -> str:
-        """
-        Return the `log` option value.
+        """Return the `log` option value.
 
         The file name of the log file.
 
@@ -161,16 +143,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("log")  # type: ignore
+        return self.get("log")  # type: ignore[return-value]
 
     @log.setter
-    def log(self, value):
+    def log(self, value: str) -> None:
         self.set("log", value)
 
     @property
     def max_concurrent_downloads(self) -> int:
-        """
-        Return the `max-concurrent-downloads` option value.
+        """Return the `max-concurrent-downloads` option value.
 
         Set the maximum number of parallel downloads for every queue item.
 
@@ -179,16 +160,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-concurrent-downloads", int)  # type: ignore
+        return self.get("max-concurrent-downloads", int)  # type: ignore[return-value]
 
     @max_concurrent_downloads.setter
-    def max_concurrent_downloads(self, value):
+    def max_concurrent_downloads(self, value: int) -> None:
         self.set("max-concurrent-downloads", value)
 
     @property
     def check_integrity(self) -> bool:
-        """
-        Return the `check-integrity` option value.
+        """Return the `check-integrity` option value.
 
         Check file integrity by validating piece hashes or a hash of entire file.
 
@@ -201,16 +181,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("check-integrity", bool_or_value)  # type: ignore
+        return self.get("check-integrity", bool_or_value)  # type: ignore[return-value]
 
     @check_integrity.setter
-    def check_integrity(self, value):
+    def check_integrity(self, value: bool) -> None:
         self.set("check-integrity", bool_to_str(value))
 
     @property
     def continue_downloads(self) -> bool:
-        """
-        Return the `continue-downloads` option value.
+        """Return the `continue-downloads` option value.
 
         Continue downloading a partially downloaded file.
 
@@ -220,17 +199,16 @@ class Options:
         Returns:
             bool
         """
-        return self.get("continue", bool_or_value)  # type: ignore
+        return self.get("continue", bool_or_value)  # type: ignore[return-value]
 
     @continue_downloads.setter
-    def continue_downloads(self, value):
+    def continue_downloads(self, value: bool) -> None:
         self.set("continue", bool_to_str(value))
 
     # HTTP/FTP/SFTP Options
     @property
     def all_proxy(self) -> str:
-        """
-        Return the `all-proxy` option value.
+        """Return the `all-proxy` option value.
 
         Use a proxy server for all protocols.
 
@@ -238,7 +216,7 @@ class Options:
         for a particular protocol using --http-proxy, --https-proxy and --ftp-proxy options. This affects all
         downloads. The format of PROXY is [http://][ USER:PASSWORD@]HOST[:PORT]. See also ENVIRONMENT section.
 
-        NOTE:
+        Note:
             If user and password are embedded in proxy URI and they are also specified by --{http,https,ftp,
             all}-proxy-{user,passwd}  options, those specified later override prior options. For example,
             if you specified http-proxy-user=myname, http-proxy-passwd=mypass in aria2.conf and you specified
@@ -256,48 +234,45 @@ class Options:
         Returns:
             str
         """
-        return self.get("all-proxy")  # type: ignore
+        return self.get("all-proxy")  # type: ignore[return-value]
 
     @all_proxy.setter
-    def all_proxy(self, value):
+    def all_proxy(self, value: str) -> None:
         self.set("all-proxy", value)
 
     @property
     def all_proxy_passwd(self) -> str:
-        """
-        Return the `all-proxy-passwd` option value.
+        """Return the `all-proxy-passwd` option value.
 
         Set password for --all-proxy option.
 
         Returns:
             str
         """
-        return self.get("all-proxy-passwd")  # type: ignore
+        return self.get("all-proxy-passwd")  # type: ignore[return-value]
 
     @all_proxy_passwd.setter
-    def all_proxy_passwd(self, value):
+    def all_proxy_passwd(self, value: str) -> None:
         self.set("all-proxy-passwd", value)
 
     @property
     def all_proxy_user(self) -> str:
-        """
-        Return the `all-proxy-user` option value.
+        """Return the `all-proxy-user` option value.
 
         Set user for --all-proxy option.
 
         Returns:
             str
         """
-        return self.get("all-proxy-user")  # type: ignore
+        return self.get("all-proxy-user")  # type: ignore[return-value]
 
     @all_proxy_user.setter
-    def all_proxy_user(self, value):
+    def all_proxy_user(self, value: str) -> None:
         self.set("all-proxy-user", value)
 
     @property
     def checksum(self) -> str:
-        """
-        Return the `checksum` option value.
+        """Return the `checksum` option value.
 
         Set checksum (`<TYPE>=<DIGEST>`).
 
@@ -308,16 +283,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("checksum")  # type: ignore
+        return self.get("checksum")  # type: ignore[return-value]
 
     @checksum.setter
-    def checksum(self, value):
+    def checksum(self, value: str) -> None:
         self.set("checksum", value)
 
     @property
     def connect_timeout(self) -> int:
-        """
-        Return the `connect-timeout` option value.
+        """Return the `connect-timeout` option value.
 
         Set the connect timeout in seconds to establish connection to HTTP/FTP/proxy server.
 
@@ -327,16 +301,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("connect-timeout", int)  # type: ignore
+        return self.get("connect-timeout", int)  # type: ignore[return-value]
 
     @connect_timeout.setter
-    def connect_timeout(self, value):
+    def connect_timeout(self, value: int) -> None:
         self.set("connect-timeout", value)
 
     @property
     def dry_run(self) -> bool:
-        """
-        Return the `dry-run` option value.
+        """Return the `dry-run` option value.
 
         If true is given, aria2 just checks whether the remote file is available and doesn't download data.
 
@@ -346,16 +319,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("dry-run", bool_or_value)  # type: ignore
+        return self.get("dry-run", bool_or_value)  # type: ignore[return-value]
 
     @dry_run.setter
-    def dry_run(self, value):
+    def dry_run(self, value: bool) -> None:
         self.set("dry-run", bool_to_str(value))
 
     @property
     def lowest_speed_limit(self) -> int:
-        """
-        Return the `lowest-speed-limit` option value.
+        """Return the `lowest-speed-limit` option value.
 
         Close connection if download speed is lower than or equal to this value(bytes per sec).
 
@@ -365,16 +337,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("lowest-speed-limit", int)  # type: ignore
+        return self.get("lowest-speed-limit", int)  # type: ignore[return-value]
 
     @lowest_speed_limit.setter
-    def lowest_speed_limit(self, value):
+    def lowest_speed_limit(self, value: int) -> None:
         self.set("lowest-speed-limit", value)
 
     @property
     def max_connection_per_server(self) -> int:
-        """
-        Return the `max-connection-per-server` option value.
+        """Return the `max-connection-per-server` option value.
 
         The maximum number of connections to one server for each download.
 
@@ -383,16 +354,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-connection-per-server", int)  # type: ignore
+        return self.get("max-connection-per-server", int)  # type: ignore[return-value]
 
     @max_connection_per_server.setter
-    def max_connection_per_server(self, value):
+    def max_connection_per_server(self, value: int) -> None:
         self.set("max-connection-per-server", value)
 
     @property
     def max_file_not_found(self) -> int:
-        """
-        Return the `max-file-not-found` option value.
+        """Return the `max-file-not-found` option value.
 
         If aria2 receives "file not found" status from the remote HTTP/FTP servers NUM times without getting a single
         byte, then force the download to fail.
@@ -405,16 +375,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-file-not-found", int)  # type: ignore
+        return self.get("max-file-not-found", int)  # type: ignore[return-value]
 
     @max_file_not_found.setter
-    def max_file_not_found(self, value):
+    def max_file_not_found(self, value: int) -> None:
         self.set("max-file-not-found", value)
 
     @property
     def max_tries(self) -> int:
-        """
-        Return the `max-tries` option value.
+        """Return the `max-tries` option value.
 
         Set number of tries.
 
@@ -423,16 +392,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-tries", int)  # type: ignore
+        return self.get("max-tries", int)  # type: ignore[return-value]
 
     @max_tries.setter
-    def max_tries(self, value):
+    def max_tries(self, value: int) -> None:
         self.set("max-tries", value)
 
     @property
     def min_split_size(self) -> int:
-        """
-        Return the `min-split-size` option value.
+        """Return the `min-split-size` option value.
 
         aria2 does not split less than 2*SIZE byte range.
 
@@ -444,43 +412,41 @@ class Options:
         Returns:
             int
         """
-        return self.get("min-split-size", int)  # type: ignore
+        return self.get("min-split-size", int)  # type: ignore[return-value]
 
     @min_split_size.setter
-    def min_split_size(self, value):
+    def min_split_size(self, value: int) -> None:
         self.set("min-split-size", value)
 
     @property
     def netrc_path(self) -> str:
-        """
-        Return the `netrc-path` option value.
+        """Return the `netrc-path` option value.
 
         Specify the path to the netrc file.
 
         Default: $(HOME)/.netrc.
 
-        NOTE:
+        Note:
             Permission of the .netrc file must be 600. Otherwise, the file will be ignored.
 
         Returns:
             str
         """
-        return self.get("netrc-path")  # type: ignore
+        return self.get("netrc-path")  # type: ignore[return-value]
 
     @netrc_path.setter
-    def netrc_path(self, value):
+    def netrc_path(self, value: str) -> None:
         self.set("netrc-path", value)
 
     @property
     def no_netrc(self) -> bool:
-        """
-        Return the `no-netrc` option value.
+        """Return the `no-netrc` option value.
 
         Disable netrc support.
 
         netrc support is enabled by default.
 
-        NOTE:
+        Note:
             netrc file is only read at the startup if --no-netrc is false. So if --no-netrc is true at the startup,
             no netrc is available throughout the session. You cannot get netrc enabled even if you send
             --no-netrc=false using aria2.changeGlobalOption().
@@ -488,21 +454,20 @@ class Options:
         Returns:
             bool
         """
-        return self.get("no-netrc", bool_or_value)  # type: ignore
+        return self.get("no-netrc", bool_or_value)  # type: ignore[return-value]
 
     @no_netrc.setter
-    def no_netrc(self, value):
+    def no_netrc(self, value: bool) -> None:
         self.set("no-netrc", bool_to_str(value))
 
     @property
     def no_proxy(self) -> str:
-        """
-        Return the `no-proxy` option value.
+        """Return the `no-proxy` option value.
 
         Specify a comma separated list of host names, domains and network addresses with or without a subnet mask
         where no proxy should be used.
 
-        NOTE:
+        Note:
             For network addresses with a subnet mask, both IPv4 and IPv6 addresses work. The current implementation
             does not resolve the host name in an URI to compare network addresses specified in --no-proxy. So it is
             only effective if URI has numeric IP addresses.
@@ -510,44 +475,42 @@ class Options:
         Returns:
             str
         """
-        return self.get("no-proxy")  # type: ignore
+        return self.get("no-proxy")  # type: ignore[return-value]
 
     @no_proxy.setter
-    def no_proxy(self, value):
+    def no_proxy(self, value: str) -> None:
         self.set("no-proxy", value)
 
     @property
     def out(self) -> str:
-        """
-        Return the `out` option value.
+        """Return the `out` option value.
 
         The file name of the downloaded file.
 
         It is always relative to the directory given in --dir option. When the --force-sequential option is used,
         this option is ignored.
 
-        NOTE:
+        Note:
             You cannot specify a file name for Metalink or BitTorrent downloads. The file name specified here is only
             used when the URIs fed to aria2 are given on the command line directly, but not when using --input-file,
             --force-sequential option.
 
-            Example:
-
-                $ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"
+            ```bash
+            aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"
+            ```
 
         Returns:
             str
         """
-        return self.get("out")  # type: ignore
+        return self.get("out")  # type: ignore[return-value]
 
     @out.setter
-    def out(self, value):
+    def out(self, value: str) -> None:
         self.set("out", value)
 
     @property
     def proxy_method(self) -> str:
-        """
-        Return the `proxy-method` option value.
+        """Return the `proxy-method` option value.
 
         Set the method to use in proxy request.
 
@@ -556,16 +519,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("proxy-method")  # type: ignore
+        return self.get("proxy-method")  # type: ignore[return-value]
 
     @proxy_method.setter
-    def proxy_method(self, value):
+    def proxy_method(self, value: str) -> None:
         self.set("proxy-method", value)
 
     @property
     def remote_time(self) -> bool:
-        """
-        Return the `remote-time` option value.
+        """Return the `remote-time` option value.
 
         Retrieve timestamp of the remote file from the remote HTTP/FTP server and if it is available, apply it to the
         local file.
@@ -575,16 +537,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("remote-time", bool_or_value)  # type: ignore
+        return self.get("remote-time", bool_or_value)  # type: ignore[return-value]
 
     @remote_time.setter
-    def remote_time(self, value):
+    def remote_time(self, value: bool) -> None:
         self.set("remote-time", bool_to_str(value))
 
     @property
     def reuse_uri(self) -> bool:
-        """
-        Return the `reuse-uri` option value.
+        """Return the `reuse-uri` option value.
 
         Reuse already used URIs if no unused URIs are left.
 
@@ -593,16 +554,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("reuse-uri", bool_or_value)  # type: ignore
+        return self.get("reuse-uri", bool_or_value)  # type: ignore[return-value]
 
     @reuse_uri.setter
-    def reuse_uri(self, value):
+    def reuse_uri(self, value: bool) -> None:
         self.set("reuse-uri", bool_to_str(value))
 
     @property
     def retry_wait(self) -> int:
-        """
-        Return the `retry-wait` option value.
+        """Return the `retry-wait` option value.
 
         Set the seconds to wait between retries.
 
@@ -611,16 +571,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("retry-wait", int)  # type: ignore
+        return self.get("retry-wait", int)  # type: ignore[return-value]
 
     @retry_wait.setter
-    def retry_wait(self, value):
+    def retry_wait(self, value: int) -> None:
         self.set("retry-wait", value)
 
     @property
     def server_stat_of(self) -> str:
-        """
-        Return the `server-stat-of` option value.
+        """Return the `server-stat-of` option value.
 
         Specify the file name to which performance profile of the servers is saved.
 
@@ -630,16 +589,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("server-stat-of")  # type: ignore
+        return self.get("server-stat-of")  # type: ignore[return-value]
 
     @server_stat_of.setter
-    def server_stat_of(self, value):
+    def server_stat_of(self, value: str) -> None:
         self.set("server-stat-of", value)
 
     @property
     def server_stat_if(self) -> str:
-        """
-        Return the `server-stat-if` option value.
+        """Return the `server-stat-if` option value.
 
         Specify the file name to load performance profile of the servers.
 
@@ -649,16 +607,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("server-stat-if")  # type: ignore
+        return self.get("server-stat-if")  # type: ignore[return-value]
 
     @server_stat_if.setter
-    def server_stat_if(self, value):
+    def server_stat_if(self, value: str) -> None:
         self.set("server-stat-if", value)
 
     @property
     def server_stat_timeout(self) -> int:
-        """
-        Return the `server-stat-timeout` option value.
+        """Return the `server-stat-timeout` option value.
 
         Specifies timeout in seconds to invalidate performance profile of the servers since the last contact to
         them.
@@ -668,16 +625,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("server-stat-timeout", int)  # type: ignore
+        return self.get("server-stat-timeout", int)  # type: ignore[return-value]
 
     @server_stat_timeout.setter
-    def server_stat_timeout(self, value):
+    def server_stat_timeout(self, value: int) -> None:
         self.set("server-stat-timeout", value)
 
     @property
     def split(self) -> int:
-        """
-        Return the `split` option value.
+        """Return the `split` option value.
 
         Download a file using N connections.
 
@@ -686,7 +642,7 @@ class Options:
         number of connections to the same host is restricted by the --max-connection-per-server option. See also the
         --min-split-size option. Default: 5
 
-        NOTE:
+        Note:
             Some Metalinks regulate the number of servers to connect. aria2 strictly respects them. This means that
             if Metalink defines the maxconnections attribute lower than N, then aria2 uses the value of this lower
             value instead of N.
@@ -694,16 +650,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("split", int)  # type: ignore
+        return self.get("split", int)  # type: ignore[return-value]
 
     @split.setter
-    def split(self, value):
+    def split(self, value: int) -> None:
         self.set("split", value)
 
     @property
     def stream_piece_selector(self) -> str:
-        """
-        Return the `stream-piece-selector` option value.
+        """Return the `stream-piece-selector` option value.
 
         Specify piece selection algorithm used in HTTP/FTP download.
 
@@ -722,16 +677,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("stream-piece-selector")  # type: ignore
+        return self.get("stream-piece-selector")  # type: ignore[return-value]
 
     @stream_piece_selector.setter
-    def stream_piece_selector(self, value):
+    def stream_piece_selector(self, value: str) -> None:
         self.set("stream-piece-selector", value)
 
     @property
     def timeout(self) -> int:
-        """
-        Return the `timeout` option value.
+        """Return the `timeout` option value.
 
         Set timeout in seconds.
 
@@ -740,16 +694,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("timeout", int)  # type: ignore
+        return self.get("timeout", int)  # type: ignore[return-value]
 
     @timeout.setter
-    def timeout(self, value):
+    def timeout(self, value: int) -> None:
         self.set("timeout", value)
 
     @property
     def uri_selector(self) -> str:
-        """
-        Return the `uri-selector` option value.
+        """Return the `uri-selector` option value.
 
         Specify URI selection algorithm.
 
@@ -765,45 +718,43 @@ class Options:
         Returns:
             str
         """
-        return self.get("uri-selector")  # type: ignore
+        return self.get("uri-selector")  # type: ignore[return-value]
 
     @uri_selector.setter
-    def uri_selector(self, value):
+    def uri_selector(self, value: str) -> None:
         self.set("uri-selector", value)
 
     # HTTP Specific Options
     @property
     def ca_certificate(self) -> str:
-        """
-        Return the `ca-certificate` option value.
+        """Return the `ca-certificate` option value.
 
         Use the certificate authorities in FILE to verify the peers.
 
         The certificate file must be in PEM format and can contain multiple CA certificates. Use --check-certificate
         option to enable verification.
 
-        NOTE:
+        Note:
             If you build with OpenSSL or the recent version of GnuTLS which has
             gnutls_certificateset_x509_system_trust() function and the library is properly configured to locate the
             system-wide CA certificates store, aria2 will automatically load those certificates at the startup.
 
-        NOTE:
+        Note:
             WinTLS and AppleTLS do not support this option. Instead you will have to import the certificate into the
             OS trust store.
 
         Returns:
             str
         """
-        return self.get("ca-certificate")  # type: ignore
+        return self.get("ca-certificate")  # type: ignore[return-value]
 
     @ca_certificate.setter
-    def ca_certificate(self, value):
+    def ca_certificate(self, value: str) -> None:
         self.set("ca-certificate", value)
 
     @property
     def certificate(self) -> str:
-        """
-        Return the `certificate` option value.
+        """Return the `certificate` option value.
 
         Use the client certificate in FILE.
 
@@ -814,10 +765,10 @@ class Options:
 
         When using PEM, you have to specify the private key via --private-key as well.
 
-        NOTE:
+        Note:
             WinTLS does not support PEM files at the moment. Users have to use PKCS12 files.
 
-        NOTE:
+        Note:
             AppleTLS users should use the KeyChain Access utility to import the client certificate and get the SHA-1
             fingerprint from the Information dialog corresponding to that certificate. To start aria2c use
             --certificate=`<SHA-1>`. Alternatively PKCS12 files are also supported. PEM files, however, are not supported.
@@ -825,16 +776,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("certificate")  # type: ignore
+        return self.get("certificate")  # type: ignore[return-value]
 
     @certificate.setter
-    def certificate(self, value):
+    def certificate(self, value: str) -> None:
         self.set("certificate", value)
 
     @property
     def check_certificate(self) -> bool:
-        """
-        Return the `check-certificate` option value.
+        """Return the `check-certificate` option value.
 
         Verify the peer using certificates specified in --ca-certificate option.
 
@@ -843,39 +793,37 @@ class Options:
         Returns:
             bool
         """
-        return self.get("check-certificate", bool_or_value)  # type: ignore
+        return self.get("check-certificate", bool_or_value)  # type: ignore[return-value]
 
     @check_certificate.setter
-    def check_certificate(self, value):
+    def check_certificate(self, value: bool) -> None:
         self.set("check-certificate", bool_to_str(value))
 
     @property
     def http_accept_gzip(self) -> bool:
-        """
-        Return the `http-accept-gzip` option value.
+        """Return the `http-accept-gzip` option value.
 
         Send Accept: deflate, gzip request header and inflate response if remote server responds with
         Content-Encoding:  gzip or Content-Encoding:  deflate.
 
         Default: False.
 
-        NOTE:
+        Note:
             Some server responds with Content-Encoding: gzip for files which itself is gzipped file. aria2 inflates
             them anyway because of the response header.
 
         Returns:
             bool
         """
-        return self.get("http-accept-gzip", bool_or_value)  # type: ignore
+        return self.get("http-accept-gzip", bool_or_value)  # type: ignore[return-value]
 
     @http_accept_gzip.setter
-    def http_accept_gzip(self, value):
+    def http_accept_gzip(self, value: bool) -> None:
         self.set("http-accept-gzip", bool_to_str(value))
 
     @property
     def http_auth_challenge(self) -> bool:
-        """
-        Return the `http-auth-challenge` option value.
+        """Return the `http-auth-challenge` option value.
 
         Send HTTP authorization header only when it is requested by the server.
 
@@ -886,16 +834,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("http-auth-challenge", bool_or_value)  # type: ignore
+        return self.get("http-auth-challenge", bool_or_value)  # type: ignore[return-value]
 
     @http_auth_challenge.setter
-    def http_auth_challenge(self, value):
+    def http_auth_challenge(self, value: bool) -> None:
         self.set("http-auth-challenge", bool_to_str(value))
 
     @property
     def http_no_cache(self) -> bool:
-        """
-        Return the `http-no-cache` option value.
+        """Return the `http-no-cache` option value.
 
         Send Cache-Control:  no-cache and Pragma:  no-cache header to avoid cached content.
 
@@ -905,48 +852,45 @@ class Options:
         Returns:
             bool
         """
-        return self.get("http-no-cache", bool_or_value)  # type: ignore
+        return self.get("http-no-cache", bool_or_value)  # type: ignore[return-value]
 
     @http_no_cache.setter
-    def http_no_cache(self, value):
+    def http_no_cache(self, value: bool) -> None:
         self.set("http-no-cache", bool_to_str(value))
 
     @property
     def http_user(self) -> str:
-        """
-        Return the `http-user` option value.
+        """Return the `http-user` option value.
 
         Set HTTP user. This affects all URIs.
 
         Returns:
             str
         """
-        return self.get("http-user")  # type: ignore
+        return self.get("http-user")  # type: ignore[return-value]
 
     @http_user.setter
-    def http_user(self, value):
+    def http_user(self, value: str) -> None:
         self.set("http-user", value)
 
     @property
     def http_passwd(self) -> str:
-        """
-        Return the `http-passwd` option value.
+        """Return the `http-passwd` option value.
 
         Set HTTP password. This affects all URIs.
 
         Returns:
             str
         """
-        return self.get("http-passwd")  # type: ignore
+        return self.get("http-passwd")  # type: ignore[return-value]
 
     @http_passwd.setter
-    def http_passwd(self, value):
+    def http_passwd(self, value: str) -> None:
         self.set("http-passwd", value)
 
     @property
     def http_proxy(self) -> str:
-        """
-        Return the `http-proxy` option value.
+        """Return the `http-proxy` option value.
 
         Use a proxy server for HTTP.
 
@@ -956,48 +900,45 @@ class Options:
         Returns:
             str
         """
-        return self.get("http-proxy")  # type: ignore
+        return self.get("http-proxy")  # type: ignore[return-value]
 
     @http_proxy.setter
-    def http_proxy(self, value):
+    def http_proxy(self, value: str) -> None:
         self.set("http-proxy", value)
 
     @property
     def http_proxy_passwd(self) -> str:
-        """
-        Return the `http-proxy-passwd` option value.
+        """Return the `http-proxy-passwd` option value.
 
         Set password for --http-proxy.
 
         Returns:
             str
         """
-        return self.get("http-proxy-passwd")  # type: ignore
+        return self.get("http-proxy-passwd")  # type: ignore[return-value]
 
     @http_proxy_passwd.setter
-    def http_proxy_passwd(self, value):
+    def http_proxy_passwd(self, value: str) -> None:
         self.set("http-proxy-passwd", value)
 
     @property
     def http_proxy_user(self) -> str:
-        """
-        Return the `http-proxy-user` option value.
+        """Return the `http-proxy-user` option value.
 
         Set user for --http-proxy.
 
         Returns:
             str
         """
-        return self.get("http-proxy-user")  # type: ignore
+        return self.get("http-proxy-user")  # type: ignore[return-value]
 
     @http_proxy_user.setter
-    def http_proxy_user(self, value):
+    def http_proxy_user(self, value: str) -> None:
         self.set("http-proxy-user", value)
 
     @property
     def https_proxy(self) -> str:
-        """
-        Return the `https-proxy` option value.
+        """Return the `https-proxy` option value.
 
         Use a proxy server for HTTPS.
 
@@ -1007,48 +948,45 @@ class Options:
         Returns:
             str
         """
-        return self.get("https-proxy")  # type: ignore
+        return self.get("https-proxy")  # type: ignore[return-value]
 
     @https_proxy.setter
-    def https_proxy(self, value):
+    def https_proxy(self, value: str) -> None:
         self.set("https-proxy", value)
 
     @property
     def https_proxy_passwd(self) -> str:
-        """
-        Return the `https-proxy-passwd` option value.
+        """Return the `https-proxy-passwd` option value.
 
         Set password for --https-proxy.
 
         Returns:
             str
         """
-        return self.get("https-proxy-passwd")  # type: ignore
+        return self.get("https-proxy-passwd")  # type: ignore[return-value]
 
     @https_proxy_passwd.setter
-    def https_proxy_passwd(self, value):
+    def https_proxy_passwd(self, value: str) -> None:
         self.set("https-proxy-passwd", value)
 
     @property
     def https_proxy_user(self) -> str:
-        """
-        Return the `https-proxy-user` option value.
+        """Return the `https-proxy-user` option value.
 
         Set user for --https-proxy.
 
         Returns:
             str
         """
-        return self.get("https-proxy-user")  # type: ignore
+        return self.get("https-proxy-user")  # type: ignore[return-value]
 
     @https_proxy_user.setter
-    def https_proxy_user(self, value):
+    def https_proxy_user(self, value: str) -> None:
         self.set("https-proxy-user", value)
 
     @property
     def private_key(self) -> str:
-        """
-        Return the `private-key` option value.
+        """Return the `private-key` option value.
 
         Use the private key in FILE.
 
@@ -1058,16 +996,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("private-key")  # type: ignore
+        return self.get("private-key")  # type: ignore[return-value]
 
     @private_key.setter
-    def private_key(self, value):
+    def private_key(self, value: str) -> None:
         self.set("private-key", value)
 
     @property
     def referer(self) -> str:
-        """
-        Return the `referer` option value.
+        """Return the `referer` option value.
 
         Set an http referrer (Referer).
 
@@ -1077,16 +1014,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("referer")  # type: ignore
+        return self.get("referer")  # type: ignore[return-value]
 
     @referer.setter
-    def referer(self, value):
+    def referer(self, value: str) -> None:
         self.set("referer", value)
 
     @property
     def enable_http_keep_alive(self) -> bool:
-        """
-        Return the `enable-http-keep-alive` option value.
+        """Return the `enable-http-keep-alive` option value.
 
         Enable HTTP/1.1 persistent connection.
 
@@ -1095,37 +1031,35 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-http-keep-alive", bool_or_value)  # type: ignore
+        return self.get("enable-http-keep-alive", bool_or_value)  # type: ignore[return-value]
 
     @enable_http_keep_alive.setter
-    def enable_http_keep_alive(self, value):
+    def enable_http_keep_alive(self, value: bool) -> None:
         self.set("enable-http-keep-alive", bool_to_str(value))
 
     @property
     def enable_http_pipelining(self) -> bool:
-        """
-        Return the `enable-http-pipelining` option value.
+        """Return the `enable-http-pipelining` option value.
 
         Enable HTTP/1.1 pipelining.
 
         Default: False.
 
-        NOTE:
+        Note:
             In performance perspective, there is usually no advantage to enable this option.
 
         Returns:
             bool
         """
-        return self.get("enable-http-pipelining", bool_or_value)  # type: ignore
+        return self.get("enable-http-pipelining", bool_or_value)  # type: ignore[return-value]
 
     @enable_http_pipelining.setter
-    def enable_http_pipelining(self, value):
+    def enable_http_pipelining(self, value: bool) -> None:
         self.set("enable-http-pipelining", bool_to_str(value))
 
     @property
     def header(self) -> str:
-        """
-        Return the `header` option value.
+        """Return the `header` option value.
 
         Append HEADER to HTTP request header.
 
@@ -1136,37 +1070,35 @@ class Options:
         Returns:
             str
         """
-        return self.get("header")  # type: ignore
+        return self.get("header")  # type: ignore[return-value]
 
     @header.setter
-    def header(self, value):
+    def header(self, value: str) -> None:
         self.set("header", value)
 
     @property
     def load_cookies(self) -> str:
-        """
-        Return the `load-cookies` option value.
+        """Return the `load-cookies` option value.
 
         Load Cookies from FILE using the Firefox3 format (SQLite3), Chromium/Google Chrome (SQLite3) and the
         Mozilla/Firefox(1.x/2.x)/Netscape format.
 
-        NOTE:
+        Note:
             If aria2 is built without libsqlite3, then it doesn't support Firefox3 and Chromium/Google Chrome cookie
             format.
 
         Returns:
             str
         """
-        return self.get("load-cookies")  # type: ignore
+        return self.get("load-cookies")  # type: ignore[return-value]
 
     @load_cookies.setter
-    def load_cookies(self, value):
+    def load_cookies(self, value: str) -> None:
         self.set("load-cookies", value)
 
     @property
     def save_cookies(self) -> str:
-        """
-        Return the `save-cookies` option value.
+        """Return the `save-cookies` option value.
 
         Save Cookies to FILE in Mozilla/Firefox(1.x/2.x)/ Netscape format.
 
@@ -1176,16 +1108,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("save-cookies")  # type: ignore
+        return self.get("save-cookies")  # type: ignore[return-value]
 
     @save_cookies.setter
-    def save_cookies(self, value):
+    def save_cookies(self, value: str) -> None:
         self.set("save-cookies", value)
 
     @property
     def use_head(self) -> bool:
-        """
-        Return the `use-head` option value.
+        """Return the `use-head` option value.
 
         Use HEAD method for the first request to the HTTP server.
 
@@ -1194,16 +1125,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("use-head", bool_or_value)  # type: ignore
+        return self.get("use-head", bool_or_value)  # type: ignore[return-value]
 
     @use_head.setter
-    def use_head(self, value):
+    def use_head(self, value: bool) -> None:
         self.set("use-head", bool_to_str(value))
 
     @property
     def user_agent(self) -> str:
-        """
-        Return the `user-agent` option value.
+        """Return the `user-agent` option value.
 
         Set user agent for HTTP(S) downloads.
 
@@ -1212,17 +1142,16 @@ class Options:
         Returns:
             str
         """
-        return self.get("user-agent")  # type: ignore
+        return self.get("user-agent")  # type: ignore[return-value]
 
     @user_agent.setter
-    def user_agent(self, value):
+    def user_agent(self, value: str) -> None:
         self.set("user-agent", value)
 
     # FTP/SFTP Specific Options
     @property
     def ftp_user(self) -> str:
-        """
-        Return the `ftp-user` option value.
+        """Return the `ftp-user` option value.
 
         Set FTP user. This affects all URIs.
 
@@ -1231,16 +1160,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("ftp-user")  # type: ignore
+        return self.get("ftp-user")  # type: ignore[return-value]
 
     @ftp_user.setter
-    def ftp_user(self, value):
+    def ftp_user(self, value: str) -> None:
         self.set("ftp-user", value)
 
     @property
     def ftp_passwd(self) -> str:
-        """
-        Return the `ftp-passwd` option value.
+        """Return the `ftp-passwd` option value.
 
         Set FTP password. This affects all URIs.
 
@@ -1251,37 +1179,35 @@ class Options:
         Returns:
             str
         """
-        return self.get("ftp-passwd")  # type: ignore
+        return self.get("ftp-passwd")  # type: ignore[return-value]
 
     @ftp_passwd.setter
-    def ftp_passwd(self, value):
+    def ftp_passwd(self, value: str) -> None:
         self.set("ftp-passwd", value)
 
     @property
     def ftp_pasv(self) -> bool:
-        """
-        Return the `ftp-pasv` option value.
+        """Return the `ftp-pasv` option value.
 
         Use the passive mode in FTP.
 
         If false is given, the active mode will be used. Default: true.
 
-        NOTE:
+        Note:
             This option is ignored for SFTP transfer.
 
         Returns:
             bool
         """
-        return self.get("ftp-pasv", bool_or_value)  # type: ignore
+        return self.get("ftp-pasv", bool_or_value)  # type: ignore[return-value]
 
     @ftp_pasv.setter
-    def ftp_pasv(self, value):
+    def ftp_pasv(self, value: bool) -> None:
         self.set("ftp-pasv", bool_to_str(value))
 
     @property
     def ftp_proxy(self) -> str:
-        """
-        Return the `ftp-proxy` option value.
+        """Return the `ftp-proxy` option value.
 
         Use a proxy server for FTP.
 
@@ -1291,69 +1217,65 @@ class Options:
         Returns:
             str
         """
-        return self.get("ftp-proxy")  # type: ignore
+        return self.get("ftp-proxy")  # type: ignore[return-value]
 
     @ftp_proxy.setter
-    def ftp_proxy(self, value):
+    def ftp_proxy(self, value: str) -> None:
         self.set("ftp-proxy", value)
 
     @property
     def ftp_proxy_passwd(self) -> str:
-        """
-        Return the `ftp-proxy-passwd` option value.
+        """Return the `ftp-proxy-passwd` option value.
 
         Set password for --ftp-proxy option.
 
         Returns:
             str
         """
-        return self.get("ftp-proxy-passwd")  # type: ignore
+        return self.get("ftp-proxy-passwd")  # type: ignore[return-value]
 
     @ftp_proxy_passwd.setter
-    def ftp_proxy_passwd(self, value):
+    def ftp_proxy_passwd(self, value: str) -> None:
         self.set("ftp-proxy-passwd", value)
 
     @property
     def ftp_proxy_user(self) -> str:
-        """
-        Return the `ftp-proxy-user` option value.
+        """Return the `ftp-proxy-user` option value.
 
         Set user for --ftp-proxy option.
 
         Returns:
             str
         """
-        return self.get("ftp-proxy-user")  # type: ignore
+        return self.get("ftp-proxy-user")  # type: ignore[return-value]
 
     @ftp_proxy_user.setter
-    def ftp_proxy_user(self, value):
+    def ftp_proxy_user(self, value: str) -> None:
         self.set("ftp-proxy-user", value)
 
     @property
     def ftp_type(self) -> str:
-        """
-        Return the `ftp-type` option value.
+        """Return the `ftp-type` option value.
 
         Set FTP transfer type.
 
         TYPE is either binary or ascii. Default: binary.
 
-        NOTE:
+        Note:
             This option is ignored for SFTP transfer.
 
         Returns:
             str
         """
-        return self.get("ftp-type")  # type: ignore
+        return self.get("ftp-type")  # type: ignore[return-value]
 
     @ftp_type.setter
-    def ftp_type(self, value):
+    def ftp_type(self, value: str) -> None:
         self.set("ftp-type", value)
 
     @property
     def ftp_reuse_connection(self) -> bool:
-        """
-        Return the `ftp-reuse-connection` option value.
+        """Return the `ftp-reuse-connection` option value.
 
         Reuse connection in FTP.
 
@@ -1362,16 +1284,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("ftp-reuse-connection", bool_or_value)  # type: ignore
+        return self.get("ftp-reuse-connection", bool_or_value)  # type: ignore[return-value]
 
     @ftp_reuse_connection.setter
-    def ftp_reuse_connection(self, value):
+    def ftp_reuse_connection(self, value: bool) -> None:
         self.set("ftp-reuse-connection", bool_to_str(value))
 
     @property
     def ssh_host_key_md(self) -> str:
-        """
-        Return the `ssh-host-key-md` option value.
+        """Return the `ssh-host-key-md` option value.
 
         Set checksum for SSH host public key (`<TYPE>=<DIGEST>`).
 
@@ -1382,17 +1303,16 @@ class Options:
         Returns:
             str
         """
-        return self.get("ssh-host-key-md")  # type: ignore
+        return self.get("ssh-host-key-md")  # type: ignore[return-value]
 
     @ssh_host_key_md.setter
-    def ssh_host_key_md(self, value):
+    def ssh_host_key_md(self, value: str) -> None:
         self.set("ssh-host-key-md", value)
 
     # BitTorrent/Metalink Options
     @property
     def select_file(self) -> str:
-        """
-        Return the `select-file` option value.
+        """Return the `select-file` option value.
 
         Set file to download by specifying its index.
 
@@ -1400,7 +1320,7 @@ class Options:
         for example: 3,6. You can also use - to specify a range: 1-5. , and - can be used together: 1-5,8,
         9. When used with the -M option, index may vary depending on the query (see --metalink-* options).
 
-        NOTE:
+        Note:
             In multi file torrent, the adjacent files specified by this option may also be downloaded. This is by
             design, not a bug. A single piece may include several files or part of files, and aria2 writes the piece
             to the appropriate files.
@@ -1408,16 +1328,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("select-file")  # type: ignore
+        return self.get("select-file")  # type: ignore[return-value]
 
     @select_file.setter
-    def select_file(self, value):
+    def select_file(self, value: str) -> None:
         self.set("select-file", value)
 
     @property
     def show_files(self) -> bool:
-        """
-        Return the `show-files` option value.
+        """Return the `show-files` option value.
 
         Print file listing of ".torrent", ".meta4" and ".metalink" file and exit.
 
@@ -1426,17 +1345,16 @@ class Options:
         Returns:
             bool
         """
-        return self.get("show-files", bool_or_value)  # type: ignore
+        return self.get("show-files", bool_or_value)  # type: ignore[return-value]
 
     @show_files.setter
-    def show_files(self, value):
+    def show_files(self, value: bool) -> None:
         self.set("show-files", bool_to_str(value))
 
     # BitTorrent Specific Options
     @property
     def bt_detach_seed_only(self) -> bool:
-        """
-        Return the `bt-detach-seed-only` option value.
+        """Return the `bt-detach-seed-only` option value.
 
         Exclude seed only downloads when counting concurrent active downloads (See -j option).
 
@@ -1448,16 +1366,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-detach-seed-only", bool_or_value)  # type: ignore
+        return self.get("bt-detach-seed-only", bool_or_value)  # type: ignore[return-value]
 
     @bt_detach_seed_only.setter
-    def bt_detach_seed_only(self, value):
+    def bt_detach_seed_only(self, value: bool) -> None:
         self.set("bt-detach-seed-only", bool_to_str(value))
 
     @property
     def bt_enable_hook_after_hash_check(self) -> bool:
-        """
-        Return the `bt-enable-hook-after-hash-check` option value.
+        """Return the `bt-enable-hook-after-hash-check` option value.
 
         Allow hook command invocation after hash check (see -V option) in BitTorrent download.
 
@@ -1467,16 +1384,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt_enable_hook_after_hash_check", bool_or_value)  # type: ignore
+        return self.get("bt_enable_hook_after_hash_check", bool_or_value)  # type: ignore[return-value]
 
     @bt_enable_hook_after_hash_check.setter
-    def bt_enable_hook_after_hash_check(self, value):
+    def bt_enable_hook_after_hash_check(self, value: bool) -> None:
         self.set("bt_enable_hook_after_hash_check", bool_to_str(value))
 
     @property
     def bt_enable_lpd(self) -> bool:
-        """
-        Return the `bt-enable-lpd` option value.
+        """Return the `bt-enable-lpd` option value.
 
         Enable Local Peer Discovery.
 
@@ -1486,16 +1402,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-enable-lpd", bool_or_value)  # type: ignore
+        return self.get("bt-enable-lpd", bool_or_value)  # type: ignore[return-value]
 
     @bt_enable_lpd.setter
-    def bt_enable_lpd(self, value):
+    def bt_enable_lpd(self, value: bool) -> None:
         self.set("bt-enable-lpd", bool_to_str(value))
 
     @property
     def bt_exclude_tracker(self) -> list[str]:
-        """
-        Return the `bt-exclude-tracker` option value.
+        """Return the `bt-exclude-tracker` option value.
 
         Comma separated list of BitTorrent tracker's announce URI to remove.
 
@@ -1505,16 +1420,15 @@ class Options:
         Returns:
             list of str
         """
-        return self.get("bt-exclude-tracker")  # type: ignore
+        return self.get("bt-exclude-tracker")  # type: ignore[return-value]
 
     @bt_exclude_tracker.setter
-    def bt_exclude_tracker(self, value):
+    def bt_exclude_tracker(self, value: list[str]) -> None:
         self.set("bt-exclude-tracker", value)
 
     @property
     def bt_external_ip(self) -> str:
-        """
-        Return the `bt-external-ip` option value.
+        """Return the `bt-external-ip` option value.
 
         Specify the external IP address to use in BitTorrent download and DHT.
 
@@ -1525,16 +1439,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("bt-external-ip")  # type: ignore
+        return self.get("bt-external-ip")  # type: ignore[return-value]
 
     @bt_external_ip.setter
-    def bt_external_ip(self, value):
+    def bt_external_ip(self, value: str) -> None:
         self.set("bt-external-ip", value)
 
     @property
     def bt_force_encryption(self) -> bool:
-        """
-        Return the `bt-force-encryption` option value.
+        """Return the `bt-force-encryption` option value.
 
         Requires BitTorrent message payload encryption with arc4.
 
@@ -1545,16 +1458,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-force-encryption", bool_or_value)  # type: ignore
+        return self.get("bt-force-encryption", bool_or_value)  # type: ignore[return-value]
 
     @bt_force_encryption.setter
-    def bt_force_encryption(self, value):
+    def bt_force_encryption(self, value: bool) -> None:
         self.set("bt-force-encryption", bool_to_str(value))
 
     @property
     def bt_hash_check_seed(self) -> bool:
-        """
-        Return the `bt-hash-check-seed` option value.
+        """Return the `bt-hash-check-seed` option value.
 
         If true is given, after hash check using --check-integrity option and file is complete, continue to seed
         file.
@@ -1565,16 +1477,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-hash-check-seed", bool_or_value)  # type: ignore
+        return self.get("bt-hash-check-seed", bool_or_value)  # type: ignore[return-value]
 
     @bt_hash_check_seed.setter
-    def bt_hash_check_seed(self, value):
+    def bt_hash_check_seed(self, value: bool) -> None:
         self.set("bt-hash-check-seed", bool_to_str(value))
 
     @property
     def bt_lpd_interface(self) -> str:
-        """
-        Return the `bt-lpd-interface` option value.
+        """Return the `bt-lpd-interface` option value.
 
         Use given interface for Local Peer Discovery.
 
@@ -1584,16 +1495,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("bt-lpd-interface")  # type: ignore
+        return self.get("bt-lpd-interface")  # type: ignore[return-value]
 
     @bt_lpd_interface.setter
-    def bt_lpd_interface(self, value):
+    def bt_lpd_interface(self, value: str) -> None:
         self.set("bt-lpd-interface", value)
 
     @property
     def bt_max_open_files(self) -> int:
-        """
-        Return the `bt-max-open-files` option value.
+        """Return the `bt-max-open-files` option value.
 
         Specify maximum number of files to open in multi-file BitTorrent/Metalink download globally.
 
@@ -1602,16 +1512,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-max-open-files", int)  # type: ignore
+        return self.get("bt-max-open-files", int)  # type: ignore[return-value]
 
     @bt_max_open_files.setter
-    def bt_max_open_files(self, value):
+    def bt_max_open_files(self, value: int) -> None:
         self.set("bt-max-open-files", value)
 
     @property
     def bt_max_peers(self) -> int:
-        """
-        Return the `bt-max-peers` option value.
+        """Return the `bt-max-peers` option value.
 
         Specify the maximum number of peers per torrent. 0 means unlimited.
 
@@ -1620,16 +1529,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-max-peers", int)  # type: ignore
+        return self.get("bt-max-peers", int)  # type: ignore[return-value]
 
     @bt_max_peers.setter
-    def bt_max_peers(self, value):
+    def bt_max_peers(self, value: int) -> None:
         self.set("bt-max-peers", value)
 
     @property
     def bt_metadata_only(self) -> bool:
-        """
-        Return the `bt-metadata-only` option value.
+        """Return the `bt-metadata-only` option value.
 
         Download meta data only.
 
@@ -1639,16 +1547,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-metadata-only", bool_or_value)  # type: ignore
+        return self.get("bt-metadata-only", bool_or_value)  # type: ignore[return-value]
 
     @bt_metadata_only.setter
-    def bt_metadata_only(self, value):
+    def bt_metadata_only(self, value: bool) -> None:
         self.set("bt-metadata-only", bool_to_str(value))
 
     @property
     def bt_min_crypto_level(self) -> str:
-        """
-        Return the `bt-min-crypto-level` option value.
+        """Return the `bt-min-crypto-level` option value.
 
         Set minimum level of encryption method (plain/arc4).
 
@@ -1658,16 +1565,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("bt-min-crypto-level")  # type: ignore
+        return self.get("bt-min-crypto-level")  # type: ignore[return-value]
 
     @bt_min_crypto_level.setter
-    def bt_min_crypto_level(self, value):
+    def bt_min_crypto_level(self, value: str) -> None:
         self.set("bt-min-crypto-level", value)
 
     @property
     def bt_prioritize_piece(self) -> str:
-        """
-        Return the `bt-prioritize-piece` option value.
+        """Return the `bt-prioritize-piece` option value.
 
         Try to download first and last pieces of each file first (head[=`<SIZE>`],tail[=`<SIZE>`]).
 
@@ -1680,16 +1586,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("bt-prioritize-piece")  # type: ignore
+        return self.get("bt-prioritize-piece")  # type: ignore[return-value]
 
     @bt_prioritize_piece.setter
-    def bt_prioritize_piece(self, value):
+    def bt_prioritize_piece(self, value: str) -> None:
         self.set("bt-prioritize-piece", value)
 
     @property
     def bt_remove_unselected_file(self) -> bool:
-        """
-        Return the `bt-remove-unselected-file` option value.
+        """Return the `bt-remove-unselected-file` option value.
 
         Removes the unselected files when download is completed in BitTorrent.
 
@@ -1699,16 +1604,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-remove-unselected-file", bool_or_value)  # type: ignore
+        return self.get("bt-remove-unselected-file", bool_or_value)  # type: ignore[return-value]
 
     @bt_remove_unselected_file.setter
-    def bt_remove_unselected_file(self, value):
+    def bt_remove_unselected_file(self, value: bool) -> None:
         self.set("bt-remove-unselected-file", bool_to_str(value))
 
     @property
     def bt_require_crypto(self) -> bool:
-        """
-        Return the `bt-require-crypto` option value.
+        """Return the `bt-require-crypto` option value.
 
         If true is given, aria2 doesn't accept and establish connection with legacy BitTorrent handshake
         (BitTorrent protocol).
@@ -1718,16 +1622,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-require-crypto", bool_or_value)  # type: ignore
+        return self.get("bt-require-crypto", bool_or_value)  # type: ignore[return-value]
 
     @bt_require_crypto.setter
-    def bt_require_crypto(self, value):
+    def bt_require_crypto(self, value: bool) -> None:
         self.set("bt-require-crypto", bool_to_str(value))
 
     @property
     def bt_request_peer_speed_limit(self) -> int:
-        """
-        Return the `bt-request-peer-speed-limit` option value.
+        """Return the `bt-request-peer-speed-limit` option value.
 
         If the whole download speed of every torrent is lower than SPEED, aria2 temporarily increases the number
         of peers to try for more download speed.
@@ -1738,16 +1641,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-request-peer-speed-limit", int)  # type: ignore
+        return self.get("bt-request-peer-speed-limit", int)  # type: ignore[return-value]
 
     @bt_request_peer_speed_limit.setter
-    def bt_request_peer_speed_limit(self, value):
+    def bt_request_peer_speed_limit(self, value: int) -> None:
         self.set("bt-request-peer-speed-limit", value)
 
     @property
     def bt_save_metadata(self) -> bool:
-        """
-        Return the `bt-save-metadata` option value.
+        """Return the `bt-save-metadata` option value.
 
         Save meta data as ".torrent" file.
 
@@ -1758,16 +1660,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-save-metadata", bool_or_value)  # type: ignore
+        return self.get("bt-save-metadata", bool_or_value)  # type: ignore[return-value]
 
     @bt_save_metadata.setter
-    def bt_save_metadata(self, value):
+    def bt_save_metadata(self, value: bool) -> None:
         self.set("bt-save-metadata", bool_to_str(value))
 
     @property
     def bt_seed_unverified(self) -> bool:
-        """
-        Return the `bt-seed-unverified` option value.
+        """Return the `bt-seed-unverified` option value.
 
         Seed previously downloaded files without verifying piece hashes.
 
@@ -1776,16 +1677,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-seed-unverified", bool_or_value)  # type: ignore
+        return self.get("bt-seed-unverified", bool_or_value)  # type: ignore[return-value]
 
     @bt_seed_unverified.setter
-    def bt_seed_unverified(self, value):
+    def bt_seed_unverified(self, value: bool) -> None:
         self.set("bt-seed-unverified", bool_to_str(value))
 
     @property
     def bt_stop_timeout(self) -> int:
-        """
-        Return the `bt-stop-timeout` option value.
+        """Return the `bt-stop-timeout` option value.
 
         Stop BitTorrent download if download speed is 0 in consecutive SEC seconds.
 
@@ -1794,16 +1694,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-stop-timeout", int)  # type: ignore
+        return self.get("bt-stop-timeout", int)  # type: ignore[return-value]
 
     @bt_stop_timeout.setter
-    def bt_stop_timeout(self, value):
+    def bt_stop_timeout(self, value: int) -> None:
         self.set("bt-stop-timeout", value)
 
     @property
     def bt_tracker(self) -> list[str]:
-        """
-        Return the `bt-tracker` option value.
+        """Return the `bt-tracker` option value.
 
         Comma separated list of additional BitTorrent tracker's announce URI.
 
@@ -1813,16 +1712,15 @@ class Options:
         Returns:
             list of str
         """
-        return self.get("bt-tracker")  # type: ignore
+        return self.get("bt-tracker")  # type: ignore[return-value]
 
     @bt_tracker.setter
-    def bt_tracker(self, value):
+    def bt_tracker(self, value: list[str]) -> None:
         self.set("bt-tracker", value)
 
     @property
     def bt_tracker_connect_timeout(self) -> int:
-        """
-        Return the `bt-tracker-connect-timeout` option value.
+        """Return the `bt-tracker-connect-timeout` option value.
 
         Set the connect timeout in seconds to establish connection to tracker.
 
@@ -1832,16 +1730,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-tracker-connect-timeout", int)  # type: ignore
+        return self.get("bt-tracker-connect-timeout", int)  # type: ignore[return-value]
 
     @bt_tracker_connect_timeout.setter
-    def bt_tracker_connect_timeout(self, value):
+    def bt_tracker_connect_timeout(self, value: int) -> None:
         self.set("bt-tracker-connect-timeout", value)
 
     @property
     def bt_tracker_interval(self) -> int:
-        """
-        Return the `bt-tracker-interval` option value.
+        """Return the `bt-tracker-interval` option value.
 
         Set the interval in seconds between tracker requests.
 
@@ -1852,16 +1749,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-tracker-interval", int)  # type: ignore
+        return self.get("bt-tracker-interval", int)  # type: ignore[return-value]
 
     @bt_tracker_interval.setter
-    def bt_tracker_interval(self, value):
+    def bt_tracker_interval(self, value: int) -> None:
         self.set("bt-tracker-interval", value)
 
     @property
     def bt_tracker_timeout(self) -> int:
-        """
-        Return the `bt-tracker-timeout` option value.
+        """Return the `bt-tracker-timeout` option value.
 
         Set timeout in seconds.
 
@@ -1870,48 +1766,45 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-tracker-timeout", int)  # type: ignore
+        return self.get("bt-tracker-timeout", int)  # type: ignore[return-value]
 
     @bt_tracker_timeout.setter
-    def bt_tracker_timeout(self, value):
+    def bt_tracker_timeout(self, value: int) -> None:
         self.set("bt-tracker-timeout", value)
 
     @property
     def dht_entry_point(self) -> str:
-        """
-        Return the `dht-entry-point` option value.
+        """Return the `dht-entry-point` option value.
 
         Set host and port as an entry point to IPv4 DHT network (`<HOST>`:`<PORT>`).
 
         Returns:
             str
         """
-        return self.get("dht-entry-point")  # type: ignore
+        return self.get("dht-entry-point")  # type: ignore[return-value]
 
     @dht_entry_point.setter
-    def dht_entry_point(self, value):
+    def dht_entry_point(self, value: str) -> None:
         self.set("dht-entry-point", value)
 
     @property
     def dht_entry_point6(self) -> str:
-        """
-        Return the `dht-entry-point6` option value.
+        """Return the `dht-entry-point6` option value.
 
         Set host and port as an entry point to IPv6 DHT network (`<HOST>`:`<PORT>`).
 
         Returns:
             str
         """
-        return self.get("dht-entry-point6")  # type: ignore
+        return self.get("dht-entry-point6")  # type: ignore[return-value]
 
     @dht_entry_point6.setter
-    def dht_entry_point6(self, value):
+    def dht_entry_point6(self, value: str) -> None:
         self.set("dht-entry-point6", value)
 
     @property
     def dht_file_path(self) -> str:
-        """
-        Return the `dht-file-path` option value.
+        """Return the `dht-file-path` option value.
 
         Change the IPv4 DHT routing table file to PATH.
 
@@ -1920,16 +1813,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("dht-file-path")  # type: ignore
+        return self.get("dht-file-path")  # type: ignore[return-value]
 
     @dht_file_path.setter
-    def dht_file_path(self, value):
+    def dht_file_path(self, value: str) -> None:
         self.set("dht-file-path", value)
 
     @property
     def dht_file_path6(self) -> str:
-        """
-        Return the `dht-file-path6` option value.
+        """Return the `dht-file-path6` option value.
 
         Change the IPv6 DHT routing table file to PATH.
 
@@ -1938,16 +1830,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("dht-file-path6")  # type: ignore
+        return self.get("dht-file-path6")  # type: ignore[return-value]
 
     @dht_file_path6.setter
-    def dht_file_path6(self, value):
+    def dht_file_path6(self, value: str) -> None:
         self.set("dht-file-path6", value)
 
     @property
     def dht_listen_addr6(self) -> str:
-        """
-        Return the `dht-listen-addr6` option value.
+        """Return the `dht-listen-addr6` option value.
 
         Specify address to bind socket for IPv6 DHT.
 
@@ -1956,38 +1847,36 @@ class Options:
         Returns:
             str
         """
-        return self.get("dht-listen-addr6")  # type: ignore
+        return self.get("dht-listen-addr6")  # type: ignore[return-value]
 
     @dht_listen_addr6.setter
-    def dht_listen_addr6(self, value):
+    def dht_listen_addr6(self, value: str) -> None:
         self.set("dht-listen-addr6", value)
 
     @property
     def dht_listen_port(self) -> str:
-        """
-        Return the `dht-listen-port` option value.
+        """Return the `dht-listen-port` option value.
 
         Set UDP listening port used by DHT(IPv4, IPv6) and UDP tracker.
 
         Multiple ports can be specified by using ,, for example: 6881,6885. You can also use - to specify a range:
         6881-6999. , and - can be used together. Default: 6881-6999.
 
-        NOTE:
+        Note:
             Make sure that the specified ports are open for incoming UDP traffic.
 
         Returns:
             str
         """
-        return self.get("dht-listen-port")  # type: ignore
+        return self.get("dht-listen-port")  # type: ignore[return-value]
 
     @dht_listen_port.setter
-    def dht_listen_port(self, value):
+    def dht_listen_port(self, value: str) -> None:
         self.set("dht-listen-port", value)
 
     @property
     def dht_message_timeout(self) -> int:
-        """
-        Return the `dht-message-timeout` option value.
+        """Return the `dht-message-timeout` option value.
 
         Set timeout in seconds.
 
@@ -1996,16 +1885,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("dht-message-timeout", int)  # type: ignore
+        return self.get("dht-message-timeout", int)  # type: ignore[return-value]
 
     @dht_message_timeout.setter
-    def dht_message_timeout(self, value):
+    def dht_message_timeout(self, value: int) -> None:
         self.set("dht-message-timeout", value)
 
     @property
     def enable_dht(self) -> bool:
-        """
-        Return the `enable-dht` option value.
+        """Return the `enable-dht` option value.
 
         Enable IPv4 DHT functionality.
 
@@ -2015,16 +1903,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-dht", bool_or_value)  # type: ignore
+        return self.get("enable-dht", bool_or_value)  # type: ignore[return-value]
 
     @enable_dht.setter
-    def enable_dht(self, value):
+    def enable_dht(self, value: bool) -> None:
         self.set("enable-dht", bool_to_str(value))
 
     @property
     def enable_dht6(self) -> bool:
-        """
-        Return the `enable-dht6` option value.
+        """Return the `enable-dht6` option value.
 
         Enable IPv6 DHT functionality.
 
@@ -2034,16 +1921,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-dht6", bool_or_value)  # type: ignore
+        return self.get("enable-dht6", bool_or_value)  # type: ignore[return-value]
 
     @enable_dht6.setter
-    def enable_dht6(self, value):
+    def enable_dht6(self, value: bool) -> None:
         self.set("enable-dht6", bool_to_str(value))
 
     @property
     def enable_peer_exchange(self) -> bool:
-        """
-        Return the `enable-peer-exchange` option value.
+        """Return the `enable-peer-exchange` option value.
 
         Enable Peer Exchange extension.
 
@@ -2053,16 +1939,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-peer-exchange", bool_or_value)  # type: ignore
+        return self.get("enable-peer-exchange", bool_or_value)  # type: ignore[return-value]
 
     @enable_peer_exchange.setter
-    def enable_peer_exchange(self, value):
+    def enable_peer_exchange(self, value: bool) -> None:
         self.set("enable-peer-exchange", bool_to_str(value))
 
     @property
     def follow_torrent(self) -> str:
-        """
-        Return the `follow-torrent` option value.
+        """Return the `follow-torrent` option value.
 
         If true or mem is specified, when a file whose suffix is .torrent or content type is application/x-bittorrent
         is downloaded, aria2 parses it as a torrent file and downloads files mentioned in it.
@@ -2074,16 +1959,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("follow-torrent")  # type: ignore
+        return self.get("follow-torrent")  # type: ignore[return-value]
 
     @follow_torrent.setter
-    def follow_torrent(self, value):
+    def follow_torrent(self, value: str) -> None:
         self.set("follow-torrent", value)
 
     @property
     def index_out(self) -> str:
-        """
-        Return the `index-out` option value.
+        """Return the `index-out` option value.
 
         Set file path for file with index=INDEX (`<INDEX>=<PATH>`).
 
@@ -2094,38 +1978,36 @@ class Options:
         Returns:
             str
         """
-        return self.get("index-out")  # type: ignore
+        return self.get("index-out")  # type: ignore[return-value]
 
     @index_out.setter
-    def index_out(self, value):
+    def index_out(self, value: str) -> None:
         self.set("index-out", value)
 
     @property
     def listen_port(self) -> str:
-        """
-        Return the `listen-port` option value.
+        """Return the `listen-port` option value.
 
         Set TCP port number for BitTorrent downloads.
 
         Multiple ports can be specified by using, for example: 6881,6885. You can also use - to specify a range:
         6881-6999. , and - can be used together: 6881-6889, 6999. Default: 6881-6999
 
-        NOTE:
+        Note:
             Make sure that the specified ports are open for incoming TCP traffic.
 
         Returns:
             str
         """
-        return self.get("listen-port")  # type: ignore
+        return self.get("listen-port")  # type: ignore[return-value]
 
     @listen_port.setter
-    def listen_port(self, value):
+    def listen_port(self, value: str) -> None:
         self.set("listen-port", value)
 
     @property
     def max_overall_upload_limit(self) -> int:
-        """
-        Return the `max-overall-upload-limit` option value.
+        """Return the `max-overall-upload-limit` option value.
 
         Set max overall upload speed in bytes/sec.
 
@@ -2135,16 +2017,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-overall-upload-limit", int)  # type: ignore
+        return self.get("max-overall-upload-limit", int)  # type: ignore[return-value]
 
     @max_overall_upload_limit.setter
-    def max_overall_upload_limit(self, value):
+    def max_overall_upload_limit(self, value: int) -> None:
         self.set("max-overall-upload-limit", value)
 
     @property
     def max_upload_limit(self) -> int:
-        """
-        Return the `max-upload-limit` option value.
+        """Return the `max-upload-limit` option value.
 
         Set max upload speed per each torrent in bytes/sec.
 
@@ -2154,16 +2035,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-upload-limit", int)  # type: ignore
+        return self.get("max-upload-limit", int)  # type: ignore[return-value]
 
     @max_upload_limit.setter
-    def max_upload_limit(self, value):
+    def max_upload_limit(self, value: int) -> None:
         self.set("max-upload-limit", value)
 
     @property
     def peer_id_prefix(self) -> str:
-        """
-        Return the `peer-id-prefix` option value.
+        """Return the `peer-id-prefix` option value.
 
         Specify the prefix of peer ID.
 
@@ -2176,16 +2056,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("peer-id-prefix")  # type: ignore
+        return self.get("peer-id-prefix")  # type: ignore[return-value]
 
     @peer_id_prefix.setter
-    def peer_id_prefix(self, value):
+    def peer_id_prefix(self, value: str) -> None:
         self.set("peer-id-prefix", value)
 
     @property
     def seed_ratio(self) -> float:
-        """
-        Return the `seed-ratio` option value.
+        """Return the `seed-ratio` option value.
 
         Specify share ratio.
 
@@ -2197,37 +2076,35 @@ class Options:
         Returns:
             float
         """
-        return self.get("seed-ratio")  # type: ignore
+        return self.get("seed-ratio")  # type: ignore[return-value]
 
     @seed_ratio.setter
-    def seed_ratio(self, value):
+    def seed_ratio(self, value: float) -> None:
         self.set("seed-ratio", value)
 
     @property
     def seed_time(self) -> float:
-        """
-        Return the `seed-time` option value.
+        """Return the `seed-time` option value.
 
         Specify seeding time in (fractional) minutes.
 
         Also see the --seed-ratio option.
 
-        NOTE:
+        Note:
             Specifying --seed-time=0 disables seeding after download completed.
 
         Returns:
             float
         """
-        return self.get("seed-time")  # type: ignore
+        return self.get("seed-time")  # type: ignore[return-value]
 
     @seed_time.setter
-    def seed_time(self, value):
+    def seed_time(self, value: float) -> None:
         self.set("seed-time", value)
 
     @property
     def torrent_file(self) -> str:
-        """
-        Return the `torrent-file` option value.
+        """Return the `torrent-file` option value.
 
         The path to the ".torrent" file.
 
@@ -2236,17 +2113,16 @@ class Options:
         Returns:
             str
         """
-        return self.get("torrent-file")  # type: ignore
+        return self.get("torrent-file")  # type: ignore[return-value]
 
     @torrent_file.setter
-    def torrent_file(self, value):
+    def torrent_file(self, value: str) -> None:
         self.set("torrent-file", value)
 
     # Metalink Specific Options
     @property
     def follow_metalink(self) -> str:
-        """
-        Return the `follow-metalink` option value.
+        """Return the `follow-metalink` option value.
 
         If true or mem is specified, when a file whose suffix is .meta4 or .metalink or content type of
         application/metalink4+xml or application/metalink+xml is downloaded, aria2 parses it as a metalink file and
@@ -2259,16 +2135,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("follow-metalink")  # type: ignore
+        return self.get("follow-metalink")  # type: ignore[return-value]
 
     @follow_metalink.setter
-    def follow_metalink(self, value):
+    def follow_metalink(self, value: str) -> None:
         self.set("follow-metalink", value)
 
     @property
     def metalink_base_uri(self) -> str:
-        """
-        Return the `metalink-base-uri` option value.
+        """Return the `metalink-base-uri` option value.
 
         Specify base URI to resolve relative URI in metalink:url and metalink:metaurl element in a metalink file
         stored in local disk.
@@ -2278,16 +2153,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("metalink-base-uri")  # type: ignore
+        return self.get("metalink-base-uri")  # type: ignore[return-value]
 
     @metalink_base_uri.setter
-    def metalink_base_uri(self, value):
+    def metalink_base_uri(self, value: str) -> None:
         self.set("metalink-base-uri", value)
 
     @property
     def metalink_file(self) -> str:
-        """
-        Return the `metalink-file` option value.
+        """Return the `metalink-file` option value.
 
         The file path to ".meta4" and ".metalink" file.
 
@@ -2297,32 +2171,30 @@ class Options:
         Returns:
             str
         """
-        return self.get("metalink-file")  # type: ignore
+        return self.get("metalink-file")  # type: ignore[return-value]
 
     @metalink_file.setter
-    def metalink_file(self, value):
+    def metalink_file(self, value: str) -> None:
         self.set("metalink-file", value)
 
     @property
     def metalink_language(self) -> str:
-        """
-        Return the `metalink-language` option value.
+        """Return the `metalink-language` option value.
 
         The language of the file to download.
 
         Returns:
             str
         """
-        return self.get("metalink-language")  # type: ignore
+        return self.get("metalink-language")  # type: ignore[return-value]
 
     @metalink_language.setter
-    def metalink_language(self, value):
+    def metalink_language(self, value: str) -> None:
         self.set("metalink-language", value)
 
     @property
     def metalink_location(self) -> list[str]:
-        """
-        Return the `metalink-location` option value.
+        """Return the `metalink-location` option value.
 
         The location of the preferred server.
 
@@ -2331,48 +2203,45 @@ class Options:
         Returns:
             list of str
         """
-        return self.get("metalink-location")  # type: ignore
+        return self.get("metalink-location")  # type: ignore[return-value]
 
     @metalink_location.setter
-    def metalink_location(self, value):
+    def metalink_location(self, value: list[str]) -> None:
         self.set("metalink-location", value)
 
     @property
     def metalink_os(self) -> str:
-        """
-        Return the `metalink-os` option value.
+        """Return the `metalink-os` option value.
 
         The operating system of the file to download.
 
         Returns:
             str
         """
-        return self.get("metalink-os")  # type: ignore
+        return self.get("metalink-os")  # type: ignore[return-value]
 
     @metalink_os.setter
-    def metalink_os(self, value):
+    def metalink_os(self, value: str) -> None:
         self.set("metalink-os", value)
 
     @property
     def metalink_version(self) -> str:
-        """
-        Return the `metalink-version` option value.
+        """Return the `metalink-version` option value.
 
         The version of the file to download.
 
         Returns:
             str
         """
-        return self.get("metalink-version")  # type: ignore
+        return self.get("metalink-version")  # type: ignore[return-value]
 
     @metalink_version.setter
-    def metalink_version(self, value):
+    def metalink_version(self, value: str) -> None:
         self.set("metalink-version", value)
 
     @property
     def metalink_preferred_protocol(self) -> str:
-        """
-        Return the `metalink-preferred-protocol` option value.
+        """Return the `metalink-preferred-protocol` option value.
 
         Specify preferred protocol.
 
@@ -2381,16 +2250,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("metalink-preferred-protocol")  # type: ignore
+        return self.get("metalink-preferred-protocol")  # type: ignore[return-value]
 
     @metalink_preferred_protocol.setter
-    def metalink_preferred_protocol(self, value):
+    def metalink_preferred_protocol(self, value: str) -> None:
         self.set("metalink-preferred-protocol", value)
 
     @property
     def metalink_enable_unique_protocol(self) -> bool:
-        """
-        Return the `metalink-enable-unique-protocol` option value.
+        """Return the `metalink-enable-unique-protocol` option value.
 
         If true is given and several protocols are available for a mirror in a metalink file, aria2 uses one of them.
 
@@ -2399,17 +2267,16 @@ class Options:
         Returns:
             bool
         """
-        return self.get("metalink_enable_unique_protocol", bool_or_value)  # type: ignore
+        return self.get("metalink_enable_unique_protocol", bool_or_value)  # type: ignore[return-value]
 
     @metalink_enable_unique_protocol.setter
-    def metalink_enable_unique_protocol(self, value):
+    def metalink_enable_unique_protocol(self, value: bool) -> None:
         self.set("metalink_enable_unique_protocol", bool_to_str(value))
 
     # RPC Options
     @property
     def enable_rpc(self) -> bool:
-        """
-        Return the `enable-rpc` option value.
+        """Return the `enable-rpc` option value.
 
         Enable JSON-RPC/XML-RPC server.
 
@@ -2419,16 +2286,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-rpc", bool_or_value)  # type: ignore
+        return self.get("enable-rpc", bool_or_value)  # type: ignore[return-value]
 
     @enable_rpc.setter
-    def enable_rpc(self, value):
+    def enable_rpc(self, value: bool) -> None:
         self.set("enable-rpc", bool_to_str(value))
 
     @property
     def pause(self) -> bool:
-        """
-        Return the `pause` option value.
+        """Return the `pause` option value.
 
         Pause download after added.
 
@@ -2437,16 +2303,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("pause", bool_or_value)  # type: ignore
+        return self.get("pause", bool_or_value)  # type: ignore[return-value]
 
     @pause.setter
-    def pause(self, value):
+    def pause(self, value: bool) -> None:
         self.set("pause", bool_to_str(value))
 
     @property
     def pause_metadata(self) -> bool:
-        """
-        Return the `pause-metadata` option value.
+        """Return the `pause-metadata` option value.
 
         Pause downloads created as a result of metadata download.
 
@@ -2458,16 +2323,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("pause-metadata", bool_or_value)  # type: ignore
+        return self.get("pause-metadata", bool_or_value)  # type: ignore[return-value]
 
     @pause_metadata.setter
-    def pause_metadata(self, value):
+    def pause_metadata(self, value: bool) -> None:
         self.set("pause-metadata", bool_to_str(value))
 
     @property
     def rpc_allow_origin_all(self) -> bool:
-        """
-        Return the `rpc-allow-origin-all` option value.
+        """Return the `rpc-allow-origin-all` option value.
 
         Add Access-Control-Allow-Origin header field with value * to the RPC response.
 
@@ -2476,16 +2340,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-allow-origin-all", bool_or_value)  # type: ignore
+        return self.get("rpc-allow-origin-all", bool_or_value)  # type: ignore[return-value]
 
     @rpc_allow_origin_all.setter
-    def rpc_allow_origin_all(self, value):
+    def rpc_allow_origin_all(self, value: bool) -> None:
         self.set("rpc-allow-origin-all", bool_to_str(value))
 
     @property
     def rpc_certificate(self) -> str:
-        """
-        Return the `rpc-certificate` option value.
+        """Return the `rpc-certificate` option value.
 
         Use the certificate in FILE for RPC server.
 
@@ -2497,10 +2360,10 @@ class Options:
         When using PEM, you have to specify the private key via --rpc-private-key as well. Use --rpc-secure option
         to enable encryption.
 
-        NOTE:
+        Note:
             WinTLS does not support PEM files at the moment. Users have to use PKCS12 files.
 
-        NOTE:
+        Note:
             AppleTLS users should use the KeyChain Access utility to first generate a self-signed SSL-Server
             certificate, e.g. using the wizard, and get the SHA-1 fingerprint from the Information dialog
             corresponding to that new certificate. To start aria2c with --rpc-secure use --rpc-certificate=`<SHA-1>`.
@@ -2509,16 +2372,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-certificate")  # type: ignore
+        return self.get("rpc-certificate")  # type: ignore[return-value]
 
     @rpc_certificate.setter
-    def rpc_certificate(self, value):
+    def rpc_certificate(self, value: str) -> None:
         self.set("rpc-certificate", value)
 
     @property
     def rpc_listen_all(self) -> bool:
-        """
-        Return the `rpc-listen-all` option value.
+        """Return the `rpc-listen-all` option value.
 
         Listen incoming JSON-RPC/XML-RPC requests on all network interfaces.
 
@@ -2527,16 +2389,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-listen-all", bool_or_value)  # type: ignore
+        return self.get("rpc-listen-all", bool_or_value)  # type: ignore[return-value]
 
     @rpc_listen_all.setter
-    def rpc_listen_all(self, value):
+    def rpc_listen_all(self, value: bool) -> None:
         self.set("rpc-listen-all", bool_to_str(value))
 
     @property
     def rpc_listen_port(self) -> int:
-        """
-        Return the `rpc-listen-port` option value.
+        """Return the `rpc-listen-port` option value.
 
         Specify a port number for JSON-RPC/XML-RPC server to listen to.
 
@@ -2545,16 +2406,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("rpc-listen-port", int)  # type: ignore
+        return self.get("rpc-listen-port", int)  # type: ignore[return-value]
 
     @rpc_listen_port.setter
-    def rpc_listen_port(self, value):
+    def rpc_listen_port(self, value: int) -> None:
         self.set("rpc-listen-port", value)
 
     @property
     def rpc_max_request_size(self) -> str:
-        """
-        Return the `rpc-max-request-size` option value.
+        """Return the `rpc-max-request-size` option value.
 
         Set max size of JSON-RPC/XML-RPC request in bytes.
 
@@ -2563,36 +2423,34 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-max-request-size")  # type: ignore
+        return self.get("rpc-max-request-size")  # type: ignore[return-value]
 
     @rpc_max_request_size.setter
-    def rpc_max_request_size(self, value):
+    def rpc_max_request_size(self, value: str) -> None:
         self.set("rpc-max-request-size", value)
 
     @property
     def rpc_passwd(self) -> str:
-        """
-        Return the `rpc-passwd` option value.
+        """Return the `rpc-passwd` option value.
 
         Set JSON-RPC/XML-RPC password.
 
-        WARNING:
+        Warning:
             --rpc-passwd option will be deprecated in the future release. Migrate to --rpc-secret option as soon as
             possible.
 
         Returns:
             str
         """
-        return self.get("rpc-passwd")  # type: ignore
+        return self.get("rpc-passwd")  # type: ignore[return-value]
 
     @rpc_passwd.setter
-    def rpc_passwd(self, value):
+    def rpc_passwd(self, value: str) -> None:
         self.set("rpc-passwd", value)
 
     @property
     def rpc_private_key(self) -> str:
-        """
-        Return the `rpc-private-key` option value.
+        """Return the `rpc-private-key` option value.
 
         Use the private key in FILE for RPC server.
 
@@ -2602,16 +2460,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-private-key")  # type: ignore
+        return self.get("rpc-private-key")  # type: ignore[return-value]
 
     @rpc_private_key.setter
-    def rpc_private_key(self, value):
+    def rpc_private_key(self, value: str) -> None:
         self.set("rpc-private-key", value)
 
     @property
     def rpc_save_upload_metadata(self) -> bool:
-        """
-        Return the `rpc-save-upload-metadata` option value.
+        """Return the `rpc-save-upload-metadata` option value.
 
         Save the uploaded torrent or metalink meta data in the directory specified by --dir option.
 
@@ -2622,16 +2479,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-save-upload-metadata", bool_or_value)  # type: ignore
+        return self.get("rpc-save-upload-metadata", bool_or_value)  # type: ignore[return-value]
 
     @rpc_save_upload_metadata.setter
-    def rpc_save_upload_metadata(self, value):
+    def rpc_save_upload_metadata(self, value: bool) -> None:
         self.set("rpc-save-upload-metadata", bool_to_str(value))
 
     @property
     def rpc_secret(self) -> str:
-        """
-        Return the `rpc-secret` option value.
+        """Return the `rpc-secret` option value.
 
         Set RPC secret authorization token.
 
@@ -2640,16 +2496,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-secret")  # type: ignore
+        return self.get("rpc-secret")  # type: ignore[return-value]
 
     @rpc_secret.setter
-    def rpc_secret(self, value):
+    def rpc_secret(self, value: str) -> None:
         self.set("rpc-secret", value)
 
     @property
     def rpc_secure(self) -> bool:
-        """
-        Return the `rpc-secure` option value.
+        """Return the `rpc-secure` option value.
 
         RPC transport will be encrypted by SSL/TLS.
 
@@ -2659,37 +2514,35 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-secure", bool_or_value)  # type: ignore
+        return self.get("rpc-secure", bool_or_value)  # type: ignore[return-value]
 
     @rpc_secure.setter
-    def rpc_secure(self, value):
+    def rpc_secure(self, value: bool) -> None:
         self.set("rpc-secure", bool_to_str(value))
 
     @property
     def rpc_user(self) -> str:
-        """
-        Return the `rpc-user` option value.
+        """Return the `rpc-user` option value.
 
         Set JSON-RPC/XML-RPC user.
 
-        WARNING:
+        Warning:
             --rpc-user option will be deprecated in the future release. Migrate to --rpc-secret option as soon as
             possible.
 
         Returns:
             str
         """
-        return self.get("rpc-user")  # type: ignore
+        return self.get("rpc-user")  # type: ignore[return-value]
 
     @rpc_user.setter
-    def rpc_user(self, value):
+    def rpc_user(self, value: str) -> None:
         self.set("rpc-user", value)
 
     # Advanced Options
     @property
     def allow_overwrite(self) -> bool:
-        """
-        Return the `allow-overwrite` option value.
+        """Return the `allow-overwrite` option value.
 
         Restart download from scratch if the corresponding control file doesn't exist.
 
@@ -2698,16 +2551,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("allow-overwrite", bool_or_value)  # type: ignore
+        return self.get("allow-overwrite", bool_or_value)  # type: ignore[return-value]
 
     @allow_overwrite.setter
-    def allow_overwrite(self, value):
+    def allow_overwrite(self, value: bool) -> None:
         self.set("allow-overwrite", bool_to_str(value))
 
     @property
     def allow_piece_length_change(self) -> bool:
-        """
-        Return the `allow-piece-length-change` option value.
+        """Return the `allow-piece-length-change` option value.
 
         If false is given, aria2 aborts download when a piece length is different from one in a control file.
 
@@ -2716,16 +2568,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("allow-piece-length-change", bool_or_value)  # type: ignore
+        return self.get("allow-piece-length-change", bool_or_value)  # type: ignore[return-value]
 
     @allow_piece_length_change.setter
-    def allow_piece_length_change(self, value):
+    def allow_piece_length_change(self, value: bool) -> None:
         self.set("allow-piece-length-change", bool_to_str(value))
 
     @property
     def always_resume(self) -> bool:
-        """
-        Return the `always-resume` option value.
+        """Return the `always-resume` option value.
 
         Always resume download.
 
@@ -2737,16 +2588,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("always-resume", bool_or_value)  # type: ignore
+        return self.get("always-resume", bool_or_value)  # type: ignore[return-value]
 
     @always_resume.setter
-    def always_resume(self, value):
+    def always_resume(self, value: bool) -> None:
         self.set("always-resume", bool_to_str(value))
 
     @property
     def async_dns(self) -> bool:
-        """
-        Return the `async-dns` option value.
+        """Return the `async-dns` option value.
 
         Enable asynchronous DNS.
 
@@ -2755,16 +2605,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("async-dns", bool_or_value)  # type: ignore
+        return self.get("async-dns", bool_or_value)  # type: ignore[return-value]
 
     @async_dns.setter
-    def async_dns(self, value):
+    def async_dns(self, value: bool) -> None:
         self.set("async-dns", bool_to_str(value))
 
     @property
     def async_dns_server(self) -> list[str]:
-        """
-        Return the `async-dns-server` option value.
+        """Return the `async-dns-server` option value.
 
         Comma separated list of DNS server address used in asynchronous DNS resolver.
 
@@ -2776,16 +2625,15 @@ class Options:
         Returns:
             list of str
         """
-        return self.get("async-dns-server")  # type: ignore
+        return self.get("async-dns-server")  # type: ignore[return-value]
 
     @async_dns_server.setter
-    def async_dns_server(self, value):
+    def async_dns_server(self, value: list[str]) -> None:
         self.set("async-dns-server", value)
 
     @property
     def auto_file_renaming(self) -> bool:
-        """
-        Return the `auto-file-renaming` option value.
+        """Return the `auto-file-renaming` option value.
 
         Rename file name if the same file already exists.
 
@@ -2795,16 +2643,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("auto-file-renaming", bool_or_value)  # type: ignore
+        return self.get("auto-file-renaming", bool_or_value)  # type: ignore[return-value]
 
     @auto_file_renaming.setter
-    def auto_file_renaming(self, value):
+    def auto_file_renaming(self, value: bool) -> None:
         self.set("auto-file-renaming", bool_to_str(value))
 
     @property
     def auto_save_interval(self) -> int:
-        r"""
-        Save a control file (\*.aria2) every SEC seconds.
+        r"""Save a control file (\*.aria2) every SEC seconds.
 
         If 0 is given, a control file is not saved during download. aria2 saves a control file when it stops
         regardless of the value. The possible values are between 0 to 600. Default: 60.
@@ -2812,16 +2659,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("auto-save-interval", int)  # type: ignore
+        return self.get("auto-save-interval", int)  # type: ignore[return-value]
 
     @auto_save_interval.setter
-    def auto_save_interval(self, value):
+    def auto_save_interval(self, value: int) -> None:
         self.set("auto-save-interval", value)
 
     @property
     def conditional_get(self) -> bool:
-        """
-        Return the `conditional-get` option value.
+        """Return the `conditional-get` option value.
 
         Download file only when the local file is older than remote file.
 
@@ -2834,16 +2680,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("conditional-get", bool_or_value)  # type: ignore
+        return self.get("conditional-get", bool_or_value)  # type: ignore[return-value]
 
     @conditional_get.setter
-    def conditional_get(self, value):
+    def conditional_get(self, value: bool) -> None:
         self.set("conditional-get", bool_to_str(value))
 
     @property
     def conf_path(self) -> str:
-        """
-        Return the `conf-path` option value.
+        """Return the `conf-path` option value.
 
         Change the configuration file path to PATH.
 
@@ -2852,16 +2697,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("conf-path")  # type: ignore
+        return self.get("conf-path")  # type: ignore[return-value]
 
     @conf_path.setter
-    def conf_path(self, value):
+    def conf_path(self, value: str) -> None:
         self.set("conf-path", value)
 
     @property
     def console_log_level(self) -> str:
-        """
-        Return the `console-log-level` option value.
+        """Return the `console-log-level` option value.
 
         Set log level to output to console.
 
@@ -2870,16 +2714,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("console-log-level")  # type: ignore
+        return self.get("console-log-level")  # type: ignore[return-value]
 
     @console_log_level.setter
-    def console_log_level(self, value):
+    def console_log_level(self, value: str) -> None:
         self.set("console-log-level", value)
 
     @property
     def daemon(self) -> bool:
-        """
-        Return the `daemon` option value.
+        """Return the `daemon` option value.
 
         Run as daemon.
 
@@ -2889,16 +2732,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("daemon", bool_or_value)  # type: ignore
+        return self.get("daemon", bool_or_value)  # type: ignore[return-value]
 
     @daemon.setter
-    def daemon(self, value):
+    def daemon(self, value: bool) -> None:
         self.set("daemon", bool_to_str(value))
 
     @property
     def deferred_input(self) -> bool:
-        """
-        Return the `deferred-input` option value.
+        """Return the `deferred-input` option value.
 
         If true is given, aria2 does not read all URIs and options from file specified by --input-file option at
         startup, but it reads one by one when it needs later.
@@ -2906,22 +2748,21 @@ class Options:
         This may reduce memory usage if input file contains a lot of URIs to download. If false is given, aria2 reads
         all URIs and options at startup. Default: false.
 
-        WARNING:
+        Warning:
             --deferred-input option will be disabled when --save-session is used together.
 
         Returns:
             bool
         """
-        return self.get("deferred-input", bool_or_value)  # type: ignore
+        return self.get("deferred-input", bool_or_value)  # type: ignore[return-value]
 
     @deferred_input.setter
-    def deferred_input(self, value):
+    def deferred_input(self, value: bool) -> None:
         self.set("deferred-input", bool_to_str(value))
 
     @property
     def disable_ipv6(self) -> bool:
-        """
-        Return the `disable-ipv6` option value.
+        """Return the `disable-ipv6` option value.
 
         Disable IPv6.
 
@@ -2930,16 +2771,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("disable-ipv6", bool_or_value)  # type: ignore
+        return self.get("disable-ipv6", bool_or_value)  # type: ignore[return-value]
 
     @disable_ipv6.setter
-    def disable_ipv6(self, value):
+    def disable_ipv6(self, value: bool) -> None:
         self.set("disable-ipv6", bool_to_str(value))
 
     @property
     def disk_cache(self) -> int:
-        """
-        Return the `disk-cache` option value.
+        """Return the `disk-cache` option value.
 
         Enable disk cache.
 
@@ -2952,16 +2792,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("disk-cache", int)  # type: ignore
+        return self.get("disk-cache", int)  # type: ignore[return-value]
 
     @disk_cache.setter
-    def disk_cache(self, value):
+    def disk_cache(self, value: int) -> None:
         self.set("disk-cache", value)
 
     @property
     def download_result(self) -> str:
-        """
-        Return the `download-result` option value.
+        """Return the `download-result` option value.
 
         This option changes the way Download Results is formatted.
 
@@ -2973,16 +2812,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("download-result")  # type: ignore
+        return self.get("download-result")  # type: ignore[return-value]
 
     @download_result.setter
-    def download_result(self, value):
+    def download_result(self, value: str) -> None:
         self.set("download-result", value)
 
     @property
     def dscp(self) -> str:
-        """
-        Return the `dscp` option value.
+        """Return the `dscp` option value.
 
         Set DSCP value in outgoing IP packets of BitTorrent traffic for QoS.
 
@@ -2994,16 +2832,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("dscp")  # type: ignore
+        return self.get("dscp")  # type: ignore[return-value]
 
     @dscp.setter
-    def dscp(self, value):
+    def dscp(self, value: str) -> None:
         self.set("dscp", value)
 
     @property
     def rlimit_nofile(self) -> int:
-        """
-        Return the `rlimit-nofile` option value.
+        """Return the `rlimit-nofile` option value.
 
         Set the soft limit of open file descriptors.
 
@@ -3022,16 +2859,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("rlimit-nofile", int)  # type: ignore
+        return self.get("rlimit-nofile", int)  # type: ignore[return-value]
 
     @rlimit_nofile.setter
-    def rlimit_nofile(self, value):
+    def rlimit_nofile(self, value: int) -> None:
         self.set("rlimit-nofile", value)
 
     @property
     def enable_color(self) -> bool:
-        """
-        Return the `enable-color` option value.
+        """Return the `enable-color` option value.
 
         Enable color output for a terminal.
 
@@ -3040,16 +2876,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-color", bool_or_value)  # type: ignore
+        return self.get("enable-color", bool_or_value)  # type: ignore[return-value]
 
     @enable_color.setter
-    def enable_color(self, value):
+    def enable_color(self, value: bool) -> None:
         self.set("enable-color", bool_to_str(value))
 
     @property
     def enable_mmap(self) -> bool:
-        """
-        Return the `enable-mmap` option value.
+        """Return the `enable-mmap` option value.
 
         Map files into memory.
 
@@ -3058,16 +2893,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-mmap", bool_or_value)  # type: ignore
+        return self.get("enable-mmap", bool_or_value)  # type: ignore[return-value]
 
     @enable_mmap.setter
-    def enable_mmap(self, value):
+    def enable_mmap(self, value: bool) -> None:
         self.set("enable-mmap", bool_to_str(value))
 
     @property
     def event_poll(self) -> str:
-        r"""
-        Specify the method for polling events.
+        r"""Specify the method for polling events.
 
         The possible values are epoll, kqueue, port, poll and select. For each epoll, kqueue, port and poll,
         it is available if system supports it. epoll is available on recent Linux. kqueue is available on various
@@ -3077,16 +2911,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("event-poll")  # type: ignore
+        return self.get("event-poll")  # type: ignore[return-value]
 
     @event_poll.setter
-    def event_poll(self, value):
+    def event_poll(self, value: str) -> None:
         self.set("event-poll", value)
 
     @property
     def file_allocation(self) -> str:
-        """
-        Return the `file-allocation` option value.
+        """Return the `file-allocation` option value.
 
         Specify file allocation method.
 
@@ -3105,28 +2938,27 @@ class Options:
 
         Default: `prealloc`.
 
-        WARNING:
+        Warning:
             Using trunc seemingly allocates disk space very quickly, but what it actually does is that it sets file
             length metadata in file system, and does not allocate disk space at all. This means that it does not help
             avoiding fragmentation.
 
-        NOTE:
+        Note:
             In multi file torrent downloads, the files adjacent forward to the specified files are also allocated if
             they share the same piece.
 
         Returns:
             str
         """
-        return self.get("file-allocation")  # type: ignore
+        return self.get("file-allocation")  # type: ignore[return-value]
 
     @file_allocation.setter
-    def file_allocation(self, value):
+    def file_allocation(self, value: str) -> None:
         self.set("file-allocation", value)
 
     @property
     def force_save(self) -> bool:
-        """
-        Return the `force-save` option value.
+        """Return the `force-save` option value.
 
         Save download with --save-session option even if the download is completed or removed.
 
@@ -3136,16 +2968,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("force-save", bool_or_value)  # type: ignore
+        return self.get("force-save", bool_or_value)  # type: ignore[return-value]
 
     @force_save.setter
-    def force_save(self, value):
+    def force_save(self, value: bool) -> None:
         self.set("force-save", bool_to_str(value))
 
     @property
     def save_not_found(self) -> bool:
-        """
-        Return the `save-not-found` option value.
+        """Return the `save-not-found` option value.
 
         Save download with --save-session option even if the file was not found on the server.
 
@@ -3154,16 +2985,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("save-not-found", bool_or_value)  # type: ignore
+        return self.get("save-not-found", bool_or_value)  # type: ignore[return-value]
 
     @save_not_found.setter
-    def save_not_found(self, value):
+    def save_not_found(self, value: bool) -> None:
         self.set("save-not-found", bool_to_str(value))
 
     @property
     def gid(self) -> str:
-        """
-        Return the `gid` option value.
+        """Return the `gid` option value.
 
         Set GID manually.
 
@@ -3176,16 +3006,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("gid")  # type: ignore
+        return self.get("gid")  # type: ignore[return-value]
 
     @gid.setter
-    def gid(self, value):
+    def gid(self, value: str) -> None:
         self.set("gid", value)
 
     @property
     def hash_check_only(self) -> bool:
-        """
-        Return the `hash-check-only` option value.
+        """Return the `hash-check-only` option value.
 
         If true is given, after hash check using --check-integrity option, abort download whether or not download
         is complete.
@@ -3195,16 +3024,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("hash-check-only", bool_or_value)  # type: ignore
+        return self.get("hash-check-only", bool_or_value)  # type: ignore[return-value]
 
     @hash_check_only.setter
-    def hash_check_only(self, value):
+    def hash_check_only(self, value: bool) -> None:
         self.set("hash-check-only", bool_to_str(value))
 
     @property
     def human_readable(self) -> bool:
-        """
-        Return the `human-readable` option value.
+        """Return the `human-readable` option value.
 
         Print sizes and speed in human readable format (e.g., 1.2Ki, 3.4Mi) in the console readout.
 
@@ -3213,22 +3041,21 @@ class Options:
         Returns:
             bool
         """
-        return self.get("human-readable", bool_or_value)  # type: ignore
+        return self.get("human-readable", bool_or_value)  # type: ignore[return-value]
 
     @human_readable.setter
-    def human_readable(self, value):
+    def human_readable(self, value: bool) -> None:
         self.set("human-readable", bool_to_str(value))
 
     @property
     def interface(self) -> str:
-        """
-        Return the `interface` option value.
+        """Return the `interface` option value.
 
         Bind sockets to given interface.
 
         You can specify interface name, IP address and host name. Possible Values: interface, IP address, host name.
 
-        NOTE:
+        Note:
             If an interface has multiple addresses, it is highly recommended to specify IP address explicitly. See
             also --disable-ipv6. If your system doesn't have getifaddrs(3), this option doesn't accept interface
             name.
@@ -3236,16 +3063,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("interface")  # type: ignore
+        return self.get("interface")  # type: ignore[return-value]
 
     @interface.setter
-    def interface(self, value):
+    def interface(self, value: str) -> None:
         self.set("interface", value)
 
     @property
     def keep_unfinished_download_result(self) -> bool:
-        """
-        Return the `keep-unfinished-download-result` option value.
+        """Return the `keep-unfinished-download-result` option value.
 
         Keep unfinished download results even if doing so exceeds --max-download-result.
 
@@ -3256,16 +3082,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("keep_unfinished_download_result", bool_or_value)  # type: ignore
+        return self.get("keep_unfinished_download_result", bool_or_value)  # type: ignore[return-value]
 
     @keep_unfinished_download_result.setter
-    def keep_unfinished_download_result(self, value):
+    def keep_unfinished_download_result(self, value: bool) -> None:
         self.set("keep_unfinished_download_result", bool_to_str(value))
 
     @property
     def max_download_result(self) -> int:
-        """
-        Return the `max-download-result` option value.
+        """Return the `max-download-result` option value.
 
         Set maximum number of download result kept in memory.
 
@@ -3279,16 +3104,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-download-result", int)  # type: ignore
+        return self.get("max-download-result", int)  # type: ignore[return-value]
 
     @max_download_result.setter
-    def max_download_result(self, value):
+    def max_download_result(self, value: int) -> None:
         self.set("max-download-result", value)
 
     @property
     def max_mmap_limit(self) -> int:
-        """
-        Return the `max-mmap-limit` option value.
+        """Return the `max-mmap-limit` option value.
 
         Set the maximum file size to enable mmap (see --enable-mmap option).
 
@@ -3299,16 +3123,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-mmap-limit", int)  # type: ignore
+        return self.get("max-mmap-limit", int)  # type: ignore[return-value]
 
     @max_mmap_limit.setter
-    def max_mmap_limit(self, value):
+    def max_mmap_limit(self, value: int) -> None:
         self.set("max-mmap-limit", value)
 
     @property
     def max_resume_failure_tries(self) -> int:
-        """
-        Return the `max-resume-failure-tries` option value.
+        """Return the `max-resume-failure-tries` option value.
 
         When used with --always-resume=false, aria2 downloads file from scratch when aria2 detects N number of
         URIs that does not support resume.
@@ -3319,16 +3142,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-resume-failure-tries", int)  # type: ignore
+        return self.get("max-resume-failure-tries", int)  # type: ignore[return-value]
 
     @max_resume_failure_tries.setter
-    def max_resume_failure_tries(self, value):
+    def max_resume_failure_tries(self, value: int) -> None:
         self.set("max-resume-failure-tries", value)
 
     @property
     def min_tls_version(self) -> str:
-        """
-        Return the `min-tls-version` option value.
+        """Return the `min-tls-version` option value.
 
         Specify minimum SSL/TLS version to enable.
 
@@ -3337,16 +3159,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("min-tls-version")  # type: ignore
+        return self.get("min-tls-version")  # type: ignore[return-value]
 
     @min_tls_version.setter
-    def min_tls_version(self, value):
+    def min_tls_version(self, value: str) -> None:
         self.set("min-tls-version", value)
 
     @property
     def multiple_interface(self) -> list[str]:
-        """
-        Return the `multiple-interface` option value.
+        """Return the `multiple-interface` option value.
 
         Comma separated list of interfaces to bind sockets to.
 
@@ -3357,16 +3178,15 @@ class Options:
         Returns:
             list of str
         """
-        return self.get("multiple-interface")  # type: ignore
+        return self.get("multiple-interface")  # type: ignore[return-value]
 
     @multiple_interface.setter
-    def multiple_interface(self, value):
+    def multiple_interface(self, value: list[str]) -> None:
         self.set("multiple-interface", value)
 
     @property
     def log_level(self) -> str:
-        """
-        Return the `log-level` option value.
+        """Return the `log-level` option value.
 
         Set log level to output.
 
@@ -3375,16 +3195,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("log-level")  # type: ignore
+        return self.get("log-level")  # type: ignore[return-value]
 
     @log_level.setter
-    def log_level(self, value):
+    def log_level(self, value: str) -> None:
         self.set("log-level", value)
 
     @property
     def on_bt_download_complete(self) -> str:
-        """
-        Return the `on-bt-download-complete` option value.
+        """Return the `on-bt-download-complete` option value.
 
         For BitTorrent, a command specified in --on-download-complete is called after download completed and
         seeding is over.
@@ -3395,16 +3214,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-bt-download-complete")  # type: ignore
+        return self.get("on-bt-download-complete")  # type: ignore[return-value]
 
     @on_bt_download_complete.setter
-    def on_bt_download_complete(self, value):
+    def on_bt_download_complete(self, value: str) -> None:
         self.set("on-bt-download-complete", value)
 
     @property
     def on_download_complete(self) -> str:
-        """
-        Return the `on-download-complete` option value.
+        """Return the `on-download-complete` option value.
 
         Set the command to be executed after download completed.
 
@@ -3414,16 +3232,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-download-complete")  # type: ignore
+        return self.get("on-download-complete")  # type: ignore[return-value]
 
     @on_download_complete.setter
-    def on_download_complete(self, value):
+    def on_download_complete(self, value: str) -> None:
         self.set("on-download-complete", value)
 
     @property
     def on_download_error(self) -> str:
-        """
-        Return the `on-download-error` option value.
+        """Return the `on-download-error` option value.
 
         Set the command to be executed after download aborted due to error.
 
@@ -3433,16 +3250,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-download-error")  # type: ignore
+        return self.get("on-download-error")  # type: ignore[return-value]
 
     @on_download_error.setter
-    def on_download_error(self, value):
+    def on_download_error(self, value: str) -> None:
         self.set("on-download-error", value)
 
     @property
     def on_download_pause(self) -> str:
-        """
-        Return the `on-download-pause` option value.
+        """Return the `on-download-pause` option value.
 
         Set the command to be executed after download was paused.
 
@@ -3451,16 +3267,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-download-pause")  # type: ignore
+        return self.get("on-download-pause")  # type: ignore[return-value]
 
     @on_download_pause.setter
-    def on_download_pause(self, value):
+    def on_download_pause(self, value: str) -> None:
         self.set("on-download-pause", value)
 
     @property
     def on_download_start(self) -> str:
-        """
-        Return the `on-download-start` option value.
+        """Return the `on-download-start` option value.
 
         Set the command to be executed after download got started.
 
@@ -3469,16 +3284,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-download-start")  # type: ignore
+        return self.get("on-download-start")  # type: ignore[return-value]
 
     @on_download_start.setter
-    def on_download_start(self, value):
+    def on_download_start(self, value: str) -> None:
         self.set("on-download-start", value)
 
     @property
     def on_download_stop(self) -> str:
-        """
-        Return the `on-download-stop` option value.
+        """Return the `on-download-stop` option value.
 
         Set the command to be executed after download stopped.
 
@@ -3489,16 +3303,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-download-stop")  # type: ignore
+        return self.get("on-download-stop")  # type: ignore[return-value]
 
     @on_download_stop.setter
-    def on_download_stop(self, value):
+    def on_download_stop(self, value: str) -> None:
         self.set("on-download-stop", value)
 
     @property
     def optimize_concurrent_downloads(self) -> str:
-        """
-        Return the `optimize-concurrent-downloads` option value.
+        """Return the `optimize-concurrent-downloads` option value.
 
         Optimizes the number of concurrent downloads according to the bandwidth available (`true|false|<A>:<B>`).
 
@@ -3512,39 +3325,37 @@ class Options:
         Returns:
             str
         """
-        return self.get("optimize-concurrent-downloads")  # type: ignore
+        return self.get("optimize-concurrent-downloads")  # type: ignore[return-value]
 
     @optimize_concurrent_downloads.setter
-    def optimize_concurrent_downloads(self, value):
+    def optimize_concurrent_downloads(self, value: str) -> None:
         self.set("optimize-concurrent-downloads", value)
 
     @property
     def piece_length(self) -> str:
-        """
-        Return the `piece-length` option value.
+        """Return the `piece-length` option value.
 
         Set a piece length for HTTP/FTP downloads.
 
         This is the boundary when aria2 splits a file. All splits occur at multiple of this length. This option will
         be ignored in BitTorrent downloads. It will be also ignored if Metalink file contains piece hashes. Default: 1M.
 
-        NOTE:
+        Note:
             The possible use case of --piece-length option is change the request range in one HTTP pipelined
             request. To enable HTTP pipelining use --enable-http-pipelining.
 
         Returns:
             str
         """
-        return self.get("piece-length")  # type: ignore
+        return self.get("piece-length")  # type: ignore[return-value]
 
     @piece_length.setter
-    def piece_length(self, value):
+    def piece_length(self, value: str) -> None:
         self.set("piece-length", value)
 
     @property
     def show_console_readout(self) -> bool:
-        """
-        Return the `show-console-readout` option value.
+        """Return the `show-console-readout` option value.
 
         Show console readout.
 
@@ -3553,16 +3364,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("show-console-readout", bool_or_value)  # type: ignore
+        return self.get("show-console-readout", bool_or_value)  # type: ignore[return-value]
 
     @show_console_readout.setter
-    def show_console_readout(self, value):
+    def show_console_readout(self, value: bool) -> None:
         self.set("show-console-readout", bool_to_str(value))
 
     @property
     def stderr(self) -> bool:
-        """
-        Return the `stderr` option value.
+        """Return the `stderr` option value.
 
         Redirect all console output that would be otherwise printed in stdout to stderr.
 
@@ -3571,16 +3381,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("stderr", bool_or_value)  # type: ignore
+        return self.get("stderr", bool_or_value)  # type: ignore[return-value]
 
     @stderr.setter
-    def stderr(self, value):
+    def stderr(self, value: bool) -> None:
         self.set("stderr", bool_to_str(value))
 
     @property
     def summary_interval(self) -> int:
-        """
-        Return the `summary-interval` option value.
+        """Return the `summary-interval` option value.
 
         Set interval in seconds to output download progress summary.
 
@@ -3589,16 +3398,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("summary-interval", int)  # type: ignore
+        return self.get("summary-interval", int)  # type: ignore[return-value]
 
     @summary_interval.setter
-    def summary_interval(self, value):
+    def summary_interval(self, value: int) -> None:
         self.set("summary-interval", value)
 
     @property
     def force_sequential(self) -> bool:
-        """
-        Return the `force-sequential` option value.
+        """Return the `force-sequential` option value.
 
         Fetch URIs in the command-line sequentially and download each URI in a separate session, like the usual
         command-line download utilities.
@@ -3608,16 +3416,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("force-sequential", bool_or_value)  # type: ignore
+        return self.get("force-sequential", bool_or_value)  # type: ignore[return-value]
 
     @force_sequential.setter
-    def force_sequential(self, value):
+    def force_sequential(self, value: bool) -> None:
         self.set("force-sequential", bool_to_str(value))
 
     @property
     def max_overall_download_limit(self) -> int:
-        """
-        Return the `max-overall-download-limit` option value.
+        """Return the `max-overall-download-limit` option value.
 
         Set max overall download speed in bytes/sec.
 
@@ -3627,16 +3434,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-overall-download-limit", int)  # type: ignore
+        return self.get("max-overall-download-limit", int)  # type: ignore[return-value]
 
     @max_overall_download_limit.setter
-    def max_overall_download_limit(self, value):
+    def max_overall_download_limit(self, value: int) -> None:
         self.set("max-overall-download-limit", value)
 
     @property
     def max_download_limit(self) -> int:
-        """
-        Return the `max-download-limit` option value.
+        """Return the `max-download-limit` option value.
 
         Set max download speed per each download in bytes/sec.
 
@@ -3646,32 +3452,30 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-download-limit", int)  # type: ignore
+        return self.get("max-download-limit", int)  # type: ignore[return-value]
 
     @max_download_limit.setter
-    def max_download_limit(self, value):
+    def max_download_limit(self, value: int) -> None:
         self.set("max-download-limit", value)
 
     @property
     def no_conf(self) -> bool:
-        """
-        Return the `no-conf` option value.
+        """Return the `no-conf` option value.
 
         Disable loading aria2.conf file.
 
         Returns:
             bool
         """
-        return self.get("no-conf", bool_or_value)  # type: ignore
+        return self.get("no-conf", bool_or_value)  # type: ignore[return-value]
 
     @no_conf.setter
-    def no_conf(self, value):
+    def no_conf(self, value: bool) -> None:
         self.set("no-conf", bool_to_str(value))
 
     @property
     def no_file_allocation_limit(self) -> int:
-        """
-        Return the `no-file-allocation-limit` option value.
+        """Return the `no-file-allocation-limit` option value.
 
         No file allocation is made for files whose size is smaller than SIZE.
 
@@ -3680,16 +3484,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("no-file-allocation-limit", int)  # type: ignore
+        return self.get("no-file-allocation-limit", int)  # type: ignore[return-value]
 
     @no_file_allocation_limit.setter
-    def no_file_allocation_limit(self, value):
+    def no_file_allocation_limit(self, value: int) -> None:
         self.set("no-file-allocation-limit", value)
 
     @property
     def parameterized_uri(self) -> bool:
-        """
-        Return the `parameterized-uri` option value.
+        """Return the `parameterized-uri` option value.
 
         Enable parameterized URI support.
 
@@ -3700,16 +3503,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("parameterized-uri", bool_or_value)  # type: ignore
+        return self.get("parameterized-uri", bool_or_value)  # type: ignore[return-value]
 
     @parameterized_uri.setter
-    def parameterized_uri(self, value):
+    def parameterized_uri(self, value: bool) -> None:
         self.set("parameterized-uri", bool_to_str(value))
 
     @property
     def quiet(self) -> bool:
-        """
-        Return the `quiet` option value.
+        """Return the `quiet` option value.
 
         Make aria2 quiet (no console output).
 
@@ -3718,16 +3520,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("quiet", bool_or_value)  # type: ignore
+        return self.get("quiet", bool_or_value)  # type: ignore[return-value]
 
     @quiet.setter
-    def quiet(self, value):
+    def quiet(self, value: bool) -> None:
         self.set("quiet", bool_to_str(value))
 
     @property
     def realtime_chunk_checksum(self) -> bool:
-        """
-        Return the `realtime-chunk-checksum` option value.
+        """Return the `realtime-chunk-checksum` option value.
 
         Validate chunk of data by calculating checksum while downloading a file if chunk checksums are provided.
 
@@ -3736,16 +3537,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("realtime-chunk-checksum", bool_or_value)  # type: ignore
+        return self.get("realtime-chunk-checksum", bool_or_value)  # type: ignore[return-value]
 
     @realtime_chunk_checksum.setter
-    def realtime_chunk_checksum(self, value):
+    def realtime_chunk_checksum(self, value: bool) -> None:
         self.set("realtime-chunk-checksum", bool_to_str(value))
 
     @property
     def remove_control_file(self) -> bool:
-        """
-        Return the `remove-control-file` option value.
+        """Return the `remove-control-file` option value.
 
         Remove control file before download.
 
@@ -3755,16 +3555,15 @@ class Options:
         Returns:
             bool
         """
-        return self.get("remove-control-file", bool_or_value)  # type: ignore
+        return self.get("remove-control-file", bool_or_value)  # type: ignore[return-value]
 
     @remove_control_file.setter
-    def remove_control_file(self, value):
+    def remove_control_file(self, value: bool) -> None:
         self.set("remove-control-file", bool_to_str(value))
 
     @property
     def save_session(self) -> str:
-        """
-        Return the `save-session` option value.
+        """Return the `save-session` option value.
 
         Save error/unfinished downloads to FILE on exit.
 
@@ -3774,7 +3573,7 @@ class Options:
         removed using aria2.remove() and aria2.forceRemove() will not be saved. GID is also saved with gid,
         but there are some restrictions, see below.
 
-        NOTE:
+        Note:
             Normally, GID of the download itself is saved. But some downloads use meta data (e.g., BitTorrent and
             Metalink). In this case, there are some restrictions.
 
@@ -3796,16 +3595,15 @@ class Options:
         Returns:
             str
         """
-        return self.get("save-session")  # type: ignore
+        return self.get("save-session")  # type: ignore[return-value]
 
     @save_session.setter
-    def save_session(self, value):
+    def save_session(self, value: str) -> None:
         self.set("save-session", value)
 
     @property
     def save_session_interval(self) -> int:
-        """
-        Return the `save-session-interval` option value.
+        """Return the `save-session-interval` option value.
 
         Save error/unfinished downloads to a file specified by --save-session option every SEC seconds.
 
@@ -3814,16 +3612,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("save-session-interval", int)  # type: ignore
+        return self.get("save-session-interval", int)  # type: ignore[return-value]
 
     @save_session_interval.setter
-    def save_session_interval(self, value):
+    def save_session_interval(self, value: int) -> None:
         self.set("save-session-interval", value)
 
     @property
     def socket_recv_buffer_size(self) -> int:
-        """
-        Return the `socket-recv-buffer-size` option value.
+        """Return the `socket-recv-buffer-size` option value.
 
         Set the maximum socket receive buffer in bytes.
 
@@ -3833,16 +3630,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("socket-recv-buffer-size", int)  # type: ignore
+        return self.get("socket-recv-buffer-size", int)  # type: ignore[return-value]
 
     @socket_recv_buffer_size.setter
-    def socket_recv_buffer_size(self, value):
+    def socket_recv_buffer_size(self, value: int) -> None:
         self.set("socket-recv-buffer-size", value)
 
     @property
     def stop(self) -> int:
-        """
-        Return the `stop` option value.
+        """Return the `stop` option value.
 
         Stop application after SEC seconds has passed.
 
@@ -3851,16 +3647,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("stop", int)  # type: ignore
+        return self.get("stop", int)  # type: ignore[return-value]
 
     @stop.setter
-    def stop(self, value):
+    def stop(self, value: int) -> None:
         self.set("stop", value)
 
     @property
     def stop_with_process(self) -> int:
-        """
-        Return the `stop-with-process` option value.
+        """Return the `stop-with-process` option value.
 
         Stop application when process PID is not running.
 
@@ -3870,16 +3665,15 @@ class Options:
         Returns:
             int
         """
-        return self.get("stop-with-process", int)  # type: ignore
+        return self.get("stop-with-process", int)  # type: ignore[return-value]
 
     @stop_with_process.setter
-    def stop_with_process(self, value):
+    def stop_with_process(self, value: int) -> None:
         self.set("stop-with-process", value)
 
     @property
     def truncate_console_readout(self) -> bool:
-        """
-        Return the `truncate-console-readout` option value.
+        """Return the `truncate-console-readout` option value.
 
         Truncate console readout to fit in a single line.
 
@@ -3888,8 +3682,8 @@ class Options:
         Returns:
             bool
         """
-        return self.get("truncate-console-readout", bool_or_value)  # type: ignore
+        return self.get("truncate-console-readout", bool_or_value)  # type: ignore[return-value]
 
     @truncate_console_readout.setter
-    def truncate_console_readout(self, value):
+    def truncate_console_readout(self, value: bool) -> None:
         self.set("truncate-console-readout", bool_to_str(value))

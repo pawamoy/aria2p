@@ -3,16 +3,23 @@
 from __future__ import annotations
 
 import sys
+from typing import TYPE_CHECKING
 
-from aria2p.api import API
 from aria2p.client import ClientException
 
+if TYPE_CHECKING:
+    from aria2p.api import API
 
-def pause(api: API, gids: list[str] | None = None, do_all: bool = False, force: bool = False) -> int:
-    """
-    Pause subcommand.
 
-    Arguments:
+def pause(
+    api: API,
+    gids: list[str] | None = None,
+    do_all: bool = False,  # noqa: FBT001,FBT002
+    force: bool = False,  # noqa: FBT001,FBT002
+) -> int:
+    """Pause subcommand.
+
+    Parameters:
         api: The API instance to use.
         gids: The GIDs of the downloads to pause.
         do_all: Pause all downloads if True.

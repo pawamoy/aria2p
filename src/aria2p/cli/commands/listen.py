@@ -5,21 +5,21 @@ from __future__ import annotations
 import sys
 from importlib import util as importlib_util
 from pathlib import Path
+from typing import TYPE_CHECKING
 
-from aria2p.api import API
-from aria2p.types import PathOrStr
+if TYPE_CHECKING:
+    from aria2p.api import API
 
 
 def listen(
     api: API,
-    callbacks_module: PathOrStr | None = None,
+    callbacks_module: str | Path | None = None,
     event_types: list[str] | None = None,
     timeout: int = 5,
 ) -> int:
-    """
-    Listen subcommand.
+    """Listen subcommand.
 
-    Arguments:
+    Parameters:
         api: The API instance to use.
         callbacks_module: The path to the module to import, containing the callbacks as functions.
         event_types: The event types to process.
@@ -53,7 +53,7 @@ def listen(
     spec.loader.exec_module(callbacks)  # type: ignore
 
     callbacks_kwargs = {}
-    for callback_name in (  # noqa: WPS352 (multiline loop)
+    for callback_name in (
         "on_download_start",
         "on_download_pause",
         "on_download_stop",

@@ -1,5 +1,7 @@
 """Tests for the `stats` module."""
 
+from __future__ import annotations
+
 import pytest
 
 from aria2p import Stats
@@ -7,8 +9,7 @@ from aria2p import Stats
 
 @pytest.fixture(scope="module")
 def stats() -> Stats:
-    """
-    Provide a Stats instance.
+    """Provide a Stats instance.
 
     Returns:
         A Stats instance.
@@ -21,105 +22,95 @@ def stats() -> Stats:
             "numStoppedTotal": "0",
             "numWaiting": "0",
             "uploadSpeed": "0",
-        }
+        },
     )
 
 
-def test_download_speed(stats):
-    """
-    Test the `download_speed` property.
+def test_download_speed(stats: Stats) -> None:
+    """Test the `download_speed` property.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.download_speed == 0
 
 
-def test_download_speed_string(stats):
-    """
-    Test the `download_speed_string` method.
+def test_download_speed_string(stats: Stats) -> None:
+    """Test the `download_speed_string` method.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.download_speed_string() == "0.00 B/s"
 
 
-def test_download_speed_string_not_human_readable(stats):
-    """
-    Test the `download_speed_string` method with human readable option.
+def test_download_speed_string_not_human_readable(stats: Stats) -> None:
+    """Test the `download_speed_string` method with human readable option.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.download_speed_string(human_readable=False) == "0 B/s"
 
 
-def test_upload_speed(stats):
-    """
-    Test the `upload_speed` property.
+def test_upload_speed(stats: Stats) -> None:
+    """Test the `upload_speed` property.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.upload_speed == 0
 
 
-def test_upload_speed_string(stats):
-    """
-    Test the `upload_speed_string` method.
+def test_upload_speed_string(stats: Stats) -> None:
+    """Test the `upload_speed_string` method.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.upload_speed_string() == "0.00 B/s"
 
 
-def test_upload_speed_string_not_human_readable(stats):
-    """
-    Test the `upload_speed_string` method with human readable option.
+def test_upload_speed_string_not_human_readable(stats: Stats) -> None:
+    """Test the `upload_speed_string` method with human readable option.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.upload_speed_string(human_readable=False) == "0 B/s"
 
 
-def test_num_active(stats):
-    """
-    Test the `numnum_active_waiting` property.
+def test_num_active(stats: Stats) -> None:
+    """Test the `numnum_active_waiting` property.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.num_active == 0
 
 
-def test_num_stopped(stats):
-    """
-    Test the `num_stopped` property.
+def test_num_stopped(stats: Stats) -> None:
+    """Test the `num_stopped` property.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.num_stopped == 0
 
 
-def test_num_stopped_total(stats):
-    """
-    Test the `num_stopped_total` property.
+def test_num_stopped_total(stats: Stats) -> None:
+    """Test the `num_stopped_total` property.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.num_stopped_total == 0
 
 
-def test_num_waiting(stats):
-    """
-    Test the `num_waiting` property.
+def test_num_waiting(stats: Stats) -> None:
+    """Test the `num_waiting` property.
 
-    Arguments:
+    Parameters:
         stats: A Stats instance.
     """
     assert stats.num_waiting == 0

@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier
-_commit: 0.10.10
+_commit: 0.16.10
 _src_path: gh:pawamoy/copier-pdm
 author_email: pawamoy@pm.me
 author_fullname: Timothée Mazzucotelli
@@ -8,8 +8,8 @@ copyright_date: '2020'
 copyright_holder: Timothée Mazzucotelli
 copyright_holder_email: pawamoy@pm.me
 copyright_license: ISC License
-project_description: Command-line tool and library to interact with an aria2c daemon
-    process with JSON-RPC.
+insiders: false
+project_description: Command-line tool and library to interact with an aria2c daemon process with JSON-RPC.
 project_name: aria2p
 python_package_command_line_name: aria2p
 python_package_distribution_name: aria2p
@@ -17,5 +17,4 @@ python_package_import_name: aria2p
 repository_name: aria2p
 repository_namespace: pawamoy
 repository_provider: github.com
-use_precommit: false
 
