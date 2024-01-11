@@ -298,3 +298,9 @@ def test_show_debug_info(capsys: pytest.CaptureFixture) -> None:
     assert "system" in captured
     assert "environment" in captured
     assert "packages" in captured
+
+
+@pytest.mark.parametrize("command", ["autoclear", "autopurge", "autoremove"])
+def test_cli_autoclear_commands(command: str, tmp_path: Path, port: int) -> None:
+    with Aria2Server(tmp_path, port, session="very-small-download.txt"):
+        assert main([command]) == 0

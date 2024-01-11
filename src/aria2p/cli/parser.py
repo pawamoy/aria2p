@@ -39,9 +39,6 @@ def check_args(parser: argparse.ArgumentParser, opts: argparse.Namespace) -> Non
         "delete",
         "resume",
         "start",
-        "autopurge",
-        "autoclear",
-        "autoremove",
     )
 
     if opts.subcommand in gid_commands:
