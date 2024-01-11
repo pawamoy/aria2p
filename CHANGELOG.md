@@ -5,6 +5,44 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [0.12.0](https://github.com/pawamoy/aria2p/releases/tag/0.12.0) - 2024-01-11
+
+<small>[Compare with 0.11.3](https://github.com/pawamoy/aria2p/compare/0.11.3...0.12.0)</small>
+
+### Possible breaking changes
+
+Automatic detection of API breaking changes thanks to [Griffe](https://mkdocstrings.github.io/griffe):
+
+- **src/aria2p/api.py:23**: `PathOrStr`: *Public object was removed*
+- **src/aria2p/downloads.py:16**: `aria2p`: *Public object was removed*
+- **src/aria2p/downloads.py:19**: `PathOrStr`: *Public object was removed*
+- **src/aria2p/interface.py:22**: `Dict`: *Public object was removed*
+- **src/aria2p/interface.py:476**: `Interface.width`: *Attribute value was changed: None -> 80*
+- **src/aria2p/interface.py:475**: `Interface.height`: *Attribute value was changed: None -> 20*
+- **src/aria2p/interface.py:352**: `Interface.screen`: *Attribute value was changed: None -> unset*
+- **src/aria2p/interface.py:355**: `Interface.scroller`: *Attribute value was changed: None -> unset*
+- **src/aria2p/options.py:13**: `aria2p`: *Public object was removed*
+- **src/aria2p/options.py:20**: `GenericMeta`: *Public object was removed*
+- **src/aria2p/types.py:0**: `<module>`: *Public object was removed*
+- **src/aria2p/utils.py:14**: `Dict`: *Public object was removed*
+- **src/aria2p/utils.py:16**: `pkg_resources`: *Public object was removed*
+- **src/aria2p/utils.py:17**: `toml`: *Public object was removed*
+- **src/aria2p/utils.py:21**: `PathOrStr`: *Public object was removed*
+- **src/aria2p/cli/commands/listen.py:10**: `PathOrStr`: *Public object was removed*
+
+These objects removal have very few chances of breaking user code,
+because they're almost entirely related to type annotations for aria2p itself,
+which users shouldn't rely upon. The rest were non-public imports.
+
+### Bug Fixes
+
+- Fix autoclear commands parsing ([6b7555d](https://github.com/pawamoy/aria2p/commit/6b7555d540b19213ce37bb5deae99ccc5f3e5428) by Timothée Mazzucotelli). [Issue #128](https://github.com/pawamoy/aria2p/issues/128)
+
+### Code Refactoring
+
+- Use `importlib.metadata` instead of `pkg_resources` ([e259a40](https://github.com/pawamoy/aria2p/commit/e259a4088358d24b0cbf57750f4484d7817caf99) by Timothée Mazzucotelli).
+- Use `tomli`, and `tomllib` on Python 3.11+ ([8effdac](https://github.com/pawamoy/aria2p/commit/8effdac3cfada3350ab4157a4e2b7bef43c9c5d0) by Michał Fluder). [PR #127](https://github.com/pawamoy/aria2p/pull/127)
+
 ## [0.11.3](https://github.com/pawamoy/aria2p/releases/tag/0.11.3) - 2022-12-15
 
 <small>[Compare with 0.11.2](https://github.com/pawamoy/aria2p/compare/0.11.2...0.11.3)</small>
