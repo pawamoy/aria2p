@@ -107,6 +107,7 @@ def main(args: list[str] | None = None) -> int:
         return 2
 
     subcommand = kwargs.pop("subcommand")
+    kwargs.pop("debug_info")
 
     if subcommand:
         logger.debug("Running subcommand " + subcommand)

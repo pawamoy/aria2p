@@ -14,8 +14,10 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from typing import Any
 
+from aria2p import debug
 from aria2p.client import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_TIMEOUT
 
 
@@ -81,6 +83,15 @@ def parse_options_string(options_string: str | None = None) -> dict:
     return options
 
 
+class _DebugInfo(argparse.Action):
+    def __init__(self, nargs: int | str | None = 0, **kwargs: Any) -> None:
+        super().__init__(nargs=nargs, **kwargs)
+
+    def __call__(self, *args: Any, **kwargs: Any) -> None:  # noqa: ARG002
+        debug.print_debug_info()
+        sys.exit(0)
+
+
 def get_parser() -> argparse.ArgumentParser:
     """Return a parser for the command-line options and arguments.
 
@@ -96,6 +107,8 @@ def get_parser() -> argparse.ArgumentParser:
 
     global_options = parser.add_argument_group(title="Global options")
     global_options.add_argument("-h", "--help", action="help", help=main_help)
+    global_options.add_argument("-V", "--version", action="version", version=f"%(prog)s {debug.get_version()}")
+    global_options.add_argument("--debug-info", action=_DebugInfo, help="Print debug information.")
 
     global_options.add_argument(
         "-p",
