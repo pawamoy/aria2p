@@ -5,7 +5,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-import requests
+import httpx
 from loguru import logger
 
 from aria2p import enable_logger
@@ -98,7 +98,7 @@ def main(args: list[str] | None = None) -> int:
     logger.debug("Testing connection")
     try:
         api.client.get_version()
-    except requests.ConnectionError as error:
+    except httpx.NetworkError as error:
         print(f"[ERROR] {error}", file=sys.stderr)
         print(file=sys.stderr)
         print("Please make sure that an instance of aria2c is running with RPC mode enabled,", file=sys.stderr)

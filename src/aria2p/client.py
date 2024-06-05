@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 from typing import Any, Callable, ClassVar, List, Tuple, Union
 
-import requests
+import httpx
 import websocket
 from loguru import logger
 
@@ -19,6 +19,7 @@ DEFAULT_ID = -1
 DEFAULT_HOST = "http://localhost"
 DEFAULT_PORT = 6800
 DEFAULT_TIMEOUT: float = 60.0
+DEFAULT_RETRIES = 10
 
 JSONRPC_PARSER_ERROR = -32700
 JSONRPC_INVALID_REQUEST = -32600
@@ -186,6 +187,7 @@ class Client:
         port: int = DEFAULT_PORT,
         secret: str = "",
         timeout: float = DEFAULT_TIMEOUT,
+        retries: int = DEFAULT_RETRIES,
     ) -> None:
         """Initialize the object.
 
@@ -201,13 +203,26 @@ class Client:
         self.port = port
         self.secret = secret
         self.timeout = timeout
+        self.retries = retries
         self.listening = False
+        self.__httpx_session = None
 
     def __str__(self):
         return self.server
 
     def __repr__(self):
         return f"Client(host='{self.host}', port={self.port}, secret='********')"
+
+    def __del__(self):
+        if self.__httpx_session is not None:
+            self.__httpx_session.close()
+
+    @property
+    def _session(self):
+        if self.__httpx_session is not None:
+            return self.__httpx_session
+        self.__httpx_session = httpx.Client(timeout=self.timeout, transport=httpx.HTTPTransport(verify=False, retries=self.retries))
+        return self.__httpx_session
 
     @property
     def server(self) -> str:
@@ -348,7 +363,7 @@ class Client:
         Returns:
             The answer from the server, as a Python dictionary.
         """
-        return requests.post(self.server, data=payload, timeout=self.timeout).json()
+        return self._session.post(self.server, data=payload).json()
 
     @staticmethod
     def response_as_exception(response: dict) -> ClientException:
