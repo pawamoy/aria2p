@@ -19,7 +19,7 @@ DEFAULT_ID = -1
 DEFAULT_HOST = "http://localhost"
 DEFAULT_PORT = 6800
 DEFAULT_TIMEOUT: float = 60.0
-DEFAULT_RETRIES = 10
+DEFAULT_RETRIES = 3
 
 JSONRPC_PARSER_ERROR = -32700
 JSONRPC_INVALID_REQUEST = -32600
@@ -205,7 +205,7 @@ class Client:
         self.timeout = timeout
         self.retries = retries
         self.listening = False
-        self.__httpx_session = None
+        self.session = httpx.Client(timeout=self.timeout, transport=httpx.HTTPTransport(retries=self.retries))
 
     def __str__(self):
         return self.server
@@ -214,15 +214,8 @@ class Client:
         return f"Client(host='{self.host}', port={self.port}, secret='********')"
 
     def __del__(self):
-        if self.__httpx_session is not None:
-            self.__httpx_session.close()
-
-    @property
-    def _session(self):
-        if self.__httpx_session is not None:
-            return self.__httpx_session
-        self.__httpx_session = httpx.Client(timeout=self.timeout, transport=httpx.HTTPTransport(verify=False, retries=self.retries))
-        return self.__httpx_session
+        if self.session is not None:
+            self.session.close()
 
     @property
     def server(self) -> str:
@@ -363,7 +356,7 @@ class Client:
         Returns:
             The answer from the server, as a Python dictionary.
         """
-        return self._session.post(self.server, data=payload).json()
+        return self.session.post(self.server, data=payload).json()
 
     @staticmethod
     def response_as_exception(response: dict) -> ClientException:
