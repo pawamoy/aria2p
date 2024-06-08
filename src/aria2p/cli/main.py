@@ -5,7 +5,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-import requests
+import httpx
 from loguru import logger
 
 from aria2p import enable_logger
@@ -83,36 +83,43 @@ def main(args: list[str] | None = None) -> int:
     check_args(parser, opts)
 
     logger.debug("Instantiating API")
-    api = API(
+
+    with API(
         Client(
             host=kwargs.pop("host"),
             port=kwargs.pop("port"),
             secret=kwargs.pop("secret"),
             timeout=kwargs.pop("client_timeout"),
-        ),
-    )
+        )
+    ) as api:
+        logger.info(f"API instantiated: {api!r}")
+        # Warn if no aria2 daemon process seems to be running
+        logger.debug("Testing connection")
+        try:
+            api.client.get_version()
+        except httpx.NetworkError as error:
+            print(f"[ERROR] {error}", file=sys.stderr)
+            print(file=sys.stderr)
+            print(
+                "Please make sure that an instance of aria2c is running with RPC mode enabled,",
+                file=sys.stderr,
+            )
+            print(
+                "and that you have provided the right host, port and secret token.",
+                file=sys.stderr,
+            )
+            print(
+                "More information at https://pawamoy.github.io/aria2p.", file=sys.stderr
+            )
+            return 2
 
-    logger.info(f"API instantiated: {api!r}")
+        subcommand = kwargs.pop("subcommand")
+        kwargs.pop("debug_info")
 
-    # Warn if no aria2 daemon process seems to be running
-    logger.debug("Testing connection")
-    try:
-        api.client.get_version()
-    except requests.ConnectionError as error:
-        print(f"[ERROR] {error}", file=sys.stderr)
-        print(file=sys.stderr)
-        print("Please make sure that an instance of aria2c is running with RPC mode enabled,", file=sys.stderr)
-        print("and that you have provided the right host, port and secret token.", file=sys.stderr)
-        print("More information at https://pawamoy.github.io/aria2p.", file=sys.stderr)
-        return 2
-
-    subcommand = kwargs.pop("subcommand")
-    kwargs.pop("debug_info")
-
-    if subcommand:
-        logger.debug("Running subcommand " + subcommand)
-    try:
-        return commands[subcommand](api, **kwargs)  # type: ignore
-    except ClientException as error:
-        print(str(error), file=sys.stderr)
-        return error.code
+        if subcommand:
+            logger.debug("Running subcommand " + subcommand)
+        try:
+            return commands[subcommand](api, **kwargs)  # type: ignore
+        except ClientException as error:
+            print(str(error), file=sys.stderr)
+            return error.code
