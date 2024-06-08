@@ -1,5 +1,5 @@
 target-version = "py38"
-line-length = 132
+line-length = 120
 exclude = [
     "tests/data",
     "fixtures",
@@ -108,3 +108,7 @@ known-first-party = ["aria2p"]
 
 [pydocstyle]
 convention = "google"
+
+[format]
+docstring-code-format = true
+docstring-code-line-length = 80

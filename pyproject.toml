@@ -5,7 +5,7 @@ build-backend = "pdm.backend"
 [project]
 name = "aria2p"
 description = "Command-line tool and library to interact with an aria2c daemon process with JSON-RPC."
-authors = [{name = "Timothée Mazzucotelli", email = "pawamoy@pm.me"}]
+authors = [{name = "Timothée Mazzucotelli", email = "dev@pawamoy.fr"}]
 license = {text = "ISC"}
 readme = "README.md"
 requires-python = ">=3.8"
