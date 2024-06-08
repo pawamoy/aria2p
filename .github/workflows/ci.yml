@@ -14,6 +14,7 @@ env:
   LANG: en_US.utf-8
   LC_ALL: en_US.utf-8
   PYTHONIOENCODING: UTF-8
+  PYTHON_VERSIONS: ""
 
 jobs:
 
@@ -28,36 +29,32 @@ jobs:
     - name: Fetch all tags
       run: git fetch --depth=1 --tags
 
-    - name: Set up PDM
-      uses: pdm-project/setup-pdm@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
       with:
-        python-version: "3.8"
+        python-version: "3.11"
 
-    - name: Resolving dependencies
-      run: pdm lock -v --no-cross-platform -G ci-quality
+    - name: Install uv
+      run: pip install uv
 
     - name: Install dependencies
-      run: pdm install -G ci-quality
+      run: make setup
 
     - name: Check if the documentation builds correctly
-      run: pdm run duty check-docs
+      run: make check-docs
 
     - name: Check the code quality
-      run: pdm run duty check-quality
+      run: make check-quality
 
     - name: Check if the code is correctly typed
-      run: pdm run duty check-types
-
-    - name: Check for vulnerabilities in dependencies
-      run: pdm run duty check-dependencies
+      run: make check-types
 
     - name: Check for breaking changes in the API
-      run: pdm run duty check-api
+      run: make check-api
 
   tests:
 
     strategy:
-      max-parallel: 4
       matrix:
         os:
         - ubuntu-latest
@@ -69,8 +66,17 @@ jobs:
         - "3.10"
         - "3.11"
         - "3.12"
+        - "3.13"
+        resolution:
+        - highest
+        - lowest-direct
+        exclude:
+        - os: macos-latest
+          resolution: lowest-direct
+        - os: windows-latest
+          resolution: lowest-direct
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.python-version == '3.12' || matrix.os == 'windows-latest' }}
+    continue-on-error: ${{ matrix.python-version == '3.13' || matrix.os == 'windows-latest' }}
 
     steps:
     - name: Install aria2 on Ubuntu
@@ -90,17 +96,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Set up PDM
-      uses: pdm-project/setup-pdm@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-        allow-python-prereleases: true
+        allow-prereleases: true
 
-    - name: Resolving dependencies
-      run: pdm lock -v --no-cross-platform -G ci-tests -G tui
+    - name: Install uv
+      run: pip install uv
 
     - name: Install dependencies
-      run: pdm install --no-editable -G ci-tests -G tui
+      env:
+        UV_RESOLUTION: ${{ matrix.resolution }}
+      run: make setup
 
     - name: Run the test suite
-      run: pdm run duty test
+      run: make test
