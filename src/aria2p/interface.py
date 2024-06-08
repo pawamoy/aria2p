@@ -846,7 +846,7 @@ class Interface:
                 logger.debug(f"Moving side focus up: {self.side_focused}")
                 self.refresh = True
 
-        elif event.key_code in Keys.MOVE_DOWN:  # noqa: SIM102
+        elif event.key_code in Keys.MOVE_DOWN:
             if self.side_focused < len(self.remove_ask_rows) - 1:
                 self.side_focused += 1
                 logger.debug(f"Moving side focus down: {self.side_focused}")
@@ -869,7 +869,7 @@ class Interface:
                 self.side_focused -= 1
                 self.refresh = True
 
-        elif event.key_code in Keys.MOVE_DOWN:  # noqa: SIM102
+        elif event.key_code in Keys.MOVE_DOWN:
             if self.side_focused < len(self.select_sort_rows) - 1:
                 self.side_focused += 1
                 self.refresh = True
@@ -1112,7 +1112,7 @@ class Interface:
                 written = self.scroller.print_at(header_string, x, y, palette)
 
             x += written
-            c += 1
+            c += 1  # noqa: SIM113
 
     def print_rows(self) -> None:
         """Print the rows."""

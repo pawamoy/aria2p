@@ -760,7 +760,7 @@ class Download:
         return self._belongs_to
 
     @property
-    def dir(self) -> Path:  # noqa: A003
+    def dir(self) -> Path:
         """Directory to save files.
 
         Returns:

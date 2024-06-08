@@ -460,10 +460,15 @@ class Client:
             The following example adds http://example.org/file:
 
             >>> import urllib2, json
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.addUri',
-            ...                       'params':[['http://example.org/file']]})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {
+            ...         "jsonrpc": "2.0",
+            ...         "id": "qwer",
+            ...         "method": "aria2.addUri",
+            ...         "params": [["http://example.org/file"]],
+            ...     }
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> c.read()
             '{"id":"qwer","jsonrpc":"2.0","result":"0000000000000001"}'
         """
@@ -518,10 +523,16 @@ class Client:
             The following examples add local file file.torrent.
 
             >>> import urllib2, json, base64
-            >>> torrent = base64.b64encode(open('file.torrent').read())
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'asdf',
-            ...                       'method':'aria2.addTorrent', 'params':[torrent]})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> torrent = base64.b64encode(open("file.torrent").read())
+            >>> jsonreq = json.dumps(
+            ...     {
+            ...         "jsonrpc": "2.0",
+            ...         "id": "asdf",
+            ...         "method": "aria2.addTorrent",
+            ...         "params": [torrent],
+            ...     }
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> c.read()
             '{"id":"asdf","jsonrpc":"2.0","result":"0000000000000001"}'
         """
@@ -569,11 +580,16 @@ class Client:
             The following examples add local file file.meta4.
 
             >>> import urllib2, json, base64
-            >>> metalink = base64.b64encode(open('file.meta4').read())
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.addMetalink',
-            ...                       'params':[metalink]})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> metalink = base64.b64encode(open("file.meta4").read())
+            >>> jsonreq = json.dumps(
+            ...     {
+            ...         "jsonrpc": "2.0",
+            ...         "id": "qwer",
+            ...         "method": "aria2.addMetalink",
+            ...         "params": [metalink],
+            ...     }
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> c.read()
             '{"id":"qwer","jsonrpc":"2.0","result":["0000000000000001"]}'
         """
@@ -602,10 +618,15 @@ class Client:
             The following examples remove a download with GID#0000000000000001.
 
             >>> import urllib2, json
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.remove',
-            ...                       'params':['0000000000000001']})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {
+            ...         "jsonrpc": "2.0",
+            ...         "id": "qwer",
+            ...         "method": "aria2.remove",
+            ...         "params": ["0000000000000001"],
+            ...     }
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> c.read()
             '{"id":"qwer","jsonrpc":"2.0","result":"0000000000000001"}'
         """
@@ -808,10 +829,15 @@ class Client:
 
             >>> import urllib2, json
             >>> from pprint import pprint
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.tellStatus',
-            ...                       'params':['0000000000000001']})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {
+            ...         "jsonrpc": "2.0",
+            ...         "id": "qwer",
+            ...         "method": "aria2.tellStatus",
+            ...         "params": ["0000000000000001"],
+            ...     }
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
              u'jsonrpc': u'2.0',
@@ -837,13 +863,18 @@ class Client:
 
             The following example gets only specific keys:
 
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.tellStatus',
-            ...                       'params':['0000000000000001',
-            ...                                 ['gid',
-            ...                                  'totalLength',
-            ...                                  'completedLength']]})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {
+            ...         "jsonrpc": "2.0",
+            ...         "id": "qwer",
+            ...         "method": "aria2.tellStatus",
+            ...         "params": [
+            ...             "0000000000000001",
+            ...             ["gid", "totalLength", "completedLength"],
+            ...         ],
+            ...     }
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
              u'jsonrpc': u'2.0',
@@ -877,10 +908,15 @@ class Client:
 
             >>> import urllib2, json
             >>> from pprint import pprint
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.getUris',
-            ...                       'params':['0000000000000001']})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {
+            ...         "jsonrpc": "2.0",
+            ...         "id": "qwer",
+            ...         "method": "aria2.getUris",
+            ...         "params": ["0000000000000001"],
+            ...     }
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
              u'jsonrpc': u'2.0',
@@ -925,10 +961,15 @@ class Client:
 
             >>> import urllib2, json
             >>> from pprint import pprint
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.getFiles',
-            ...                       'params':['0000000000000001']})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {
+            ...         "jsonrpc": "2.0",
+            ...         "id": "qwer",
+            ...         "method": "aria2.getFiles",
+            ...         "params": ["0000000000000001"],
+            ...     }
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
              u'jsonrpc': u'2.0',
@@ -975,10 +1016,15 @@ class Client:
 
             >>> import urllib2, json
             >>> from pprint import pprint
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.getPeers',
-            ...                       'params':['0000000000000001']})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {
+            ...         "jsonrpc": "2.0",
+            ...         "id": "qwer",
+            ...         "method": "aria2.getPeers",
+            ...         "params": ["0000000000000001"],
+            ...     }
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
              u'jsonrpc': u'2.0',
@@ -1031,10 +1077,15 @@ class Client:
 
             >>> import urllib2, json
             >>> from pprint import pprint
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.getServers',
-            ...                       'params':['0000000000000001']})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {
+            ...         "jsonrpc": "2.0",
+            ...         "id": "qwer",
+            ...         "method": "aria2.getServers",
+            ...         "params": ["0000000000000001"],
+            ...     }
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
              u'jsonrpc': u'2.0',
@@ -1138,10 +1189,15 @@ class Client:
 
             >>> import urllib2, json
             >>> from pprint import pprint
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.changePosition',
-            ...                       'params':['0000000000000001', 0, 'POS_SET']})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {
+            ...         "jsonrpc": "2.0",
+            ...         "id": "qwer",
+            ...         "method": "aria2.changePosition",
+            ...         "params": ["0000000000000001", 0, "POS_SET"],
+            ...     }
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': 0}
         """
@@ -1194,7 +1250,7 @@ class Client:
             ...                       'method':'aria2.changeUri',
             ...                       'params':['0000000000000001', 1, [],
                                                ['http://example.org/file']]})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': [0, 1]}
         """
@@ -1222,10 +1278,15 @@ class Client:
 
             >>> import urllib2, json
             >>> from pprint import pprint
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.getOption',
-            ...                       'params':['0000000000000001']})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {
+            ...         "jsonrpc": "2.0",
+            ...         "id": "qwer",
+            ...         "method": "aria2.getOption",
+            ...         "params": ["0000000000000001"],
+            ...     }
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
              u'jsonrpc': u'2.0',
@@ -1275,11 +1336,15 @@ class Client:
 
             >>> import urllib2, json
             >>> from pprint import pprint
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.changeOption',
-            ...                       'params':['0000000000000001',
-            ...                                 {'max-download-limit':'10K'}]})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {
+            ...         "jsonrpc": "2.0",
+            ...         "id": "qwer",
+            ...         "method": "aria2.changeOption",
+            ...         "params": ["0000000000000001", {"max-download-limit": "10K"}],
+            ...     }
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'OK'}
         """
@@ -1362,9 +1427,10 @@ class Client:
 
             >>> import urllib2, json
             >>> from pprint import pprint
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.getGlobalStat'})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {"jsonrpc": "2.0", "id": "qwer", "method": "aria2.getGlobalStat"}
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
              u'jsonrpc': u'2.0',
@@ -1408,10 +1474,15 @@ class Client:
 
             >>> import urllib2, json
             >>> from pprint import pprint
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.removeDownloadResult',
-            ...                       'params':['0000000000000001']})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {
+            ...         "jsonrpc": "2.0",
+            ...         "id": "qwer",
+            ...         "method": "aria2.removeDownloadResult",
+            ...         "params": ["0000000000000001"],
+            ...     }
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'OK'}
         """
@@ -1435,9 +1506,10 @@ class Client:
 
             >>> import urllib2, json
             >>> from pprint import pprint
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.getVersion'})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {"jsonrpc": "2.0", "id": "qwer", "method": "aria2.getVersion"}
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
              u'jsonrpc': u'2.0',
@@ -1468,9 +1540,10 @@ class Client:
 
             >>> import urllib2, json
             >>> from pprint import pprint
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'aria2.getSessionInfo'})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {"jsonrpc": "2.0", "id": "qwer", "method": "aria2.getSessionInfo"}
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
              u'jsonrpc': u'2.0',
@@ -1548,25 +1621,48 @@ class Client:
 
             >>> import urllib2, json, base64
             >>> from pprint import pprint
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'system.multicall',
-            ...                       'params':[[{'methodName':'aria2.addUri',
-            ...                                   'params':[['http://example.org']]},
-            ...                                  {'methodName':'aria2.addTorrent',
-            ...                                   'params':[base64.b64encode(open('file.torrent').read())]}]]})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {
+            ...         "jsonrpc": "2.0",
+            ...         "id": "qwer",
+            ...         "method": "system.multicall",
+            ...         "params": [
+            ...             [
+            ...                 {
+            ...                     "methodName": "aria2.addUri",
+            ...                     "params": [["http://example.org"]],
+            ...                 },
+            ...                 {
+            ...                     "methodName": "aria2.addTorrent",
+            ...                     "params": [base64.b64encode(open("file.torrent").read())],
+            ...                 },
+            ...             ]
+            ...         ],
+            ...     }
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': [[u'0000000000000001'], [u'd2703803b52216d1']]}
 
             JSON-RPC additionally supports Batch requests as described in the JSON-RPC 2.0 Specification:
 
-            >>> jsonreq = json.dumps([{'jsonrpc':'2.0', 'id':'qwer',
-            ...                        'method':'aria2.addUri',
-            ...                        'params':[['http://example.org']]},
-            ...                       {'jsonrpc':'2.0', 'id':'asdf',
-            ...                        'method':'aria2.addTorrent',
-            ...                        'params':[base64.b64encode(open('file.torrent').read())]}])
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     [
+            ...         {
+            ...             "jsonrpc": "2.0",
+            ...             "id": "qwer",
+            ...             "method": "aria2.addUri",
+            ...             "params": [["http://example.org"]],
+            ...         },
+            ...         {
+            ...             "jsonrpc": "2.0",
+            ...             "id": "asdf",
+            ...             "method": "aria2.addTorrent",
+            ...             "params": [base64.b64encode(open("file.torrent").read())],
+            ...         },
+            ...     ]
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             [{u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'0000000000000001'},
              {u'id': u'asdf', u'jsonrpc': u'2.0', u'result': u'd2703803b52216d1'}]
@@ -1592,9 +1688,10 @@ class Client:
 
             >>> import urllib2, json
             >>> from pprint import pprint
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'system.listMethods'})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {"jsonrpc": "2.0", "id": "qwer", "method": "system.listMethods"}
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
              u'jsonrpc': u'2.0',
@@ -1623,9 +1720,10 @@ class Client:
 
             >>> import urllib2, json
             >>> from pprint import pprint
-            >>> jsonreq = json.dumps({'jsonrpc':'2.0', 'id':'qwer',
-            ...                       'method':'system.listNotifications'})
-            >>> c = urllib2.urlopen('http://localhost:6800/jsonrpc', jsonreq)
+            >>> jsonreq = json.dumps(
+            ...     {"jsonrpc": "2.0", "id": "qwer", "method": "system.listNotifications"}
+            ... )
+            >>> c = urllib2.urlopen("http://localhost:6800/jsonrpc", jsonreq)
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer',
              u'jsonrpc': u'2.0',

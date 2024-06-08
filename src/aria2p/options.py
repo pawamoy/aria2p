@@ -74,7 +74,7 @@ class Options:
             return class_(value)
         return value
 
-    def set(self, key: str, value: str | float | bool | list[str]) -> bool:  # noqa: A003 (shadowing set)
+    def set(self, key: str, value: str | float | bool | list[str]) -> bool:
         """Set the value of an option given its name.
 
         Parameters:
@@ -96,7 +96,7 @@ class Options:
 
     # Basic Options
     @property
-    def dir(self) -> str:  # noqa: A003
+    def dir(self) -> str:
         """Return the `dir` option value.
 
         The directory to store the downloaded file.
@@ -107,7 +107,7 @@ class Options:
         return self.get("dir")  # type: ignore[return-value]
 
     @dir.setter
-    def dir(self, value: str) -> None:  # noqa: A003
+    def dir(self, value: str) -> None:
         self.set("dir", value)
 
     @property

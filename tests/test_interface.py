@@ -146,7 +146,7 @@ class MockedScreen:
     def has_resized(self) -> bool:
         return self._has_resized
 
-    def open(self) -> None:  # noqa: A003
+    def open(self) -> None:
         pass
 
     def close(self) -> None:
