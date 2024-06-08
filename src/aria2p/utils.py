@@ -12,8 +12,8 @@ from importlib import metadata
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from appdirs import user_config_dir
 from loguru import logger
+from platformdirs import user_config_dir
 
 if TYPE_CHECKING:
     from datetime import timedelta
