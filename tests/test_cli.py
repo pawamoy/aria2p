@@ -303,4 +303,4 @@ def test_show_debug_info(capsys: pytest.CaptureFixture) -> None:
 @pytest.mark.parametrize("command", ["autoclear", "autopurge", "autoremove"])
 def test_cli_autoclear_commands(command: str, tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="very-small-download.txt"):
-        assert main([command]) == 0
+        assert main([f"-p{port}", command]) == 0

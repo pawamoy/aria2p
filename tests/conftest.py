@@ -8,6 +8,7 @@ import random
 import subprocess
 import sys
 import time
+from contextlib import suppress
 from pathlib import Path
 from typing import Iterator
 
@@ -231,13 +232,13 @@ class Aria2Server:
 
 
 ports_file = Path(".ports.json")
+lock_dir = Path(".lockdir")
 
 
 def get_lock() -> None:
-    lockdir = Path(".lockdir")
     while True:
         try:
-            lockdir.mkdir(exist_ok=False)
+            lock_dir.mkdir(exist_ok=False)
         except FileExistsError:
             time.sleep(0.025)
         else:
@@ -245,7 +246,8 @@ def get_lock() -> None:
 
 
 def release_lock() -> None:
-    Path(".lockdir").rmdir()
+    with suppress(FileNotFoundError):
+        lock_dir.rmdir()
 
 
 def get_random_port() -> int:
@@ -296,3 +298,9 @@ def port() -> Iterator[int]:
 def server(tmp_path: Path, port: int) -> Iterator[Aria2Server]:
     with Aria2Server(tmp_path, port) as server:
         yield server
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _setup() -> None:
+    ports_file.unlink(missing_ok=True)
+    release_lock()
