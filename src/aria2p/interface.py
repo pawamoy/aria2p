@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Callable, ClassVar, Sequence, TypedDict
 
 import pyperclip
-import requests
+import httpx
 from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import ManagedScreen, Screen
 from loguru import logger
@@ -1174,7 +1174,7 @@ class Interface:
         try:
             self.data = self.get_data()
             self.sort_data()
-        except requests.exceptions.Timeout:
+        except httpx.Timeout:
             logger.debug("Request timeout")
 
     def sort_data(self) -> None:

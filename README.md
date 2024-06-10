@@ -102,6 +102,32 @@ magnet_uri = "magnet:?xt=urn:..."
 download = aria2.add_magnet(magnet_uri)
 ```
 
+OR 
+
+```python
+import aria2p
+
+# initialization, these are the default values
+with aria2p.API(
+    aria2p.Client(
+        host="http://localhost",
+        port=6800,
+        secret=""
+    )
+) as api:
+
+    # list downloads
+    downloads = api.get_downloads()
+
+    for download in downloads:
+        print(download.name, download.download_speed)
+
+    # add downloads
+    magnet_uri = "magnet:?xt=urn:..."
+
+    download = api.add_magnet(magnet_uri)
+```
+
 ## Usage (command-line)
 
 ```
@@ -507,18 +533,6 @@ optional arguments:
 
 ```
 
-
-
-
-## Troubleshooting
-
-- Error outputs like below when using `aria2p` as a Python library:
-
-  ```
-  requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=6800): Max retries exceeded with url: /jsonrpc (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1115b1908>: Failed to establish a new connection: [Errno 61] Connection refused',))
-  ```
-
-  Solution: `aria2c` needs to be up and running first.
 
 ## Support
 

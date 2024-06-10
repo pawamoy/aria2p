@@ -234,15 +234,6 @@ $ aria2p call purge_download_result
 {%- endif %}
 {% endfor %}
 
-## Troubleshooting
-
-- Error outputs like below when using `aria2p` as a Python library:
-
-  ```
-  requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=6800): Max retries exceeded with url: /jsonrpc (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1115b1908>: Failed to establish a new connection: [Errno 61] Connection refused',))
-  ```
-
-  Solution: `aria2c` needs to be up and running first.
 
 ## Support
 

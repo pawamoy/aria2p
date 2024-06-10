@@ -12,7 +12,7 @@ from copy import deepcopy
 from typing import TYPE_CHECKING
 
 import pytest
-import requests
+import httpx
 from responses import mock as responses
 
 from aria2p import Client, ClientException
@@ -27,15 +27,15 @@ if TYPE_CHECKING:
 class TestParameters:
     # callback that return params of a single call as result
     @staticmethod
-    def call_params_callback(request: requests.PreparedRequest) -> tuple[int, dict, str]:
-        payload = json.loads(request.body)  # type: ignore[arg-type]
+    def call_params_callback(request: httpx.Request) -> tuple[int, dict, str]:
+        payload = json.loads(request.content)  # type: ignore[arg-type]
         resp_body = {"result": payload["params"]}
         return 200, {}, json.dumps(resp_body)
 
     # callback that return params of a batch call as result
     @staticmethod
-    def batch_call_params_callback(request: requests.PreparedRequest) -> tuple[int, dict, str]:
-        payload = json.loads(request.body)  # type: ignore[arg-type]
+    def batch_call_params_callback(request: httpx.Request) -> tuple[int, dict, str]:
+        payload = json.loads(request.content)  # type: ignore[arg-type]
         resp_body = [{"result": method["params"]} for method in payload]
         return 200, {}, json.dumps(resp_body)
 
@@ -322,7 +322,7 @@ class TestClientClass:
 
     def test_force_shutdown_method(self, server: Aria2Server) -> None:
         assert server.client.force_shutdown() == "OK"
-        with pytest.raises(requests.ConnectionError):  # noqa: PT012
+        with pytest.raises(httpx.NetworkError):  # noqa: PT012
             for _retry in range(10):
                 server.client.list_methods()
                 time.sleep(1)
@@ -435,7 +435,7 @@ class TestClientClass:
 
     def test_shutdown_method(self, server: Aria2Server) -> None:
         assert server.client.shutdown() == "OK"
-        with pytest.raises(requests.ConnectionError):  # noqa: PT012
+        with pytest.raises(httpx.NetworkError):  # noqa: PT012
             for _retry in range(10):
                 server.client.list_methods()
                 time.sleep(1)

@@ -47,6 +47,13 @@ class API:
     def __repr__(self) -> str:
         return f"API({self.client!r})"
 
+    def __enter__(self) -> API:
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.client.session.close()
+        self.client.session = None
+
     def add(
         self,
         uri: str,

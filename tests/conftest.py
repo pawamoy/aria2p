@@ -14,7 +14,7 @@ from typing import Iterator
 
 import psutil
 import pytest
-import requests
+import httpx
 
 from aria2p import API, Client, enable_logger
 from tests import CONFIGS_DIR, SESSIONS_DIR
@@ -59,7 +59,7 @@ def spawn_and_wait_server(port: int = 8779) -> subprocess.Popen:
     )
     while True:
         try:
-            requests.get(f"http://localhost:{port}/1024")  # noqa: S113
+            httpx.get(f"http://localhost:{port}/1024")  # noqa: S113
         except:  # noqa: E722
             time.sleep(0.1)
         else:
@@ -165,7 +165,7 @@ class Aria2Server:
         while retries:
             try:
                 self.client.list_methods()
-            except requests.ConnectionError:
+            except httpx.NetworkError:
                 time.sleep(0.1)
                 retries -= 1
             else:
