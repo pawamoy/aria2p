@@ -31,7 +31,8 @@ dependencies = [
     "platformdirs>=4.2",
     "httpx",
     "tomli>=2.0; python_version < '3.11'",
-    "websocket-client>=0.58",
+    "websockets",
+    "aioshutil",
 ]
 
 [project.optional-dependencies]

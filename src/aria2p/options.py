@@ -13,7 +13,7 @@ from aria2p.utils import bool_or_value, bool_to_str
 
 if TYPE_CHECKING:
     from aria2p.api import API
-    from aria2p.downloads import Download
+    from aria2p.downloads import Download, AsyncDownload
 
 OptionType = Union[str, int, bool, float, None]
 
@@ -29,7 +29,7 @@ class Options:
     "max-concurrent-downloads" is used like `options.max_concurrent_downloads = 5`.
     """
 
-    def __init__(self, api: API, struct: dict, download: Download | None = None):
+    def __init__(self, api: API, struct: dict, download: Download | AsyncDownload | None = None):
         """Initialize the object.
 
         Parameters:
@@ -73,26 +73,6 @@ class Options:
         if class_ is not None and value is not None:
             return class_(value)
         return value
-
-    def set(self, key: str, value: str | float | bool | list[str]) -> bool:
-        """Set the value of an option given its name.
-
-        Parameters:
-            key: The name of the option (example: "input-file").
-            value: The value to set.
-
-        Returns:
-            True if the value was successfully set, False otherwise.
-        """
-        if not isinstance(value, str):
-            value = str(value)
-        if self.download:
-            success = self.api.set_options({key: value}, [self.download])[0]
-        else:
-            success = self.api.set_global_options({key: value})
-        if success:
-            self._struct[key] = value
-        return success
 
     # Basic Options
     @property
@@ -3687,3 +3667,49 @@ class Options:
     @truncate_console_readout.setter
     def truncate_console_readout(self, value: bool) -> None:
         self.set("truncate-console-readout", bool_to_str(value))
+
+
+class SyncOptions(Options):
+
+    def set(self, key: str, value: str | float | bool | list[str]) -> bool:
+        """Set the value of an option given its name.
+
+        Parameters:
+            key: The name of the option (example: "input-file").
+            value: The value to set.
+
+        Returns:
+            True if the value was successfully set, False otherwise.
+        """
+        if not isinstance(value, str):
+            value = str(value)
+        if self.download:
+            success = self.api.set_options({key: value}, [self.download])[0]
+        else:
+            success = self.api.set_global_options({key: value})
+        if success:
+            self._struct[key] = value
+        return success
+
+
+class AsyncOptions(Options):
+
+    async def set(self, key: str, value: str | float | bool | list[str]) -> bool:
+        """Set the value of an option given its name.
+
+        Parameters:
+            key: The name of the option (example: "input-file").
+            value: The value to set.
+
+        Returns:
+            True if the value was successfully set, False otherwise.
+        """
+        if not isinstance(value, str):
+            value = str(value)
+        if self.download:
+            success = await self.api.set_options({key: value}, [self.download])[0]
+        else:
+            success = await self.api.set_global_options({key: value})
+        if success:
+            self._struct[key] = value
+        return success

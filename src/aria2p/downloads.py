@@ -10,6 +10,7 @@ from contextlib import suppress
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING
+from asyncio import gather
 
 from loguru import logger
 
@@ -18,7 +19,7 @@ from aria2p.utils import bool_or_value, human_readable_bytes, human_readable_tim
 
 if TYPE_CHECKING:
     from aria2p.api import API
-    from aria2p.options import Options
+    from aria2p.options import SyncOptions, AsyncOptions
 
 
 class BitTorrent:
@@ -106,9 +107,7 @@ class File:
         return str(self.path)
 
     def __eq__(self, other: object) -> bool:
-        if isinstance(other, File):
-            return self.path == other.path
-        return NotImplemented
+        return self.path == other.path if isinstance(other, File) else NotImplemented
 
     @property
     def index(self) -> int:
@@ -146,7 +145,7 @@ class File:
         """
         return int(self._struct["length"])
 
-    def length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+    def length_string(self, human_readable: bool = True) -> str:    # noqa: FBT001,FBT002
         """Return the length as string.
 
         Parameters:
@@ -157,7 +156,7 @@ class File:
         """
         if human_readable:
             return human_readable_bytes(self.length, delim=" ")
-        return str(self.length) + " B"
+        return f"{self.length} B"
 
     @property
     def completed_length(self) -> int:
@@ -172,7 +171,7 @@ class File:
         """
         return int(self._struct["completedLength"])
 
-    def completed_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+    def completed_length_string(self, human_readable: bool = True) -> str:    # noqa: FBT001,FBT002
         """Return the completed length as string.
 
         Parameters:
@@ -183,7 +182,7 @@ class File:
         """
         if human_readable:
             return human_readable_bytes(self.completed_length, delim=" ")
-        return str(self.completed_length) + " B"
+        return f"{self.completed_length} B"
 
     @property
     def selected(self) -> bool:
@@ -211,56 +210,7 @@ class File:
         return self._struct.get("uris", [])
 
 
-class Download:
-    """Class containing all information about a download, as retrieved with the client."""
-
-    def __init__(self, api: API, struct: dict) -> None:
-        """Initialize the object.
-
-        Parameters:
-            api: The reference to an [`API`][aria2p.api.API] instance.
-            struct: A dictionary Python object returned by the JSON-RPC client.
-        """
-        self.api = api
-        self._struct = struct or {}
-        self._files: list[File] = []
-        self._root_files_paths: list[Path] = []
-        self._bittorrent: BitTorrent | None = None
-        self._name = ""
-        self._options: Options | None = None
-        self._followed_by: list[Download] | None = None
-        self._following: Download | None = None
-        self._belongs_to: Download | None = None
-
-    def __str__(self):
-        return self.name
-
-    def __eq__(self, other: object) -> bool:
-        if isinstance(other, Download):
-            return self.gid == other.gid
-        return NotImplemented
-
-    def update(self) -> None:
-        """Update the internal values of the download with more recent values."""
-        self._struct = self.api.client.tell_status(self.gid)
-
-        self._files = []
-        self._name = ""
-        self._bittorrent = None
-        self._followed_by = None
-        self._following = None
-        self._belongs_to = None
-        self._options = None
-
-    @property
-    def live(self) -> Download:
-        """Return the same object with updated data.
-
-        Returns:
-            Itself.
-        """
-        self.update()
-        return self
+class Shared:
 
     @property
     def name(self) -> str:
@@ -295,7 +245,7 @@ class Download:
         Returns:
             The control file path.
         """
-        return self.dir / (self.name + ".aria2")
+        return self.dir / f"{self.name}.aria2"
 
     @property
     def root_files_paths(self) -> list[Path]:
@@ -327,7 +277,9 @@ class Download:
                 try:
                     relative_path = file.path.relative_to(self.dir)
                 except ValueError as error:
-                    logger.warning(f"Can't determine file path '{file.path}' relative to '{self.dir}'")
+                    logger.warning(
+                        f"Can't determine file path '{file.path}' relative to '{self.dir}'"
+                    )
                     logger.opt(exception=True).trace(error)
                 else:
                     path = self.dir / relative_path.parts[0]
@@ -335,25 +287,6 @@ class Download:
                         paths.append(path)
             self._root_files_paths = paths
         return self._root_files_paths
-
-    @property
-    def options(self) -> Options:
-        """Options specific to this download.
-
-        Returns:
-            The download options.
-        """
-        if not self._options:
-            self.update_options()
-        return self._options  # type: ignore
-
-    @options.setter
-    def options(self, value: Options) -> None:
-        self._options = value
-
-    def update_options(self) -> None:
-        """Re-fetch the options from the remote."""
-        self._options = self.api.get_options(downloads=[self])[0]
 
     @property
     def gid(self) -> str:
@@ -454,7 +387,9 @@ class Download:
         """
         return int(self._struct["totalLength"])
 
-    def total_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+    def total_length_string(
+        self, human_readable: bool = True
+    ) -> str:    # noqa: FBT001,FBT002
         """Return the total length as string.
 
         Parameters:
@@ -465,7 +400,7 @@ class Download:
         """
         if human_readable:
             return human_readable_bytes(self.total_length, delim=" ")
-        return str(self.total_length) + " B"
+        return f"{self.total_length} B"
 
     @property
     def completed_length(self) -> int:
@@ -476,7 +411,9 @@ class Download:
         """
         return int(self._struct["completedLength"])
 
-    def completed_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+    def completed_length_string(
+        self, human_readable: bool = True
+    ) -> str:    # noqa: FBT001,FBT002
         """Return the completed length as string.
 
         Parameters:
@@ -487,7 +424,7 @@ class Download:
         """
         if human_readable:
             return human_readable_bytes(self.completed_length, delim=" ")
-        return str(self.completed_length) + " B"
+        return f"{self.completed_length} B"
 
     @property
     def upload_length(self) -> int:
@@ -498,7 +435,9 @@ class Download:
         """
         return int(self._struct["uploadLength"])
 
-    def upload_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+    def upload_length_string(
+        self, human_readable: bool = True
+    ) -> str:    # noqa: FBT001,FBT002
         """Return the upload length as string.
 
         Parameters:
@@ -509,7 +448,7 @@ class Download:
         """
         if human_readable:
             return human_readable_bytes(self.upload_length, delim=" ")
-        return str(self.upload_length) + " B"
+        return f"{self.upload_length} B"
 
     @property
     def bitfield(self) -> str | None:
@@ -533,7 +472,9 @@ class Download:
         """
         return int(self._struct["downloadSpeed"])
 
-    def download_speed_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+    def download_speed_string(
+        self, human_readable: bool = True
+    ) -> str:    # noqa: FBT001,FBT002
         """Return the download speed as string.
 
         Parameters:
@@ -544,7 +485,7 @@ class Download:
         """
         if human_readable:
             return human_readable_bytes(self.download_speed, delim=" ", postfix="/s")
-        return str(self.download_speed) + " B/s"
+        return f"{self.download_speed} B/s"
 
     @property
     def upload_speed(self) -> int:
@@ -555,7 +496,9 @@ class Download:
         """
         return int(self._struct["uploadSpeed"])
 
-    def upload_speed_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+    def upload_speed_string(
+        self, human_readable: bool = True
+    ) -> str:    # noqa: FBT001,FBT002
         """Return the upload speed as string.
 
         Parameters:
@@ -566,7 +509,7 @@ class Download:
         """
         if human_readable:
             return human_readable_bytes(self.upload_speed, delim=" ", postfix="/s")
-        return str(self.upload_speed) + " B/s"
+        return f"{self.upload_speed} B/s"
 
     @property
     def info_hash(self) -> str | None:
@@ -610,7 +553,9 @@ class Download:
         """
         return int(self._struct["pieceLength"])
 
-    def piece_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+    def piece_length_string(
+        self, human_readable: bool = True
+    ) -> str:    # noqa: FBT001,FBT002
         """Return the piece length as string.
 
         Parameters:
@@ -621,7 +566,7 @@ class Download:
         """
         if human_readable:
             return human_readable_bytes(self.piece_length, delim=" ")
-        return str(self.piece_length) + " B"
+        return f"{self.piece_length} B"
 
     @property
     def num_pieces(self) -> int:
@@ -676,26 +621,6 @@ class Download:
         return self._struct.get("followedBy", [])
 
     @property
-    def followed_by(self) -> list[Download]:
-        """List of downloads generated as the result of this download.
-
-        Returns:
-            A list of instances of [`Download`][aria2p.downloads.Download].
-        """
-        if self._followed_by is None:
-            result = []
-            for gid in self.followed_by_ids:
-                try:
-                    result.append(self.api.get_download(gid))
-                except ClientException as error:
-                    logger.warning(
-                        f"Can't find download with GID {gid}, try to update download {self.gid} ({id(self)}",
-                    )
-                    logger.opt(exception=True).trace(error)
-            self._followed_by = result
-        return self._followed_by
-
-    @property
     def following_id(self) -> str | None:
         """Return the reverse link for followedBy.
 
@@ -705,26 +630,6 @@ class Download:
             The parent download ID.
         """
         return self._struct.get("following")
-
-    @property
-    def following(self) -> Download | None:
-        """Return the download this download is following.
-
-        Returns:
-            An instance of [`Download`][aria2p.downloads.Download].
-        """
-        if not self._following:
-            following_id = self.following_id
-            if following_id:
-                try:
-                    self._following = self.api.get_download(following_id)
-                except ClientException as error:
-                    logger.warning(
-                        f"Can't find download with GID {following_id}, try to update download {self.gid} ({id(self)}",
-                    )
-                    logger.opt(exception=True).trace(error)
-                    self._following = None
-        return self._following
 
     @property
     def belongs_to_id(self) -> str | None:
@@ -738,26 +643,6 @@ class Download:
             The GID of the parent download.
         """
         return self._struct.get("belongsTo")
-
-    @property
-    def belongs_to(self) -> Download | None:
-        """Parent download.
-
-        Returns:
-            An instance of [`Download`][aria2p.downloads.Download].
-        """
-        if not self._belongs_to:
-            belongs_to_id = self.belongs_to_id
-            if belongs_to_id:
-                try:
-                    self._belongs_to = self.api.get_download(belongs_to_id)
-                except ClientException as error:
-                    logger.warning(
-                        f"Can't find download with GID {belongs_to_id}, try to update download {self.gid} ({id(self)})",
-                    )
-                    logger.opt(exception=True).trace(error)
-                    self._belongs_to = None
-        return self._belongs_to
 
     @property
     def dir(self) -> Path:
@@ -805,7 +690,9 @@ class Download:
         """
         return int(self._struct.get("verifiedLength", 0))
 
-    def verified_length_string(self, human_readable: bool = True) -> str:  # noqa: FBT001,FBT002
+    def verified_length_string(
+        self, human_readable: bool = True
+    ) -> str:    # noqa: FBT001,FBT002
         """Return the verified length as string.
 
         Parameters:
@@ -816,7 +703,7 @@ class Download:
         """
         if human_readable:
             return human_readable_bytes(self.verified_length, delim=" ")
-        return str(self.verified_length) + " B"
+        return f"{self.verified_length} B"
 
     @property
     def verify_integrity_pending(self) -> bool | None:
@@ -860,7 +747,11 @@ class Download:
             ETA or `timedelta.max` if unknown.
         """
         try:
-            return timedelta(seconds=int((self.total_length - self.completed_length) / self.download_speed))
+            return timedelta(
+                seconds=int(
+                    (self.total_length - self.completed_length) / self.download_speed
+                )
+            )
         except ZeroDivisionError:
             return timedelta.max
 
@@ -879,6 +770,136 @@ class Download:
             return "-"
 
         return human_readable_timedelta(eta, precision=precision)
+
+
+class Download(Shared):
+    """Class containing all information about a download, as retrieved with the client."""
+
+    def __init__(self, api: API, struct: dict) -> None:
+        """Initialize the object.
+
+        Parameters:
+            api: The reference to an [`API`][aria2p.api.API] instance.
+            struct: A dictionary Python object returned by the JSON-RPC client.
+        """
+        self.api = api
+        self._struct = struct or {}
+        self._files: list[File] = []
+        self._root_files_paths: list[Path] = []
+        self._bittorrent: BitTorrent | None = None
+        self._name = ""
+        self._options: SyncOptions | None = None
+        self._followed_by: list[Download] | None = None
+        self._following: Download | None = None
+        self._belongs_to: Download | None = None
+        super().__init__()
+
+    def __str__(self):
+        return self.name
+
+    def __eq__(self, other: object) -> bool:
+        return self.gid == other.gid if isinstance(other, Download) else NotImplemented
+
+    def update(self) -> None:
+        """Update the internal values of the download with more recent values."""
+        self._struct = self.api.client.tell_status(self.gid)
+
+        self._files = []
+        self._name = ""
+        self._bittorrent = None
+        self._followed_by = None
+        self._following = None
+        self._belongs_to = None
+        self._options = None
+
+    @property
+    def live(self) -> Download:
+        """Return the same object with updated data.
+
+        Returns:
+            Itself.
+        """
+        self.update()
+        return self
+
+    @property
+    def options(self) -> SyncOptions:
+        """Options specific to this download.
+
+        Returns:
+            The download options.
+        """
+        if not self._options:
+            self.update_options()
+        return self._options  # type: ignore
+
+    @options.setter
+    def options(self, value: SyncOptions) -> None:
+        self._options = value
+
+    def update_options(self) -> None:
+        """Re-fetch the options from the remote."""
+        self._options = self.api.get_options(downloads=[self])[0]
+
+    @property
+    def followed_by(self) -> list[Download]:
+        """List of downloads generated as the result of this download.
+
+        Returns:
+            A list of instances of [`Download`][aria2p.downloads.Download].
+        """
+        if self._followed_by is None:
+            result = []
+            for gid in self.followed_by_ids:
+                try:
+                    result.append(self.api.get_download(gid))
+                except ClientException as error:
+                    logger.warning(
+                        f"Can't find download with GID {gid}, try to update download {self.gid} ({id(self)}",
+                    )
+                    logger.opt(exception=True).trace(error)
+            self._followed_by = result
+        return self._followed_by
+
+    @property
+    def following(self) -> Download | None:
+        """Return the download this download is following.
+
+        Returns:
+            An instance of [`Download`][aria2p.downloads.Download].
+        """
+        if not self._following:
+            following_id = self.following_id
+            if following_id:
+                try:
+                    self._following = self.api.get_download(following_id)
+                except ClientException as error:
+                    logger.warning(
+                        f"Can't find download with GID {following_id}, try to update download {self.gid} ({id(self)}",
+                    )
+                    logger.opt(exception=True).trace(error)
+                    self._following = None
+        return self._following
+
+    @property
+    def belongs_to(self) -> Download | None:
+        """Parent download.
+
+        Returns:
+            An instance of [`Download`][aria2p.downloads.Download].
+        """
+        if not self._belongs_to:
+            belongs_to_id = self.belongs_to_id
+            if belongs_to_id:
+                try:
+                    self._belongs_to = self.api.get_download(belongs_to_id)
+                except ClientException as error:
+                    logger.warning(
+                        f"Can't find download with GID {belongs_to_id}, try to update download {self.gid} ({id(self)})",
+                    )
+                    logger.opt(exception=True).trace(error)
+                    self._belongs_to = None
+        return self._belongs_to
 
     def move(self, pos: int) -> int:
         """Move the download in the queue, relatively.
@@ -1020,3 +1041,279 @@ class Download:
             Success or failure of the operation.
         """
         return self.api.copy_files([self], to_directory, force)[0]
+
+
+class AsyncDownload(Shared):
+    """Class containing all information about a download, as retrieved with the client."""
+
+    def __init__(self, api: API, struct: dict) -> None:
+        """Initialize the object.
+
+        Parameters:
+            api: The reference to an [`API`][aria2p.api.API] instance.
+            struct: A dictionary Python object returned by the JSON-RPC client.
+        """
+        self.api = api
+        self._struct = struct or {}
+        self._files: list[File] = []
+        self._root_files_paths: list[Path] = []
+        self._bittorrent: BitTorrent | None = None
+        self._name = ""
+        self._options: AsyncOptions | None = None
+        self._followed_by: list[AsyncDownload] | None = None
+        self._following: AsyncDownload | None = None
+        self._belongs_to: AsyncDownload | None = None
+        super().__init__()
+
+    def __str__(self):
+        return self.name
+
+    def __eq__(self, other: object) -> bool:
+        return (
+            self.gid == other.gid
+            if isinstance(other, AsyncDownload)
+            else NotImplemented
+        )
+
+    async def update(self) -> None:
+        """Update the internal values of the download with more recent values."""
+        self._struct = await self.api.client.tell_status(self.gid)
+
+        self._files = []
+        self._name = ""
+        self._bittorrent = None
+        self._followed_by = None
+        self._following = None
+        self._belongs_to = None
+        self._options = None
+
+    async def live(self) -> AsyncDownload:
+        """Return the same object with updated data.
+
+        Returns:
+            Itself.
+        """
+        await self.update()
+        return self
+
+    async def get_options(self) -> AsyncOptions:
+        """Options specific to this download.
+
+        Returns:
+            The download options.
+        """
+        if not self._options:
+            await self.update_options()
+        return self._options  # type: ignore
+
+    def set_options(self, value: AsyncOptions) -> None:
+        self._options = value
+
+    async def update_options(self) -> None:
+        """Re-fetch the options from the remote."""
+        self._options = await self.api.get_options(downloads=[self])[0]
+
+    async def followed_by(self) -> list[AsyncDownload]:
+        """List of downloads generated as the result of this download.
+
+        Returns:
+            A list of instances of [`AsyncDownload`][aria2p.downloads.AsyncDownload].
+        """
+        if self._followed_by is None:
+            tasks = []
+            for gid in self.followed_by_ids:
+                tasks.append(self.api.get_download(gid))
+            try:
+                results = await gather(*tasks)
+            except ClientException as error:
+                logger.warning(
+                    f"Can't find download with GID {gid}, try to update download {self.gid} ({id(self)}",
+                )
+                logger.opt(exception=True).trace(error)
+            self._followed_by = [result for result in results if result is not None]
+        return self._followed_by
+
+    async def following(self) -> AsyncDownload | None:
+        """Return the download this download is following.
+
+        Returns:
+            An instance of [`AsyncDownload`][aria2p.downloads.AsyncDownload].
+        """
+        if not self._following:
+            following_id = self.following_id
+            if following_id:
+                try:
+                    self._following = await self.api.get_download(following_id)
+                except ClientException as error:
+                    logger.warning(
+                        f"Can't find download with GID {following_id}, try to update download {self.gid} ({id(self)}",
+                    )
+                    logger.opt(exception=True).trace(error)
+                    self._following = None
+        return self._following
+
+    async def belongs_to(self) -> Download | None:
+        """Parent download.
+
+        Returns:
+            An instance of [`Download`][aria2p.downloads.Download].
+        """
+        if not self._belongs_to:
+            belongs_to_id = self.belongs_to_id
+            if belongs_to_id:
+                try:
+                    self._belongs_to = await self.api.get_download(belongs_to_id)
+                except ClientException as error:
+                    logger.warning(
+                        f"Can't find download with GID {belongs_to_id}, try to update download {self.gid} ({id(self)})",
+                    )
+                    logger.opt(exception=True).trace(error)
+                    self._belongs_to = None
+        return self._belongs_to
+
+    async def move(self, pos: int) -> int:
+        """Move the download in the queue, relatively.
+
+        Parameters:
+            pos: Number of times to move.
+
+        Returns:
+            The new position of the download.
+        """
+        return await self.api.move(self, pos)
+
+    async def move_to(self, pos: int) -> int:
+        """Move the download in the queue, absolutely.
+
+        Parameters:
+            pos: The absolute position in the queue to take.
+
+        Returns:
+            The new position of the download.
+        """
+        return await self.api.move_to(self, pos)
+
+    async def move_up(self, pos: int = 1) -> int:
+        """Move the download up in the queue.
+
+        Parameters:
+            pos: Number of times to move up.
+
+        Returns:
+            The new position of the download.
+        """
+        return await self.api.move_up(self, pos)
+
+    async def move_down(self, pos: int = 1) -> int:
+        """Move the download down in the queue.
+
+        Parameters:
+            pos: Number of times to move down.
+
+        Returns:
+            The new position of the download.
+        """
+        return await self.api.move_down(self, pos)
+
+    async def move_to_top(self) -> int:
+        """Move the download to the top of the queue.
+
+        Returns:
+            The new position of the download.
+        """
+        return await self.api.move_to_top(self)
+
+    async def move_to_bottom(self) -> int:
+        """Move the download to the bottom of the queue.
+
+        Returns:
+            The new position of the download.
+        """
+        return await self.api.move_to_bottom(self)
+
+    async def remove(
+        self, force: bool = False, files: bool = False
+    ) -> bool:  # noqa: FBT001,FBT002
+        """Remove the download from the queue (even if active).
+
+        Parameters:
+            force: Whether to force removal.
+            files: Whether to remove files as well.
+
+        Returns:
+            Always True (raises exception otherwise).
+
+        Raises:
+            ClientException: When removal failed.
+        """
+        result = await self.api.remove([self], force=force, files=files)[0]
+        if not result:
+            raise result  # type: ignore  # we know it's a ClientException
+        return True
+
+    async def pause(self, force: bool = False) -> bool:  # noqa: FBT001,FBT002
+        """Pause the download.
+
+        Parameters:
+            force: Whether to force pause (don't contact servers).
+
+        Returns:
+            Always True (raises exception otherwise).
+
+        Raises:
+            ClientException: When pausing failed.
+        """
+        result = await self.api.pause([self], force=force)[0]
+        if not result:
+            raise result  # type: ignore  # we know it's a ClientException
+        return True
+
+    async def resume(self) -> bool:
+        """Resume the download.
+
+        Returns:
+            Always True (raises exception otherwise).
+
+        Raises:
+            ClientException: When resuming failed.
+        """
+        result = await self.api.resume([self])[0]
+        if not result:
+            raise result  # type: ignore  # we know it's a ClientException
+        return True
+
+    async def purge(self) -> bool:
+        """Purge itself from the results.
+
+        Returns:
+            Success or failure of the operation.
+        """
+        return await self.api.client.remove_download_result(self.gid) == "OK"
+
+    async def move_files(
+        self, to_directory: str | Path, force: bool = False
+    ) -> bool:  # noqa: FBT001,FBT002
+        """Move downloaded files to another directory.
+
+        Parameters:
+            to_directory: The target directory to move files to.
+            force: Whether to move files even if download is not complete.
+
+        Returns:
+            Success or failure of the operation.
+        """
+        return await self.api.move_files([self], to_directory, force)[0]
+
+    async def copy_files(
+        self, to_directory: str | Path, force: bool = False
+    ) -> bool:  # noqa: FBT001,FBT002
+        """Copy downloaded files to another directory.
+
+        Parameters:
+            to_directory: The target directory to copy files into.
+            force: Whether to move files even if download is not complete.
+
+        Returns:
+            Success or failure of the operation.
+        """
+        return await self.api.copy_files([self], to_directory, force)[0]

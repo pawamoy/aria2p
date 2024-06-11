@@ -85,7 +85,7 @@ class Stats:
     def num_stopped(self) -> int:
         """Return the number of stopped downloads in the current session.
 
-        This value is capped by the [`--max-download-result`][aria2p.options.Options.max_download_result] option.
+        This value is capped by the [`--max-download-result`][aria2p.options.SyncOptions.max_download_result] option.
 
         Returns:
             The number of stopped downloads in the current session (capped).
@@ -96,7 +96,7 @@ class Stats:
     def num_stopped_total(self) -> int:
         """Return the number of stopped downloads in the current session.
 
-        This value is not capped by the [`--max-download-result`][aria2p.options.Options.max_download_result] option.
+        This value is not capped by the [`--max-download-result`][aria2p.options.SyncOptions.max_download_result] option.
 
         Returns:
             The number of stopped downloads in the current session (not capped).

@@ -8,6 +8,7 @@ from __future__ import annotations
 import signal
 import sys
 import textwrap
+import asyncio
 from importlib import metadata
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -26,9 +27,9 @@ else:
 
 
 class SignalHandler:
-    """A helper class to handle signals."""
+    """A helper class to handle signals asynchronously."""
 
-    def __init__(self, signals: list[str]) -> None:
+    def __init__(self, signals: list[str], loop) -> None:
         """Initialize the object.
 
         Parameters:
@@ -38,7 +39,7 @@ class SignalHandler:
         self.triggered = False
         for sig in signals:
             try:
-                signal.signal(signal.Signals[sig], self.trigger)
+                loop.add_signal_handler(getattr(signal, sig), self.trigger)
             except ValueError as error:
                 logger.error(f"Failed to setup signal handler for {sig}: {error}")
 
@@ -50,16 +51,9 @@ class SignalHandler:
         """
         return self.triggered
 
-    def trigger(self, signum: int, frame: FrameType | None) -> None:  # noqa: ARG002
-        """Mark this instance as 'triggered' (a specified signal was received).
-
-        Parameters:
-            signum: The signal code.
-            frame: The signal frame (unused).
-        """
-        logger.debug(
-            f"Signal handler: caught signal {signal.Signals(signum).name} ({signum})",
-        )
+    def trigger(self) -> None:
+        """Mark this instance as 'triggered' (a specified signal was received)."""
+        logger.debug("Signal handler: caught signal")
         self.triggered = True
 
 

@@ -10,10 +10,10 @@ from typing import TextIO
 
 from loguru import logger
 
-from aria2p.api import API
-from aria2p.client import Client, ClientException
-from aria2p.downloads import BitTorrent, Download, File
-from aria2p.options import Options
+from aria2p.api import API, AsyncAPI
+from aria2p.client import Client, AsyncClient, ClientException
+from aria2p.downloads import BitTorrent, Download, AsyncDownload, File
+from aria2p.options import SyncOptions, AsyncOptions
 from aria2p.stats import Stats
 
 logger.disable("aria2p")
@@ -36,12 +36,16 @@ def enable_logger(sink: str | TextIO = sys.stderr, level: str = "WARNING") -> No
 
 __all__ = [
     "API",
+    "AsyncAPI",
     "ClientException",
     "Client",
+    "AsyncClient",
     "Download",
+    "AsyncDownload",
     "BitTorrent",
     "File",
-    "Options",
+    "SyncOptions",
+    "AsyncOptions",
     "Stats",
     "enable_logger",
 ]
