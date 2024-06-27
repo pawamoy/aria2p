@@ -1374,17 +1374,15 @@ class AsyncAPI:
         pause_func = self.client.force_pause if force else self.client.pause
 
         result: list[OperationResult] = []
-        tasks = []
         for download in downloads:
-            tasks.append(pause_func(download.gid))
-        try:
-            await asyncio.gather(*tasks)
-        except ClientException as error:
-            logger.debug(f"Failed to pause download {download.gid}")
-            logger.opt(exception=True).trace(error)
-            result.append(error)
-        else:
-            result.append(True)
+            try:
+                await pause_func(download.gid)
+            except ClientException as error:
+                logger.debug(f"Failed to pause download {download.gid}")
+                logger.opt(exception=True).trace(error)
+                result.append(error)
+            else:
+                result.append(True)
 
         return result
 
@@ -1411,17 +1409,15 @@ class AsyncAPI:
         """
         # Note: batch/multicall candidate
         result: list[OperationResult] = []
-        tasks = []
         for download in downloads:
-            tasks.append(self.client.unpause(download.gid))
-        try:
-            await asyncio.gather(*tasks)
-        except ClientException as error:
-            logger.debug(f"Failed to resume download {download.gid}")
-            logger.opt(exception=True).trace(error)
-            result.append(error)
-        else:
-            result.append(True)
+            try:
+                await self.client.unpause(download.gid)
+            except ClientException as error:
+                logger.debug(f"Failed to resume download {download.gid}")
+                logger.opt(exception=True).trace(error)
+                result.append(error)
+            else:
+                result.append(True)
 
         return result
 

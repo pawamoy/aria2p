@@ -10,7 +10,6 @@ from contextlib import suppress
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING
-from asyncio import gather
 
 from loguru import logger
 
@@ -1120,17 +1119,17 @@ class AsyncDownload(Shared):
             A list of instances of [`AsyncDownload`][aria2p.downloads.AsyncDownload].
         """
         if self._followed_by is None:
-            tasks = []
+            result = []
             for gid in self.followed_by_ids:
-                tasks.append(self.api.get_download(gid))
-            try:
-                results = await gather(*tasks)
-            except ClientException as error:
-                logger.warning(
-                    f"Can't find download with GID {gid}, try to update download {self.gid} ({id(self)}",
-                )
-                logger.opt(exception=True).trace(error)
-            self._followed_by = [result for result in results if result is not None]
+                try:
+                    res = await self.api.get_download(gid)
+                    result.append(res)
+                except ClientException as error:
+                    logger.warning(
+                        f"Can't find download with GID {gid}, try to update download {self.gid} ({id(self)}",
+                    )
+                    logger.opt(exception=True).trace(error)
+            self._followed_by = result
         return self._followed_by
 
     async def following(self) -> AsyncDownload | None:
