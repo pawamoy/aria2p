@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-from aria2p import API, Download, Options
-
+from aria2p import API, Download, SyncOptions
 
 # Test general methods
 class TestGeneralMethods:
@@ -11,33 +10,33 @@ class TestGeneralMethods:
         self.api = API()
 
     def test_init_method(self) -> None:
-        assert Options(self.api, {})
+        assert SyncOptions(self.api, {})
 
     def test_are_global_method(self) -> None:
-        options = Options(self.api, {})
+        options = SyncOptions(self.api, {})
         assert options.are_global
 
     def test_are_not_global(self) -> None:
-        options = Options(self.api, {}, Download(self.api, {}))
+        options = SyncOptions(self.api, {}, Download(self.api, {}))
         assert not options.are_global
 
     def test_get_struct_method(self) -> None:
-        options = Options(self.api, {"0": 1})
+        options = SyncOptions(self.api, {"0": 1})
         assert options.get_struct() == {"0": 1}
 
     def test_get_method(self) -> None:
-        options = Options(self.api, {"0": 1})
+        options = SyncOptions(self.api, {"0": 1})
         assert options.get("0") == 1
 
     def test_set_method(self) -> None:
         self.api.set_global_options = lambda x: True  # type: ignore[assignment]
-        options = Options(self.api, {})
+        options = SyncOptions(self.api, {})
         assert options.set("0", 0)
         assert options.get("0") == "0"
 
     def test_set_method_failure(self) -> None:
         self.api.set_global_options = lambda x: False  # type: ignore[assignment]
-        options = Options(self.api, {"0": "0"})
+        options = SyncOptions(self.api, {"0": "0"})
         assert not options.set("0", "1")
         assert not options.set("1", "1")
         assert options.get("0") == "0"
@@ -45,7 +44,7 @@ class TestGeneralMethods:
 
     def test_set_method_for_download(self) -> None:
         self.api.set_options = lambda x, y: [True]  # type: ignore[assignment]
-        options = Options(self.api, {}, Download(self.api, {}))
+        options = SyncOptions(self.api, {}, Download(self.api, {}))
         assert options.set("0", 0)
         assert options.get("0") == "0"
 
@@ -55,7 +54,7 @@ class TestOptionsProperties:
     def setup_method(self) -> None:
         self.api = API()
         self.api.set_global_options = lambda x: True  # type: ignore[assignment]
-        self.options = Options(self.api, {})
+        self.options = SyncOptions(self.api, {})
 
     def test_all_proxy_properties(self) -> None:
         assert self.options.all_proxy is None

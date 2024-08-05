@@ -29,9 +29,10 @@ classifiers = [
 dependencies = [
     "loguru>=0.5",
     "platformdirs>=4.2",
-    "requests>=2.19",
+    "httpx",
     "tomli>=2.0; python_version < '3.11'",
-    "websocket-client>=0.58",
+    "websockets",
+    "aioshutil",
 ]
 
 [project.optional-dependencies]

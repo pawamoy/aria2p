@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from aria2p import API, BitTorrent, ClientException, Download, File, Options
+from aria2p import API, BitTorrent, ClientException, Download, File, SyncOptions
 from tests.conftest import Aria2Server
 
 
@@ -284,7 +284,7 @@ class TestDownloadClass:
         assert witness == [0]
 
     def test_set_options(self) -> None:
-        options = Options(self.download.api, {})
+        options = SyncOptions(self.download.api, {})
         self.download.options = options
         assert self.download.options is options
 
