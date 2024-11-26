@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
-from typing import AsyncIterator
+from typing import TYPE_CHECKING
 
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
+
+if TYPE_CHECKING:
+    from collections.abc import AsyncIterator
 
 
 def translate_size(size: str) -> int:

@@ -10,7 +10,7 @@ import sys
 import time
 from contextlib import suppress
 from pathlib import Path
-from typing import Iterator
+from typing import TYPE_CHECKING
 
 import psutil
 import pytest
@@ -19,9 +19,12 @@ import requests
 from aria2p import API, Client, enable_logger
 from tests import CONFIGS_DIR, SESSIONS_DIR
 
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
 
 @pytest.fixture(autouse=True)
-def tests_logs(request: pytest.FixtureRequest) -> None:  # noqa: PT004
+def tests_logs(request: pytest.FixtureRequest) -> None:
     # put logs in tests/logs
     log_path = Path("tests") / "logs"
 
@@ -45,8 +48,8 @@ def tests_logs(request: pytest.FixtureRequest) -> None:  # noqa: PT004
 
 
 def spawn_and_wait_server(port: int = 8779) -> subprocess.Popen:
-    process = subprocess.Popen(
-        [  # noqa: S603
+    process = subprocess.Popen(  # noqa: S603
+        [
             sys.executable,
             "-m",
             "uvicorn",
@@ -287,14 +290,14 @@ def release_port(port_number: int) -> None:
     release_lock()
 
 
-@pytest.fixture()
+@pytest.fixture
 def port() -> Iterator[int]:
     port_number = reserve_port()
     yield port_number
     release_port(port_number)
 
 
-@pytest.fixture()
+@pytest.fixture
 def server(tmp_path: Path, port: int) -> Iterator[Aria2Server]:
     with Aria2Server(tmp_path, port) as server:
         yield server

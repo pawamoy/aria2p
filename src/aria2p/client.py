@@ -7,7 +7,7 @@ process through the JSON-RPC protocol.
 from __future__ import annotations
 
 import json
-from typing import Any, Callable, ClassVar, List, Tuple, Union
+from typing import Any, Callable, ClassVar, Union
 
 import requests
 import websocket
@@ -50,8 +50,8 @@ NOTIFICATION_TYPES = [
     NOTIFICATION_BT_COMPLETE,
 ]
 
-CallsType = List[Tuple[str, List[str], Union[str, int]]]
-Multicalls2Type = List[Tuple[str, List[str]]]
+CallsType = list[tuple[str, list[str], Union[str, int]]]
+Multicalls2Type = list[tuple[str, list[str]]]
 CallReturnType = Union[dict, list, str, int]
 
 

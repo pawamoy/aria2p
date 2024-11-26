@@ -20,7 +20,7 @@ import sys
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable, ClassVar, Sequence, TypedDict
+from typing import TYPE_CHECKING, Callable, ClassVar, TypedDict
 
 import pyperclip
 import requests
@@ -32,6 +32,8 @@ from aria2p.api import API
 from aria2p.utils import get_version, load_configuration
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from aria2p.downloads import Download
 
 
@@ -751,8 +753,7 @@ class Interface:
             if self.focused > 0:
                 self.focused -= len(self.rows) // 5
 
-                if self.focused < 0:
-                    self.focused = 0
+                self.focused = max(self.focused, 0)
                 logger.debug(f"Move focus up (step): {self.focused}")
 
                 if self.focused < self.row_offset:
@@ -768,8 +769,7 @@ class Interface:
             if self.focused < len(self.rows) - 1:
                 self.focused += len(self.rows) // 5
 
-                if self.focused > len(self.rows) - 1:
-                    self.focused = len(self.rows) - 1
+                self.focused = min(self.focused, len(self.rows) - 1)
                 logger.debug(f"Move focus down (step): {self.focused}")
 
                 if self.focused - self.row_offset >= (self.height - 1):

@@ -11,7 +11,7 @@ import shutil
 import threading
 from base64 import b64encode
 from pathlib import Path
-from typing import Callable, Dict, Iterator, List, TextIO, Tuple, Union
+from typing import TYPE_CHECKING, Callable, TextIO, Union
 
 from loguru import logger
 
@@ -20,9 +20,13 @@ from aria2p.downloads import Download
 from aria2p.options import Options
 from aria2p.stats import Stats
 
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+
 OptionsType = Union[Options, dict]
 OperationResult = Union[bool, ClientException]
-InputFileContentsType = List[Tuple[List[str], Dict[str, str]]]
+InputFileContentsType = list[tuple[list[str], dict[str, str]]]
 
 
 class API:
