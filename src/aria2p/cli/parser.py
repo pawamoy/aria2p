@@ -73,7 +73,7 @@ def parse_options_string(options_string: str | None = None) -> dict:
         try:
             opt, val = download_option.split("=", 1)
         except ValueError:
-            raise argparse.ArgumentTypeError(  # noqa: B904,TRY200
+            raise argparse.ArgumentTypeError(  # noqa: B904
                 "Options strings must follow this format:\nopt-name=opt-value;opt-name2=opt-value2",
             )
         options[opt.strip()] = val.strip()

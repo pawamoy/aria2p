@@ -36,10 +36,10 @@ def enable_logger(sink: str | TextIO = sys.stderr, level: str = "WARNING") -> No
 
 __all__ = [
     "API",
-    "ClientException",
-    "Client",
-    "Download",
     "BitTorrent",
+    "Client",
+    "ClientException",
+    "Download",
     "File",
     "Options",
     "Stats",
