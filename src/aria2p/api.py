@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Callable, TextIO, Union
 
 from loguru import logger
+from requests.exceptions import ConnectionError  # noqa: A004
 
 from aria2p.client import Client, ClientException
 from aria2p.downloads import Download
@@ -152,7 +153,11 @@ class API:
             torrent_contents = stream.read()
         encoded_contents = b64encode(torrent_contents).decode("utf8")
 
-        gid = self.client.add_torrent(encoded_contents, uris, client_options, position)
+        try:
+            gid = self.client.add_torrent(encoded_contents, uris, client_options, position)
+        except ConnectionError:
+            logger.error("Torrent too big? Try increasing max size with aria2c's --rpc-max-request-size option")
+            raise
 
         return self.get_download(gid)
 
