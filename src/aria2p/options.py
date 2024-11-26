@@ -214,7 +214,7 @@ class Options:
 
         To override a previously defined proxy, use "". You also can override this setting and specify a proxy server
         for a particular protocol using --http-proxy, --https-proxy and --ftp-proxy options. This affects all
-        downloads. The format of PROXY is [http://][ USER:PASSWORD@]HOST[:PORT]. See also ENVIRONMENT section.
+        downloads. The format of PROXY is `[http://][USER:PASSWORD@]HOST[:PORT]`. See also ENVIRONMENT section.
 
         Note:
             If user and password are embedded in proxy URI and they are also specified by --{http,https,ftp,
