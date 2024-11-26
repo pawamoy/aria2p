@@ -11,15 +11,18 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    - name: Fetch all tags
-      run: git fetch --depth=1 --tags
+      with:
+        fetch-depth: 0
+        fetch-tags: true
     - name: Setup Python
-      uses: actions/setup-python@v4
-    - name: Install git-changelog
-      run: pip install git-changelog
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v3
     - name: Prepare release notes
-      run: git-changelog --release-notes > release-notes.md
+      run: uv tool run git-changelog --release-notes > release-notes.md
     - name: Create release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         body_path: release-notes.md

@@ -25,17 +25,20 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        fetch-tags: true
 
-    - name: Fetch all tags
-      run: git fetch --depth=1 --tags
-
-    - name: Set up Python
+    - name: Setup Python
       uses: actions/setup-python@v5
       with:
-        python-version: "3.11"
+        python-version: "3.12"
 
-    - name: Install uv
-      run: pip install uv
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        enable-cache: true
+        cache-dependency-glob: pyproject.toml
 
     - name: Install dependencies
       run: make setup
@@ -61,12 +64,12 @@ jobs:
         - macos-latest
         - windows-latest
         python-version:
-        - "3.8"
         - "3.9"
         - "3.10"
         - "3.11"
         - "3.12"
         - "3.13"
+        - "3.14"
         resolution:
         - highest
         - lowest-direct
@@ -76,7 +79,7 @@ jobs:
         - os: windows-latest
           resolution: lowest-direct
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.python-version == '3.13' || matrix.os == 'windows-latest' }}
+    continue-on-error: ${{ matrix.python-version == '3.14' || matrix.os == 'windows-latest' }}
 
     steps:
     - name: Install aria2 on Ubuntu
@@ -95,15 +98,22 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        fetch-tags: true
 
-    - name: Set up Python
+    - name: Setup Python
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
         allow-prereleases: true
 
-    - name: Install uv
-      run: pip install uv
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        enable-cache: true
+        cache-dependency-glob: pyproject.toml
+        cache-suffix: py${{ matrix.python-version }}
 
     - name: Install dependencies
       env:

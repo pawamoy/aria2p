@@ -7,7 +7,6 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
 [![ci](https://github.com/pawamoy/aria2p/workflows/ci/badge.svg)](https://github.com/pawamoy/aria2p/actions?query=workflow%3Aci)
 [![documentation](https://img.shields.io/badge/docs-mkdocs-708FCC.svg?style=flat)](https://pawamoy.github.io/aria2p/)
 [![pypi version](https://img.shields.io/pypi/v/aria2p.svg)](https://pypi.org/project/aria2p/)
-[![gitpod](https://img.shields.io/badge/gitpod-workspace-708FCC.svg?style=flat)](https://gitpod.io/#https://github.com/pawamoy/aria2p)
 [![gitter](https://badges.gitter.im/join%20chat.svg)](https://app.gitter.im/#/room/#aria2p:gitter.im)
 
 Command-line tool and Python library to interact with an [`aria2c`][1] daemon process through JSON-RPC.
@@ -57,17 +56,14 @@ sudo apt-get install aria2
 
 ## Installation
 
-With `pip`:
-
 ```bash
 python3.6 -m pip install aria2p[tui]
 ```
 
-With [`pipx`](https://github.com/pipxproject/pipx):
+With [`uv`](https://docs.astral.sh/uv/):
 
 ```bash
-python3.8 -m pip install --user pipx
-pipx install aria2p[tui]
+uv tool install aria2p[tui]
 ```
 
 The `tui` extra is needed for the interactive interface. If you don't need the interface (for example when you are
