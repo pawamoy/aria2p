@@ -69,12 +69,10 @@ def setup() -> None:
                 uv_install(venv_path)
 
 
-def run(version: str, cmd: str, *args: str, no_sync: bool = False, **kwargs: Any) -> None:
+def run(version: str, cmd: str, *args: str, **kwargs: Any) -> None:
     """Run a command in a virtual environment."""
     kwargs = {"check": True, **kwargs}
-    uv_run = ["uv", "run"]
-    if no_sync:
-        uv_run.append("--no-sync")
+    uv_run = ["uv", "run", "--no-sync"]
     if version == "default":
         with environ(UV_PROJECT_ENVIRONMENT=".venv"):
             subprocess.run([*uv_run, cmd, *args], **kwargs)  # noqa: S603, PLW1510
@@ -141,7 +139,7 @@ def main() -> int:
             )
             if os.path.exists(".venv"):
                 print("\nAvailable tasks", flush=True)
-                run("default", "duty", "--list", no_sync=True)
+                run("default", "duty", "--list")
         return 0
 
     while args:
