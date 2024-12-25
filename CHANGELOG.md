@@ -5,6 +5,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [0.12.1](https://github.com/pawamoy/aria2p/releases/tag/0.12.1) - 2024-12-25
+
+<small>[Compare with 0.12.0](https://github.com/pawamoy/aria2p/compare/0.12.0...0.12.1)</small>
+
+### Build
+
+- Drop support for Python 3.8 ([1ca3aac](https://github.com/pawamoy/aria2p/commit/1ca3aacb1746c7a2400271e3b791460cbf78404b) by Timothée Mazzucotelli).
+- Use platformdirs instead of deprecated appdirs ([95caaba](https://github.com/pawamoy/aria2p/commit/95caaba34750a06c141080c74ba7579ca2991be9) by Timothée Mazzucotelli).
+
+### Code Refactoring
+
+- Log error with hint about possibly too big torrent when adding it fails with a connection error ([77d9fca](https://github.com/pawamoy/aria2p/commit/77d9fca92d69cd3690a156ad99d8036f2c680a71) by Timothée Mazzucotelli). [Issue-130](https://github.com/pawamoy/aria2p/issues/130)
+
 ## [0.12.0](https://github.com/pawamoy/aria2p/releases/tag/0.12.0) - 2024-01-11
 
 <small>[Compare with 0.11.3](https://github.com/pawamoy/aria2p/compare/0.11.3...0.12.0)</small>
