@@ -30,7 +30,7 @@ def enable_logger(sink: str | TextIO = sys.stderr, level: str = "WARNING") -> No
             Default to WARNING.
     """
     logger.remove()
-    logger.configure(handlers=[{"sink": sink, "level": level}])
+    logger.configure(handlers=[{"sink": sink, "level": level}])  # type: ignore[misc,list-item]
     logger.enable("aria2p")
 
 
