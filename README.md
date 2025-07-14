@@ -32,7 +32,7 @@ Although `aria2c` supports both JSON-RPC and XML-RPC protocols, `aria2p` **works
 More information about how to configure `aria2c` to run as a daemon with RPC mode enabled
 can be found in the [Configuration section][conf doc] of the documentation.
 
-[conf doc]: https://aria2p.readthedocs.io/en/latest/configuration.html
+[conf doc]: https://pawamoy.github.io/aria2p/configuration/
 
 **Table of contents**
 
@@ -72,7 +72,7 @@ writing a Python package with a dependency to aria2p), simply install `aria2p` w
 ## Usage (as a library)
 
 **This library is still a work in progress. More examples will be added later.
-In the meantime, you can read the [Reference section](https://aria2p.readthedocs.io/en/latest/reference.html) on the official documentation.**
+In the meantime, you can read the [Reference section](https://pawamoy.github.io/aria2p/reference/aria2p/) on the official documentation.**
 
 ```python
 import aria2p
