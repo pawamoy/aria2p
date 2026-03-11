@@ -75,6 +75,12 @@ You must also install [*aria2*][1]. On systems with `apt-get`:
 sudo apt-get install aria2
 ```
 
+[*aria2*][1] is also available on `conda-forge`:
+
+```bash
+conda install -c conda-forge aria2
+```
+
 [1]: https://github.com/aria2/aria2
 [2]: https://en.wikipedia.org/wiki/Remote_procedure_call
 
