@@ -7,17 +7,26 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "justMyCode": false
+            "justMyCode": false,
+            "args": "${command:pickArgs}"
+        },
+        {
+            "name": "run",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "aria2p",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": "${command:pickArgs}"
         },
         {
             "name": "docs",
             "type": "debugpy",
             "request": "launch",
-            "module": "mkdocs",
+            "module": "zensical",
             "justMyCode": false,
             "args": [
                 "serve",
-                "-v"
             ]
         },
         {

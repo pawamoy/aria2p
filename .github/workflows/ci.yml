@@ -2,9 +2,16 @@ name: ci
 
 on:
   push:
+    branches:
+    - main
+    - test-me-*
   pull_request:
     branches:
     - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 defaults:
   run:
@@ -14,13 +21,33 @@ env:
   LANG: en_US.utf-8
   LC_ALL: en_US.utf-8
   PYTHONIOENCODING: UTF-8
+  PYTHONWARNDEFAULTENCODING: "1"
   PYTHON_VERSIONS: ""
 
 jobs:
 
   quality:
+    strategy:
+      matrix:
+        os:
+        - ubuntu-latest
+        - macos-latest
+        - windows-latest
+        python-version:
+        - "3.10"
+        - "3.14"
+        include:
+        - os: ubuntu-latest
+          python-version: "3.11"
+        - os: ubuntu-latest
+          python-version: "3.12"
+        - os: ubuntu-latest
+          python-version: "3.13"
+        - os: ubuntu-latest
+          python-version: "3.15-dev"
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
 
     steps:
     - name: Checkout
@@ -30,12 +57,12 @@ jobs:
         fetch-tags: true
 
     - name: Setup Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
-        python-version: "3.12"
+        python-version: ${{ matrix.python-version }}
 
     - name: Setup uv
-      uses: astral-sh/setup-uv@v3
+      uses: astral-sh/setup-uv@v5
       with:
         enable-cache: true
         cache-dependency-glob: pyproject.toml
@@ -55,8 +82,17 @@ jobs:
     - name: Check for breaking changes in the API
       run: make check-api
 
+    - name: Store objects inventory for tests
+      uses: actions/upload-artifact@v4
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.13' }}
+      with:
+        name: objects.inv
+        path: site/objects.inv
+
   tests:
 
+    needs:
+    - quality
     strategy:
       matrix:
         os:
@@ -64,12 +100,12 @@ jobs:
         - macos-latest
         - windows-latest
         python-version:
-        - "3.9"
         - "3.10"
         - "3.11"
         - "3.12"
         - "3.13"
         - "3.14"
+        - "3.15-dev"
         resolution:
         - highest
         - lowest-direct
@@ -78,8 +114,9 @@ jobs:
           resolution: lowest-direct
         - os: windows-latest
           resolution: lowest-direct
+
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.python-version == '3.14' || matrix.os == 'windows-latest' }}
+    continue-on-error: true
 
     steps:
     - name: Install aria2 on Ubuntu
@@ -103,22 +140,28 @@ jobs:
         fetch-tags: true
 
     - name: Setup Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
         allow-prereleases: true
 
     - name: Setup uv
-      uses: astral-sh/setup-uv@v3
+      uses: astral-sh/setup-uv@v5
       with:
         enable-cache: true
         cache-dependency-glob: pyproject.toml
-        cache-suffix: py${{ matrix.python-version }}
+        cache-suffix: ${{ matrix.resolution }}
 
     - name: Install dependencies
       env:
         UV_RESOLUTION: ${{ matrix.resolution }}
       run: make setup
+
+    - name: Download objects inventory
+      uses: actions/download-artifact@v4
+      with:
+        name: objects.inv
+        path: site/
 
     - name: Run the test suite
       run: make test

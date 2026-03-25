@@ -5,9 +5,9 @@ IMPORTANT: This file is generated from the template at 'scripts/templates/README
 
 # aria2p
 [![ci](https://github.com/pawamoy/aria2p/workflows/ci/badge.svg)](https://github.com/pawamoy/aria2p/actions?query=workflow%3Aci)
-[![documentation](https://img.shields.io/badge/docs-mkdocs-708FCC.svg?style=flat)](https://pawamoy.github.io/aria2p/)
+[![documentation](https://img.shields.io/badge/docs-zensical-FF9100.svg?style=flat)](https://pawamoy.github.io/aria2p/)
 [![pypi version](https://img.shields.io/pypi/v/aria2p.svg)](https://pypi.org/project/aria2p/)
-[![gitter](https://badges.gitter.im/join%20chat.svg)](https://app.gitter.im/#/room/#aria2p:gitter.im)
+[![gitter](https://img.shields.io/badge/matrix-chat-4DB798.svg?style=flat)](https://app.gitter.im/#/room/#aria2p:gitter.im)
 
 Command-line tool and Python library to interact with an [`aria2c`][1] daemon process through JSON-RPC.
 
@@ -270,8 +270,6 @@ optional arguments:
 
 ```
 
-
-
 ---
 
 ### `call`
@@ -509,9 +507,6 @@ optional arguments:
 
 ```
 
-
-
-
 ## Troubleshooting
 
 - Error outputs like below when using `aria2p` as a Python library:
@@ -534,3 +529,8 @@ consider donating or be a supporter through one of the following platforms
 - [Paypal](https://www.paypal.me/pawamoy)
 
 Thank you!
+
+## Sponsors
+
+<!-- sponsors-start -->
+<!-- sponsors-end -->
