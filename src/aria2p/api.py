@@ -52,6 +52,15 @@ class API:
     def __repr__(self) -> str:
         return f"API({self.client!r})"
 
+    def _is_localhost(self) -> bool:
+        """Check if the remote client is running on localhost.
+
+        Returns:
+            True if the client is connected to localhost, False otherwise.
+        """
+        host = self.client.host.lower()
+        return "localhost" in host or host.startswith("http://127.0.0.1")
+
     def add(
         self,
         uri: str,
@@ -639,12 +648,14 @@ class API:
         """
         return Stats(self.client.get_global_stat())
 
-    @staticmethod
     def remove_files(
+        self,
         downloads: list[Download],
         force: bool = False,  # noqa: FBT001,FBT002
     ) -> list[bool]:
         """Remove downloaded files.
+
+        Disk operations are only supported for localhost connections. For remote systems.
 
         Parameters:
             downloads:  the list of downloads for which to remove files.
@@ -653,6 +664,10 @@ class API:
         Returns:
             Success or failure of the operation for each given download.
         """
+        if not self._is_localhost():
+            logger.warning("Disk operations are not supported for remote systems.")
+            return [False] * len(downloads)
+
         results = []
         for download in downloads:
             if download.is_complete or force:
@@ -677,13 +692,15 @@ class API:
                 results.append(False)
         return results
 
-    @staticmethod
     def move_files(
+        self,
         downloads: list[Download],
         to_directory: str | Path,
         force: bool = False,  # noqa: FBT001,FBT002
     ) -> list[bool]:
         """Move downloaded files to another directory.
+
+        Disk operations are only supported for localhost connections.
 
         Parameters:
             downloads:  the list of downloads for which to move files.
@@ -693,6 +710,10 @@ class API:
         Returns:
             Success or failure of the operation for each given download.
         """
+        if not self._is_localhost():
+            logger.warning("Disk operations are not supported for remote systems.")
+            return [False] * len(downloads)
+
         if isinstance(to_directory, str):
             to_directory = Path(to_directory)
 
@@ -709,13 +730,15 @@ class API:
                 results.append(False)
         return results
 
-    @staticmethod
     def copy_files(
+        self,
         downloads: list[Download],
         to_directory: str | Path,
         force: bool = False,  # noqa: FBT001,FBT002
     ) -> list[bool]:
         """Copy downloaded files to another directory.
+
+        Disk operations are only supported for localhost connections.
 
         Parameters:
             downloads:  the list of downloads for which to move files.
@@ -725,6 +748,10 @@ class API:
         Returns:
             Success or failure of the operation for each given download.
         """
+        if not self._is_localhost():
+            logger.warning("Disk operations are not supported for remote systems.")
+            return [False] * len(downloads)
+
         if isinstance(to_directory, str):
             to_directory = Path(to_directory)
 
