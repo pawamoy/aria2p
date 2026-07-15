@@ -20,6 +20,9 @@ from typing import Any
 from aria2p import debug
 from aria2p.client import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_TIMEOUT
 
+from aria2p.utils import client_defaults
+
+_defaults = client_defaults()
 
 def check_args(parser: argparse.ArgumentParser, opts: argparse.Namespace) -> None:  # (complex)
     """Additional checks for command line arguments.
@@ -111,7 +114,7 @@ def get_parser() -> argparse.ArgumentParser:
         "-p",
         "--port",
         dest="port",
-        default=DEFAULT_PORT,
+        default=_client_defaults["port"]
         type=int,
         help="Port to use to connect to the remote server.",
     )
@@ -119,14 +122,14 @@ def get_parser() -> argparse.ArgumentParser:
         "-H",
         "--host",
         dest="host",
-        default=DEFAULT_HOST,
+        default=_client_defaults["host"],
         help="Host address for the remote server.",
     )
     global_options.add_argument(
         "-s",
         "--secret",
         dest="secret",
-        default="",
+        default=_client_defaults["secret"],
         help="Secret token to use to connect to the remote server.",
     )
     global_options.add_argument(
@@ -149,7 +152,7 @@ def get_parser() -> argparse.ArgumentParser:
         "-T",
         "--client-timeout",
         dest="client_timeout",
-        default=DEFAULT_TIMEOUT,
+        default=_client_defaults["timeout"],
         type=float,
         help=f"Timeout in seconds for requests to the remote server. Floats supported. Default: {DEFAULT_TIMEOUT}.",
     )
