@@ -22,7 +22,7 @@ from aria2p.client import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_TIMEOUT
 
 from aria2p.utils import client_defaults
 
-_defaults = client_defaults()
+_client_defaults = client_defaults()
 
 def check_args(parser: argparse.ArgumentParser, opts: argparse.Namespace) -> None:  # (complex)
     """Additional checks for command line arguments.
@@ -114,7 +114,7 @@ def get_parser() -> argparse.ArgumentParser:
         "-p",
         "--port",
         dest="port",
-        default=_client_defaults["port"]
+        default=_client_defaults["port"],
         type=int,
         help="Port to use to connect to the remote server.",
     )
