@@ -20,7 +20,7 @@ from typing import Any
 from aria2p import debug
 from aria2p.client import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_TIMEOUT
 
-from aria2p.utils import client_defaults
+from aria2p.utils import _client_defaults
 
 _client_defaults = client_defaults()
 
