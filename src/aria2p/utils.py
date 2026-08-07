@@ -177,6 +177,11 @@ def get_version() -> str:
         return "0.0.0"
 
 def _client_defaults():
+    """Load configured settings from configfile
+
+    Returns:
+        defaults from configfile, can be overruled by commandline options
+    """
     config = load_configuration()
 
     defaults = config["DEFAULT"]["client"].copy()
