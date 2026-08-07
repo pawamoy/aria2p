@@ -176,6 +176,18 @@ def get_version() -> str:
     except metadata.PackageNotFoundError:
         return "0.0.0"
 
+def _client_defaults():
+    """Load configured settings from configfile
+
+    Returns:
+        defaults from configfile, can be overruled by commandline options
+    """
+    config = load_configuration()
+
+    defaults = config["DEFAULT"]["client"].copy()
+    defaults.update(config.get("USER", {}).get("client", {}))
+
+    return defaults
 
 def load_configuration() -> dict[str, Any]:
     """Return dict from TOML formatted string or file.
@@ -184,6 +196,12 @@ def load_configuration() -> dict[str, Any]:
         The dict configuration.
     """
     default_config = """
+        [client]
+        host = "http://localhost"
+        port = 6800
+        secret = ""
+        timeout = 10
+
         [key_bindings]
         AUTOCLEAR = "c"
         CANCEL = "esc"
