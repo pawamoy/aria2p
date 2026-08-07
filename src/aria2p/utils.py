@@ -176,7 +176,7 @@ def get_version() -> str:
     except metadata.PackageNotFoundError:
         return "0.0.0"
 
-def client_defaults():
+def _client_defaults():
     config = load_configuration()
 
     defaults = config["DEFAULT"]["client"].copy()
