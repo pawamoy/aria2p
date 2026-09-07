@@ -34,13 +34,17 @@ class Options:
         """Initialize the object.
 
         Parameters:
-            api: The reference to an [`API`][aria2p.API] instance.
+            api: The reference to an API instance.
             struct: A dictionary Python object returned by the JSON-RPC client.
-            download: An optional [`Download`][aria2p.Download] object
-                to inform about the owner, or None to tell they are global options.
+            download: An optional download object to inform about the owner,
+                or None to tell they are global options.
         """
-        self.api = api
-        self.download = download
+        self.api: API = api
+        """A reference to the aria2 API instance that handles these options."""
+        self.download: Download | None = download
+        """A reference to the download object for which these options apply.
+
+        If none, it means these are global options."""
         self._struct = struct or {}
 
     @property

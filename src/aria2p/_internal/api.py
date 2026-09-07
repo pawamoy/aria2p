@@ -46,7 +46,9 @@ class API:
             client: An instance of the [aria2p.Client][] class.
         """
         self.client = client or Client()
+        """A JSON-RPC client."""
         self.listener: threading.Thread | None = None
+        """A thread listening to aria2 notifications."""
 
     def __repr__(self) -> str:
         return f"API({self.client!r})"

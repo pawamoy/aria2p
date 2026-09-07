@@ -92,12 +92,19 @@ class ClientException(Exception):  # noqa: N818
             message = f"{JSONRPC_CODES[code]}\n{message}"
 
         self.code = code
+        """An aria2 error code."""
         self.message = message
+        """An error message."""
 
     def __str__(self):
         return self.message
 
     def __bool__(self):
+        """Bulk operations return booleans or client exceptions.
+
+        Therefore, client exceptions must behave as booleans,
+        and return false to mean "failure".
+        """
         return False
 
 
