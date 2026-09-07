@@ -104,6 +104,7 @@ class File:  # noqa: PLW1641
         return str(self.path)
 
     def __eq__(self, other: object) -> bool:
+        """Files are equal when their `path` values are equal."""
         if isinstance(other, File):
             return self.path == other.path
         return NotImplemented
@@ -220,6 +221,7 @@ class Download:  # noqa: PLW1641
             struct: A dictionary Python object returned by the JSON-RPC client.
         """
         self.api = api
+        """A reference to the aria2 API instance that handles this download object."""
         self._struct = struct or {}
         self._files: list[File] = []
         self._root_files_paths: list[Path] = []
@@ -234,6 +236,7 @@ class Download:  # noqa: PLW1641
         return self.name
 
     def __eq__(self, other: object) -> bool:
+        """Downloads are equal when their GIDs are equal."""
         if isinstance(other, Download):
             return self.gid == other.gid
         return NotImplemented
