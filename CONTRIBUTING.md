@@ -1,29 +1,18 @@
 # Contributing
 
-Contributions are welcome, and they are greatly appreciated! Every little bit helps, and credit will always be given.
+Contributions are welcome, and they are greatly appreciated. Every little bit helps, and credit will always be given.
 
 **Please always create an issue before working on a new feature or a bug fix, so that we can discuss the implementation and make sure that your work will be merged.**
 
 ## Environment setup
 
-Nothing easier!
-
-Fork and clone the repository, then:
+Install [uv](https://github.com/astral-sh/uv) and [direnv](https://direnv.net/), fork and clone the repository, then:
 
 ```bash
 cd aria2p
+direnv allow
 make setup
 ```
-
-> NOTE: If it fails for some reason, you'll need to install [uv](https://github.com/astral-sh/uv) manually.
->
-> You can install it with:
->
-> ```bash
-> curl -LsSf https://astral.sh/uv/install.sh | sh
-> ```
->
-> Now you can try running `make setup` again, or simply `uv sync`.
 
 You now have the dependencies installed.
 

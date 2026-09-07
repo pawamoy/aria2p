@@ -104,6 +104,7 @@ ci = [
     "psutil>=5.9.5",
     "responses>=0.23",
     "uvicorn>=0.23",
+    "zizmor>=1.0",
 ]
  docs = [
     "ghp-import>=2.1",

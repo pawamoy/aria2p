@@ -1,3 +1,21 @@
+# SPDX-License-Identifier: ISC
+#
+# ISC License
+#
+# Copyright (c) 2020, Timothée Mazzucotelli and contributors
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 """Development tasks."""
 
 from __future__ import annotations
@@ -22,7 +40,7 @@ WINDOWS = os.name == "nt"
 PTY = not WINDOWS and not CI
 MULTIRUN = os.environ.get("MULTIRUN", "0") == "1"
 PY_VERSION = f"{sys.version_info.major}{sys.version_info.minor}"
-PY_DEV = "315"
+PY_DEV = "316"
 
 
 def pyprefix(title: str) -> str:
@@ -35,7 +53,7 @@ def pyprefix(title: str) -> str:
 def _get_changelog_version() -> str:
     changelog_version_re = re.compile(r"^## \[(\d+\.\d+\.\d+)\].*$")
     with Path(__file__).parent.joinpath("CHANGELOG.md").open("r", encoding="utf8") as file:
-        return next(filter(bool, map(changelog_version_re.match, file))).group(1)  # ty: ignore[invalid-argument-type]
+        return next(filter(bool, map(changelog_version_re.match, file))).group(1)  # ty: ignore[unresolved-attribute]
 
 
 @duty
@@ -108,6 +126,21 @@ def check_api(ctx: Context, *cli_args: str) -> None:
         tools.griffe.check("aria2p", search=["src"], color=True).add_args(*cli_args),
         title="Checking for API breaking changes",
         nofail=True,
+    )
+
+
+@duty
+def check_security(ctx: Context) -> None:
+    """Check for security vulnerabilities."""
+    ctx.run(
+        ["uv", "audit"],
+        title="Auditing dependencies",
+        pty=PTY,
+    )
+    ctx.run(
+        ["zizmor", "."],
+        title="Auditing GitHub Actions workflows",
+        pty=PTY,
     )
 
 
