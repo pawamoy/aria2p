@@ -1,6 +1,7 @@
 # editors
 .idea/
 .vscode/
+.zed
 
 # python
 *.egg-info/
