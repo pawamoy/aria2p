@@ -1,4 +1,4 @@
-"""The main CLI function."""
+# The main CLI function.
 
 from __future__ import annotations
 
@@ -8,22 +8,22 @@ from pathlib import Path
 import requests
 from loguru import logger
 
-from aria2p import enable_logger
-from aria2p.api import API
-from aria2p.cli.commands.add import add
-from aria2p.cli.commands.add_magnet import add_magnets
-from aria2p.cli.commands.add_metalink import add_metalinks
-from aria2p.cli.commands.add_torrent import add_torrents
-from aria2p.cli.commands.call import call
-from aria2p.cli.commands.listen import listen
-from aria2p.cli.commands.pause import pause
-from aria2p.cli.commands.purge import purge
-from aria2p.cli.commands.remove import remove
-from aria2p.cli.commands.resume import resume
-from aria2p.cli.commands.show import show
-from aria2p.cli.commands.top import top
-from aria2p.cli.parser import check_args, get_parser
-from aria2p.client import Client, ClientException
+from aria2p._internal.api import API
+from aria2p._internal.cli.commands.add import add
+from aria2p._internal.cli.commands.add_magnet import add_magnets
+from aria2p._internal.cli.commands.add_metalink import add_metalinks
+from aria2p._internal.cli.commands.add_torrent import add_torrents
+from aria2p._internal.cli.commands.call import call
+from aria2p._internal.cli.commands.listen import listen
+from aria2p._internal.cli.commands.pause import pause
+from aria2p._internal.cli.commands.purge import purge
+from aria2p._internal.cli.commands.remove import remove
+from aria2p._internal.cli.commands.resume import resume
+from aria2p._internal.cli.commands.show import show
+from aria2p._internal.cli.commands.top import top
+from aria2p._internal.cli.parser import check_args, get_parser
+from aria2p._internal.client import Client, ClientException
+from aria2p._internal.logger import enable_logger
 
 commands = {
     None: top,  # default command
@@ -75,7 +75,7 @@ def main(args: list[str] | None = None) -> int:
         log_path = Path(log_path)
         if log_path.is_dir():
             log_path = log_path / "aria2p-{time}.log"
-        enable_logger(sink=log_path, level=log_level or "WARNING")
+        enable_logger(sink=log_path, level=log_level or "WARNING")  # ty:ignore[invalid-argument-type]
     elif log_level:
         enable_logger(sink=sys.stderr, level=log_level)
 
@@ -112,7 +112,7 @@ def main(args: list[str] | None = None) -> int:
     if subcommand:
         logger.debug("Running subcommand " + subcommand)
     try:
-        return commands[subcommand](api, **kwargs)  # type: ignore
+        return commands[subcommand](api, **kwargs)
     except ClientException as error:
         print(str(error), file=sys.stderr)
         return error.code

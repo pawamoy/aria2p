@@ -1,11 +1,11 @@
-"""Command to show downloads."""
+# Command to show downloads.
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from aria2p.api import API
+    from aria2p._internal.api import API
 
 
 def show(api: API) -> int:

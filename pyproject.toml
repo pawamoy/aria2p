@@ -52,7 +52,7 @@ Gitter = "https://gitter.im/aria2p/community"
 Funding = "https://github.com/sponsors/pawamoy"
 
 [project.scripts]
-aria2p = "aria2p.cli.main:main"
+aria2p = "aria2p:main"
 
 [tool.pdm.version]
 source = "call"

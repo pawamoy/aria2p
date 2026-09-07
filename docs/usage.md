@@ -100,7 +100,7 @@ aria2p listen -c ~/callbacks.py -t 1
 
 ### Programmatically
 
-Both the [`API`][aria2p.api.API.listen_to_notifications]
-and [`Client`][aria2p.client.Client.listen_to_notifications] classes provide a method called
+Both the [`API`][aria2p.API.listen_to_notifications]
+and [`Client`][aria2p.Client.listen_to_notifications] classes provide a method called
 `listen_to_notifications`, and another one called `stop_listening`. Please check their respective documentation. 
 

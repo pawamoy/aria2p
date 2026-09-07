@@ -16,7 +16,7 @@ import requests
 from responses import mock as responses
 
 from aria2p import Client, ClientException
-from aria2p.client import JSONRPC_CODES, JSONRPC_PARSER_ERROR, Notification
+from aria2p._internal.client import JSONRPC_CODES, JSONRPC_PARSER_ERROR, Notification
 from tests import BUNSENLABS_MAGNET, BUNSENLABS_TORRENT, CONFIGS_DIR, DEBIAN_METALINK, SESSIONS_DIR, XUBUNTU_MIRRORS
 from tests.conftest import Aria2Server
 
@@ -28,14 +28,14 @@ class TestParameters:
     # callback that return params of a single call as result
     @staticmethod
     def call_params_callback(request: requests.PreparedRequest) -> tuple[int, dict, str]:
-        payload = json.loads(request.body)  # type: ignore[arg-type]
+        payload = json.loads(request.body)  # ty:ignore[invalid-argument-type]
         resp_body = {"result": payload["params"]}
         return 200, {}, json.dumps(resp_body)
 
     # callback that return params of a batch call as result
     @staticmethod
     def batch_call_params_callback(request: requests.PreparedRequest) -> tuple[int, dict, str]:
-        payload = json.loads(request.body)  # type: ignore[arg-type]
+        payload = json.loads(request.body)  # ty:ignore[invalid-argument-type]
         resp_body = [{"result": method["params"]} for method in payload]
         return 200, {}, json.dumps(resp_body)
 
@@ -75,7 +75,7 @@ class TestParameters:
         # copy params and insert secret
         expected_params = deepcopy(params)
         for param in expected_params[0]:
-            param["params"].insert(0, f"token:{secret}")  # type: ignore[attr-defined]
+            param["params"].insert(0, f"token:{secret}")  # ty:ignore[unresolved-attribute]
 
         # call function and assert result
         resp = client.call(client.MULTICALL, params, insert_secret=True)
@@ -94,7 +94,7 @@ class TestParameters:
 
         # call function and assert result
         resp = client.call("other.method", params, insert_secret=True)
-        assert secret not in resp  # type: ignore[operator]
+        assert secret not in resp  # ty:ignore[unsupported-operator]
 
     @responses.activate
     def test_does_not_insert_secret_if_told_so(self) -> None:
@@ -109,7 +109,7 @@ class TestParameters:
 
         # call function and assert result
         resp = client.call("other.method", params, insert_secret=False)
-        assert secret not in resp  # type: ignore[operator]
+        assert secret not in resp  # ty:ignore[unsupported-operator]
 
     def test_client_str_returns_client_server(self) -> None:
         host = "https://localhost:8779/"
@@ -198,7 +198,7 @@ class TestParameters:
             ],
         ]
         for param in expected_params[0]:
-            param["params"].insert(0, f"token:{secret}")  # type: ignore[attr-defined]
+            param["params"].insert(0, f"token:{secret}")  # ty:ignore[unresolved-attribute]
 
         # call function and assert result
         resp = client.multicall2(calls, insert_secret=True)
@@ -217,7 +217,7 @@ class TestClientExceptionClass:
         )
         with pytest.raises(ClientException, match=r"Custom message") as e:  # noqa: PT012
             client.call("aria2.method")
-            assert e.code == 1  # type: ignore[attr-defined]
+            assert e.code == 1  # ty:ignore[unresolved-attribute]
 
     @responses.activate
     def test_call_raises_known_error(self) -> None:
@@ -233,13 +233,13 @@ class TestClientExceptionClass:
             match=rf"{JSONRPC_CODES[JSONRPC_PARSER_ERROR]}\nCustom message",
         ) as e:
             client.call("aria2.method")
-            assert e.code == JSONRPC_PARSER_ERROR  # type: ignore[attr-defined]
+            assert e.code == JSONRPC_PARSER_ERROR  # ty:ignore[unresolved-attribute]
 
 
 class TestClientClass:
     def test_add_metalink_method(self, server: Aria2Server) -> None:
         # get file contents
-        with open(DEBIAN_METALINK, "rb") as stream:
+        with open(DEBIAN_METALINK, "rb") as stream:  # noqa: PTH123
             metalink_contents = stream.read()
         encoded_contents = b64encode(metalink_contents).decode("utf-8")
 
@@ -247,7 +247,7 @@ class TestClientClass:
 
     def test_add_torrent_method(self, server: Aria2Server) -> None:
         # get file contents
-        with open(BUNSENLABS_TORRENT, "rb") as stream:
+        with open(BUNSENLABS_TORRENT, "rb") as stream:  # noqa: PTH123
             torrent_contents = stream.read()
         encoded_contents = b64encode(torrent_contents).decode("utf-8")
 
@@ -285,7 +285,7 @@ class TestClientClass:
     def test_position_method(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
             gids = server.client.tell_waiting(0, 5, keys=["gid"])
-            first, second = (r["gid"] for r in gids)
+            _, second = (r["gid"] for r in gids)
             assert server.client.change_position(second, 0, "POS_SET") == 0
             assert server.client.change_position(second, 5, "POS_CUR") == 1
 
@@ -426,9 +426,9 @@ class TestClientClass:
             session_output = server.tmp_dir / "_session.txt"
             server.client.change_global_option({"save-session": str(session_output)})
             assert server.client.save_session() == "OK"
-            with open(session_input) as stream:
+            with open(session_input) as stream:  # noqa: PTH123
                 input_contents = stream.read()
-            with open(session_output) as stream:
+            with open(session_output) as stream:  # noqa: PTH123
                 output_contents = stream.read()
             for line in input_contents.split("\n"):
                 assert line in output_contents

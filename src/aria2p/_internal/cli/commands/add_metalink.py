@@ -1,16 +1,16 @@
-"""Command to add metalinks."""
+# Command to add metalinks.
 
 from __future__ import annotations
 
 import sys
 from typing import TYPE_CHECKING
 
-from aria2p.utils import read_lines
+from aria2p._internal.utils import read_lines
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from aria2p.api import API
+    from aria2p._internal.api import API
 
 
 def add_metalinks(

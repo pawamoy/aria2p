@@ -1,8 +1,6 @@
-"""This module defines the BitTorrent, File and Download classes.
-
-They respectively hold structured information about
-torrent files, files and downloads in aria2c.
-"""
+# This module defines the BitTorrent, File and Download classes.
+#
+# They respectively hold structured information about torrent files, files and downloads in aria2c.
 
 from __future__ import annotations
 
@@ -13,12 +11,12 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 
-from aria2p.client import ClientException
-from aria2p.utils import bool_or_value, human_readable_bytes, human_readable_timedelta
+from aria2p._internal.client import ClientException
+from aria2p._internal.utils import bool_or_value, human_readable_bytes, human_readable_timedelta
 
 if TYPE_CHECKING:
-    from aria2p.api import API
-    from aria2p.options import Options
+    from aria2p._internal.api import API
+    from aria2p._internal.options import Options
 
 
 class BitTorrent:
@@ -33,7 +31,7 @@ class BitTorrent:
         self._struct = struct or {}
 
     def __str__(self):
-        return self.info["name"]
+        return self.info["name"]  # ty:ignore[not-subscriptable]
 
     @property
     def announce_list(self) -> list[list[str]] | None:
@@ -91,7 +89,7 @@ class BitTorrent:
         return self._struct.get("info")
 
 
-class File:
+class File:  # noqa: PLW1641
     """Information about a download's file."""
 
     def __init__(self, struct: dict) -> None:
@@ -187,9 +185,9 @@ class File:
 
     @property
     def selected(self) -> bool:
-        """Return True if this file is selected by [`--select-file`][aria2p.options.Options.select_file] option.
+        """Return True if this file is selected by [`--select-file`][aria2p.Options.select_file] option.
 
-        If [`--select-file`][aria2p.options.Options.select_file] is not specified
+        If [`--select-file`][aria2p.Options.select_file] is not specified
         or this is single-file torrent or not a torrent download at all, this value is always true.
         Otherwise false.
 
@@ -203,7 +201,7 @@ class File:
         """Return a list of URIs for this file.
 
         The element type is the same struct
-        used in the [`client.get_uris()`][aria2p.client.Client.get_uris] method.
+        used in the [`client.get_uris()`][aria2p.Client.get_uris] method.
 
         Returns:
             The list of URIs.
@@ -211,14 +209,14 @@ class File:
         return self._struct.get("uris", [])
 
 
-class Download:
+class Download:  # noqa: PLW1641
     """Class containing all information about a download, as retrieved with the client."""
 
     def __init__(self, api: API, struct: dict) -> None:
         """Initialize the object.
 
         Parameters:
-            api: The reference to an [`API`][aria2p.api.API] instance.
+            api: The reference to an [`API`][aria2p.API] instance.
             struct: A dictionary Python object returned by the JSON-RPC client.
         """
         self.api = api
@@ -345,7 +343,7 @@ class Download:
         """
         if not self._options:
             self.update_options()
-        return self._options  # type: ignore
+        return self._options  # ty:ignore[invalid-return-type]
 
     @options.setter
     def options(self, value: Options) -> None:
@@ -680,14 +678,14 @@ class Download:
         """List of downloads generated as the result of this download.
 
         Returns:
-            A list of instances of [`Download`][aria2p.downloads.Download].
+            A list of instances of [`Download`][aria2p.Download].
         """
         if self._followed_by is None:
             result = []
             for gid in self.followed_by_ids:
                 try:
                     result.append(self.api.get_download(gid))
-                except ClientException as error:
+                except ClientException as error:  # noqa: PERF203
                     logger.warning(
                         f"Can't find download with GID {gid}, try to update download {self.gid} ({id(self)}",
                     )
@@ -711,7 +709,7 @@ class Download:
         """Return the download this download is following.
 
         Returns:
-            An instance of [`Download`][aria2p.downloads.Download].
+            An instance of [`Download`][aria2p.Download].
         """
         if not self._following:
             following_id = self.following_id
@@ -744,7 +742,7 @@ class Download:
         """Parent download.
 
         Returns:
-            An instance of [`Download`][aria2p.downloads.Download].
+            An instance of [`Download`][aria2p.Download].
         """
         if not self._belongs_to:
             belongs_to_id = self.belongs_to_id
@@ -788,7 +786,7 @@ class Download:
         BitTorrent only.
 
         Returns:
-            A [BitTorrent][aria2p.downloads.BitTorrent] instance or `None`.
+            A [BitTorrent][aria2p.BitTorrent] instance or `None`.
         """
         if not self._bittorrent and "bittorrent" in self._struct:
             self._bittorrent = BitTorrent(self._struct.get("bittorrent", {}))
@@ -868,7 +866,7 @@ class Download:
         """Return the Estimated Time of Arrival as a string.
 
         Parameters:
-            precision: The precision to use, see [aria2p.utils.human_readable_timedelta].
+            precision: The number of time units to display. Use 0 to display all units.
 
         Returns:
             The Estimated Time of Arrival as a string.
@@ -955,7 +953,7 @@ class Download:
         """
         result = self.api.remove([self], force=force, files=files)[0]
         if not result:
-            raise result  # type: ignore  # we know it's a ClientException
+            raise result  # ty:ignore[invalid-raise]
         return True
 
     def pause(self, force: bool = False) -> bool:  # noqa: FBT001,FBT002
@@ -972,7 +970,7 @@ class Download:
         """
         result = self.api.pause([self], force=force)[0]
         if not result:
-            raise result  # type: ignore  # we know it's a ClientException
+            raise result  # ty:ignore[invalid-raise]
         return True
 
     def resume(self) -> bool:
@@ -986,7 +984,7 @@ class Download:
         """
         result = self.api.resume([self])[0]
         if not result:
-            raise result  # type: ignore  # we know it's a ClientException
+            raise result  # ty:ignore[invalid-raise]
         return True
 
     def purge(self) -> bool:

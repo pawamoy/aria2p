@@ -9,7 +9,7 @@
 # - When you import `__main__` it will get executed again (as a module) because
 #   there's no `aria2p.__main__` in `sys.modules`.
 
-"""Module that contains the command line application."""
+# Module that contains the command line application.
 
 from __future__ import annotations
 
@@ -17,8 +17,8 @@ import argparse
 import sys
 from typing import Any
 
-from aria2p import debug
-from aria2p.client import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_TIMEOUT
+from aria2p._internal import debug
+from aria2p._internal.client import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_TIMEOUT
 
 
 def check_args(parser: argparse.ArgumentParser, opts: argparse.Namespace) -> None:  # (complex)

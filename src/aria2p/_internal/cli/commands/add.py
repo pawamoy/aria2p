@@ -1,4 +1,4 @@
-"""Generic command to add downloads."""
+# Generic command to add downloads.
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 from loguru import logger
 
 if TYPE_CHECKING:
-    from aria2p.api import API
+    from aria2p._internal.api import API
 
 
 def add(

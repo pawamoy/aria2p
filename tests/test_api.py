@@ -4,16 +4,6 @@ from __future__ import annotations
 
 import threading
 import time
-from typing import TYPE_CHECKING
-
-import pytest
-
-from aria2p import API, Client, ClientException, Download
-from tests import BUNSENLABS_MAGNET, BUNSENLABS_TORRENT, CONFIGS_DIR, DEBIAN_METALINK, INPUT_FILES, XUBUNTU_MIRRORS
-from tests.conftest import Aria2Server
-
-from __future__ import annotations
-
 from collections import defaultdict
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -23,10 +13,12 @@ import pytest
 from mkdocstrings import Inventory
 
 import aria2p
+from aria2p import API, Client, ClientException, Download
+from tests import BUNSENLABS_MAGNET, BUNSENLABS_TORRENT, CONFIGS_DIR, DEBIAN_METALINK, INPUT_FILES, XUBUNTU_MIRRORS
+from tests.conftest import Aria2Server
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    from pathlib import Path
 
 
 def test_add_magnet_method(server: Aria2Server) -> None:
@@ -204,7 +196,7 @@ def test_remove_files_tree(server: Aria2Server) -> None:
         is_complete = True
         root_files_paths = [directory]  # noqa: RUF012
 
-    assert server.api.remove_files([_Download])  # type: ignore[list-item]
+    assert server.api.remove_files([_Download])  # ty:ignore[invalid-argument-type]
     assert not directory.exists()
 
 
@@ -283,9 +275,9 @@ def test_copy_files_method(tmp_path_factory: pytest.TempPathFactory, port: int) 
         assert source.exists()
         assert target.exists()
 
-        with open(source) as stream:
+        with open(source) as stream:  # noqa: PTH123
             source_contents = stream.read()
-        with open(target) as stream:
+        with open(target) as stream:  # noqa: PTH123
             target_contents = stream.read()
         assert source_contents == target_contents
 
@@ -308,7 +300,7 @@ def test_move_files_method(tmp_path_factory: pytest.TempPathFactory, port: int) 
 
         # read source contents before move
         source = download.files[0].path
-        with open(source) as stream:
+        with open(source) as stream:  # noqa: PTH123
             source_contents = stream.read()
 
         # actual method run
@@ -320,7 +312,7 @@ def test_move_files_method(tmp_path_factory: pytest.TempPathFactory, port: int) 
         assert not source.exists()
         assert target.exists()
 
-        with open(target) as stream:
+        with target.open() as stream:
             target_contents = stream.read()
         assert source_contents == target_contents
 
@@ -527,11 +519,7 @@ def test_inventory_matches_api(
     public_api_paths = {obj.path for obj in public_objects}
     public_api_paths.add("aria2p")
     for item in inventory.values():
-        if (
-            item.domain == "py"
-            and "(" not in item.name
-            and (item.name == "aria2p" or item.name.startswith("aria2p."))
-        ):
+        if item.domain == "py" and "(" not in item.name and (item.name == "aria2p" or item.name.startswith("aria2p.")):
             obj = loader.modules_collection[item.name]
             if obj.path not in public_api_paths and not any(path in public_api_paths for path in obj.aliases):
                 not_in_api.append(item.name)

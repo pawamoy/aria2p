@@ -1,8 +1,7 @@
-"""Aria2 API.
-
-This module defines the API class, which makes use of a JSON-RPC client to provide higher-level methods to
-interact easily with a remote aria2c process.
-"""
+# Aria2 API.
+#
+# This module defines the API class, which makes use of a JSON-RPC client to provide higher-level methods to
+# interact easily with a remote aria2c process.
 
 from __future__ import annotations
 
@@ -11,32 +10,32 @@ import shutil
 import threading
 from base64 import b64encode
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable, TextIO, Union
+from typing import TYPE_CHECKING, TextIO
 
 from loguru import logger
 from requests.exceptions import ConnectionError  # noqa: A004
 
-from aria2p.client import Client, ClientException
-from aria2p.downloads import Download
-from aria2p.options import Options
-from aria2p.stats import Stats
+from aria2p._internal.client import Client, ClientException
+from aria2p._internal.downloads import Download
+from aria2p._internal.options import Options
+from aria2p._internal.stats import Stats
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Callable, Iterator
 
 
-OptionsType = Union[Options, dict]
-OperationResult = Union[bool, ClientException]
+OptionsType = Options | dict
+OperationResult = bool | ClientException
 InputFileContentsType = list[tuple[list[str], dict[str, str]]]
 
 
 class API:
     """A class providing high-level methods to interact with a remote aria2c process.
 
-    This class is instantiated with a reference to a [`Client`][aria2p.client.Client] instance. It then uses this client
+    This class is instantiated with a reference to a [`Client`][aria2p.Client] instance. It then uses this client
     to call remote procedures, or remote methods. While the client methods reflect exactly what aria2c is providing
     through JSON-RPC, this class's methods allow for easier / faster control of the remote process. It also
-    wraps the information the client retrieves in Python object, like [`Download`][aria2p.downloads.Download],
+    wraps the information the client retrieves in Python object, like [`Download`][aria2p.Download],
     allowing for even more Pythonic interactions, without worrying about payloads, responses, JSON, etc..
     """
 
@@ -44,7 +43,7 @@ class API:
         """Initialize the object.
 
         Parameters:
-            client: An instance of the [aria2p.client.Client][] class.
+            client: An instance of the [aria2p.Client][] class.
         """
         self.client = client or Client()
         self.listener: threading.Thread | None = None
@@ -74,7 +73,7 @@ class API:
 
         Parameters:
             uri: The URI or file-path to add.
-            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
+            options: An instance of the [`Options`][aria2p.Options] class or a dictionary
                 containing aria2c options to create the download with.
             position: The position where to insert the new download in the queue. Start at 0 (top).
 
@@ -115,7 +114,7 @@ class API:
 
         Parameters:
             magnet_uri: The Magnet URI.
-            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
+            options: An instance of the [`Options`][aria2p.Options] class or a dictionary
                 containing aria2c options to create the download with.
             position: The position where to insert the new download in the queue. Start at 0 (top).
 
@@ -143,7 +142,7 @@ class API:
         Parameters:
             torrent_file_path: The path to the torrent file.
             uris: A list of URIs used for Web-seeding.
-            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
+            options: An instance of the [`Options`][aria2p.Options] class or a dictionary
                 containing aria2c options to create the download with.
             position: The position where to insert the new download in the queue. Start at 0 (top).
 
@@ -158,7 +157,7 @@ class API:
 
         client_options = options.get_struct() if isinstance(options, Options) else options
 
-        with open(torrent_file_path, "rb") as stream:
+        with Path(torrent_file_path).open("rb") as stream:
             torrent_contents = stream.read()
         encoded_contents = b64encode(torrent_contents).decode("utf8")
 
@@ -180,7 +179,7 @@ class API:
 
         Parameters:
             metalink_file_path: The path to the Metalink file.
-            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
+            options: An instance of the [`Options`][aria2p.Options] class or a dictionary
                 containing aria2c options to create the download with.
             position: The position where to insert the new download in the queue. Start at 0 (top).
 
@@ -192,7 +191,7 @@ class API:
 
         client_options = options.get_struct() if isinstance(options, Options) else options
 
-        with open(metalink_file_path, "rb") as stream:
+        with Path(metalink_file_path).open("rb") as stream:
             metalink_contents = stream.read()
         encoded_contents = b64encode(metalink_contents).decode("utf8")
 
@@ -230,7 +229,7 @@ class API:
     def search(self, patterns: list[str]) -> list[Download]:
         """Not implemented.
 
-        Search and return [`Download`][aria2p.downloads.Download] objects based on multiple patterns.
+        Search and return [`Download`][aria2p.Download] objects based on multiple patterns.
 
         Parameters:
             patterns: The patterns used to filter the download list.
@@ -271,7 +270,7 @@ class API:
         raise NotImplementedError
 
     def get_download(self, gid: str) -> Download:
-        """Get a [`Download`][aria2p.downloads.Download] object thanks to its GID.
+        """Get a [`Download`][aria2p.Download] object thanks to its GID.
 
         Parameters:
             gid: The GID of the download to get.
@@ -282,7 +281,7 @@ class API:
         return Download(self, self.client.tell_status(gid))
 
     def get_downloads(self, gids: list[str] | None = None) -> list[Download]:
-        """Get a list of [`Download`][aria2p.downloads.Download] object thanks to their GIDs.
+        """Get a list of [`Download`][aria2p.Download] object thanks to their GIDs.
 
         Parameters:
             gids: The GIDs of the downloads to get. If None, return all the downloads.
@@ -290,19 +289,14 @@ class API:
         Returns:
             The retrieved download objects.
         """
-        downloads = []
-
         if gids:
-            for gid in gids:
-                downloads.append(Download(self, self.client.tell_status(gid)))
-        else:
-            structs = []
-            structs.extend(self.client.tell_active())
-            structs.extend(self.client.tell_waiting(0, 1000))
-            structs.extend(self.client.tell_stopped(0, 1000))
-            downloads = [Download(self, struct) for struct in structs]
+            return [Download(self, self.client.tell_status(gid)) for gid in gids]
 
-        return downloads
+        structs = []
+        structs.extend(self.client.tell_active())
+        structs.extend(self.client.tell_waiting(0, 1000))
+        structs.extend(self.client.tell_stopped(0, 1000))
+        return [Download(self, struct) for struct in structs]
 
     def move(self, download: Download, pos: int) -> int:
         """Move a download in the queue, relatively to its current position.
@@ -512,7 +506,7 @@ class API:
         for download in downloads:
             try:
                 pause_func(download.gid)
-            except ClientException as error:
+            except ClientException as error:  # noqa: PERF203
                 logger.debug(f"Failed to pause download {download.gid}")
                 logger.opt(exception=True).trace(error)
                 result.append(error)
@@ -548,7 +542,7 @@ class API:
         for download in downloads:
             try:
                 self.client.unpause(download.gid)
-            except ClientException as error:
+            except ClientException as error:  # noqa: PERF203
                 logger.debug(f"Failed to resume download {download.gid}")
                 logger.opt(exception=True).trace(error)
                 result.append(error)
@@ -576,7 +570,7 @@ class API:
     def autopurge(self) -> bool:
         """Purge completed, removed or failed downloads from the queue.
 
-        Deprecated. Use [`purge`][aria2p.api.API.purge] instead.
+        Deprecated. Use [`purge`][aria2p.API.purge] instead.
 
         Returns:
             Success or failure of the operation.
@@ -594,10 +588,7 @@ class API:
             Options object for each given download.
         """
         # Note: batch/multicall candidate
-        options = []
-        for download in downloads:
-            options.append(Options(self, self.client.get_option(download.gid), download))
-        return options
+        return [Options(self, self.client.get_option(download.gid), download) for download in downloads]
 
     def get_global_options(self) -> Options:
         """Get the global options.
@@ -611,7 +602,7 @@ class API:
         """Set options for specific downloads.
 
         Parameters:
-            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
+            options: An instance of the [`Options`][aria2p.Options] class or a dictionary
                 containing aria2c options to create the download with.
             downloads: The list of downloads to set the options for.
 
@@ -621,16 +612,13 @@ class API:
         client_options = options.get_struct() if isinstance(options, Options) else options
 
         # Note: batch/multicall candidate
-        results = []
-        for download in downloads:
-            results.append(self.client.change_option(download.gid, client_options) == "OK")
-        return results
+        return [self.client.change_option(download.gid, client_options) == "OK" for download in downloads]
 
     def set_global_options(self, options: OptionsType) -> bool:
         """Set global options.
 
         Parameters:
-            options: An instance of the [`Options`][aria2p.options.Options] class or a dictionary
+            options: An instance of the [`Options`][aria2p.Options] class or a dictionary
                 containing aria2c options to create the download with.
 
         Returns:
@@ -786,11 +774,11 @@ class API:
     ) -> None:
         """Start listening to aria2 notifications via WebSocket.
 
-        This method differs from [`Client.listen_to_notifications`][aria2p.client.Client.listen_to_notifications]
+        This method differs from [`Client.listen_to_notifications`][aria2p.Client.listen_to_notifications]
         in that it expects callbacks accepting two arguments, `api` and `gid`, instead of only `gid`.
-        Accepting `api` allows to use the high-level methods of the [`API`][aria2p.api.API] class.
+        Accepting `api` allows to use the high-level methods of the [`API`][aria2p.API] class.
 
-        Stop listening to notifications with the [`API.stop_listening`][aria2p.api.API.stop_listening] method.
+        Stop listening to notifications with the [`API.stop_listening`][aria2p.API.stop_listening] method.
 
         Parameters:
             threaded: Whether to start the listening loop in a thread or not (non-blocking or blocking).
@@ -824,14 +812,14 @@ class API:
             self.listener = threading.Thread(target=self.client.listen_to_notifications, kwargs=kwargs)
             self.listener.start()
         else:
-            self.client.listen_to_notifications(**kwargs)  # type: ignore[arg-type]
+            self.client.listen_to_notifications(**kwargs)
 
     def stop_listening(self) -> None:
         """Stop listening to notifications.
 
         If the listening loop was threaded, this method will wait for the thread to finish.
         The time it takes for the thread to finish will depend on the timeout given while calling
-        [`listen_to_notifications`][aria2p.api.API.listen_to_notifications].
+        [`listen_to_notifications`][aria2p.API.listen_to_notifications].
         """
         self.client.stop_listening()
         if self.listener:
@@ -870,7 +858,7 @@ class API:
             List of tuples containing list of URIs and dictionary with aria2c options.
         """
         downloads = []
-        with Path(input_file).open() as fd:
+        with Path(input_file).open(encoding="utf8") as fd:
             for download_lines in self.split_input_file(fd):
                 uris = download_lines[0].split("\t")
                 options = {}

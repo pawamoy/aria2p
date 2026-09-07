@@ -1,11 +1,10 @@
-"""This module defines the Stats class.
-
-It holds information retrieved with the `get_global_stat` method of the client.
-"""
+# This module defines the Stats class.
+#
+# It holds information retrieved with the `get_global_stat` method of the client.
 
 from __future__ import annotations
 
-from aria2p.utils import human_readable_bytes
+from aria2p._internal.utils import human_readable_bytes
 
 
 class Stats:
@@ -85,7 +84,7 @@ class Stats:
     def num_stopped(self) -> int:
         """Return the number of stopped downloads in the current session.
 
-        This value is capped by the [`--max-download-result`][aria2p.options.Options.max_download_result] option.
+        This value is capped by the [`--max-download-result`][aria2p.Options.max_download_result] option.
 
         Returns:
             The number of stopped downloads in the current session (capped).
@@ -96,7 +95,7 @@ class Stats:
     def num_stopped_total(self) -> int:
         """Return the number of stopped downloads in the current session.
 
-        This value is not capped by the [`--max-download-result`][aria2p.options.Options.max_download_result] option.
+        This value is not capped by the [`--max-download-result`][aria2p.Options.max_download_result] option.
 
         Returns:
             The number of stopped downloads in the current session (not capped).

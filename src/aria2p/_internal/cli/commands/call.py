@@ -1,4 +1,4 @@
-"""Command to call RPC methods."""
+# Command to call RPC methods.
 
 from __future__ import annotations
 
@@ -6,10 +6,10 @@ import json
 import sys
 from typing import TYPE_CHECKING, Any
 
-from aria2p.client import Client
+from aria2p._internal.client import Client
 
 if TYPE_CHECKING:
-    from aria2p.api import API
+    from aria2p._internal.api import API
 
 
 def get_method(name: str) -> str | None:
