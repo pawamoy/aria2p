@@ -103,7 +103,7 @@ class _DebugInfo(argparse.Action):
         super().__init__(nargs=nargs, **kwargs)
 
     def __call__(self, *args: Any, **kwargs: Any) -> None:  # noqa: ARG002
-        debug.print_debug_info()
+        debug._print_debug_info()
         sys.exit(0)
 
 
@@ -122,7 +122,7 @@ def get_parser() -> argparse.ArgumentParser:
 
     global_options = parser.add_argument_group(title="Global options")
     global_options.add_argument("-h", "--help", action="help", help=main_help)
-    global_options.add_argument("-V", "--version", action="version", version=f"%(prog)s {debug.get_version()}")
+    global_options.add_argument("-V", "--version", action="version", version=f"%(prog)s {debug._get_version()}")
     global_options.add_argument("--debug-info", action=_DebugInfo, help="Print debug information.")
 
     global_options.add_argument(

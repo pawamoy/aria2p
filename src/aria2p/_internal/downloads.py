@@ -30,7 +30,7 @@ from typing import TYPE_CHECKING
 from loguru import logger
 
 from aria2p._internal.client import ClientException
-from aria2p._internal.utils import bool_or_value, human_readable_bytes, human_readable_timedelta
+from aria2p._internal.utils import _bool_or_value, _human_readable_bytes, _human_readable_timedelta
 
 if TYPE_CHECKING:
     from aria2p._internal.api import API
@@ -173,7 +173,7 @@ class File:  # noqa: PLW1641
             The length string.
         """
         if human_readable:
-            return human_readable_bytes(self.length, delim=" ")
+            return _human_readable_bytes(self.length, delim=" ")
         return str(self.length) + " B"
 
     @property
@@ -199,7 +199,7 @@ class File:  # noqa: PLW1641
             The completed length string.
         """
         if human_readable:
-            return human_readable_bytes(self.completed_length, delim=" ")
+            return _human_readable_bytes(self.completed_length, delim=" ")
         return str(self.completed_length) + " B"
 
     @property
@@ -213,7 +213,7 @@ class File:  # noqa: PLW1641
         Returns:
             If this file is selected.
         """
-        return bool_or_value(self._struct["selected"])
+        return _bool_or_value(self._struct["selected"])
 
     @property
     def uris(self) -> list[dict]:
@@ -483,7 +483,7 @@ class Download:  # noqa: PLW1641
             The total length string.
         """
         if human_readable:
-            return human_readable_bytes(self.total_length, delim=" ")
+            return _human_readable_bytes(self.total_length, delim=" ")
         return str(self.total_length) + " B"
 
     @property
@@ -505,7 +505,7 @@ class Download:  # noqa: PLW1641
             The completed length string.
         """
         if human_readable:
-            return human_readable_bytes(self.completed_length, delim=" ")
+            return _human_readable_bytes(self.completed_length, delim=" ")
         return str(self.completed_length) + " B"
 
     @property
@@ -527,7 +527,7 @@ class Download:  # noqa: PLW1641
             The upload length string.
         """
         if human_readable:
-            return human_readable_bytes(self.upload_length, delim=" ")
+            return _human_readable_bytes(self.upload_length, delim=" ")
         return str(self.upload_length) + " B"
 
     @property
@@ -562,7 +562,7 @@ class Download:  # noqa: PLW1641
             The download speed string.
         """
         if human_readable:
-            return human_readable_bytes(self.download_speed, delim=" ", postfix="/s")
+            return _human_readable_bytes(self.download_speed, delim=" ", postfix="/s")
         return str(self.download_speed) + " B/s"
 
     @property
@@ -584,7 +584,7 @@ class Download:  # noqa: PLW1641
             The upload speed string.
         """
         if human_readable:
-            return human_readable_bytes(self.upload_speed, delim=" ", postfix="/s")
+            return _human_readable_bytes(self.upload_speed, delim=" ", postfix="/s")
         return str(self.upload_speed) + " B/s"
 
     @property
@@ -618,7 +618,7 @@ class Download:  # noqa: PLW1641
         Returns:
             If the local endpoint is a seeder.
         """
-        return bool_or_value(self._struct.get("seeder"))
+        return _bool_or_value(self._struct.get("seeder"))
 
     @property
     def piece_length(self) -> int:
@@ -639,7 +639,7 @@ class Download:  # noqa: PLW1641
             The piece length string.
         """
         if human_readable:
-            return human_readable_bytes(self.piece_length, delim=" ")
+            return _human_readable_bytes(self.piece_length, delim=" ")
         return str(self.piece_length) + " B"
 
     @property
@@ -834,7 +834,7 @@ class Download:  # noqa: PLW1641
             The verified length string.
         """
         if human_readable:
-            return human_readable_bytes(self.verified_length, delim=" ")
+            return _human_readable_bytes(self.verified_length, delim=" ")
         return str(self.verified_length) + " B"
 
     @property
@@ -846,7 +846,7 @@ class Download:  # noqa: PLW1641
         Returns:
             Whether this download is waiting for the hash check.
         """
-        return bool_or_value(self._struct.get("verifyIntegrityPending"))
+        return _bool_or_value(self._struct.get("verifyIntegrityPending"))
 
     @property
     def progress(self) -> float:
@@ -897,7 +897,7 @@ class Download:  # noqa: PLW1641
         if eta == timedelta.max:
             return "-"
 
-        return human_readable_timedelta(eta, precision=precision)
+        return _human_readable_timedelta(eta, precision=precision)
 
     def move(self, pos: int) -> int:
         """Move the download in the queue, relatively.

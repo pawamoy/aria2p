@@ -28,7 +28,8 @@ from aria2p._internal import utils as _utils
 
 def __getattr__(name: str) -> Any:
     warnings.warn(
-        "Importing from `aria2p.utils` is deprecated. Import from `aria2p` directly.",
+        "Importing from `aria2p.utils` is deprecated. Import from `aria2p` directly. "
+        "If the name isn't exposed in `aria2p`, it's planned for future removal.",
         DeprecationWarning,
         stacklevel=2,
     )

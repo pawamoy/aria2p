@@ -112,7 +112,7 @@ def test_no_interface_deps_print_error(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture,
 ) -> None:
-    monkeypatch.setattr(top, "Interface", None)
+    monkeypatch.setattr(top, "_Interface", None)
     main(["-p", str(server.port)])
     line = first_err_line(capsys)
     assert "aria2p[tui]" in line
@@ -300,7 +300,7 @@ def test_show_version(capsys: pytest.CaptureFixture) -> None:
     with pytest.raises(SystemExit):
         main(["-V"])
     captured = capsys.readouterr()
-    assert debug.get_version() in captured.out
+    assert debug._get_version() in captured.out
 
 
 def test_show_debug_info(capsys: pytest.CaptureFixture) -> None:

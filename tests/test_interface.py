@@ -38,7 +38,7 @@ from tests.conftest import Aria2Server
 if TYPE_CHECKING:
     from aria2p._internal.api import API
 
-tui.Interface.frames = 20  # reduce tests time
+tui._Interface.frames = 20  # reduce tests time
 
 
 class SpecialEvent:
@@ -64,8 +64,8 @@ class Event:
     resize = SpecialEvent(SpecialEvent.RESIZE)
     pass_frame = SpecialEvent(SpecialEvent.PASS_N_FRAMES, 1)
     pass_tick = SpecialEvent(SpecialEvent.PASS_N_TICKS, 1)
-    pass_half_tick = SpecialEvent(SpecialEvent.PASS_N_FRAMES, tui.Interface.frames / 2)
-    pass_tick_and_a_half = SpecialEvent(SpecialEvent.PASS_N_FRAMES, tui.Interface.frames * 3 / 2)
+    pass_half_tick = SpecialEvent(SpecialEvent.PASS_N_FRAMES, tui._Interface.frames / 2)
+    pass_tick_and_a_half = SpecialEvent(SpecialEvent.PASS_N_FRAMES, tui._Interface.frames * 3 / 2)
     up = KeyboardEvent(Screen.KEY_UP)
     down = KeyboardEvent(Screen.KEY_DOWN)
     left = KeyboardEvent(Screen.KEY_LEFT)
@@ -110,7 +110,7 @@ def get_interface(
     events: list[KeyboardEvent | MouseEvent | SpecialEvent] | None = None,
     *,
     append_q: bool = True,
-) -> tui.Interface:
+) -> tui._Interface:
     if not events:
         events = []
 
@@ -125,7 +125,7 @@ def get_interface(
             pass
 
     patcher.setattr(tui, "ManagedScreen", MockedManagedScreen)
-    return tui.Interface(api=api)
+    return tui._Interface(api=api)
 
 
 def run_interface(
@@ -135,7 +135,7 @@ def run_interface(
     *,
     append_q: bool = True,
     **kwargs: Any,
-) -> tui.Interface:
+) -> tui._Interface:
     interface = get_interface(patcher, api, events, append_q=append_q)
     for key, value in kwargs.items():
         setattr(interface, key, value)
@@ -185,7 +185,7 @@ class MockedScreen:
                 self._pass_n_frames = event.value - 1
             elif event.type == SpecialEvent.PASS_N_TICKS:
                 # we remove 1 because this event itself eats a frame
-                self._pass_n_frames = (event.value * tui.Interface.frames) - 1
+                self._pass_n_frames = (event.value * tui._Interface.frames) - 1
             elif event.type == SpecialEvent.RAISE:
                 raise event.value
         return None
@@ -217,7 +217,7 @@ def test_resize(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_frames_plus_n(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) -> None:
     n = 10
-    interface = run_interface(monkeypatch, server.api, events=[Event.pass_frames(tui.Interface.frames + n)])
+    interface = run_interface(monkeypatch, server.api, events=[Event.pass_frames(tui._Interface.frames + n)])
     assert interface.frame == n
 
 
@@ -234,7 +234,7 @@ def test_change_sort(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) -> No
             Event.pass_tick,
         ],
     )
-    assert interface.sort == tui.Interface.sort - 1
+    assert interface.sort == tui._Interface.sort - 1
 
 
 def test_move_focus(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -302,12 +302,13 @@ def test_select_sort(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch)
 
 
 def test_mouse_event(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) -> None:
-    reverse = tui.Interface.reverse
+    reverse = tui._Interface.reverse
     with Aria2Server(tmp_path, port, session="3-magnets.txt") as server:
         interface = run_interface(
             monkeypatch,
             server.api,
-            events=[MouseEvent(x=tui.Interface.x_offset, y=tui.Interface.y_offset, buttons=MouseEvent.LEFT_CLICK)] * 2,  # ty:ignore[invalid-argument-type]
+            events=[MouseEvent(x=tui._Interface.x_offset, y=tui._Interface.y_offset, buttons=MouseEvent.LEFT_CLICK)]
+            * 2,
         )
     assert interface.sort == 0
     assert interface.reverse is not reverse
@@ -443,8 +444,8 @@ def test_side_column_edges(tmp_path: Path, port: int, monkeypatch: pytest.Monkey
             monkeypatch,
             server.api,
             events=[Event.pass_frame, Event.f6]
-            + [Event.up] * len(tui.Interface.columns_order)
-            + [Event.down] * len(tui.Interface.columns_order)
+            + [Event.up] * len(tui._Interface.columns_order)
+            + [Event.down] * len(tui._Interface.columns_order)
             + [Event.esc],
         )
 

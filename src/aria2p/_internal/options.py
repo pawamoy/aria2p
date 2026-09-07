@@ -26,7 +26,7 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import TYPE_CHECKING
 
-from aria2p._internal.utils import bool_or_value, bool_to_str
+from aria2p._internal.utils import _bool_or_value, _bool_to_str
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -35,6 +35,7 @@ if TYPE_CHECKING:
     from aria2p._internal.downloads import Download
 
 OptionType = str | int | bool | float | None
+"""Union of types for option values."""
 
 
 class Options:
@@ -204,11 +205,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("check-integrity", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("check-integrity", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @check_integrity.setter
     def check_integrity(self, value: bool) -> None:
-        self.set("check-integrity", bool_to_str(value))
+        self.set("check-integrity", _bool_to_str(value))
 
     @property
     def continue_downloads(self) -> bool:
@@ -222,11 +223,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("continue", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("continue", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @continue_downloads.setter
     def continue_downloads(self, value: bool) -> None:
-        self.set("continue", bool_to_str(value))
+        self.set("continue", _bool_to_str(value))
 
     # HTTP/FTP/SFTP Options
     @property
@@ -342,11 +343,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("dry-run", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("dry-run", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @dry_run.setter
     def dry_run(self, value: bool) -> None:
-        self.set("dry-run", bool_to_str(value))
+        self.set("dry-run", _bool_to_str(value))
 
     @property
     def lowest_speed_limit(self) -> int:
@@ -477,11 +478,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("no-netrc", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("no-netrc", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @no_netrc.setter
     def no_netrc(self, value: bool) -> None:
-        self.set("no-netrc", bool_to_str(value))
+        self.set("no-netrc", _bool_to_str(value))
 
     @property
     def no_proxy(self) -> str:
@@ -560,11 +561,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("remote-time", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("remote-time", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @remote_time.setter
     def remote_time(self, value: bool) -> None:
-        self.set("remote-time", bool_to_str(value))
+        self.set("remote-time", _bool_to_str(value))
 
     @property
     def reuse_uri(self) -> bool:
@@ -577,11 +578,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("reuse-uri", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("reuse-uri", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @reuse_uri.setter
     def reuse_uri(self, value: bool) -> None:
-        self.set("reuse-uri", bool_to_str(value))
+        self.set("reuse-uri", _bool_to_str(value))
 
     @property
     def retry_wait(self) -> int:
@@ -816,11 +817,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("check-certificate", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("check-certificate", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @check_certificate.setter
     def check_certificate(self, value: bool) -> None:
-        self.set("check-certificate", bool_to_str(value))
+        self.set("check-certificate", _bool_to_str(value))
 
     @property
     def http_accept_gzip(self) -> bool:
@@ -838,11 +839,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("http-accept-gzip", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("http-accept-gzip", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @http_accept_gzip.setter
     def http_accept_gzip(self, value: bool) -> None:
-        self.set("http-accept-gzip", bool_to_str(value))
+        self.set("http-accept-gzip", _bool_to_str(value))
 
     @property
     def http_auth_challenge(self) -> bool:
@@ -857,11 +858,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("http-auth-challenge", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("http-auth-challenge", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @http_auth_challenge.setter
     def http_auth_challenge(self, value: bool) -> None:
-        self.set("http-auth-challenge", bool_to_str(value))
+        self.set("http-auth-challenge", _bool_to_str(value))
 
     @property
     def http_no_cache(self) -> bool:
@@ -875,11 +876,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("http-no-cache", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("http-no-cache", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @http_no_cache.setter
     def http_no_cache(self, value: bool) -> None:
-        self.set("http-no-cache", bool_to_str(value))
+        self.set("http-no-cache", _bool_to_str(value))
 
     @property
     def http_user(self) -> str:
@@ -1054,11 +1055,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-http-keep-alive", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-http-keep-alive", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @enable_http_keep_alive.setter
     def enable_http_keep_alive(self, value: bool) -> None:
-        self.set("enable-http-keep-alive", bool_to_str(value))
+        self.set("enable-http-keep-alive", _bool_to_str(value))
 
     @property
     def enable_http_pipelining(self) -> bool:
@@ -1074,11 +1075,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-http-pipelining", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-http-pipelining", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @enable_http_pipelining.setter
     def enable_http_pipelining(self, value: bool) -> None:
-        self.set("enable-http-pipelining", bool_to_str(value))
+        self.set("enable-http-pipelining", _bool_to_str(value))
 
     @property
     def header(self) -> str:
@@ -1148,11 +1149,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("use-head", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("use-head", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @use_head.setter
     def use_head(self, value: bool) -> None:
-        self.set("use-head", bool_to_str(value))
+        self.set("use-head", _bool_to_str(value))
 
     @property
     def user_agent(self) -> str:
@@ -1222,11 +1223,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("ftp-pasv", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("ftp-pasv", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @ftp_pasv.setter
     def ftp_pasv(self, value: bool) -> None:
-        self.set("ftp-pasv", bool_to_str(value))
+        self.set("ftp-pasv", _bool_to_str(value))
 
     @property
     def ftp_proxy(self) -> str:
@@ -1307,11 +1308,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("ftp-reuse-connection", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("ftp-reuse-connection", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @ftp_reuse_connection.setter
     def ftp_reuse_connection(self, value: bool) -> None:
-        self.set("ftp-reuse-connection", bool_to_str(value))
+        self.set("ftp-reuse-connection", _bool_to_str(value))
 
     @property
     def ssh_host_key_md(self) -> str:
@@ -1368,11 +1369,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("show-files", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("show-files", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @show_files.setter
     def show_files(self, value: bool) -> None:
-        self.set("show-files", bool_to_str(value))
+        self.set("show-files", _bool_to_str(value))
 
     # BitTorrent Specific Options
     @property
@@ -1389,11 +1390,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-detach-seed-only", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-detach-seed-only", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @bt_detach_seed_only.setter
     def bt_detach_seed_only(self, value: bool) -> None:
-        self.set("bt-detach-seed-only", bool_to_str(value))
+        self.set("bt-detach-seed-only", _bool_to_str(value))
 
     @property
     def bt_enable_hook_after_hash_check(self) -> bool:
@@ -1407,11 +1408,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt_enable_hook_after_hash_check", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt_enable_hook_after_hash_check", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @bt_enable_hook_after_hash_check.setter
     def bt_enable_hook_after_hash_check(self, value: bool) -> None:
-        self.set("bt_enable_hook_after_hash_check", bool_to_str(value))
+        self.set("bt_enable_hook_after_hash_check", _bool_to_str(value))
 
     @property
     def bt_enable_lpd(self) -> bool:
@@ -1425,11 +1426,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-enable-lpd", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-enable-lpd", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @bt_enable_lpd.setter
     def bt_enable_lpd(self, value: bool) -> None:
-        self.set("bt-enable-lpd", bool_to_str(value))
+        self.set("bt-enable-lpd", _bool_to_str(value))
 
     @property
     def bt_exclude_tracker(self) -> list[str]:
@@ -1481,11 +1482,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-force-encryption", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-force-encryption", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @bt_force_encryption.setter
     def bt_force_encryption(self, value: bool) -> None:
-        self.set("bt-force-encryption", bool_to_str(value))
+        self.set("bt-force-encryption", _bool_to_str(value))
 
     @property
     def bt_hash_check_seed(self) -> bool:
@@ -1500,11 +1501,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-hash-check-seed", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-hash-check-seed", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @bt_hash_check_seed.setter
     def bt_hash_check_seed(self, value: bool) -> None:
-        self.set("bt-hash-check-seed", bool_to_str(value))
+        self.set("bt-hash-check-seed", _bool_to_str(value))
 
     @property
     def bt_lpd_interface(self) -> str:
@@ -1570,11 +1571,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-metadata-only", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-metadata-only", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @bt_metadata_only.setter
     def bt_metadata_only(self, value: bool) -> None:
-        self.set("bt-metadata-only", bool_to_str(value))
+        self.set("bt-metadata-only", _bool_to_str(value))
 
     @property
     def bt_min_crypto_level(self) -> str:
@@ -1627,11 +1628,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-remove-unselected-file", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-remove-unselected-file", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @bt_remove_unselected_file.setter
     def bt_remove_unselected_file(self, value: bool) -> None:
-        self.set("bt-remove-unselected-file", bool_to_str(value))
+        self.set("bt-remove-unselected-file", _bool_to_str(value))
 
     @property
     def bt_require_crypto(self) -> bool:
@@ -1645,11 +1646,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-require-crypto", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-require-crypto", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @bt_require_crypto.setter
     def bt_require_crypto(self, value: bool) -> None:
-        self.set("bt-require-crypto", bool_to_str(value))
+        self.set("bt-require-crypto", _bool_to_str(value))
 
     @property
     def bt_request_peer_speed_limit(self) -> int:
@@ -1683,11 +1684,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-save-metadata", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-save-metadata", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @bt_save_metadata.setter
     def bt_save_metadata(self, value: bool) -> None:
-        self.set("bt-save-metadata", bool_to_str(value))
+        self.set("bt-save-metadata", _bool_to_str(value))
 
     @property
     def bt_seed_unverified(self) -> bool:
@@ -1700,11 +1701,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-seed-unverified", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-seed-unverified", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @bt_seed_unverified.setter
     def bt_seed_unverified(self, value: bool) -> None:
-        self.set("bt-seed-unverified", bool_to_str(value))
+        self.set("bt-seed-unverified", _bool_to_str(value))
 
     @property
     def bt_stop_timeout(self) -> int:
@@ -1926,11 +1927,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-dht", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-dht", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @enable_dht.setter
     def enable_dht(self, value: bool) -> None:
-        self.set("enable-dht", bool_to_str(value))
+        self.set("enable-dht", _bool_to_str(value))
 
     @property
     def enable_dht6(self) -> bool:
@@ -1944,11 +1945,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-dht6", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-dht6", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @enable_dht6.setter
     def enable_dht6(self, value: bool) -> None:
-        self.set("enable-dht6", bool_to_str(value))
+        self.set("enable-dht6", _bool_to_str(value))
 
     @property
     def enable_peer_exchange(self) -> bool:
@@ -1962,11 +1963,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-peer-exchange", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-peer-exchange", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @enable_peer_exchange.setter
     def enable_peer_exchange(self, value: bool) -> None:
-        self.set("enable-peer-exchange", bool_to_str(value))
+        self.set("enable-peer-exchange", _bool_to_str(value))
 
     @property
     def follow_torrent(self) -> str:
@@ -2290,11 +2291,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("metalink_enable_unique_protocol", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("metalink_enable_unique_protocol", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @metalink_enable_unique_protocol.setter
     def metalink_enable_unique_protocol(self, value: bool) -> None:
-        self.set("metalink_enable_unique_protocol", bool_to_str(value))
+        self.set("metalink_enable_unique_protocol", _bool_to_str(value))
 
     # RPC Options
     @property
@@ -2309,11 +2310,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-rpc", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-rpc", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @enable_rpc.setter
     def enable_rpc(self, value: bool) -> None:
-        self.set("enable-rpc", bool_to_str(value))
+        self.set("enable-rpc", _bool_to_str(value))
 
     @property
     def pause(self) -> bool:
@@ -2326,11 +2327,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("pause", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("pause", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @pause.setter
     def pause(self, value: bool) -> None:
-        self.set("pause", bool_to_str(value))
+        self.set("pause", _bool_to_str(value))
 
     @property
     def pause_metadata(self) -> bool:
@@ -2346,11 +2347,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("pause-metadata", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("pause-metadata", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @pause_metadata.setter
     def pause_metadata(self, value: bool) -> None:
-        self.set("pause-metadata", bool_to_str(value))
+        self.set("pause-metadata", _bool_to_str(value))
 
     @property
     def rpc_allow_origin_all(self) -> bool:
@@ -2363,11 +2364,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-allow-origin-all", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("rpc-allow-origin-all", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @rpc_allow_origin_all.setter
     def rpc_allow_origin_all(self, value: bool) -> None:
-        self.set("rpc-allow-origin-all", bool_to_str(value))
+        self.set("rpc-allow-origin-all", _bool_to_str(value))
 
     @property
     def rpc_certificate(self) -> str:
@@ -2412,11 +2413,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-listen-all", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("rpc-listen-all", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @rpc_listen_all.setter
     def rpc_listen_all(self, value: bool) -> None:
-        self.set("rpc-listen-all", bool_to_str(value))
+        self.set("rpc-listen-all", _bool_to_str(value))
 
     @property
     def rpc_listen_port(self) -> int:
@@ -2502,11 +2503,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-save-upload-metadata", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("rpc-save-upload-metadata", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @rpc_save_upload_metadata.setter
     def rpc_save_upload_metadata(self, value: bool) -> None:
-        self.set("rpc-save-upload-metadata", bool_to_str(value))
+        self.set("rpc-save-upload-metadata", _bool_to_str(value))
 
     @property
     def rpc_secret(self) -> str:
@@ -2537,11 +2538,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-secure", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("rpc-secure", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @rpc_secure.setter
     def rpc_secure(self, value: bool) -> None:
-        self.set("rpc-secure", bool_to_str(value))
+        self.set("rpc-secure", _bool_to_str(value))
 
     @property
     def rpc_user(self) -> str:
@@ -2574,11 +2575,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("allow-overwrite", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("allow-overwrite", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @allow_overwrite.setter
     def allow_overwrite(self, value: bool) -> None:
-        self.set("allow-overwrite", bool_to_str(value))
+        self.set("allow-overwrite", _bool_to_str(value))
 
     @property
     def allow_piece_length_change(self) -> bool:
@@ -2591,11 +2592,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("allow-piece-length-change", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("allow-piece-length-change", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @allow_piece_length_change.setter
     def allow_piece_length_change(self, value: bool) -> None:
-        self.set("allow-piece-length-change", bool_to_str(value))
+        self.set("allow-piece-length-change", _bool_to_str(value))
 
     @property
     def always_resume(self) -> bool:
@@ -2611,11 +2612,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("always-resume", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("always-resume", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @always_resume.setter
     def always_resume(self, value: bool) -> None:
-        self.set("always-resume", bool_to_str(value))
+        self.set("always-resume", _bool_to_str(value))
 
     @property
     def async_dns(self) -> bool:
@@ -2628,11 +2629,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("async-dns", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("async-dns", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @async_dns.setter
     def async_dns(self, value: bool) -> None:
-        self.set("async-dns", bool_to_str(value))
+        self.set("async-dns", _bool_to_str(value))
 
     @property
     def async_dns_server(self) -> list[str]:
@@ -2666,11 +2667,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("auto-file-renaming", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("auto-file-renaming", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @auto_file_renaming.setter
     def auto_file_renaming(self, value: bool) -> None:
-        self.set("auto-file-renaming", bool_to_str(value))
+        self.set("auto-file-renaming", _bool_to_str(value))
 
     @property
     def auto_save_interval(self) -> int:
@@ -2703,11 +2704,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("conditional-get", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("conditional-get", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @conditional_get.setter
     def conditional_get(self, value: bool) -> None:
-        self.set("conditional-get", bool_to_str(value))
+        self.set("conditional-get", _bool_to_str(value))
 
     @property
     def conf_path(self) -> str:
@@ -2755,11 +2756,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("daemon", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("daemon", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @daemon.setter
     def daemon(self, value: bool) -> None:
-        self.set("daemon", bool_to_str(value))
+        self.set("daemon", _bool_to_str(value))
 
     @property
     def deferred_input(self) -> bool:
@@ -2777,11 +2778,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("deferred-input", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("deferred-input", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @deferred_input.setter
     def deferred_input(self, value: bool) -> None:
-        self.set("deferred-input", bool_to_str(value))
+        self.set("deferred-input", _bool_to_str(value))
 
     @property
     def disable_ipv6(self) -> bool:
@@ -2794,11 +2795,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("disable-ipv6", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("disable-ipv6", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @disable_ipv6.setter
     def disable_ipv6(self, value: bool) -> None:
-        self.set("disable-ipv6", bool_to_str(value))
+        self.set("disable-ipv6", _bool_to_str(value))
 
     @property
     def disk_cache(self) -> int:
@@ -2899,11 +2900,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-color", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-color", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @enable_color.setter
     def enable_color(self, value: bool) -> None:
-        self.set("enable-color", bool_to_str(value))
+        self.set("enable-color", _bool_to_str(value))
 
     @property
     def enable_mmap(self) -> bool:
@@ -2916,11 +2917,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-mmap", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-mmap", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @enable_mmap.setter
     def enable_mmap(self, value: bool) -> None:
-        self.set("enable-mmap", bool_to_str(value))
+        self.set("enable-mmap", _bool_to_str(value))
 
     @property
     def event_poll(self) -> str:
@@ -2991,11 +2992,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("force-save", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("force-save", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @force_save.setter
     def force_save(self, value: bool) -> None:
-        self.set("force-save", bool_to_str(value))
+        self.set("force-save", _bool_to_str(value))
 
     @property
     def save_not_found(self) -> bool:
@@ -3008,11 +3009,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("save-not-found", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("save-not-found", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @save_not_found.setter
     def save_not_found(self, value: bool) -> None:
-        self.set("save-not-found", bool_to_str(value))
+        self.set("save-not-found", _bool_to_str(value))
 
     @property
     def gid(self) -> str:
@@ -3047,11 +3048,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("hash-check-only", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("hash-check-only", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @hash_check_only.setter
     def hash_check_only(self, value: bool) -> None:
-        self.set("hash-check-only", bool_to_str(value))
+        self.set("hash-check-only", _bool_to_str(value))
 
     @property
     def human_readable(self) -> bool:
@@ -3064,11 +3065,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("human-readable", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("human-readable", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @human_readable.setter
     def human_readable(self, value: bool) -> None:
-        self.set("human-readable", bool_to_str(value))
+        self.set("human-readable", _bool_to_str(value))
 
     @property
     def interface(self) -> str:
@@ -3105,11 +3106,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("keep_unfinished_download_result", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("keep_unfinished_download_result", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @keep_unfinished_download_result.setter
     def keep_unfinished_download_result(self, value: bool) -> None:
-        self.set("keep_unfinished_download_result", bool_to_str(value))
+        self.set("keep_unfinished_download_result", _bool_to_str(value))
 
     @property
     def max_download_result(self) -> int:
@@ -3387,11 +3388,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("show-console-readout", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("show-console-readout", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @show_console_readout.setter
     def show_console_readout(self, value: bool) -> None:
-        self.set("show-console-readout", bool_to_str(value))
+        self.set("show-console-readout", _bool_to_str(value))
 
     @property
     def stderr(self) -> bool:
@@ -3404,11 +3405,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("stderr", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("stderr", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @stderr.setter
     def stderr(self, value: bool) -> None:
-        self.set("stderr", bool_to_str(value))
+        self.set("stderr", _bool_to_str(value))
 
     @property
     def summary_interval(self) -> int:
@@ -3439,11 +3440,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("force-sequential", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("force-sequential", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @force_sequential.setter
     def force_sequential(self, value: bool) -> None:
-        self.set("force-sequential", bool_to_str(value))
+        self.set("force-sequential", _bool_to_str(value))
 
     @property
     def max_overall_download_limit(self) -> int:
@@ -3490,11 +3491,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("no-conf", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("no-conf", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @no_conf.setter
     def no_conf(self, value: bool) -> None:
-        self.set("no-conf", bool_to_str(value))
+        self.set("no-conf", _bool_to_str(value))
 
     @property
     def no_file_allocation_limit(self) -> int:
@@ -3526,11 +3527,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("parameterized-uri", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("parameterized-uri", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @parameterized_uri.setter
     def parameterized_uri(self, value: bool) -> None:
-        self.set("parameterized-uri", bool_to_str(value))
+        self.set("parameterized-uri", _bool_to_str(value))
 
     @property
     def quiet(self) -> bool:
@@ -3543,11 +3544,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("quiet", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("quiet", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @quiet.setter
     def quiet(self, value: bool) -> None:
-        self.set("quiet", bool_to_str(value))
+        self.set("quiet", _bool_to_str(value))
 
     @property
     def realtime_chunk_checksum(self) -> bool:
@@ -3560,11 +3561,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("realtime-chunk-checksum", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("realtime-chunk-checksum", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @realtime_chunk_checksum.setter
     def realtime_chunk_checksum(self, value: bool) -> None:
-        self.set("realtime-chunk-checksum", bool_to_str(value))
+        self.set("realtime-chunk-checksum", _bool_to_str(value))
 
     @property
     def remove_control_file(self) -> bool:
@@ -3578,11 +3579,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("remove-control-file", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("remove-control-file", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @remove_control_file.setter
     def remove_control_file(self, value: bool) -> None:
-        self.set("remove-control-file", bool_to_str(value))
+        self.set("remove-control-file", _bool_to_str(value))
 
     @property
     def save_session(self) -> str:
@@ -3705,8 +3706,8 @@ class Options:
         Returns:
             bool
         """
-        return self.get("truncate-console-readout", bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("truncate-console-readout", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @truncate_console_readout.setter
     def truncate_console_readout(self, value: bool) -> None:
-        self.set("truncate-console-readout", bool_to_str(value))
+        self.set("truncate-console-readout", _bool_to_str(value))

@@ -22,7 +22,7 @@
 
 from __future__ import annotations
 
-from aria2p._internal.utils import human_readable_bytes
+from aria2p._internal.utils import _human_readable_bytes
 
 
 class Stats:
@@ -55,7 +55,7 @@ class Stats:
             The download speed string.
         """
         if human_readable:
-            return human_readable_bytes(self.download_speed, delim=" ", postfix="/s")
+            return _human_readable_bytes(self.download_speed, delim=" ", postfix="/s")
         return str(self.download_speed) + " B/s"
 
     @property
@@ -77,7 +77,7 @@ class Stats:
             The upload speed string.
         """
         if human_readable:
-            return human_readable_bytes(self.upload_speed, delim=" ", postfix="/s")
+            return _human_readable_bytes(self.upload_speed, delim=" ", postfix="/s")
         return str(self.upload_speed) + " B/s"
 
     @property

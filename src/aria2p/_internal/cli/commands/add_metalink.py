@@ -23,7 +23,7 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING
 
-from aria2p._internal.utils import read_lines
+from aria2p._internal.utils import _read_lines
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -57,7 +57,7 @@ def add_metalinks(
 
     if from_file:
         try:
-            metalink_files.extend(read_lines(from_file))
+            metalink_files.extend(_read_lines(from_file))
         except OSError:
             print(f"Cannot open file: {from_file}", file=sys.stderr)
             ok = False
