@@ -28,8 +28,11 @@ from aria2p._internal import interface as _interface
 
 def __getattr__(name: str) -> Any:
     warnings.warn(
-        "Importing from `aria2p.interface` is deprecated. Import from `aria2p` directly.",
+        "Names in `aria2p.interface` are deprecated and will become private in a future release.",
         DeprecationWarning,
         stacklevel=2,
     )
-    return getattr(_interface, name)
+    try:
+        return getattr(_interface, name)
+    except AttributeError:
+        return getattr(_interface, f"_{name}")

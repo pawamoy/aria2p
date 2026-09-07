@@ -25,7 +25,7 @@ from typing import Any
 
 import pytest
 
-from aria2p._internal.utils import bool_or_value, bool_to_str, human_readable_bytes, human_readable_timedelta
+from aria2p._internal.utils import _bool_or_value, _bool_to_str, _human_readable_bytes, _human_readable_timedelta
 
 
 @pytest.mark.parametrize(
@@ -50,7 +50,7 @@ def test_human_readable_bytes(value: int, kwargs: Any, expected: str) -> None:
         kwargs: Keyword arguments passed to the function.
         expected: The expected result.
     """
-    assert human_readable_bytes(value, **kwargs) == expected
+    assert _human_readable_bytes(value, **kwargs) == expected
 
 
 @pytest.mark.parametrize(
@@ -75,7 +75,7 @@ def test_human_readable_timedelta_force_print_0_seconds(td: timedelta, expected:
         td: A timedelta.
         expected: The expected result.
     """
-    assert human_readable_timedelta(td) == expected
+    assert _human_readable_timedelta(td) == expected
 
 
 @pytest.mark.parametrize(
@@ -96,7 +96,7 @@ def test_bool_or_value_true_is_true(value: str | int | None, expected: bool | st
         value: Value passed to the function.
         expected: The expected result.
     """
-    assert bool_or_value(value) == expected
+    assert _bool_or_value(value) == expected
 
 
 @pytest.mark.parametrize(
@@ -116,4 +116,4 @@ def test_bool_to_str_true_gives_true(value: bool | int | None, expected: str | i
         value: Value passed to the function.
         expected: The expected result.
     """
-    assert bool_to_str(value) == expected
+    assert _bool_to_str(value) == expected

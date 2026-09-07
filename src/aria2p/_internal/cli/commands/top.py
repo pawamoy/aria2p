@@ -27,9 +27,9 @@ if TYPE_CHECKING:
     from aria2p._internal.api import API
 
 try:
-    from aria2p._internal.interface import Interface
+    from aria2p._internal.interface import _Interface
 except ImportError:
-    Interface = None  # ty:ignore[invalid-assignment]
+    _Interface = None
 
 
 def top(api: API) -> int:
@@ -41,13 +41,13 @@ def top(api: API) -> int:
     Returns:
         int: Always 0.
     """
-    if Interface is None:
+    if _Interface is None:
         print(
             "The top-interface dependencies are not installed. Try running `pip install aria2p[tui]` to install them.",
             file=sys.stderr,
         )
         return 1
 
-    interface = Interface(api)
+    interface = _Interface(api)
     success = interface.run()
     return 0 if success else 1

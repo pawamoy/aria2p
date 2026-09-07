@@ -43,8 +43,11 @@ if TYPE_CHECKING:
 
 
 OptionsType = Options | dict
+"""A type for parameters received options."""
 OperationResult = bool | ClientException
+"""API operations return booleans or client exceptions."""
 InputFileContentsType = list[tuple[list[str], dict[str, str]]]
+"""Structure to represent aria2 input files."""
 
 
 class API:
@@ -780,7 +783,7 @@ class API:
                 results.append(False)
         return results
 
-    def listen_to_notifications(
+    def listen_to_notifications(  # noqa: PLR0917
         self,
         threaded: bool = False,  # noqa: FBT001,FBT002
         on_download_start: Callable | None = None,

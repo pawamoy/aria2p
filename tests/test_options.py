@@ -96,37 +96,37 @@ class TestOptionsProperties:
     def test_allow_overwrite_properties(self) -> None:
         assert self.options.allow_overwrite is None
         value = ""
-        self.options.allow_overwrite = value  # ty:ignore[invalid-assignment]
+        self.options.allow_overwrite = value
         assert self.options.allow_overwrite == value
 
     def test_allow_piece_length_change_properties(self) -> None:
         assert self.options.allow_piece_length_change is None
         value = ""
-        self.options.allow_piece_length_change = value  # ty:ignore[invalid-assignment]
+        self.options.allow_piece_length_change = value
         assert self.options.allow_piece_length_change == value
 
     def test_always_resume_properties(self) -> None:
         assert self.options.always_resume is None
         value = ""
-        self.options.always_resume = value  # ty:ignore[invalid-assignment]
+        self.options.always_resume = value
         assert self.options.always_resume == value
 
     def test_async_dns_properties(self) -> None:
         assert self.options.async_dns is None
         value = ""
-        self.options.async_dns = value  # ty:ignore[invalid-assignment]
+        self.options.async_dns = value
         assert self.options.async_dns == value
 
     def test_async_dns_server_properties(self) -> None:
         assert self.options.async_dns_server is None
         value = ""
-        self.options.async_dns_server = value  # ty:ignore[invalid-assignment]
+        self.options.async_dns_server = value
         assert self.options.async_dns_server == value
 
     def test_auto_file_renaming_properties(self) -> None:
         assert self.options.auto_file_renaming is None
         value = ""
-        self.options.auto_file_renaming = value  # ty:ignore[invalid-assignment]
+        self.options.auto_file_renaming = value
         assert self.options.auto_file_renaming == value
 
     def test_auto_save_interval_properties(self) -> None:
@@ -138,25 +138,25 @@ class TestOptionsProperties:
     def test_bt_detach_seed_only_properties(self) -> None:
         assert self.options.bt_detach_seed_only is None
         value = ""
-        self.options.bt_detach_seed_only = value  # ty:ignore[invalid-assignment]
+        self.options.bt_detach_seed_only = value
         assert self.options.bt_detach_seed_only == value
 
     def test_bt_enable_hook_after_hash_check_properties(self) -> None:
         assert self.options.bt_enable_hook_after_hash_check is None
         value = ""
-        self.options.bt_enable_hook_after_hash_check = value  # ty:ignore[invalid-assignment]
+        self.options.bt_enable_hook_after_hash_check = value
         assert self.options.bt_enable_hook_after_hash_check == value
 
     def test_bt_enable_lpd_properties(self) -> None:
         assert self.options.bt_enable_lpd is None
         value = ""
-        self.options.bt_enable_lpd = value  # ty:ignore[invalid-assignment]
+        self.options.bt_enable_lpd = value
         assert self.options.bt_enable_lpd == value
 
     def test_bt_exclude_tracker_properties(self) -> None:
         assert self.options.bt_exclude_tracker is None
         value = ""
-        self.options.bt_exclude_tracker = value  # ty:ignore[invalid-assignment]
+        self.options.bt_exclude_tracker = value
         assert self.options.bt_exclude_tracker == value
 
     def test_bt_external_ip_properties(self) -> None:
@@ -168,13 +168,13 @@ class TestOptionsProperties:
     def test_bt_force_encryption_properties(self) -> None:
         assert self.options.bt_force_encryption is None
         value = ""
-        self.options.bt_force_encryption = value  # ty:ignore[invalid-assignment]
+        self.options.bt_force_encryption = value
         assert self.options.bt_force_encryption == value
 
     def test_bt_hash_check_seed_properties(self) -> None:
         assert self.options.bt_hash_check_seed is None
         value = ""
-        self.options.bt_hash_check_seed = value  # ty:ignore[invalid-assignment]
+        self.options.bt_hash_check_seed = value
         assert self.options.bt_hash_check_seed == value
 
     def test_bt_lpd_interface_properties(self) -> None:
@@ -198,7 +198,7 @@ class TestOptionsProperties:
     def test_bt_metadata_only_properties(self) -> None:
         assert self.options.bt_metadata_only is None
         value = ""
-        self.options.bt_metadata_only = value  # ty:ignore[invalid-assignment]
+        self.options.bt_metadata_only = value
         assert self.options.bt_metadata_only == value
 
     def test_bt_min_crypto_level_properties(self) -> None:
@@ -216,7 +216,7 @@ class TestOptionsProperties:
     def test_bt_remove_unselected_file_properties(self) -> None:
         assert self.options.bt_remove_unselected_file is None
         value = ""
-        self.options.bt_remove_unselected_file = value  # ty:ignore[invalid-assignment]
+        self.options.bt_remove_unselected_file = value
         assert self.options.bt_remove_unselected_file == value
 
     def test_bt_request_peer_speed_limit_properties(self) -> None:
@@ -228,19 +228,19 @@ class TestOptionsProperties:
     def test_bt_require_crypto_properties(self) -> None:
         assert self.options.bt_require_crypto is None
         value = ""
-        self.options.bt_require_crypto = value  # ty:ignore[invalid-assignment]
+        self.options.bt_require_crypto = value
         assert self.options.bt_require_crypto == value
 
     def test_bt_save_metadata_properties(self) -> None:
         assert self.options.bt_save_metadata is None
         value = ""
-        self.options.bt_save_metadata = value  # ty:ignore[invalid-assignment]
+        self.options.bt_save_metadata = value
         assert self.options.bt_save_metadata == value
 
     def test_bt_seed_unverified_properties(self) -> None:
         assert self.options.bt_seed_unverified is None
         value = ""
-        self.options.bt_seed_unverified = value  # ty:ignore[invalid-assignment]
+        self.options.bt_seed_unverified = value
         assert self.options.bt_seed_unverified == value
 
     def test_bt_stop_timeout_properties(self) -> None:
@@ -252,7 +252,7 @@ class TestOptionsProperties:
     def test_bt_tracker_properties(self) -> None:
         assert self.options.bt_tracker is None
         value = ""
-        self.options.bt_tracker = value  # ty:ignore[invalid-assignment]
+        self.options.bt_tracker = value
         assert self.options.bt_tracker == value
 
     def test_bt_tracker_connect_timeout_properties(self) -> None:
@@ -288,13 +288,13 @@ class TestOptionsProperties:
     def test_check_certificate_properties(self) -> None:
         assert self.options.check_certificate is None
         value = ""
-        self.options.check_certificate = value  # ty:ignore[invalid-assignment]
+        self.options.check_certificate = value
         assert self.options.check_certificate == value
 
     def test_check_integrity_properties(self) -> None:
         assert self.options.check_integrity is None
         value = ""
-        self.options.check_integrity = value  # ty:ignore[invalid-assignment]
+        self.options.check_integrity = value
         assert self.options.check_integrity == value
 
     def test_checksum_properties(self) -> None:
@@ -306,7 +306,7 @@ class TestOptionsProperties:
     def test_conditional_get_properties(self) -> None:
         assert self.options.conditional_get is None
         value = ""
-        self.options.conditional_get = value  # ty:ignore[invalid-assignment]
+        self.options.conditional_get = value
         assert self.options.conditional_get == value
 
     def test_conf_path_properties(self) -> None:
@@ -330,19 +330,19 @@ class TestOptionsProperties:
     def test_continue_downloads_properties(self) -> None:
         assert self.options.continue_downloads is None
         value = ""
-        self.options.continue_downloads = value  # ty:ignore[invalid-assignment]
+        self.options.continue_downloads = value
         assert self.options.continue_downloads == value
 
     def test_daemon_properties(self) -> None:
         assert self.options.daemon is None
         value = ""
-        self.options.daemon = value  # ty:ignore[invalid-assignment]
+        self.options.daemon = value
         assert self.options.daemon == value
 
     def test_deferred_input_properties(self) -> None:
         assert self.options.deferred_input is None
         value = ""
-        self.options.deferred_input = value  # ty:ignore[invalid-assignment]
+        self.options.deferred_input = value
         assert self.options.deferred_input == value
 
     def test_dht_entry_point_properties(self) -> None:
@@ -396,7 +396,7 @@ class TestOptionsProperties:
     def test_disable_ipv6_properties(self) -> None:
         assert self.options.disable_ipv6 is None
         value = ""
-        self.options.disable_ipv6 = value  # ty:ignore[invalid-assignment]
+        self.options.disable_ipv6 = value
         assert self.options.disable_ipv6 == value
 
     def test_disk_cache_properties(self) -> None:
@@ -414,7 +414,7 @@ class TestOptionsProperties:
     def test_dry_run_properties(self) -> None:
         assert self.options.dry_run is None
         value = ""
-        self.options.dry_run = value  # ty:ignore[invalid-assignment]
+        self.options.dry_run = value
         assert self.options.dry_run == value
 
     def test_dscp_properties(self) -> None:
@@ -426,49 +426,49 @@ class TestOptionsProperties:
     def test_enable_color_properties(self) -> None:
         assert self.options.enable_color is None
         value = ""
-        self.options.enable_color = value  # ty:ignore[invalid-assignment]
+        self.options.enable_color = value
         assert self.options.enable_color == value
 
     def test_enable_dht_properties(self) -> None:
         assert self.options.enable_dht is None
         value = ""
-        self.options.enable_dht = value  # ty:ignore[invalid-assignment]
+        self.options.enable_dht = value
         assert self.options.enable_dht == value
 
     def test_enable_dht6_properties(self) -> None:
         assert self.options.enable_dht6 is None
         value = ""
-        self.options.enable_dht6 = value  # ty:ignore[invalid-assignment]
+        self.options.enable_dht6 = value
         assert self.options.enable_dht6 == value
 
     def test_enable_http_keep_alive_properties(self) -> None:
         assert self.options.enable_http_keep_alive is None
         value = ""
-        self.options.enable_http_keep_alive = value  # ty:ignore[invalid-assignment]
+        self.options.enable_http_keep_alive = value
         assert self.options.enable_http_keep_alive == value
 
     def test_enable_http_pipelining_properties(self) -> None:
         assert self.options.enable_http_pipelining is None
         value = ""
-        self.options.enable_http_pipelining = value  # ty:ignore[invalid-assignment]
+        self.options.enable_http_pipelining = value
         assert self.options.enable_http_pipelining == value
 
     def test_enable_mmap_properties(self) -> None:
         assert self.options.enable_mmap is None
         value = ""
-        self.options.enable_mmap = value  # ty:ignore[invalid-assignment]
+        self.options.enable_mmap = value
         assert self.options.enable_mmap == value
 
     def test_enable_peer_exchange_properties(self) -> None:
         assert self.options.enable_peer_exchange is None
         value = ""
-        self.options.enable_peer_exchange = value  # ty:ignore[invalid-assignment]
+        self.options.enable_peer_exchange = value
         assert self.options.enable_peer_exchange == value
 
     def test_enable_rpc_properties(self) -> None:
         assert self.options.enable_rpc is None
         value = ""
-        self.options.enable_rpc = value  # ty:ignore[invalid-assignment]
+        self.options.enable_rpc = value
         assert self.options.enable_rpc == value
 
     def test_event_poll_properties(self) -> None:
@@ -498,13 +498,13 @@ class TestOptionsProperties:
     def test_force_save_properties(self) -> None:
         assert self.options.force_save is None
         value = ""
-        self.options.force_save = value  # ty:ignore[invalid-assignment]
+        self.options.force_save = value
         assert self.options.force_save == value
 
     def test_force_sequential_properties(self) -> None:
         assert self.options.force_sequential is None
         value = ""
-        self.options.force_sequential = value  # ty:ignore[invalid-assignment]
+        self.options.force_sequential = value
         assert self.options.force_sequential == value
 
     def test_ftp_passwd_properties(self) -> None:
@@ -516,7 +516,7 @@ class TestOptionsProperties:
     def test_ftp_pasv_properties(self) -> None:
         assert self.options.ftp_pasv is None
         value = ""
-        self.options.ftp_pasv = value  # ty:ignore[invalid-assignment]
+        self.options.ftp_pasv = value
         assert self.options.ftp_pasv == value
 
     def test_ftp_proxy_properties(self) -> None:
@@ -540,7 +540,7 @@ class TestOptionsProperties:
     def test_ftp_reuse_connection_properties(self) -> None:
         assert self.options.ftp_reuse_connection is None
         value = ""
-        self.options.ftp_reuse_connection = value  # ty:ignore[invalid-assignment]
+        self.options.ftp_reuse_connection = value
         assert self.options.ftp_reuse_connection == value
 
     def test_ftp_type_properties(self) -> None:
@@ -564,7 +564,7 @@ class TestOptionsProperties:
     def test_hash_check_only_properties(self) -> None:
         assert self.options.hash_check_only is None
         value = ""
-        self.options.hash_check_only = value  # ty:ignore[invalid-assignment]
+        self.options.hash_check_only = value
         assert self.options.hash_check_only == value
 
     def test_header_properties(self) -> None:
@@ -576,19 +576,19 @@ class TestOptionsProperties:
     def test_http_accept_gzip_properties(self) -> None:
         assert self.options.http_accept_gzip is None
         value = ""
-        self.options.http_accept_gzip = value  # ty:ignore[invalid-assignment]
+        self.options.http_accept_gzip = value
         assert self.options.http_accept_gzip == value
 
     def test_http_auth_challenge_properties(self) -> None:
         assert self.options.http_auth_challenge is None
         value = ""
-        self.options.http_auth_challenge = value  # ty:ignore[invalid-assignment]
+        self.options.http_auth_challenge = value
         assert self.options.http_auth_challenge == value
 
     def test_http_no_cache_properties(self) -> None:
         assert self.options.http_no_cache is None
         value = ""
-        self.options.http_no_cache = value  # ty:ignore[invalid-assignment]
+        self.options.http_no_cache = value
         assert self.options.http_no_cache == value
 
     def test_http_passwd_properties(self) -> None:
@@ -642,7 +642,7 @@ class TestOptionsProperties:
     def test_human_readable_properties(self) -> None:
         assert self.options.human_readable is None
         value = ""
-        self.options.human_readable = value  # ty:ignore[invalid-assignment]
+        self.options.human_readable = value
         assert self.options.human_readable == value
 
     def test_index_out_properties(self) -> None:
@@ -666,7 +666,7 @@ class TestOptionsProperties:
     def test_keep_unfinished_download_result_properties(self) -> None:
         assert self.options.keep_unfinished_download_result is None
         value = ""
-        self.options.keep_unfinished_download_result = value  # ty:ignore[invalid-assignment]
+        self.options.keep_unfinished_download_result = value
         assert self.options.keep_unfinished_download_result == value
 
     def test_listen_port_properties(self) -> None:
@@ -774,7 +774,7 @@ class TestOptionsProperties:
     def test_metalink_enable_unique_protocol_properties(self) -> None:
         assert self.options.metalink_enable_unique_protocol is None
         value = ""
-        self.options.metalink_enable_unique_protocol = value  # ty:ignore[invalid-assignment]
+        self.options.metalink_enable_unique_protocol = value
         assert self.options.metalink_enable_unique_protocol == value
 
     def test_metalink_file_properties(self) -> None:
@@ -792,7 +792,7 @@ class TestOptionsProperties:
     def test_metalink_location_properties(self) -> None:
         assert self.options.metalink_location is None
         value = ""
-        self.options.metalink_location = value  # ty:ignore[invalid-assignment]
+        self.options.metalink_location = value
         assert self.options.metalink_location == value
 
     def test_metalink_os_properties(self) -> None:
@@ -828,7 +828,7 @@ class TestOptionsProperties:
     def test_multiple_interface_properties(self) -> None:
         assert self.options.multiple_interface is None
         value = ""
-        self.options.multiple_interface = value  # ty:ignore[invalid-assignment]
+        self.options.multiple_interface = value
         assert self.options.multiple_interface == value
 
     def test_netrc_path_properties(self) -> None:
@@ -840,7 +840,7 @@ class TestOptionsProperties:
     def test_no_conf_properties(self) -> None:
         assert self.options.no_conf is None
         value = ""
-        self.options.no_conf = value  # ty:ignore[invalid-assignment]
+        self.options.no_conf = value
         assert self.options.no_conf == value
 
     def test_no_file_allocation_limit_properties(self) -> None:
@@ -852,7 +852,7 @@ class TestOptionsProperties:
     def test_no_netrc_properties(self) -> None:
         assert self.options.no_netrc is None
         value = ""
-        self.options.no_netrc = value  # ty:ignore[invalid-assignment]
+        self.options.no_netrc = value
         assert self.options.no_netrc == value
 
     def test_no_proxy_properties(self) -> None:
@@ -912,19 +912,19 @@ class TestOptionsProperties:
     def test_parameterized_uri_properties(self) -> None:
         assert self.options.parameterized_uri is None
         value = ""
-        self.options.parameterized_uri = value  # ty:ignore[invalid-assignment]
+        self.options.parameterized_uri = value
         assert self.options.parameterized_uri == value
 
     def test_pause_properties(self) -> None:
         assert self.options.pause is None
         value = ""
-        self.options.pause = value  # ty:ignore[invalid-assignment]
+        self.options.pause = value
         assert self.options.pause == value
 
     def test_pause_metadata_properties(self) -> None:
         assert self.options.pause_metadata is None
         value = ""
-        self.options.pause_metadata = value  # ty:ignore[invalid-assignment]
+        self.options.pause_metadata = value
         assert self.options.pause_metadata == value
 
     def test_peer_id_prefix_properties(self) -> None:
@@ -954,13 +954,13 @@ class TestOptionsProperties:
     def test_quiet_properties(self) -> None:
         assert self.options.quiet is None
         value = ""
-        self.options.quiet = value  # ty:ignore[invalid-assignment]
+        self.options.quiet = value
         assert self.options.quiet == value
 
     def test_realtime_chunk_checksum_properties(self) -> None:
         assert self.options.realtime_chunk_checksum is None
         value = ""
-        self.options.realtime_chunk_checksum = value  # ty:ignore[invalid-assignment]
+        self.options.realtime_chunk_checksum = value
         assert self.options.realtime_chunk_checksum == value
 
     def test_referer_properties(self) -> None:
@@ -972,13 +972,13 @@ class TestOptionsProperties:
     def test_remote_time_properties(self) -> None:
         assert self.options.remote_time is None
         value = ""
-        self.options.remote_time = value  # ty:ignore[invalid-assignment]
+        self.options.remote_time = value
         assert self.options.remote_time == value
 
     def test_remove_control_file_properties(self) -> None:
         assert self.options.remove_control_file is None
         value = ""
-        self.options.remove_control_file = value  # ty:ignore[invalid-assignment]
+        self.options.remove_control_file = value
         assert self.options.remove_control_file == value
 
     def test_retry_wait_properties(self) -> None:
@@ -990,7 +990,7 @@ class TestOptionsProperties:
     def test_reuse_uri_properties(self) -> None:
         assert self.options.reuse_uri is None
         value = ""
-        self.options.reuse_uri = value  # ty:ignore[invalid-assignment]
+        self.options.reuse_uri = value
         assert self.options.reuse_uri == value
 
     def test_rlimit_nofile(self) -> None:
@@ -1002,7 +1002,7 @@ class TestOptionsProperties:
     def test_rpc_allow_origin_all_properties(self) -> None:
         assert self.options.rpc_allow_origin_all is None
         value = ""
-        self.options.rpc_allow_origin_all = value  # ty:ignore[invalid-assignment]
+        self.options.rpc_allow_origin_all = value
         assert self.options.rpc_allow_origin_all == value
 
     def test_rpc_certificate_properties(self) -> None:
@@ -1044,7 +1044,7 @@ class TestOptionsProperties:
     def test_rpc_save_upload_metadata_properties(self) -> None:
         assert self.options.rpc_save_upload_metadata is None
         value = ""
-        self.options.rpc_save_upload_metadata = value  # ty:ignore[invalid-assignment]
+        self.options.rpc_save_upload_metadata = value
         assert self.options.rpc_save_upload_metadata == value
 
     def test_rpc_secret(self) -> None:
@@ -1056,7 +1056,7 @@ class TestOptionsProperties:
     def test_rpc_secure_properties(self) -> None:
         assert self.options.rpc_secure is None
         value = ""
-        self.options.rpc_secure = value  # ty:ignore[invalid-assignment]
+        self.options.rpc_secure = value
         assert self.options.rpc_secure == value
 
     def test_rpc_user_properties(self) -> None:
@@ -1074,7 +1074,7 @@ class TestOptionsProperties:
     def test_save_not_found_properties(self) -> None:
         assert self.options.save_not_found is None
         value = ""
-        self.options.save_not_found = value  # ty:ignore[invalid-assignment]
+        self.options.save_not_found = value
         assert self.options.save_not_found == value
 
     def test_save_session_properties(self) -> None:
@@ -1092,13 +1092,13 @@ class TestOptionsProperties:
     def test_seed_ratio_properties(self) -> None:
         assert self.options.seed_ratio is None
         value = ""
-        self.options.seed_ratio = value  # ty:ignore[invalid-assignment]
+        self.options.seed_ratio = value
         assert self.options.seed_ratio == value
 
     def test_seed_time_properties(self) -> None:
         assert self.options.seed_time is None
         value = ""
-        self.options.seed_time = value  # ty:ignore[invalid-assignment]
+        self.options.seed_time = value
         assert self.options.seed_time == value
 
     def test_select_file_properties(self) -> None:
@@ -1128,13 +1128,13 @@ class TestOptionsProperties:
     def test_show_console_readout_properties(self) -> None:
         assert self.options.show_console_readout is None
         value = ""
-        self.options.show_console_readout = value  # ty:ignore[invalid-assignment]
+        self.options.show_console_readout = value
         assert self.options.show_console_readout == value
 
     def test_show_files_properties(self) -> None:
         assert self.options.show_files is None
         value = ""
-        self.options.show_files = value  # ty:ignore[invalid-assignment]
+        self.options.show_files = value
         assert self.options.show_files == value
 
     def test_socket_recv_buffer_size_properties(self) -> None:
@@ -1158,7 +1158,7 @@ class TestOptionsProperties:
     def test_stderr_properties(self) -> None:
         assert self.options.stderr is None
         value = ""
-        self.options.stderr = value  # ty:ignore[invalid-assignment]
+        self.options.stderr = value
         assert self.options.stderr == value
 
     def test_stop(self) -> None:
@@ -1200,7 +1200,7 @@ class TestOptionsProperties:
     def test_truncate_console_readout_properties(self) -> None:
         assert self.options.truncate_console_readout is None
         value = ""
-        self.options.truncate_console_readout = value  # ty:ignore[invalid-assignment]
+        self.options.truncate_console_readout = value
         assert self.options.truncate_console_readout == value
 
     def test_uri_selector_properties(self) -> None:
@@ -1212,7 +1212,7 @@ class TestOptionsProperties:
     def test_use_head_properties(self) -> None:
         assert self.options.use_head is None
         value = ""
-        self.options.use_head = value  # ty:ignore[invalid-assignment]
+        self.options.use_head = value
         assert self.options.use_head == value
 
     def test_user_agent_properties(self) -> None:

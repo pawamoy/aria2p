@@ -69,6 +69,7 @@ commands = {
     "autoremove": purge,  # alias for purge
     "listen": listen,
 }
+"""The available CLI commands."""
 
 
 def main(args: list[str] | None = None) -> int:

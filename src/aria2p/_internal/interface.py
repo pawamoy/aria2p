@@ -47,7 +47,7 @@ from asciimatics.screen import ManagedScreen, Screen
 from loguru import logger
 
 from aria2p._internal.api import API
-from aria2p._internal.utils import get_version, load_configuration
+from aria2p._internal.utils import _get_version, load_configuration
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
@@ -55,10 +55,10 @@ if TYPE_CHECKING:
     from aria2p._internal.downloads import Download
 
 
-configs = load_configuration()
+_configs = load_configuration()
 
 
-def key_bind_parser(action: str) -> list[Key]:
+def _key_bind_parser(action: str) -> list[_Key]:
     """Return a list of Key instances.
 
     Parameters:
@@ -67,17 +67,17 @@ def key_bind_parser(action: str) -> list[Key]:
     Returns:
         A list of keys.
     """
-    default_bindings = configs["DEFAULT"]["key_bindings"]
-    bindings = configs.get("USER", {}).get("key_bindings", default_bindings)
+    default_bindings = _configs["DEFAULT"]["key_bindings"]
+    bindings = _configs.get("USER", {}).get("key_bindings", default_bindings)
 
     key_binds = bindings.get(action, default_bindings[action])
 
     if isinstance(key_binds, list):
-        return [Key(k) for k in key_binds]
-    return [Key(key_binds)]
+        return [_Key(k) for k in key_binds]
+    return [_Key(key_binds)]
 
 
-def color_palette_parser(palette: str) -> tuple[int, int, int]:
+def _color_palette_parser(palette: str) -> tuple[int, int, int]:
     """Return a color tuple (foreground color, mode, background color).
 
     Parameters:
@@ -86,8 +86,8 @@ def color_palette_parser(palette: str) -> tuple[int, int, int]:
     Returns:
         Foreground color, mode, background color.
     """
-    default_colors = configs["DEFAULT"]["colors"]
-    colors = configs.get("USER", {}).get("colors", default_colors)
+    default_colors = _configs["DEFAULT"]["colors"]
+    colors = _configs.get("USER", {}).get("colors", default_colors)
 
     # get values of colors and modes for ascimatics.screen module
     color_map = {
@@ -117,7 +117,7 @@ def color_palette_parser(palette: str) -> tuple[int, int, int]:
     )
 
 
-class Key:  # noqa: PLW1641
+class _Key:  # noqa: PLW1641
     """A class to represent an input key."""
 
     OTHER_KEY_VALUES: ClassVar[dict[str, int]] = {
@@ -173,57 +173,57 @@ class Key:  # noqa: PLW1641
         return self.value == value
 
 
-class Keys:
+class _Keys:
     """The actions and their shortcuts keys."""
 
-    AUTOCLEAR = key_bind_parser("AUTOCLEAR")
-    CANCEL = key_bind_parser("CANCEL")
-    ENTER = key_bind_parser("ENTER")
-    FILTER = key_bind_parser("FILTER")
-    FOLLOW_ROW = key_bind_parser("FOLLOW_ROW")
-    HELP = key_bind_parser("HELP")
-    MOVE_DOWN = key_bind_parser("MOVE_DOWN")
-    MOVE_LEFT = key_bind_parser("MOVE_LEFT")
-    MOVE_RIGHT = key_bind_parser("MOVE_RIGHT")
-    MOVE_UP = key_bind_parser("MOVE_UP")
-    NEXT_SORT = key_bind_parser("NEXT_SORT")
-    PREVIOUS_SORT = key_bind_parser("PREVIOUS_SORT")
-    PRIORITY_DOWN = key_bind_parser("PRIORITY_DOWN")
-    PRIORITY_UP = key_bind_parser("PRIORITY_UP")
-    QUIT = key_bind_parser("QUIT")
-    REMOVE_ASK = key_bind_parser("REMOVE_ASK")
-    REVERSE_SORT = key_bind_parser("REVERSE_SORT")
-    SEARCH = key_bind_parser("SEARCH")
-    SELECT_SORT = key_bind_parser("SELECT_SORT")
-    SETUP = key_bind_parser("SETUP")
-    TOGGLE_EXPAND_COLLAPSE_ALL = key_bind_parser("TOGGLE_EXPAND_COLLAPSE_ALL")
-    TOGGLE_EXPAND_COLLAPSE = key_bind_parser("TOGGLE_EXPAND_COLLAPSE")
-    TOGGLE_RESUME_PAUSE = key_bind_parser("TOGGLE_RESUME_PAUSE")
-    TOGGLE_RESUME_PAUSE_ALL = key_bind_parser("TOGGLE_RESUME_PAUSE_ALL")
-    TOGGLE_SELECT = key_bind_parser("TOGGLE_SELECT")
-    UN_SELECT_ALL = key_bind_parser("UN_SELECT_ALL")
-    MOVE_HOME = key_bind_parser("MOVE_HOME")
-    MOVE_END = key_bind_parser("MOVE_END")
-    MOVE_UP_STEP = key_bind_parser("MOVE_UP_STEP")
-    MOVE_DOWN_STEP = key_bind_parser("MOVE_DOWN_STEP")
-    RETRY = key_bind_parser("RETRY")
-    RETRY_ALL = key_bind_parser("RETRY_ALL")
-    ADD_DOWNLOADS = key_bind_parser("ADD_DOWNLOADS")
+    AUTOCLEAR = _key_bind_parser("AUTOCLEAR")
+    CANCEL = _key_bind_parser("CANCEL")
+    ENTER = _key_bind_parser("ENTER")
+    FILTER = _key_bind_parser("FILTER")
+    FOLLOW_ROW = _key_bind_parser("FOLLOW_ROW")
+    HELP = _key_bind_parser("HELP")
+    MOVE_DOWN = _key_bind_parser("MOVE_DOWN")
+    MOVE_LEFT = _key_bind_parser("MOVE_LEFT")
+    MOVE_RIGHT = _key_bind_parser("MOVE_RIGHT")
+    MOVE_UP = _key_bind_parser("MOVE_UP")
+    NEXT_SORT = _key_bind_parser("NEXT_SORT")
+    PREVIOUS_SORT = _key_bind_parser("PREVIOUS_SORT")
+    PRIORITY_DOWN = _key_bind_parser("PRIORITY_DOWN")
+    PRIORITY_UP = _key_bind_parser("PRIORITY_UP")
+    QUIT = _key_bind_parser("QUIT")
+    REMOVE_ASK = _key_bind_parser("REMOVE_ASK")
+    REVERSE_SORT = _key_bind_parser("REVERSE_SORT")
+    SEARCH = _key_bind_parser("SEARCH")
+    SELECT_SORT = _key_bind_parser("SELECT_SORT")
+    SETUP = _key_bind_parser("SETUP")
+    TOGGLE_EXPAND_COLLAPSE_ALL = _key_bind_parser("TOGGLE_EXPAND_COLLAPSE_ALL")
+    TOGGLE_EXPAND_COLLAPSE = _key_bind_parser("TOGGLE_EXPAND_COLLAPSE")
+    TOGGLE_RESUME_PAUSE = _key_bind_parser("TOGGLE_RESUME_PAUSE")
+    TOGGLE_RESUME_PAUSE_ALL = _key_bind_parser("TOGGLE_RESUME_PAUSE_ALL")
+    TOGGLE_SELECT = _key_bind_parser("TOGGLE_SELECT")
+    UN_SELECT_ALL = _key_bind_parser("UN_SELECT_ALL")
+    MOVE_HOME = _key_bind_parser("MOVE_HOME")
+    MOVE_END = _key_bind_parser("MOVE_END")
+    MOVE_UP_STEP = _key_bind_parser("MOVE_UP_STEP")
+    MOVE_DOWN_STEP = _key_bind_parser("MOVE_DOWN_STEP")
+    RETRY = _key_bind_parser("RETRY")
+    RETRY_ALL = _key_bind_parser("RETRY_ALL")
+    ADD_DOWNLOADS = _key_bind_parser("ADD_DOWNLOADS")
 
     @staticmethod
-    def names(keys_list: list[Key]) -> list[str]:
+    def names(keys_list: list[_Key]) -> list[str]:
         return [key.name for key in keys_list]
 
     @staticmethod
-    def values(keys_list: list[Key]) -> list[int]:
+    def values(keys_list: list[_Key]) -> list[int]:
         return [key.value for key in keys_list]
 
 
-class Exit(Exception):  # noqa: N818
+class _Exit(Exception):  # noqa: N818
     """A simple exception to exit the interactive interface."""
 
 
-class Column:
+class _Column:
     """A class to specify a column in the interface.
 
     It's composed of a header (the string to display on top), a padding (how to align the text),
@@ -255,7 +255,7 @@ class Column:
         self.get_palette = get_palette
 
 
-class HorizontalScroll:
+class _HorizontalScroll:
     """A wrapper around asciimatics' Screen.print_at and Screen.paint methods.
 
     It allows scroll the rows horizontally, used when moving left and right:
@@ -311,7 +311,7 @@ class HorizontalScroll:
         return written
 
 
-class Palette:
+class _Palette:
     """A simple class to hold palettes getters."""
 
     @staticmethod
@@ -325,13 +325,13 @@ class Palette:
         if value.startswith("[METADATA]"):
             return (
                 [(Screen.COLOUR_GREEN, Screen.A_UNDERLINE, Screen.COLOUR_BLACK)] * 10
-                + [Interface.palettes["metadata"]] * (len(value.strip()) - 10)
-                + [Interface.palettes["row"]]
+                + [_Interface.palettes["metadata"]] * (len(value.strip()) - 10)
+                + [_Interface.palettes["row"]]
             )
         return "name"
 
 
-class Interface:
+class _Interface:
     """The main class responsible for drawing the HTOP-like interface.
 
     It should be instantiated with an API instance, and then ran with its `run` method.
@@ -372,87 +372,87 @@ class Interface:
     screen: Screen
     data: list[Download]
     rows: list[Sequence[str]]
-    scroller: HorizontalScroll
+    scroller: _HorizontalScroll
     follow = None
     bounds: list[Sequence[int]]
 
-    palettes: ClassVar[dict[str, tuple[int, int, int]]] = defaultdict(lambda: color_palette_parser("UI"))
+    palettes: ClassVar[dict[str, tuple[int, int, int]]] = defaultdict(lambda: _color_palette_parser("UI"))
     palettes.update(
         {
-            "ui": color_palette_parser("UI"),
-            "header": color_palette_parser("HEADER"),
-            "focused_header": color_palette_parser("FOCUSED_HEADER"),
-            "focused_row": color_palette_parser("FOCUSED_ROW"),
-            "status_active": color_palette_parser("STATUS_ACTIVE"),
-            "status_paused": color_palette_parser("STATUS_PAUSED"),
-            "status_waiting": color_palette_parser("STATUS_WAITING"),
-            "status_error": color_palette_parser("STATUS_ERROR"),
-            "status_complete": color_palette_parser("STATUS_COMPLETE"),
-            "metadata": color_palette_parser("METADATA"),
-            "side_column_header": color_palette_parser("SIDE_COLUMN_HEADER"),
-            "side_column_row": color_palette_parser("SIDE_COLUMN_ROW"),
-            "side_column_focused_row": color_palette_parser("SIDE_COLUMN_FOCUSED_ROW"),
-            "bright_help": color_palette_parser("BRIGHT_HELP"),
+            "ui": _color_palette_parser("UI"),
+            "header": _color_palette_parser("HEADER"),
+            "focused_header": _color_palette_parser("FOCUSED_HEADER"),
+            "focused_row": _color_palette_parser("FOCUSED_ROW"),
+            "status_active": _color_palette_parser("STATUS_ACTIVE"),
+            "status_paused": _color_palette_parser("STATUS_PAUSED"),
+            "status_waiting": _color_palette_parser("STATUS_WAITING"),
+            "status_error": _color_palette_parser("STATUS_ERROR"),
+            "status_complete": _color_palette_parser("STATUS_COMPLETE"),
+            "metadata": _color_palette_parser("METADATA"),
+            "side_column_header": _color_palette_parser("SIDE_COLUMN_HEADER"),
+            "side_column_row": _color_palette_parser("SIDE_COLUMN_ROW"),
+            "side_column_focused_row": _color_palette_parser("SIDE_COLUMN_FOCUSED_ROW"),
+            "bright_help": _color_palette_parser("BRIGHT_HELP"),
         },
     )
 
     columns_order: ClassVar[list[str]] = ["gid", "status", "progress", "size", "down_speed", "up_speed", "eta", "name"]
-    columns: ClassVar[dict[str, Column]] = {
-        "gid": Column(
+    columns: ClassVar[dict[str, _Column]] = {
+        "gid": _Column(
             header="GID",
             padding=">16",
             get_text=lambda d: d.gid,
             get_sort=lambda d: d.gid,
             get_palette=lambda d: "gid",
         ),
-        "status": Column(
+        "status": _Column(
             header="STATUS",
             padding="<9",
             get_text=lambda d: d.status,
             get_sort=lambda d: d.status,
-            get_palette=Palette.status,
+            get_palette=_Palette.status,
         ),
-        "progress": Column(
+        "progress": _Column(
             header="PROGRESS",
             padding=">8",
             get_text=lambda d: d.progress_string(),
             get_sort=lambda d: d.progress,
             get_palette=lambda s: "progress",
         ),
-        "size": Column(
+        "size": _Column(
             header="SIZE",
             padding=">11",
             get_text=lambda d: d.total_length_string(),
             get_sort=lambda d: d.total_length,
             get_palette=lambda s: "size",
         ),
-        "down_speed": Column(
+        "down_speed": _Column(
             header="DOWN_SPEED",
             padding=">13",
             get_text=lambda d: d.download_speed_string(),
             get_sort=lambda d: d.download_speed,
             get_palette=lambda s: "down_speed",
         ),
-        "up_speed": Column(
+        "up_speed": _Column(
             header="UP_SPEED",
             padding=">13",
             get_text=lambda d: d.upload_speed_string(),
             get_sort=lambda d: d.upload_speed,
             get_palette=lambda s: "up_speed",
         ),
-        "eta": Column(
+        "eta": _Column(
             header="ETA",
             padding=">8",
             get_text=lambda d: d.eta_string(precision=2),
             get_sort=lambda d: d.eta,
             get_palette=lambda s: "eta",
         ),
-        "name": Column(
+        "name": _Column(
             header="NAME",
             padding="100%",
             get_text=lambda d: d.name,
             get_sort=lambda d: d.name,
-            get_palette=Palette.name,
+            get_palette=_Palette.name,
         ),
     }
 
@@ -470,7 +470,7 @@ class Interface:
 
     downloads_uris: list[str]
     downloads_uris_header = (
-        f"Add Download: [ Hit ENTER to download; Hit {','.join(Keys.names(Keys.ADD_DOWNLOADS))} to download all ]"
+        f"Add Download: [ Hit ENTER to download; Hit {','.join(_Keys.names(_Keys.ADD_DOWNLOADS))} to download all ]"
     )
 
     class StateConf(TypedDict):
@@ -498,7 +498,7 @@ class Interface:
         # reduce curses' 1 second delay when hitting escape to 25 ms
         os.environ.setdefault("ESCDELAY", "25")
 
-        self.state_mapping: dict[int, Interface.StateConf] = {
+        self.state_mapping: dict[int, _Interface.StateConf] = {
             self.State.MAIN: {
                 "process_keyboard_event": self.process_keyboard_event_main,
                 "process_mouse_event": self.process_mouse_event_main,
@@ -557,7 +557,7 @@ class Interface:
                             # avoid crashing the interface if exceptions occur while processing an event
                             try:
                                 self.process_event(event)
-                            except Exit:
+                            except _Exit:
                                 logger.debug("Received exit command")
                                 return True
                             except Exception as error:  # noqa: BLE001
@@ -628,7 +628,7 @@ class Interface:
         self.state_mapping[self.state]["process_keyboard_event"](event)
 
     def process_keyboard_event_main(self, event: KeyboardEvent) -> None:
-        if event.key_code in Keys.MOVE_UP:
+        if event.key_code in _Keys.MOVE_UP:
             if self.focused > 0:
                 self.focused -= 1
                 logger.debug(f"Move focus up: {self.focused}")
@@ -641,7 +641,7 @@ class Interface:
                 self.follow = None
                 self.refresh = True
 
-        elif event.key_code in Keys.MOVE_DOWN:
+        elif event.key_code in _Keys.MOVE_DOWN:
             if self.focused < len(self.rows) - 1:
                 self.focused += 1
                 logger.debug(f"Move focus down: {self.focused}")
@@ -650,23 +650,23 @@ class Interface:
                 self.follow = None
                 self.refresh = True
 
-        elif event.key_code in Keys.MOVE_LEFT:
+        elif event.key_code in _Keys.MOVE_LEFT:
             if self.x_scroll > 0:
                 self.x_scroll = max(0, self.x_scroll - 5)
                 self.refresh = True
 
-        elif event.key_code in Keys.MOVE_RIGHT:
+        elif event.key_code in _Keys.MOVE_RIGHT:
             self.x_scroll += 5
             self.refresh = True
 
-        elif event.key_code in Keys.HELP:
+        elif event.key_code in _Keys.HELP:
             self.state = self.State.HELP
             self.refresh = True
 
-        elif event.key_code in Keys.SETUP:
+        elif event.key_code in _Keys.SETUP:
             pass  # TODO
 
-        elif event.key_code in Keys.TOGGLE_RESUME_PAUSE:
+        elif event.key_code in _Keys.TOGGLE_RESUME_PAUSE:
             download = self.data[self.focused]
             if download.is_active or download.is_waiting:
                 logger.debug(f"Pausing download {download.gid}")
@@ -675,39 +675,39 @@ class Interface:
                 logger.debug(f"Resuming download {download.gid}")
                 download.resume()
 
-        elif event.key_code in Keys.PRIORITY_UP:
+        elif event.key_code in _Keys.PRIORITY_UP:
             download = self.data[self.focused]
             if not download.is_active:
                 download.move_up()
                 self.follow = download
 
-        elif event.key_code in Keys.PRIORITY_DOWN:
+        elif event.key_code in _Keys.PRIORITY_DOWN:
             download = self.data[self.focused]
             if not download.is_active:
                 download.move_down()
                 self.follow = download
 
-        elif event.key_code in Keys.REVERSE_SORT:
+        elif event.key_code in _Keys.REVERSE_SORT:
             self.reverse = not self.reverse
             self.refresh = True
 
-        elif event.key_code in Keys.NEXT_SORT:
+        elif event.key_code in _Keys.NEXT_SORT:
             if self.sort < len(self.columns) - 1:
                 self.sort += 1
                 self.refresh = True
 
-        elif event.key_code in Keys.PREVIOUS_SORT:
+        elif event.key_code in _Keys.PREVIOUS_SORT:
             if self.sort > 0:
                 self.sort -= 1
                 self.refresh = True
 
-        elif event.key_code in Keys.SELECT_SORT:
+        elif event.key_code in _Keys.SELECT_SORT:
             self.state = self.State.SELECT_SORT
             self.side_focused = self.sort
             self.x_offset = self.width_select_sort() + 1
             self.refresh = True
 
-        elif event.key_code in Keys.REMOVE_ASK:
+        elif event.key_code in _Keys.REMOVE_ASK:
             logger.debug("Triggered removal")
             logger.debug(f"self.focused = {self.focused}")
             logger.debug(f"len(self.data) = {len(self.data)}")
@@ -720,31 +720,31 @@ class Interface:
             else:
                 logger.debug("Could not focus download")
 
-        elif event.key_code in Keys.TOGGLE_EXPAND_COLLAPSE:  # noqa: SIM114
+        elif event.key_code in _Keys.TOGGLE_EXPAND_COLLAPSE:  # noqa: SIM114
             pass  # TODO
 
-        elif event.key_code in Keys.TOGGLE_EXPAND_COLLAPSE_ALL:
+        elif event.key_code in _Keys.TOGGLE_EXPAND_COLLAPSE_ALL:
             pass  # TODO
 
-        elif event.key_code in Keys.AUTOCLEAR:
+        elif event.key_code in _Keys.AUTOCLEAR:
             self.api.purge()
 
-        elif event.key_code in Keys.FOLLOW_ROW:
+        elif event.key_code in _Keys.FOLLOW_ROW:
             self.follow_focused()
 
-        elif event.key_code in Keys.SEARCH:  # noqa: SIM114
+        elif event.key_code in _Keys.SEARCH:  # noqa: SIM114
             pass  # TODO
 
-        elif event.key_code in Keys.FILTER:  # noqa: SIM114
+        elif event.key_code in _Keys.FILTER:  # noqa: SIM114
             pass  # TODO
 
-        elif event.key_code in Keys.TOGGLE_SELECT:  # noqa: SIM114
+        elif event.key_code in _Keys.TOGGLE_SELECT:  # noqa: SIM114
             pass  # TODO
 
-        elif event.key_code in Keys.UN_SELECT_ALL:
+        elif event.key_code in _Keys.UN_SELECT_ALL:
             pass  # TODO
 
-        elif event.key_code in Keys.MOVE_HOME:
+        elif event.key_code in _Keys.MOVE_HOME:
             if self.focused > 0:
                 self.focused = 0
                 logger.debug(f"Move focus home: {self.focused}")
@@ -757,7 +757,7 @@ class Interface:
                 self.follow = None
                 self.refresh = True
 
-        elif event.key_code in Keys.MOVE_END:
+        elif event.key_code in _Keys.MOVE_END:
             if self.focused < len(self.rows) - 1:
                 self.focused = len(self.rows) - 1
                 logger.debug(f"Move focus end: {self.focused}")
@@ -767,7 +767,7 @@ class Interface:
                 self.follow = None
                 self.refresh = True
 
-        elif event.key_code in Keys.MOVE_UP_STEP:
+        elif event.key_code in _Keys.MOVE_UP_STEP:
             if self.focused > 0:
                 self.focused -= len(self.rows) // 5
 
@@ -783,7 +783,7 @@ class Interface:
                 self.follow = None
                 self.refresh = True
 
-        elif event.key_code in Keys.MOVE_DOWN_STEP:
+        elif event.key_code in _Keys.MOVE_DOWN_STEP:
             if self.focused < len(self.rows) - 1:
                 self.focused += len(self.rows) // 5
 
@@ -795,22 +795,22 @@ class Interface:
                 self.follow = None
                 self.refresh = True
 
-        elif event.key_code in Keys.TOGGLE_RESUME_PAUSE_ALL:
+        elif event.key_code in _Keys.TOGGLE_RESUME_PAUSE_ALL:
             stats = self.api.get_stats()
             if stats.num_active:
                 self.api.pause_all()
             else:
                 self.api.resume_all()
 
-        elif event.key_code in Keys.RETRY:
+        elif event.key_code in _Keys.RETRY:
             download = self.data[self.focused]
             self.api.retry_downloads([download])
 
-        elif event.key_code in Keys.RETRY_ALL:
+        elif event.key_code in _Keys.RETRY_ALL:
             downloads = self.data[:]
             self.api.retry_downloads(downloads)
 
-        elif event.key_code in Keys.ADD_DOWNLOADS:
+        elif event.key_code in _Keys.ADD_DOWNLOADS:
             self.state = self.State.ADD_DOWNLOADS
             self.refresh = True
             self.side_focused = 0
@@ -827,8 +827,8 @@ class Interface:
             if copied_lines:
                 self.downloads_uris = sorted(copied_lines)
 
-        elif event.key_code in Keys.QUIT:
-            raise Exit
+        elif event.key_code in _Keys.QUIT:
+            raise _Exit
 
     def process_keyboard_event_help(self, event: KeyboardEvent) -> None:  # noqa: ARG002
         self.state = self.State.MAIN
@@ -838,13 +838,13 @@ class Interface:
         pass
 
     def process_keyboard_event_remove_ask(self, event: KeyboardEvent) -> None:
-        if event.key_code in Keys.CANCEL:
+        if event.key_code in _Keys.CANCEL:
             logger.debug("Canceling removal")
             self.state = self.State.MAIN
             self.x_offset = 0
             self.refresh = True
 
-        elif event.key_code in Keys.ENTER:
+        elif event.key_code in _Keys.ENTER:
             logger.debug("Validate removal")
             if self.follow:
                 self.remove_ask_rows[self.side_focused][1](self.follow)
@@ -858,47 +858,47 @@ class Interface:
             # force complete refresh
             self.frame = 0
 
-        elif event.key_code in Keys.MOVE_UP:
+        elif event.key_code in _Keys.MOVE_UP:
             if self.side_focused > 0:
                 self.side_focused -= 1
                 logger.debug(f"Moving side focus up: {self.side_focused}")
                 self.refresh = True
 
-        elif event.key_code in Keys.MOVE_DOWN:
+        elif event.key_code in _Keys.MOVE_DOWN:
             if self.side_focused < len(self.remove_ask_rows) - 1:
                 self.side_focused += 1
                 logger.debug(f"Moving side focus down: {self.side_focused}")
                 self.refresh = True
 
     def process_keyboard_event_select_sort(self, event: KeyboardEvent) -> None:
-        if event.key_code in Keys.CANCEL:
+        if event.key_code in _Keys.CANCEL:
             self.state = self.State.MAIN
             self.x_offset = 0
             self.refresh = True
 
-        elif event.key_code in Keys.ENTER:
+        elif event.key_code in _Keys.ENTER:
             self.sort = self.side_focused
             self.state = self.State.MAIN
             self.x_offset = 0
             self.refresh = True
 
-        elif event.key_code in Keys.MOVE_UP:
+        elif event.key_code in _Keys.MOVE_UP:
             if self.side_focused > 0:
                 self.side_focused -= 1
                 self.refresh = True
 
-        elif event.key_code in Keys.MOVE_DOWN:
+        elif event.key_code in _Keys.MOVE_DOWN:
             if self.side_focused < len(self.select_sort_rows) - 1:
                 self.side_focused += 1
                 self.refresh = True
 
     def process_keyboard_event_add_downloads(self, event: KeyboardEvent) -> None:
-        if event.key_code in Keys.CANCEL:
+        if event.key_code in _Keys.CANCEL:
             self.state = self.State.MAIN
             self.x_offset = 0
             self.refresh = True
 
-        elif event.key_code in Keys.MOVE_UP:
+        elif event.key_code in _Keys.MOVE_UP:
             if self.side_focused > 0:
                 self.side_focused -= 1
 
@@ -910,7 +910,7 @@ class Interface:
                 self.follow = None
                 self.refresh = True
 
-        elif event.key_code in Keys.MOVE_DOWN:
+        elif event.key_code in _Keys.MOVE_DOWN:
             if self.side_focused < len(self.downloads_uris) - 1:
                 self.side_focused += 1
                 if self.side_focused - self.row_offset >= (self.height - 1):
@@ -918,14 +918,14 @@ class Interface:
                 self.follow = None
                 self.refresh = True
 
-        elif event.key_code in Keys.ENTER:
+        elif event.key_code in _Keys.ENTER:
             if self.api.add(self.downloads_uris[self.side_focused]):
                 self.downloads_uris.pop(self.side_focused)
                 if 0 < self.side_focused > len(self.downloads_uris) - 1:
                     self.side_focused -= 1
                 self.refresh = True
 
-        elif event.key_code in Keys.ADD_DOWNLOADS:
+        elif event.key_code in _Keys.ADD_DOWNLOADS:
             for uri in self.downloads_uris:
                 self.api.add(uri)
 
@@ -1004,7 +1004,7 @@ class Interface:
             self.screen.print_at(" " * (padding + 1), 0, y + i, *self.palettes["ui"])
 
     def print_help(self) -> None:
-        version = get_version()
+        version = _get_version()
         lines = [
             f"aria2p {version} — (C) 2018-2020 Timothée Mazzucotelli and contributors",
             "Released under the ISC license.",
@@ -1017,34 +1017,34 @@ class Interface:
             y += 1
 
         for keys, text in [
-            (Keys.HELP, " show this help screen"),
-            (Keys.MOVE_UP, " scroll downloads list"),
-            (Keys.MOVE_UP_STEP, " scroll downloads list (steps)"),
-            (Keys.MOVE_DOWN, " scroll downloads list"),
-            (Keys.MOVE_DOWN_STEP, " scroll downloads list (steps)"),
+            (_Keys.HELP, " show this help screen"),
+            (_Keys.MOVE_UP, " scroll downloads list"),
+            (_Keys.MOVE_UP_STEP, " scroll downloads list (steps)"),
+            (_Keys.MOVE_DOWN, " scroll downloads list"),
+            (_Keys.MOVE_DOWN_STEP, " scroll downloads list (steps)"),
             # not implemented: (Keys.SETUP, " setup"),
-            (Keys.TOGGLE_RESUME_PAUSE, " toggle pause/resume"),
-            (Keys.PRIORITY_UP, " priority up (-)"),
-            (Keys.PRIORITY_DOWN, " priority down (+)"),
-            (Keys.REVERSE_SORT, " invert sort order"),
-            (Keys.NEXT_SORT, " sort next column"),
-            (Keys.PREVIOUS_SORT, " sort previous column"),
-            (Keys.SELECT_SORT, " select sort column"),
-            (Keys.REMOVE_ASK, " remove download"),
+            (_Keys.TOGGLE_RESUME_PAUSE, " toggle pause/resume"),
+            (_Keys.PRIORITY_UP, " priority up (-)"),
+            (_Keys.PRIORITY_DOWN, " priority down (+)"),
+            (_Keys.REVERSE_SORT, " invert sort order"),
+            (_Keys.NEXT_SORT, " sort next column"),
+            (_Keys.PREVIOUS_SORT, " sort previous column"),
+            (_Keys.SELECT_SORT, " select sort column"),
+            (_Keys.REMOVE_ASK, " remove download"),
             # not implemented: (Keys.TOGGLE_EXPAND_COLLAPSE, " toggle expand/collapse"),
             # not implemented: (Keys.TOGGLE_EXPAND_COLLAPSE_ALL, " toggle expand/collapse all"),
-            (Keys.AUTOCLEAR, " autopurge downloads"),
-            (Keys.FOLLOW_ROW, " cursor follows download"),
+            (_Keys.AUTOCLEAR, " autopurge downloads"),
+            (_Keys.FOLLOW_ROW, " cursor follows download"),
             # not implemented: (Keys.SEARCH, " name search"),
             # not implemented: (Keys.FILTER, " name filtering"),
             # not implemented: (Keys.TOGGLE_SELECT, " toggle select download"),
             # not implemented: (Keys.UN_SELECT_ALL, " unselect all downloads"),
-            (Keys.MOVE_HOME, " move focus to first download"),
-            (Keys.MOVE_END, " move focus to last download"),
-            (Keys.RETRY, " retry failed download"),
-            (Keys.RETRY_ALL, " retry all failed download"),
-            (Keys.ADD_DOWNLOADS, " add downloads from clipboard"),
-            (Keys.QUIT, " quit"),
+            (_Keys.MOVE_HOME, " move focus to first download"),
+            (_Keys.MOVE_END, " move focus to last download"),
+            (_Keys.RETRY, " retry failed download"),
+            (_Keys.RETRY_ALL, " retry all failed download"),
+            (_Keys.ADD_DOWNLOADS, " add downloads from clipboard"),
+            (_Keys.QUIT, " quit"),
         ]:
             self.print_keys(keys, text, y)
             y += 1
@@ -1057,8 +1057,8 @@ class Interface:
         for i in range(self.height - y):
             self.screen.print_at(" " * self.width, 0, y + i, *self.palettes["ui"])
 
-    def print_keys(self, keys: list[Key], text: str, y: int) -> None:
-        self.print_keys_text(" ".join(Keys.names(keys)) + ":", text, y)
+    def print_keys(self, keys: list[_Key], text: str, y: int) -> None:
+        self.print_keys_text(" ".join(_Keys.names(keys)) + ":", text, y)
 
     def print_keys_text(self, keys_text: str, text: str, y: int) -> None:
         length = 8
@@ -1170,7 +1170,7 @@ class Interface:
         """Set the screen object, its scroller wrapper, width, height, and columns bounds."""
         self.screen = screen
         self.height, self.width = screen.dimensions
-        self.scroller = HorizontalScroll(screen)
+        self.scroller = _HorizontalScroll(screen)
         self.bounds = []
         for column_name in self.columns_order:
             column = self.columns[column_name]

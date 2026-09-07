@@ -42,7 +42,7 @@ else:
     import tomllib
 
 
-class SignalHandler:
+class _SignalHandler:
     """A helper class to handle signals."""
 
     def __init__(self, signals: list[str]) -> None:
@@ -53,6 +53,7 @@ class SignalHandler:
         """
         logger.debug("Signal handler: handling signals " + ", ".join(signals))
         self.triggered = False
+        """Whether the signal was "triggered" (received)."""
         for sig in signals:
             try:
                 signal.signal(signal.Signals[sig], self.trigger)
@@ -80,7 +81,7 @@ class SignalHandler:
         self.triggered = True
 
 
-def human_readable_timedelta(value: timedelta, precision: int = 0) -> str:
+def _human_readable_timedelta(value: timedelta, precision: int = 0) -> str:
     """Return a human-readable time delta as a string.
 
     Parameters:
@@ -121,7 +122,7 @@ def human_readable_timedelta(value: timedelta, precision: int = 0) -> str:
     return "".join(pieces[:precision])
 
 
-def human_readable_bytes(value: int, digits: int = 2, delim: str = "", postfix: str = "") -> str:
+def _human_readable_bytes(value: int, digits: int = 2, delim: str = "", postfix: str = "") -> str:
     """Return a human-readable bytes value as a string.
 
     Parameters:
@@ -144,7 +145,7 @@ def human_readable_bytes(value: int, digits: int = 2, delim: str = "", postfix: 
     return f"{hr_value:.{digits}f}" + delim + chosen_unit + postfix
 
 
-def bool_or_value(value: Any) -> Any:
+def _bool_or_value(value: Any) -> Any:
     """Return `True` for `"true"`, `False` for `"false"`, original value otherwise.
 
     Parameters:
@@ -164,7 +165,7 @@ def bool_or_value(value: Any) -> Any:
     return value
 
 
-def bool_to_str(value: Any) -> Any:
+def _bool_to_str(value: Any) -> Any:
     """Return `"true"` for `True`, `"false"` for `False`, original value otherwise.
 
     Parameters:
@@ -182,7 +183,7 @@ def bool_to_str(value: Any) -> Any:
     return value
 
 
-def get_version() -> str:
+def _get_version() -> str:
     """Return the current `aria2p` version.
 
     Returns:
@@ -273,7 +274,7 @@ def load_configuration() -> dict[str, Any]:
     return config_dict
 
 
-def read_lines(path: str | Path) -> list[str]:
+def _read_lines(path: str | Path) -> list[str]:
     """Read lines in a file.
 
     Parameters:

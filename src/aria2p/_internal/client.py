@@ -30,7 +30,7 @@ import requests
 import websocket
 from loguru import logger
 
-from aria2p._internal.utils import SignalHandler
+from aria2p._internal.utils import _SignalHandler
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -1826,7 +1826,7 @@ class Client:
         return self.call(self.LIST_NOTIFICATIONS)  # ty:ignore[invalid-return-type]
 
     # notifications
-    def listen_to_notifications(
+    def listen_to_notifications(  # noqa: PLR0917
         self,
         on_download_start: Callable | None = None,
         on_download_pause: Callable | None = None,
@@ -1876,7 +1876,7 @@ class Client:
             NOTIFICATION_BT_COMPLETE: on_bt_download_complete,
         }
 
-        stopped = SignalHandler(["SIGTERM", "SIGINT"]) if handle_signals else False
+        stopped = _SignalHandler(["SIGTERM", "SIGINT"]) if handle_signals else False
 
         while not stopped:
             logger.debug(f"{log_prefix}: waiting for data over WebSocket")
@@ -1934,7 +1934,9 @@ class Notification:
             gid: The GID of the download related to the notification.
         """
         self.type = event_type
+        """The event type."""
         self.gid = gid
+        """The download GID."""
 
     @staticmethod
     def get_or_raise(message: dict) -> Notification:
