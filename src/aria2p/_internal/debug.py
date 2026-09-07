@@ -1,4 +1,4 @@
-"""Debugging utilities."""
+# Debugging utilities.
 
 from __future__ import annotations
 

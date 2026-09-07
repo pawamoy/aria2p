@@ -13,12 +13,12 @@ import pytest
 from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import Screen
 
-from aria2p import interface as tui
+from aria2p._internal import interface as tui
 from tests import TESTS_DATA_DIR
 from tests.conftest import Aria2Server
 
 if TYPE_CHECKING:
-    from aria2p.api import API
+    from aria2p._internal.api import API
 
 tui.Interface.frames = 20  # reduce tests time
 
@@ -101,7 +101,7 @@ def get_interface(
 
     class MockedManagedScreen:
         def __enter__(self):
-            return MockedScreen(events)
+            return MockedScreen(events)  # ty:ignore[invalid-argument-type]
 
         def __exit__(self, exc_type, exc_val, exc_tb):  # noqa: ANN001
             pass
@@ -231,7 +231,7 @@ def test_move_focus(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) 
 
 def test_show_help(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) -> None:
     interface = run_interface(monkeypatch, server.api, events=[Event.f1, Event.pass_tick, Event.enter])
-    assert interface.screen.print_at_calls[-1]["args"][0].startswith("Press any key to return.")
+    assert interface.screen.print_at_calls[-1]["args"][0].startswith("Press any key to return.")  # ty:ignore[unresolved-attribute]
 
 
 def test_horizontal_scrolling(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -253,7 +253,7 @@ def test_log_exception(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatc
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         interface = get_interface(monkeypatch, server.api, events=[Event.exc(LookupError("some message"))])
         assert not interface.run()
-    with open(Path("tests") / "logs" / "test_interface" / "test_log_exception.log") as log_file:
+    with Path("tests", "logs", "test_interface", "test_log_exception.log").open() as log_file:
         lines = log_file.readlines()
     first_line = ""
     for line in lines:
@@ -289,7 +289,7 @@ def test_mouse_event(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch)
         interface = run_interface(
             monkeypatch,
             server.api,
-            events=[MouseEvent(x=tui.Interface.x_offset, y=tui.Interface.y_offset, buttons=MouseEvent.LEFT_CLICK)] * 2,
+            events=[MouseEvent(x=tui.Interface.x_offset, y=tui.Interface.y_offset, buttons=MouseEvent.LEFT_CLICK)] * 2,  # ty:ignore[invalid-argument-type]
         )
     assert interface.sort == 0
     assert interface.reverse is not reverse
@@ -447,7 +447,7 @@ def test_click_out_bounds(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) 
         server.api,
         events=[Event.pass_frame, MouseEvent(x=1000, y=0, buttons=MouseEvent.LEFT_CLICK)],
     )
-    with open(Path("tests") / "logs" / "test_interface" / "test_click_out_bounds.log") as log_file:
+    with Path("tests", "logs", "test_interface", "test_click_out_bounds.log").open() as log_file:
         lines = log_file.readlines()
     error_line = None
     for line in lines:
@@ -468,17 +468,17 @@ def test_add_downloads_uris(server: Aria2Server, monkeypatch: pytest.MonkeyPatch
 
     uri1 = "http://localhost:8779/1"
     magnet1 = "magnet:?xt=urn:btih:RX46NCATYQRS3MCQNSEXVZGCCDNKTASQ"
-    clipboard_selection_downloads += "\n".join([uri1, magnet1])
+    clipboard_selection_downloads += f"{uri1}\n{magnet1}"
 
     uri2 = "http://localhost:8779/2"
     magnet2 = "magnet:?xt=urn:btih:VLYICEBJDQQ64SUGREZHD4IAD2FVCJCS"
-    primary_selection_downloads += "\n".join([uri2, magnet2])
+    primary_selection_downloads += f"{uri2}\n{magnet2}"
 
     # clipboard selection
     pyperclip.copy(clipboard_selection_downloads)
 
     # primary selection
-    pyperclip.copy(primary_selection_downloads, primary=True)
+    pyperclip.copy(primary_selection_downloads, primary=True)  # ty:ignore[unknown-argument]
 
     interface = run_interface(
         monkeypatch,
@@ -497,7 +497,7 @@ def test_add_downloads_uris(server: Aria2Server, monkeypatch: pytest.MonkeyPatch
     )
     # clear clipboards
     pyperclip.copy("")
-    pyperclip.copy("", primary=True)
+    pyperclip.copy("", primary=True)  # ty:ignore[unknown-argument]
     assert len(interface.data) == 2
 
 
@@ -516,7 +516,7 @@ def test_add_downloads_torrents_and_metalinks(server: Aria2Server, monkeypatch: 
     pyperclip.copy(clipboard_selection_download)
 
     # primary selection
-    pyperclip.copy(primary_selection_download, primary=True)
+    pyperclip.copy(primary_selection_download, primary=True)  # ty:ignore[unknown-argument]
 
     interface = run_interface(
         monkeypatch,
@@ -535,7 +535,7 @@ def test_add_downloads_torrents_and_metalinks(server: Aria2Server, monkeypatch: 
         ],
     )
     pyperclip.copy("")
-    pyperclip.copy("", primary=True)
+    pyperclip.copy("", primary=True)  # ty:ignore[unknown-argument]
     if len(interface.data) != 2:
         pytest.xfail("Empty data (sporadic error)")
     assert len(interface.data) == 2

@@ -275,9 +275,9 @@ class TestDownloadClass:
 
         def mocked() -> None:
             witness.append(0)
-            self.download._options = True  # type: ignore[assignment]
+            self.download._options = True  # ty:ignore[invalid-assignment]
 
-        self.download.update_options = mocked  # type: ignore[method-assign]
+        self.download.update_options = mocked  # ty:ignore[invalid-assignment]
         assert self.download.options is True
         assert witness == [0]
         assert self.download.options is True

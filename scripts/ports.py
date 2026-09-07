@@ -5,14 +5,13 @@ from __future__ import annotations
 import re
 import sys
 from collections import defaultdict
-from os import listdir
-from os.path import isfile, join
 from pathlib import Path
 
 
-def get_ports() -> dict[int, list[tuple[str, int, str]]]:  # noqa: D103
+def get_ports() -> dict[int, list[tuple[str, int, str]]]:
     port_regex = re.compile(r"port=[0-9]{4}")
-    test_files = [Path("tests") / f for f in listdir("tests") if isfile(join("tests", f))]
+    tests_dir = Path("tests")
+    test_files = [path for path in tests_dir.iterdir() if path.is_file()]
     used_ports = defaultdict(list)
     for test_file in test_files:
         with test_file.open() as test_code:
@@ -24,7 +23,7 @@ def get_ports() -> dict[int, list[tuple[str, int, str]]]:  # noqa: D103
     return used_ports
 
 
-def check(ports: dict[int, list[tuple[str, int, str]]]) -> int:  # noqa: D103
+def check(ports: dict[int, list[tuple[str, int, str]]]) -> int:
     check_ok = True
     for port, matches in ports.items():
         if port in blacklisted_ports:
@@ -43,7 +42,7 @@ def check(ports: dict[int, list[tuple[str, int, str]]]) -> int:  # noqa: D103
     return 0 if check_ok else 1
 
 
-def get_unused(ports: dict[int, list[tuple[str, int, str]]]) -> list[int]:  # noqa: D103
+def get_unused(ports: dict[int, list[tuple[str, int, str]]]) -> list[int]:
     finalists = []
     sorted_ports = sorted(ports.keys())
     following = False
@@ -57,7 +56,7 @@ def get_unused(ports: dict[int, list[tuple[str, int, str]]]) -> list[int]:  # no
     return finalists
 
 
-def next_unused(port: int) -> int | None:  # noqa: D103
+def next_unused(port: int) -> int | None:
     for next_port in unused_ports:
         if next_port > port:
             return next_port

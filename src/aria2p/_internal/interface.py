@@ -1,4 +1,4 @@
-"""This module contains all the code responsible for the HTOP-like interface."""
+# This module contains all the code responsible for the HTOP-like interface.
 
 # Why using asciimatics?
 #
@@ -20,7 +20,7 @@ import sys
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable, ClassVar, TypedDict
+from typing import TYPE_CHECKING, ClassVar, TypedDict
 
 import pyperclip
 import requests
@@ -28,13 +28,13 @@ from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import ManagedScreen, Screen
 from loguru import logger
 
-from aria2p.api import API
-from aria2p.utils import get_version, load_configuration
+from aria2p._internal.api import API
+from aria2p._internal.utils import get_version, load_configuration
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Callable, Sequence
 
-    from aria2p.downloads import Download
+    from aria2p._internal.downloads import Download
 
 
 configs = load_configuration()
@@ -99,7 +99,7 @@ def color_palette_parser(palette: str) -> tuple[int, int, int]:
     )
 
 
-class Key:
+class Key:  # noqa: PLW1641
     """A class to represent an input key."""
 
     OTHER_KEY_VALUES: ClassVar[dict[str, int]] = {
@@ -143,7 +143,7 @@ class Key:
             value = self.get_value(name)
         self.value = value
 
-    def get_value(self, name: str) -> int:  # noqa: D102
+    def get_value(self, name: str) -> int:
         try:
             value = ord(name)
         except TypeError:
@@ -193,11 +193,11 @@ class Keys:
     ADD_DOWNLOADS = key_bind_parser("ADD_DOWNLOADS")
 
     @staticmethod
-    def names(keys_list: list[Key]) -> list[str]:  # noqa: D102
+    def names(keys_list: list[Key]) -> list[str]:
         return [key.name for key in keys_list]
 
     @staticmethod
-    def values(keys_list: list[Key]) -> list[int]:  # noqa: D102
+    def values(keys_list: list[Key]) -> list[int]:
         return [key.value for key in keys_list]
 
 
@@ -328,7 +328,7 @@ class Interface:
     - remove/change the few events with "download" or "self.api" in the process_event method
     """
 
-    class State:  # noqa: D106
+    class State:
         MAIN = 0
         HELP = 1
         SETUP = 2
@@ -452,10 +452,10 @@ class Interface:
 
     downloads_uris: list[str]
     downloads_uris_header = (
-        f"Add Download: [ Hit ENTER to download; Hit { ','.join(Keys.names(Keys.ADD_DOWNLOADS)) } to download all ]"
+        f"Add Download: [ Hit ENTER to download; Hit {','.join(Keys.names(Keys.ADD_DOWNLOADS))} to download all ]"
     )
 
-    class StateConf(TypedDict):  # noqa: D106
+    class StateConf(TypedDict):
         process_keyboard_event: Callable
         process_mouse_event: Callable
         print_functions: list[Callable]
@@ -577,7 +577,7 @@ class Interface:
             logger.exception(error)
             return False
 
-    def post_resize(self) -> None:  # noqa: D102
+    def post_resize(self) -> None:
         logger.debug("Running post-resize function")
         logger.debug("Trying to re-apply pywal color theme")
         wal_sequences = Path.home() / ".cache" / "wal" / "sequences"
@@ -588,7 +588,7 @@ class Interface:
         except Exception:  # noqa: BLE001,S110
             pass
 
-    def update_select_sort_rows(self) -> None:  # noqa: D102
+    def update_select_sort_rows(self) -> None:
         self.select_sort_rows = self.columns_order
 
     def process_event(self, event: KeyboardEvent | MouseEvent) -> None:
@@ -606,10 +606,10 @@ class Interface:
         elif isinstance(event, MouseEvent):
             self.process_mouse_event(event)
 
-    def process_keyboard_event(self, event: KeyboardEvent) -> None:  # noqa: D102
+    def process_keyboard_event(self, event: KeyboardEvent) -> None:
         self.state_mapping[self.state]["process_keyboard_event"](event)
 
-    def process_keyboard_event_main(self, event: KeyboardEvent) -> None:  # noqa: D102
+    def process_keyboard_event_main(self, event: KeyboardEvent) -> None:
         if event.key_code in Keys.MOVE_UP:
             if self.focused > 0:
                 self.focused -= 1
@@ -800,7 +800,7 @@ class Interface:
 
             # build set of copied lines
             copied_lines = set()
-            for line in pyperclip.paste().split("\n") + pyperclip.paste(primary=True).split("\n"):
+            for line in pyperclip.paste().split("\n") + pyperclip.paste(primary=True).split("\n"):  # ty:ignore[unknown-argument]
                 copied_lines.add(line.strip())
             with contextlib.suppress(KeyError):
                 copied_lines.remove("")
@@ -812,14 +812,14 @@ class Interface:
         elif event.key_code in Keys.QUIT:
             raise Exit
 
-    def process_keyboard_event_help(self, event: KeyboardEvent) -> None:  # noqa: ARG002,D102
+    def process_keyboard_event_help(self, event: KeyboardEvent) -> None:  # noqa: ARG002
         self.state = self.State.MAIN
         self.refresh = True
 
-    def process_keyboard_event_setup(self, event: KeyboardEvent) -> None:  # noqa: D102
+    def process_keyboard_event_setup(self, event: KeyboardEvent) -> None:
         pass
 
-    def process_keyboard_event_remove_ask(self, event: KeyboardEvent) -> None:  # noqa: D102
+    def process_keyboard_event_remove_ask(self, event: KeyboardEvent) -> None:
         if event.key_code in Keys.CANCEL:
             logger.debug("Canceling removal")
             self.state = self.State.MAIN
@@ -852,7 +852,7 @@ class Interface:
                 logger.debug(f"Moving side focus down: {self.side_focused}")
                 self.refresh = True
 
-    def process_keyboard_event_select_sort(self, event: KeyboardEvent) -> None:  # noqa: D102
+    def process_keyboard_event_select_sort(self, event: KeyboardEvent) -> None:
         if event.key_code in Keys.CANCEL:
             self.state = self.State.MAIN
             self.x_offset = 0
@@ -874,7 +874,7 @@ class Interface:
                 self.side_focused += 1
                 self.refresh = True
 
-    def process_keyboard_event_add_downloads(self, event: KeyboardEvent) -> None:  # noqa: D102
+    def process_keyboard_event_add_downloads(self, event: KeyboardEvent) -> None:
         if event.key_code in Keys.CANCEL:
             self.state = self.State.MAIN
             self.x_offset = 0
@@ -914,10 +914,10 @@ class Interface:
             self.downloads_uris.clear()
             self.refresh = True
 
-    def process_mouse_event(self, event: MouseEvent) -> None:  # noqa: D102
+    def process_mouse_event(self, event: MouseEvent) -> None:
         self.state_mapping[self.state]["process_mouse_event"](event)
 
-    def process_mouse_event_main(self, event: MouseEvent) -> None:  # noqa: D102
+    def process_mouse_event_main(self, event: MouseEvent) -> None:
         if event.buttons & MouseEvent.LEFT_CLICK:
             if event.y == 0:
                 new_sort = self.get_column_at_x(event.x)
@@ -932,34 +932,34 @@ class Interface:
         # elif event.buttons & MouseEvent.RIGHT_CLICK:
         #     pass  # TODO: expand/collapse
 
-    def process_mouse_event_help(self, event: MouseEvent) -> None:  # noqa: D102
+    def process_mouse_event_help(self, event: MouseEvent) -> None:
         pass
 
-    def process_mouse_event_setup(self, event: MouseEvent) -> None:  # noqa: D102
+    def process_mouse_event_setup(self, event: MouseEvent) -> None:
         pass
 
-    def process_mouse_event_remove_ask(self, event: MouseEvent) -> None:  # noqa: D102
+    def process_mouse_event_remove_ask(self, event: MouseEvent) -> None:
         pass
 
-    def process_mouse_event_select_sort(self, event: MouseEvent) -> None:  # noqa: D102
+    def process_mouse_event_select_sort(self, event: MouseEvent) -> None:
         pass
 
-    def process_mouse_event_add_downloads(self, event: MouseEvent) -> None:  # noqa: D102
+    def process_mouse_event_add_downloads(self, event: MouseEvent) -> None:
         pass
 
-    def width_remove_ask(self) -> int:  # noqa: D102
+    def width_remove_ask(self) -> int:
         return max(len(self.remove_ask_header), max(len(row[0]) for row in self.remove_ask_rows))  # noqa: PLW3301
 
-    def width_select_sort(self) -> int:  # noqa: D102
+    def width_select_sort(self) -> int:
         return max(len(column_name) for column_name in [*self.columns_order, self.select_sort_header])
 
-    def follow_focused(self) -> bool:  # noqa: D102
+    def follow_focused(self) -> bool:
         if self.focused < len(self.data):
             self.follow = self.data[self.focused]
             return True
         return False
 
-    def print_add_downloads(self) -> None:  # noqa: D102
+    def print_add_downloads(self) -> None:
         y = self.y_offset
         padding = self.width
         header_string = f"{self.downloads_uris_header:<{padding}}"
@@ -977,7 +977,7 @@ class Interface:
             )
             if len(uri) > self.width:
                 # print part of uri string
-                uri = f"{uri[:(self.width//2)-len(separator)]} {separator} {uri[-(self.width//2)+len(separator):]}"  # noqa: PLW2901
+                uri = f"{uri[: (self.width // 2) - len(separator)]} {separator} {uri[-(self.width // 2) + len(separator) :]}"  # noqa: PLW2901
 
             self.screen.print_at(uri, 0, y, *palette)
             self.screen.print_at(" ", len(uri), y, *self.palettes["default"])
@@ -985,7 +985,7 @@ class Interface:
         for i in range(1, self.height - y):
             self.screen.print_at(" " * (padding + 1), 0, y + i, *self.palettes["ui"])
 
-    def print_help(self) -> None:  # noqa: D102
+    def print_help(self) -> None:
         version = get_version()
         lines = [
             f"aria2p {version} — (C) 2018-2020 Timothée Mazzucotelli and contributors",
@@ -1039,16 +1039,16 @@ class Interface:
         for i in range(self.height - y):
             self.screen.print_at(" " * self.width, 0, y + i, *self.palettes["ui"])
 
-    def print_keys(self, keys: list[Key], text: str, y: int) -> None:  # noqa: D102
+    def print_keys(self, keys: list[Key], text: str, y: int) -> None:
         self.print_keys_text(" ".join(Keys.names(keys)) + ":", text, y)
 
-    def print_keys_text(self, keys_text: str, text: str, y: int) -> None:  # noqa: D102
+    def print_keys_text(self, keys_text: str, text: str, y: int) -> None:
         length = 8
         padding = self.width - length
         self.screen.print_at(f"{keys_text:>{length}}", 0, y, *self.palettes["bright_help"])
         self.screen.print_at(f"{text:<{padding}}", length, y, *self.palettes["default"])
 
-    def print_remove_ask_column(self) -> None:  # noqa: D102
+    def print_remove_ask_column(self) -> None:
         y = self.y_offset
         padding = self.width_remove_ask()
         header_string = f"{self.remove_ask_header:<{padding}}"
@@ -1068,7 +1068,7 @@ class Interface:
         for i in range(1, self.height - y):
             self.screen.print_at(" " * (padding + 1), 0, y + i, *self.palettes["ui"])
 
-    def print_select_sort_column(self) -> None:  # noqa: D102
+    def print_select_sort_column(self) -> None:
         y = self.y_offset
         padding = self.width_select_sort()
         header_string = f"{self.select_sort_header:<{padding}}"
@@ -1088,7 +1088,7 @@ class Interface:
         for i in range(1, self.height - y):
             self.screen.print_at(" " * (padding + 1), 0, y + i, *self.palettes["ui"])
 
-    def print_table(self) -> None:  # noqa: D102
+    def print_table(self) -> None:
         self.print_headers()
         self.print_rows()
 

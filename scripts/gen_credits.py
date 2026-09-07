@@ -18,7 +18,7 @@ from packaging.requirements import Requirement
 if sys.version_info >= (3, 11):
     import tomllib
 else:
-    import tomli as tomllib
+    import tomli as tomllib  # ty:ignore[unresolved-import,unused-ignore-comment]
 
 project_dir = Path.cwd()
 with project_dir.joinpath("pyproject.toml").open("rb") as pyproject_file:

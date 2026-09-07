@@ -8,20 +8,20 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from aria2p import debug
-from aria2p.cli.commands import top
-from aria2p.cli.commands.add_magnet import add_magnets
-from aria2p.cli.commands.add_metalink import add_metalinks
-from aria2p.cli.commands.add_torrent import add_torrents
-from aria2p.cli.commands.call import call
-from aria2p.cli.commands.listen import listen
-from aria2p.cli.commands.pause import pause
-from aria2p.cli.commands.purge import purge
-from aria2p.cli.commands.remove import remove
-from aria2p.cli.commands.resume import resume
-from aria2p.cli.commands.show import show
-from aria2p.cli.main import main
-from aria2p.cli.parser import get_parser
+from aria2p._internal import debug
+from aria2p._internal.cli.commands import top
+from aria2p._internal.cli.commands.add_magnet import add_magnets
+from aria2p._internal.cli.commands.add_metalink import add_metalinks
+from aria2p._internal.cli.commands.add_torrent import add_torrents
+from aria2p._internal.cli.commands.call import call
+from aria2p._internal.cli.commands.listen import listen
+from aria2p._internal.cli.commands.pause import pause
+from aria2p._internal.cli.commands.purge import purge
+from aria2p._internal.cli.commands.remove import remove
+from aria2p._internal.cli.commands.resume import resume
+from aria2p._internal.cli.commands.show import show
+from aria2p._internal.cli.main import main
+from aria2p._internal.cli.parser import get_parser
 from tests import BUNSENLABS_MAGNET, TESTS_DATA_DIR
 from tests.conftest import Aria2Server
 
@@ -282,7 +282,7 @@ def test_show_version(capsys: pytest.CaptureFixture) -> None:
     with pytest.raises(SystemExit):
         main(["-V"])
     captured = capsys.readouterr()
-    assert debug._get_version() in captured.out
+    assert debug.get_version() in captured.out
 
 
 def test_show_debug_info(capsys: pytest.CaptureFixture) -> None:

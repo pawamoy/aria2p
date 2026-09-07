@@ -1,4 +1,4 @@
-"""Command to run the text user-interface."""
+# Command to run the text user-interface.
 
 from __future__ import annotations
 
@@ -6,12 +6,12 @@ import sys
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from aria2p.api import API
+    from aria2p._internal.api import API
 
 try:
-    from aria2p.interface import Interface
+    from aria2p._internal.interface import Interface
 except ImportError:
-    Interface = None  # type: ignore[assignment,misc]
+    Interface = None  # ty:ignore[invalid-assignment]
 
 
 def top(api: API) -> int:

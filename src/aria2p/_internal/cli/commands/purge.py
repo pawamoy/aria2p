@@ -1,11 +1,11 @@
-"""Command to purge downloads."""
+# Command to purge downloads.
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from aria2p.api import API
+    from aria2p._internal.api import API
 
 
 def purge(api: API) -> int:

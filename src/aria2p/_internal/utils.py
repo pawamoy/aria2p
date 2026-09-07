@@ -1,7 +1,6 @@
-"""Utils module.
-
-This module contains simple utility classes and functions.
-"""
+# Utils module.
+#
+# This module contains simple utility classes and functions.
 
 from __future__ import annotations
 
@@ -20,7 +19,7 @@ if TYPE_CHECKING:
     from types import FrameType
 
 if sys.version_info < (3, 11):
-    import tomli as tomllib
+    import tomli as tomllib  # ty:ignore[unresolved-import,unused-ignore-comment]
 else:
     import tomllib
 
@@ -39,7 +38,7 @@ class SignalHandler:
         for sig in signals:
             try:
                 signal.signal(signal.Signals[sig], self.trigger)
-            except ValueError as error:
+            except ValueError as error:  # noqa: PERF203
                 logger.error(f"Failed to setup signal handler for {sig}: {error}")
 
     def __bool__(self) -> bool:

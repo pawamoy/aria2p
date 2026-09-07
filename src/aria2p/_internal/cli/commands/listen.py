@@ -1,4 +1,4 @@
-"""Command to listen to notifications from the server."""
+# Command to listen to notifications from the server.
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from aria2p.api import API
+    from aria2p._internal.api import API
 
 
 def listen(
@@ -50,7 +50,7 @@ def listen(
         print(f"aria2p: Could not import module file {callbacks_module}", file=sys.stderr)
         return 1
 
-    spec.loader.exec_module(callbacks)  # type: ignore
+    spec.loader.exec_module(callbacks)  # ty:ignore[unresolved-attribute]
 
     callbacks_kwargs = {}
     for callback_name in (

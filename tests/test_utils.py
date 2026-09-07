@@ -7,7 +7,7 @@ from typing import Any
 
 import pytest
 
-from aria2p.utils import bool_or_value, bool_to_str, human_readable_bytes, human_readable_timedelta
+from aria2p._internal.utils import bool_or_value, bool_to_str, human_readable_bytes, human_readable_timedelta
 
 
 @pytest.mark.parametrize(

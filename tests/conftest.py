@@ -137,7 +137,7 @@ class Aria2Server:
         if session:
             if isinstance(session, list):
                 session_path = self.tmp_dir / "_session.txt"
-                with open(session_path, "w") as stream:
+                with open(session_path, "w") as stream:  # noqa: PTH123
                     stream.write("\n".join(session))
                 command.append(f"--input-file={session_path}")
             else:
