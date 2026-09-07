@@ -1,3 +1,21 @@
+# SPDX-License-Identifier: ISC
+#
+# ISC License
+#
+# Copyright (c) 2020, Timothée Mazzucotelli and contributors
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 """Tests for the `interface` module."""
 
 from __future__ import annotations
@@ -13,14 +31,14 @@ import pytest
 from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import Screen
 
-from aria2p import interface as tui
+from aria2p._internal import interface as tui
 from tests import TESTS_DATA_DIR
 from tests.conftest import Aria2Server
 
 if TYPE_CHECKING:
-    from aria2p.api import API
+    from aria2p._internal.api import API
 
-tui.Interface.frames = 20  # reduce tests time
+tui._Interface.frames = 20  # reduce tests time
 
 
 class SpecialEvent:
@@ -46,8 +64,8 @@ class Event:
     resize = SpecialEvent(SpecialEvent.RESIZE)
     pass_frame = SpecialEvent(SpecialEvent.PASS_N_FRAMES, 1)
     pass_tick = SpecialEvent(SpecialEvent.PASS_N_TICKS, 1)
-    pass_half_tick = SpecialEvent(SpecialEvent.PASS_N_FRAMES, tui.Interface.frames / 2)
-    pass_tick_and_a_half = SpecialEvent(SpecialEvent.PASS_N_FRAMES, tui.Interface.frames * 3 / 2)
+    pass_half_tick = SpecialEvent(SpecialEvent.PASS_N_FRAMES, tui._Interface.frames / 2)
+    pass_tick_and_a_half = SpecialEvent(SpecialEvent.PASS_N_FRAMES, tui._Interface.frames * 3 / 2)
     up = KeyboardEvent(Screen.KEY_UP)
     down = KeyboardEvent(Screen.KEY_DOWN)
     left = KeyboardEvent(Screen.KEY_LEFT)
@@ -92,7 +110,7 @@ def get_interface(
     events: list[KeyboardEvent | MouseEvent | SpecialEvent] | None = None,
     *,
     append_q: bool = True,
-) -> tui.Interface:
+) -> tui._Interface:
     if not events:
         events = []
 
@@ -101,13 +119,13 @@ def get_interface(
 
     class MockedManagedScreen:
         def __enter__(self):
-            return MockedScreen(events)
+            return MockedScreen(events)  # ty:ignore[invalid-argument-type]
 
         def __exit__(self, exc_type, exc_val, exc_tb):  # noqa: ANN001
             pass
 
     patcher.setattr(tui, "ManagedScreen", MockedManagedScreen)
-    return tui.Interface(api=api)
+    return tui._Interface(api=api)
 
 
 def run_interface(
@@ -117,7 +135,7 @@ def run_interface(
     *,
     append_q: bool = True,
     **kwargs: Any,
-) -> tui.Interface:
+) -> tui._Interface:
     interface = get_interface(patcher, api, events, append_q=append_q)
     for key, value in kwargs.items():
         setattr(interface, key, value)
@@ -167,7 +185,7 @@ class MockedScreen:
                 self._pass_n_frames = event.value - 1
             elif event.type == SpecialEvent.PASS_N_TICKS:
                 # we remove 1 because this event itself eats a frame
-                self._pass_n_frames = (event.value * tui.Interface.frames) - 1
+                self._pass_n_frames = (event.value * tui._Interface.frames) - 1
             elif event.type == SpecialEvent.RAISE:
                 raise event.value
         return None
@@ -199,7 +217,7 @@ def test_resize(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_frames_plus_n(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) -> None:
     n = 10
-    interface = run_interface(monkeypatch, server.api, events=[Event.pass_frames(tui.Interface.frames + n)])
+    interface = run_interface(monkeypatch, server.api, events=[Event.pass_frames(tui._Interface.frames + n)])
     assert interface.frame == n
 
 
@@ -216,7 +234,7 @@ def test_change_sort(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) -> No
             Event.pass_tick,
         ],
     )
-    assert interface.sort == tui.Interface.sort - 1
+    assert interface.sort == tui._Interface.sort - 1
 
 
 def test_move_focus(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -231,7 +249,7 @@ def test_move_focus(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) 
 
 def test_show_help(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) -> None:
     interface = run_interface(monkeypatch, server.api, events=[Event.f1, Event.pass_tick, Event.enter])
-    assert interface.screen.print_at_calls[-1]["args"][0].startswith("Press any key to return.")
+    assert interface.screen.print_at_calls[-1]["args"][0].startswith("Press any key to return.")  # ty:ignore[unresolved-attribute]
 
 
 def test_horizontal_scrolling(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -253,7 +271,7 @@ def test_log_exception(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatc
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         interface = get_interface(monkeypatch, server.api, events=[Event.exc(LookupError("some message"))])
         assert not interface.run()
-    with open(Path("tests") / "logs" / "test_interface" / "test_log_exception.log") as log_file:
+    with Path("tests", "logs", "test_interface", "test_log_exception.log").open() as log_file:
         lines = log_file.readlines()
     first_line = ""
     for line in lines:
@@ -284,12 +302,13 @@ def test_select_sort(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch)
 
 
 def test_mouse_event(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) -> None:
-    reverse = tui.Interface.reverse
+    reverse = tui._Interface.reverse
     with Aria2Server(tmp_path, port, session="3-magnets.txt") as server:
         interface = run_interface(
             monkeypatch,
             server.api,
-            events=[MouseEvent(x=tui.Interface.x_offset, y=tui.Interface.y_offset, buttons=MouseEvent.LEFT_CLICK)] * 2,
+            events=[MouseEvent(x=tui._Interface.x_offset, y=tui._Interface.y_offset, buttons=MouseEvent.LEFT_CLICK)]
+            * 2,
         )
     assert interface.sort == 0
     assert interface.reverse is not reverse
@@ -425,8 +444,8 @@ def test_side_column_edges(tmp_path: Path, port: int, monkeypatch: pytest.Monkey
             monkeypatch,
             server.api,
             events=[Event.pass_frame, Event.f6]
-            + [Event.up] * len(tui.Interface.columns_order)
-            + [Event.down] * len(tui.Interface.columns_order)
+            + [Event.up] * len(tui._Interface.columns_order)
+            + [Event.down] * len(tui._Interface.columns_order)
             + [Event.esc],
         )
 
@@ -447,7 +466,7 @@ def test_click_out_bounds(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) 
         server.api,
         events=[Event.pass_frame, MouseEvent(x=1000, y=0, buttons=MouseEvent.LEFT_CLICK)],
     )
-    with open(Path("tests") / "logs" / "test_interface" / "test_click_out_bounds.log") as log_file:
+    with Path("tests", "logs", "test_interface", "test_click_out_bounds.log").open() as log_file:
         lines = log_file.readlines()
     error_line = None
     for line in lines:
@@ -468,17 +487,17 @@ def test_add_downloads_uris(server: Aria2Server, monkeypatch: pytest.MonkeyPatch
 
     uri1 = "http://localhost:8779/1"
     magnet1 = "magnet:?xt=urn:btih:RX46NCATYQRS3MCQNSEXVZGCCDNKTASQ"
-    clipboard_selection_downloads += "\n".join([uri1, magnet1])
+    clipboard_selection_downloads += f"{uri1}\n{magnet1}"
 
     uri2 = "http://localhost:8779/2"
     magnet2 = "magnet:?xt=urn:btih:VLYICEBJDQQ64SUGREZHD4IAD2FVCJCS"
-    primary_selection_downloads += "\n".join([uri2, magnet2])
+    primary_selection_downloads += f"{uri2}\n{magnet2}"
 
     # clipboard selection
     pyperclip.copy(clipboard_selection_downloads)
 
     # primary selection
-    pyperclip.copy(primary_selection_downloads, primary=True)
+    pyperclip.copy(primary_selection_downloads, primary=True)  # ty:ignore[unknown-argument]
 
     interface = run_interface(
         monkeypatch,
@@ -497,7 +516,7 @@ def test_add_downloads_uris(server: Aria2Server, monkeypatch: pytest.MonkeyPatch
     )
     # clear clipboards
     pyperclip.copy("")
-    pyperclip.copy("", primary=True)
+    pyperclip.copy("", primary=True)  # ty:ignore[unknown-argument]
     assert len(interface.data) == 2
 
 
@@ -516,7 +535,7 @@ def test_add_downloads_torrents_and_metalinks(server: Aria2Server, monkeypatch: 
     pyperclip.copy(clipboard_selection_download)
 
     # primary selection
-    pyperclip.copy(primary_selection_download, primary=True)
+    pyperclip.copy(primary_selection_download, primary=True)  # ty:ignore[unknown-argument]
 
     interface = run_interface(
         monkeypatch,
@@ -535,7 +554,7 @@ def test_add_downloads_torrents_and_metalinks(server: Aria2Server, monkeypatch: 
         ],
     )
     pyperclip.copy("")
-    pyperclip.copy("", primary=True)
+    pyperclip.copy("", primary=True)  # ty:ignore[unknown-argument]
     if len(interface.data) != 2:
         pytest.xfail("Empty data (sporadic error)")
     assert len(interface.data) == 2

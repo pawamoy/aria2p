@@ -1,19 +1,34 @@
+# SPDX-License-Identifier: ISC
+#
+# ISC License
+#
+# Copyright (c) 2020, Timothée Mazzucotelli and contributors
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 """Development tasks."""
 
 from __future__ import annotations
 
 import os
+import re
 import sys
-from contextlib import contextmanager
-from importlib.metadata import version as pkgversion
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from duty import duty, tools
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
-
     from duty.context import Context
 
 
@@ -24,25 +39,21 @@ CI = os.environ.get("CI", "0") in {"1", "true", "yes", ""}
 WINDOWS = os.name == "nt"
 PTY = not WINDOWS and not CI
 MULTIRUN = os.environ.get("MULTIRUN", "0") == "1"
+PY_VERSION = f"{sys.version_info.major}{sys.version_info.minor}"
+PY_DEV = "316"
 
 
-def pyprefix(title: str) -> str:  # noqa: D103
+def pyprefix(title: str) -> str:
     if MULTIRUN:
         prefix = f"(python{sys.version_info.major}.{sys.version_info.minor})"
         return f"{prefix:14}{title}"
     return title
 
 
-@contextmanager
-def material_insiders() -> Iterator[bool]:  # noqa: D103
-    if "+insiders" in pkgversion("mkdocs-material"):
-        os.environ["MATERIAL_INSIDERS"] = "true"
-        try:
-            yield True
-        finally:
-            os.environ.pop("MATERIAL_INSIDERS")
-    else:
-        yield False
+def _get_changelog_version() -> str:
+    changelog_version_re = re.compile(r"^## \[(\d+\.\d+\.\d+)\].*$")
+    with Path(__file__).parent.joinpath("CHANGELOG.md").open("r", encoding="utf8") as file:
+        return next(filter(bool, map(changelog_version_re.match, file))).group(1)  # ty: ignore[unresolved-attribute]
 
 
 @duty
@@ -67,6 +78,7 @@ def changelog(ctx: Context, bump: str = "") -> None:
         bump: Bump option passed to git-changelog.
     """
     ctx.run(tools.git_changelog(bump=bump or None), title="Updating changelog")
+    ctx.run(tools.yore.check(bump=bump or _get_changelog_version()), title="Checking legacy code")
 
 
 @duty(pre=["check-quality", "check-types", "check-docs", "check-api"])
@@ -74,43 +86,61 @@ def check(ctx: Context) -> None:
     """Check it all!"""
 
 
-@duty
+@duty(nofail=PY_VERSION == PY_DEV)
 def check_quality(ctx: Context) -> None:
     """Check the code quality."""
     ctx.run(
-        tools.ruff.check(*PY_SRC_LIST, config="config/ruff.toml"),
+        tools.ruff.check(*PY_SRC_LIST, config="config/ruff.toml", color=True),
         title=pyprefix("Checking code quality"),
     )
 
 
-@duty
+@duty(nofail=PY_VERSION == PY_DEV)
 def check_docs(ctx: Context) -> None:
     """Check if the documentation builds correctly."""
-    Path("htmlcov").mkdir(parents=True, exist_ok=True)
-    Path("htmlcov/index.html").touch(exist_ok=True)
-    with material_insiders():
-        ctx.run(
-            tools.mkdocs.build(strict=True, verbose=True),
-            title=pyprefix("Building documentation"),
-        )
+    ctx.run(
+        tools.zensical.build(strict=True),
+        title=pyprefix("Building documentation"),
+    )
 
 
-@duty
+@duty(nofail=PY_VERSION == PY_DEV)
 def check_types(ctx: Context) -> None:
     """Check that the code is correctly typed."""
+    py = f"{sys.version_info.major}.{sys.version_info.minor}"
     ctx.run(
-        tools.mypy(*PY_SRC_LIST, config_file="config/mypy.ini"),
+        tools.ty.check(
+            *PY_SRC_LIST,
+            config_file="config/ty.toml",
+            color=True,
+            python_version=py,
+        ),
         title=pyprefix("Type-checking"),
     )
 
 
-@duty
+@duty(nofail=PY_VERSION == PY_DEV)
 def check_api(ctx: Context, *cli_args: str) -> None:
     """Check for API breaking changes."""
     ctx.run(
         tools.griffe.check("aria2p", search=["src"], color=True).add_args(*cli_args),
         title="Checking for API breaking changes",
         nofail=True,
+    )
+
+
+@duty
+def check_security(ctx: Context) -> None:
+    """Check for security vulnerabilities."""
+    ctx.run(
+        ["uv", "audit"],
+        title="Auditing dependencies",
+        pty=PTY,
+    )
+    ctx.run(
+        ["zizmor", "."],
+        title="Auditing GitHub Actions workflows",
+        pty=PTY,
     )
 
 
@@ -122,22 +152,31 @@ def docs(ctx: Context, *cli_args: str, host: str = "127.0.0.1", port: int = 8000
         host: The host to serve the docs from.
         port: The port to serve the docs on.
     """
-    with material_insiders():
-        ctx.run(
-            tools.mkdocs.serve(dev_addr=f"{host}:{port}").add_args(*cli_args),
-            title="Serving documentation",
-            capture=False,
-        )
+    ctx.run(
+        tools.zensical.serve(dev_addr=f"{host}:{port}").add_args(*cli_args),
+        title="Serving documentation",
+        capture=False,
+    )
 
 
 @duty
 def docs_deploy(ctx: Context) -> None:
     """Deploy the documentation to GitHub pages."""
-    os.environ["DEPLOY"] = "true"
-    with material_insiders() as insiders:
-        if not insiders:
-            ctx.run(lambda: False, title="Not deploying docs without Material for MkDocs Insiders!")
-        ctx.run(tools.mkdocs.gh_deploy(), title="Deploying documentation")
+    from ghp_import import ghp_import  # noqa: PLC0415
+
+    ctx.run(tools.zensical.build(), title="Building documentation site")
+    ctx.run(
+        ghp_import,
+        kwargs={
+            "srcdir": "site",
+            "mesg": "chore: Update documentation",
+            "push": True,
+            "force": True,
+        },
+        title="Deploying site to GitHub Pages",
+        command="ghp-import site -fpm 'chore: Update documentation'",
+        pty=PTY,
+    )
 
 
 @duty
@@ -154,8 +193,8 @@ def format(ctx: Context) -> None:
 def build(ctx: Context) -> None:
     """Build source and wheel distributions."""
     ctx.run(
-        tools.build(),
-        title="Building source and wheel distributions",
+        ["uv", "build"],
+        title="Building distributions",
         pty=PTY,
     )
 
@@ -165,10 +204,10 @@ def publish(ctx: Context) -> None:
     """Publish source and wheel distributions to PyPI."""
     if not Path("dist").exists():
         ctx.run("false", title="No distribution files found")
-    dists = [str(dist) for dist in Path("dist").iterdir()]
+    dists = [str(dist) for dist in Path("dist").iterdir() if dist.suffix in (".gz", ".whl")]
     ctx.run(
         tools.twine.upload(*dists, skip_existing=True),
-        title="Publishing source and wheel distributions to PyPI",
+        title="Publishing distributions to PyPI",
         pty=PTY,
     )
 
@@ -184,7 +223,7 @@ def release(ctx: Context, version: str = "") -> None:
         ctx.run("false", title="A version must be provided")
     ctx.run("git add pyproject.toml CHANGELOG.md", title="Staging files", pty=PTY)
     ctx.run(["git", "commit", "-m", f"chore: Prepare release {version}"], title="Committing changes", pty=PTY)
-    ctx.run(f"git tag {version}", title="Tagging commit", pty=PTY)
+    ctx.run(f"git tag -m '' -a {version}", title="Tagging commit", pty=PTY)
     ctx.run("git push", title="Pushing commits", pty=False)
     ctx.run("git push --tags", title="Pushing tags", pty=False)
 
@@ -197,25 +236,15 @@ def coverage(ctx: Context) -> None:
     ctx.run(tools.coverage.html(rcfile="config/coverage.ini"))
 
 
-@duty()
-def test(ctx: Context, *cli_args: str, match: str = "") -> None:
-    """Run the test suite.
-
-    Parameters:
-        match: A pytest expression to filter selected tests.
-        markers: A pytest expression to filter selected tests based on markers.
-        cpus: Number of CPUs to use, or "no", default "auto".
-        sugar: Use the sugar plugin, default True.
-        verbose: Be verbose, default False.
-        cov: Compute coverage, default True.
-    """
-    py_version = f"{sys.version_info.major}{sys.version_info.minor}"
-    os.environ["COVERAGE_FILE"] = f".coverage.{py_version}"
+@duty(nofail=PY_VERSION == PY_DEV)
+def test(ctx: Context, *cli_args: str) -> None:
+    """Run the test suite."""
+    os.environ["COVERAGE_FILE"] = f".coverage.{PY_VERSION}"
+    os.environ["PYTHONWARNDEFAULTENCODING"] = "1"
     ctx.run(
         tools.pytest(
             "tests",
             config_file="config/pytest.ini",
-            select=match,
             color="yes",
         ).add_args("-n", "auto", *cli_args),
         title=pyprefix("Running tests"),

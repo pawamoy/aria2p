@@ -1,3 +1,21 @@
+# SPDX-License-Identifier: ISC
+#
+# ISC License
+#
+# Copyright (c) 2020, Timothée Mazzucotelli and contributors
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
 """Port-related utilities."""
 
 from __future__ import annotations
@@ -5,14 +23,13 @@ from __future__ import annotations
 import re
 import sys
 from collections import defaultdict
-from os import listdir
-from os.path import isfile, join
 from pathlib import Path
 
 
-def get_ports() -> dict[int, list[tuple[str, int, str]]]:  # noqa: D103
+def get_ports() -> dict[int, list[tuple[str, int, str]]]:
     port_regex = re.compile(r"port=[0-9]{4}")
-    test_files = [Path("tests") / f for f in listdir("tests") if isfile(join("tests", f))]
+    tests_dir = Path("tests")
+    test_files = [path for path in tests_dir.iterdir() if path.is_file()]
     used_ports = defaultdict(list)
     for test_file in test_files:
         with test_file.open() as test_code:
@@ -24,7 +41,7 @@ def get_ports() -> dict[int, list[tuple[str, int, str]]]:  # noqa: D103
     return used_ports
 
 
-def check(ports: dict[int, list[tuple[str, int, str]]]) -> int:  # noqa: D103
+def check(ports: dict[int, list[tuple[str, int, str]]]) -> int:
     check_ok = True
     for port, matches in ports.items():
         if port in blacklisted_ports:
@@ -43,7 +60,7 @@ def check(ports: dict[int, list[tuple[str, int, str]]]) -> int:  # noqa: D103
     return 0 if check_ok else 1
 
 
-def get_unused(ports: dict[int, list[tuple[str, int, str]]]) -> list[int]:  # noqa: D103
+def get_unused(ports: dict[int, list[tuple[str, int, str]]]) -> list[int]:
     finalists = []
     sorted_ports = sorted(ports.keys())
     following = False
@@ -57,7 +74,7 @@ def get_unused(ports: dict[int, list[tuple[str, int, str]]]) -> list[int]:  # no
     return finalists
 
 
-def next_unused(port: int) -> int | None:  # noqa: D103
+def next_unused(port: int) -> int | None:
     for next_port in unused_ports:
         if next_port > port:
             return next_port

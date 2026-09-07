@@ -1,109 +1,35 @@
-"""Debugging utilities."""
+# SPDX-License-Identifier: ISC
+#
+# ISC License
+#
+# Copyright (c) 2020, Timothée Mazzucotelli and contributors
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-from __future__ import annotations
+"""Deprecated. Import from [`aria2p`][] directly."""
 
-import os
-import platform
-import sys
-from dataclasses import dataclass
-from importlib import metadata
+# YORE: Bump 2: Remove file.
 
+import warnings
+from typing import Any
 
-@dataclass
-class Variable:
-    """Dataclass describing an environment variable."""
-
-    name: str
-    """Variable name."""
-    value: str
-    """Variable value."""
-
-
-@dataclass
-class Package:
-    """Dataclass describing a Python package."""
-
-    name: str
-    """Package name."""
-    version: str
-    """Package version."""
+from aria2p._internal import debug as _debug
 
 
-@dataclass
-class Environment:
-    """Dataclass to store environment information."""
-
-    interpreter_name: str
-    """Python interpreter name."""
-    interpreter_version: str
-    """Python interpreter version."""
-    interpreter_path: str
-    """Path to Python executable."""
-    platform: str
-    """Operating System."""
-    packages: list[Package]
-    """Installed packages."""
-    variables: list[Variable]
-    """Environment variables."""
-
-
-def _interpreter_name_version() -> tuple[str, str]:
-    if hasattr(sys, "implementation"):
-        impl = sys.implementation.version
-        version = f"{impl.major}.{impl.minor}.{impl.micro}"
-        kind = impl.releaselevel
-        if kind != "final":
-            version += kind[0] + str(impl.serial)
-        return sys.implementation.name, version
-    return "", "0.0.0"
-
-
-def get_version(dist: str = "aria2p") -> str:
-    """Get version of the given distribution.
-
-    Parameters:
-        dist: A distribution name.
-
-    Returns:
-        A version number.
-    """
-    try:
-        return metadata.version(dist)
-    except metadata.PackageNotFoundError:
-        return "0.0.0"
-
-
-def get_debug_info() -> Environment:
-    """Get debug/environment information.
-
-    Returns:
-        Environment information.
-    """
-    py_name, py_version = _interpreter_name_version()
-    packages = ["aria2p"]
-    variables = ["PYTHONPATH", *[var for var in os.environ if var.startswith("ARIA2P")]]
-    return Environment(
-        interpreter_name=py_name,
-        interpreter_version=py_version,
-        interpreter_path=sys.executable,
-        platform=platform.platform(),
-        variables=[Variable(var, val) for var in variables if (val := os.getenv(var))],
-        packages=[Package(pkg, get_version(pkg)) for pkg in packages],
+def __getattr__(name: str) -> Any:
+    warnings.warn(
+        "Importing from `aria2p.debug` is deprecated. Import from `aria2p` directly.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def print_debug_info() -> None:
-    """Print debug/environment information."""
-    info = get_debug_info()
-    print(f"- __System__: {info.platform}")
-    print(f"- __Python__: {info.interpreter_name} {info.interpreter_version} ({info.interpreter_path})")
-    print("- __Environment variables__:")
-    for var in info.variables:
-        print(f"  - `{var.name}`: `{var.value}`")
-    print("- __Installed packages__:")
-    for pkg in info.packages:
-        print(f"  - `{pkg.name}` v{pkg.version}")
-
-
-if __name__ == "__main__":
-    print_debug_info()
+    return getattr(_debug, name)

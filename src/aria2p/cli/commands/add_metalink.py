@@ -1,52 +1,35 @@
-"""Command to add metalinks."""
+# SPDX-License-Identifier: ISC
+#
+# ISC License
+#
+# Copyright (c) 2020, Timothée Mazzucotelli and contributors
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-from __future__ import annotations
+"""Deprecated. Import from [`aria2p`][] directly."""
 
-import sys
-from typing import TYPE_CHECKING
+# YORE: Bump 2: Remove file.
 
-from aria2p.utils import read_lines
+import warnings
+from typing import Any
 
-if TYPE_CHECKING:
-    from pathlib import Path
-
-    from aria2p.api import API
+from aria2p._internal.cli.commands import add_metalink as _add_metalink
 
 
-def add_metalinks(
-    api: API,
-    metalink_files: list[str | Path] | None = None,
-    from_file: str | None = None,
-    options: dict | None = None,
-    position: int | None = None,
-) -> int:
-    """Add metalink subcommand.
-
-    Parameters:
-        api: The API instance to use.
-        metalink_files: The paths to the metalink files.
-        from_file: Path to the file to metalink files paths from.
-        options: String of aria2c options to add to download.
-        position: Position to add new download in the queue.
-
-    Returns:
-        int: 0 if OK else 1.
-    """
-    ok = True
-
-    if not metalink_files:
-        metalink_files = []
-
-    if from_file:
-        try:
-            metalink_files.extend(read_lines(from_file))
-        except OSError:
-            print(f"Cannot open file: {from_file}", file=sys.stderr)
-            ok = False
-
-    for metalink_file in metalink_files:
-        new_downloads = api.add_metalink(metalink_file, options=options, position=position)
-        for download in new_downloads:
-            print(f"Created download {download.gid}")
-
-    return 0 if ok else 1
+def __getattr__(name: str) -> Any:
+    warnings.warn(
+        "Importing from `aria2p.cli.commands.add_metalink` is deprecated. Import from `aria2p` directly.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return getattr(_add_metalink, name)

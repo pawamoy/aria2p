@@ -1,35 +1,35 @@
-"""Command to run the text user-interface."""
+# SPDX-License-Identifier: ISC
+#
+# ISC License
+#
+# Copyright (c) 2020, Timothée Mazzucotelli and contributors
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-from __future__ import annotations
+"""Deprecated. Import from [`aria2p`][] directly."""
 
-import sys
-from typing import TYPE_CHECKING
+# YORE: Bump 2: Remove file.
 
-if TYPE_CHECKING:
-    from aria2p.api import API
+import warnings
+from typing import Any
 
-try:
-    from aria2p.interface import Interface
-except ImportError:
-    Interface = None  # type: ignore[assignment,misc]
+from aria2p._internal.cli.commands import top as _top
 
 
-def top(api: API) -> int:
-    """Top subcommand.
-
-    Parameters:
-        api: The API instance to use.
-
-    Returns:
-        int: Always 0.
-    """
-    if Interface is None:
-        print(
-            "The top-interface dependencies are not installed. Try running `pip install aria2p[tui]` to install them.",
-            file=sys.stderr,
-        )
-        return 1
-
-    interface = Interface(api)
-    success = interface.run()
-    return 0 if success else 1
+def __getattr__(name: str) -> Any:
+    warnings.warn(
+        "Importing from `aria2p.cli.commands.top` is deprecated. Import from `aria2p` directly.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return getattr(_top, name)

@@ -1,4 +1,22 @@
-"""Tests for the `cli` module."""
+# SPDX-License-Identifier: ISC
+#
+# ISC License
+#
+# Copyright (c) 2020, Timothée Mazzucotelli and contributors
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+"""Tests for the CLI."""
 
 from __future__ import annotations
 
@@ -8,20 +26,20 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from aria2p import debug
-from aria2p.cli.commands import top
-from aria2p.cli.commands.add_magnet import add_magnets
-from aria2p.cli.commands.add_metalink import add_metalinks
-from aria2p.cli.commands.add_torrent import add_torrents
-from aria2p.cli.commands.call import call
-from aria2p.cli.commands.listen import listen
-from aria2p.cli.commands.pause import pause
-from aria2p.cli.commands.purge import purge
-from aria2p.cli.commands.remove import remove
-from aria2p.cli.commands.resume import resume
-from aria2p.cli.commands.show import show
-from aria2p.cli.main import main
-from aria2p.cli.parser import get_parser
+from aria2p._internal import debug
+from aria2p._internal.cli.commands import top
+from aria2p._internal.cli.commands.add_magnet import add_magnets
+from aria2p._internal.cli.commands.add_metalink import add_metalinks
+from aria2p._internal.cli.commands.add_torrent import add_torrents
+from aria2p._internal.cli.commands.call import call
+from aria2p._internal.cli.commands.listen import listen
+from aria2p._internal.cli.commands.pause import pause
+from aria2p._internal.cli.commands.purge import purge
+from aria2p._internal.cli.commands.remove import remove
+from aria2p._internal.cli.commands.resume import resume
+from aria2p._internal.cli.commands.show import show
+from aria2p._internal.cli.main import main
+from aria2p._internal.cli.parser import get_parser
 from tests import BUNSENLABS_MAGNET, TESTS_DATA_DIR
 from tests.conftest import Aria2Server
 
@@ -94,7 +112,7 @@ def test_no_interface_deps_print_error(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture,
 ) -> None:
-    monkeypatch.setattr(top, "Interface", None)
+    monkeypatch.setattr(top, "_Interface", None)
     main(["-p", str(server.port)])
     line = first_err_line(capsys)
     assert "aria2p[tui]" in line
@@ -282,7 +300,7 @@ def test_show_version(capsys: pytest.CaptureFixture) -> None:
     with pytest.raises(SystemExit):
         main(["-V"])
     captured = capsys.readouterr()
-    assert debug.get_version() in captured.out
+    assert debug._get_version() in captured.out
 
 
 def test_show_debug_info(capsys: pytest.CaptureFixture) -> None:
