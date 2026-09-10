@@ -124,7 +124,7 @@ jobs:
 
     - name: Install aria2 on Windows
       if: ${{ matrix.os == 'windows-latest' }}
-      uses: crazy-max/ghaction-chocolatey@v1
+      uses: crazy-max/ghaction-chocolatey@dfdcf5bba9c0a16358a21c13a06ec5c89024b3ac # v4.1.0
       with:
         args: install aria2
 
