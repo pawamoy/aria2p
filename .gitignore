@@ -3,6 +3,9 @@
 .vscode/
 .zed
 
+# environment
+.env
+
 # python
 *.egg-info/
 *.py[cod]

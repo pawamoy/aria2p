@@ -225,7 +225,7 @@ def main() -> int:
             zed()
         elif cmd == "check":
             multirun("duty", "check-quality", "check-types", "check-docs")
-            run("default", "duty", "check-api")
+            run("default", "duty", "check-security", "check-api")
         elif cmd in {"check-quality", "check-docs", "check-types", "test"}:
             multirun("duty", cmd, *opts)
         else:

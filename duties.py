@@ -205,8 +205,19 @@ def publish(ctx: Context) -> None:
     if not Path("dist").exists():
         ctx.run("false", title="No distribution files found")
     dists = [str(dist) for dist in Path("dist").iterdir() if dist.suffix in (".gz", ".whl")]
+    password = None
+    if password_cmd := os.getenv("PUBLISH_PASS_CMD"):
+        password = ctx.run(
+            password_cmd.format(project="aria2p"),
+            capture="stdout",
+            pty=False,
+            silent=True,
+            allow_overrides=False,
+        ).strip()
     ctx.run(
-        tools.twine.upload(*dists, skip_existing=True),
+        tools.twine.upload(*dists, skip_existing=True, password=password),
+        # Keep the password out of the displayed command, including on failure.
+        command=tools.twine.upload(*dists, skip_existing=True).cli_command,
         title="Publishing distributions to PyPI",
         pty=PTY,
     )
@@ -219,8 +230,8 @@ def release(ctx: Context, version: str = "") -> None:
     Parameters:
         version: The new version number to use.
     """
-    if not (version := (version or input("> Version to release: ")).strip()):
-        ctx.run("false", title="A version must be provided")
+    if not version:
+        version = ctx.run(tools.git_changelog(latest_version=True), silent=True).strip()
     ctx.run("git add pyproject.toml CHANGELOG.md", title="Staging files", pty=PTY)
     ctx.run(["git", "commit", "-m", f"chore: Prepare release {version}"], title="Committing changes", pty=PTY)
     ctx.run(f"git tag -m '' -a {version}", title="Tagging commit", pty=PTY)
