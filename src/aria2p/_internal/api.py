@@ -529,7 +529,7 @@ class API:
         for download in downloads:
             try:
                 pause_func(download.gid)
-            except ClientException as error:  # noqa: PERF203
+            except ClientException as error:
                 logger.debug(f"Failed to pause download {download.gid}")
                 logger.opt(exception=True).trace(error)
                 result.append(error)
@@ -565,7 +565,7 @@ class API:
         for download in downloads:
             try:
                 self.client.unpause(download.gid)
-            except ClientException as error:  # noqa: PERF203
+            except ClientException as error:
                 logger.debug(f"Failed to resume download {download.gid}")
                 logger.opt(exception=True).trace(error)
                 result.append(error)

@@ -21,7 +21,6 @@
 from __future__ import annotations
 
 import datetime
-from datetime import timezone
 from pathlib import Path
 
 import pytest
@@ -50,7 +49,7 @@ class TestBitTorrentClass:
         assert self.bittorrent.comment == ""
 
     def test_creation_date_property(self) -> None:
-        assert self.bittorrent.creation_date == datetime.datetime.fromtimestamp(10, tz=timezone.utc)
+        assert self.bittorrent.creation_date == datetime.datetime.fromtimestamp(10, tz=datetime.UTC)
 
     def test_mode_property(self) -> None:
         assert self.bittorrent.mode == "single"

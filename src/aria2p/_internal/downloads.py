@@ -23,7 +23,7 @@
 from __future__ import annotations
 
 from contextlib import suppress
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -82,7 +82,7 @@ class BitTorrent:
         Returns:
             The creation date.
         """
-        return datetime.fromtimestamp(self._struct["creationDate"], tz=timezone.utc)
+        return datetime.fromtimestamp(self._struct["creationDate"], tz=UTC)
 
     @property
     def mode(self) -> str | None:
@@ -706,7 +706,7 @@ class Download:  # noqa: PLW1641
             for gid in self.followed_by_ids:
                 try:
                     result.append(self.api.get_download(gid))
-                except ClientException as error:  # noqa: PERF203
+                except ClientException as error:
                     logger.warning(
                         f"Can't find download with GID {gid}, try to update download {self.gid} ({id(self)}",
                     )
