@@ -5,6 +5,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [0.12.2](https://github.com/pawamoy/aria2p/releases/tag/0.12.2) - 2026-10-06
+
+<small>[Compare with 0.12.1](https://github.com/pawamoy/aria2p/compare/0.12.1...0.12.2)</small>
+
+### Build
+
+- Drop support for Python 3.10 ([7c9a68d](https://github.com/pawamoy/aria2p/commit/7c9a68d66d81a24f86f3e95ee329c33195dc71ea) by Timothée Mazzucotelli).
+
+### Bug Fixes
+
+- Prevent disk operations when server isn't localhost ([248009a](https://github.com/pawamoy/aria2p/commit/248009a28b271db67d57f850ee49bc2062fbae11) and [018db34](https://github.com/pawamoy/aria2p/commit/018db348859525afdb4514fea74b53202727fa67) by Timothée Mazzucotelli). [Issue-38](https://github.com/pawamoy/aria2p/issues/38)
+
+### Code Refactoring
+
+- Expose names in top-level module ([3bb2ffa](https://github.com/pawamoy/aria2p/commit/3bb2ffa17f23818c519b0844200848482d2828d1) by Timothée Mazzucotelli).
+- Re-expose old modules as deprecated ([ee69f05](https://github.com/pawamoy/aria2p/commit/ee69f0501a697fe2a743e95e9c650d8250f0eeb3) by Timothée Mazzucotelli).
+- Move all modules under an internal folder ([6a0acbd](https://github.com/pawamoy/aria2p/commit/6a0acbd3671a6d34d7aa88f60ec2a0a0c710dae4) by Timothée Mazzucotelli).
+
 ## [0.12.1](https://github.com/pawamoy/aria2p/releases/tag/0.12.1) - 2024-12-25
 
 <small>[Compare with 0.12.0](https://github.com/pawamoy/aria2p/compare/0.12.0...0.12.1)</small>
