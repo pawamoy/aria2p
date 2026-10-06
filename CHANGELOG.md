@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [0.12.3](https://github.com/pawamoy/aria2p/releases/tag/0.12.3) - 2026-10-06
+
+<small>[Compare with 0.12.2](https://github.com/pawamoy/aria2p/compare/0.12.2...0.12.3)</small>
+
+### Dependencies
+
+- Remove tomli dependency, not needed anymore on Python 3.11 ([6357729](https://github.com/pawamoy/aria2p/commit/6357729788a8b6e3829e20f7e5ff7fc64a3b31da) by Timothée Mazzucotelli).
+
 ## [0.12.2](https://github.com/pawamoy/aria2p/releases/tag/0.12.2) - 2026-10-06
 
 <small>[Compare with 0.12.1](https://github.com/pawamoy/aria2p/compare/0.12.1...0.12.2)</small>
