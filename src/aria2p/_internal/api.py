@@ -27,8 +27,10 @@ import functools
 import shutil
 import threading
 from base64 import b64encode
+from ipaddress import ip_address
 from pathlib import Path
 from typing import TYPE_CHECKING, TextIO
+from urllib.parse import urlsplit
 
 from loguru import logger
 from requests.exceptions import ConnectionError  # noqa: A004
@@ -80,8 +82,13 @@ class API:
         Returns:
             True if the client is connected to localhost, False otherwise.
         """
-        host = self.client.host.lower()
-        return "localhost" in host or host.startswith("http://127.0.0.1")
+        try:
+            host = urlsplit(self.client.host).hostname
+            if host in {"localhost", "0.0.0.0"}:  # noqa: S104
+                return True
+            return ip_address(host or "").is_loopback
+        except ValueError:
+            return False
 
     def add(
         self,

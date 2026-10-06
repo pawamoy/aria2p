@@ -218,6 +218,61 @@ def test_remove_files_tree(server: Aria2Server) -> None:
     assert not directory.exists()
 
 
+@pytest.mark.parametrize("operation", ["remove_files", "move_files", "copy_files"])
+@pytest.mark.parametrize("scheme", ["http", "https"])
+@pytest.mark.parametrize(
+    ("host", "is_local"),
+    [
+        ("localhost", True),
+        ("LOCALHOST", True),
+        ("127.0.0.1", True),
+        ("127.0.0.2", True),
+        ("0.0.0.0", True),  # noqa: S104
+        ("[::1]", True),
+        ("[0:0:0:0:0:0:0:1]", True),
+        ("localhost:6800/rpc", True),
+        ("0.0.0.0:6800/rpc", True),
+        ("example.com", False),
+        ("192.168.1.1", False),
+        ("[2001:db8::1]", False),
+        ("localhost.example.com", False),
+        ("127.0.0.10.example.com", False),
+        ("0.0.0.0.example.com", False),
+        ("localhost@example.com", False),
+        ("example.com/localhost", False),
+        ("example.com?host=localhost", False),
+        ("example.com#localhost", False),
+        ("", False),
+        ("[invalid]", False),
+    ],
+)
+def test_disk_operations_for_local_hosts(
+    tmp_path: Path,
+    operation: str,
+    scheme: str,
+    host: str,
+    is_local: bool,
+) -> None:
+    # Use a completed download to check whether its files can be changed locally.
+    source = tmp_path / "download.txt"
+    source.write_text("download contents", encoding="utf-8")
+    target = tmp_path / "destination"
+    api = API(Client(host=f"{scheme}://{host}"))
+    download = Download(api, {"status": "complete", "dir": str(tmp_path), "files": [{"path": str(source)}]})
+
+    if operation == "remove_files":
+        results = api.remove_files([download])
+    else:
+        results = getattr(api, operation)([download], target)
+
+    # Remote or invalid hosts must leave the local files and destination untouched.
+    assert results == [is_local]
+    assert source.exists() == (not is_local or operation == "copy_files")
+    assert target.exists() == (is_local and operation != "remove_files")
+    if is_local and operation != "remove_files":
+        assert (target / source.name).read_text(encoding="utf-8") == "download contents"
+
+
 def test_remove_all_method(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="3-dls.txt") as server:
         if not server.api.remove_all():
