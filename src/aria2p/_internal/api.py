@@ -41,7 +41,7 @@ from aria2p._internal.options import Options
 from aria2p._internal.stats import Stats
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterator
+    from collections.abc import Callable, Iterator, Sequence
 
 
 OptionsType = Options | dict
@@ -52,6 +52,11 @@ InputFileContentsType = list[tuple[list[str], dict[str, str]]]
 """Structure to represent aria2 input files."""
 
 
+def _get_gid(download: str | Download) -> str:
+    """Get the GID from a download object or a GID string."""
+    return download if isinstance(download, str) else download.gid
+
+
 class API:
     """A class providing high-level methods to interact with a remote aria2c process.
 
@@ -60,6 +65,9 @@ class API:
     through JSON-RPC, this class's methods allow for easier / faster control of the remote process. It also
     wraps the information the client retrieves in Python object, like [`Download`][aria2p.Download],
     allowing for even more Pythonic interactions, without worrying about payloads, responses, JSON, etc..
+
+    Methods that accept downloads also accept GID strings. Lists of downloads can contain both
+    GID strings and [`Download`][aria2p.Download] objects.
     """
 
     def __init__(self, client: Client | None = None) -> None:
@@ -328,23 +336,23 @@ class API:
         structs.extend(self.client.tell_stopped(0, 1000))
         return [Download(self, struct) for struct in structs]
 
-    def move(self, download: Download, pos: int) -> int:
+    def move(self, download: str | Download, pos: int) -> int:
         """Move a download in the queue, relatively to its current position.
 
         Parameters:
-            download: The download object to move.
+            download: The GID or download object to move.
             pos: The relative position (1 to move down, -1 to move up, -2 to move up two times, etc.).
 
         Returns:
             The new position of the download.
         """
-        return self.client.change_position(download.gid, pos, "POS_CUR")
+        return self.client.change_position(_get_gid(download), pos, "POS_CUR")
 
-    def move_to(self, download: Download, pos: int) -> int:
+    def move_to(self, download: str | Download, pos: int) -> int:
         """Move a download in the queue, with absolute positioning.
 
         Parameters:
-            download: The download object to move.
+            download: The GID or download object to move.
             pos: The absolute position in the queue where to move the download. 0 for top, -1 for bottom.
 
         Returns:
@@ -355,63 +363,63 @@ class API:
             pos = -pos
         else:
             how = "POS_SET"
-        return self.client.change_position(download.gid, pos, how)
+        return self.client.change_position(_get_gid(download), pos, how)
 
-    def move_up(self, download: Download, pos: int = 1) -> int:
+    def move_up(self, download: str | Download, pos: int = 1) -> int:
         """Move a download up in the queue.
 
         Parameters:
-            download: The download object to move.
+            download: The GID or download object to move.
             pos: Number of times to move up. With negative values, will move down (use move or move_down instead).
 
         Returns:
             The new position of the download.
         """
-        return self.client.change_position(download.gid, -pos, "POS_CUR")
+        return self.client.change_position(_get_gid(download), -pos, "POS_CUR")
 
-    def move_down(self, download: Download, pos: int = 1) -> int:
+    def move_down(self, download: str | Download, pos: int = 1) -> int:
         """Move a download down in the queue.
 
         Parameters:
-            download: The download object to move.
+            download: The GID or download object to move.
             pos: Number of times to move down. With negative values, will move up (use move or move_up instead).
 
         Returns:
             The new position of the download.
         """
-        return self.client.change_position(download.gid, pos, "POS_CUR")
+        return self.client.change_position(_get_gid(download), pos, "POS_CUR")
 
-    def move_to_top(self, download: Download) -> int:
+    def move_to_top(self, download: str | Download) -> int:
         """Move a download to the top of the queue.
 
         Parameters:
-            download: The download object to move.
+            download: The GID or download object to move.
 
         Returns:
             The new position of the download.
         """
-        return self.client.change_position(download.gid, 0, "POS_SET")
+        return self.client.change_position(_get_gid(download), 0, "POS_SET")
 
-    def move_to_bottom(self, download: Download) -> int:
+    def move_to_bottom(self, download: str | Download) -> int:
         """Move a download to the bottom of the queue.
 
         Parameters:
-            download: The download object to move.
+            download: The GID or download object to move.
 
         Returns:
             The new position of the download.
         """
-        return self.client.change_position(download.gid, 0, "POS_END")
+        return self.client.change_position(_get_gid(download), 0, "POS_END")
 
     def retry_downloads(
         self,
-        downloads: list[Download],
+        downloads: Sequence[str | Download],
         clean: bool = False,  # noqa: FBT001,FBT002
     ) -> list[OperationResult]:
         """Resume failed downloads from where they left off with new GIDs.
 
         Parameters:
-            downloads: The list of downloads to remove.
+            downloads: The GIDs or download objects to retry.
             clean: Whether to remove the aria2 control file as well.
 
         Returns:
@@ -419,7 +427,12 @@ class API:
         """
         result: list[OperationResult] = []
 
-        for download in downloads:
+        for item in downloads:
+            try:
+                download = self.get_download(item) if isinstance(item, str) else item
+            except ClientException as error:
+                result.append(error)
+                continue
             if not download.has_failed:
                 continue
             try:
@@ -441,7 +454,7 @@ class API:
 
     def remove(
         self,
-        downloads: list[Download],
+        downloads: Sequence[str | Download],
         force: bool = False,  # noqa: FBT001,FBT002
         files: bool = False,  # noqa: FBT001,FBT002
         clean: bool = True,  # noqa: FBT001,FBT002
@@ -449,7 +462,7 @@ class API:
         """Remove the given downloads from the list.
 
         Parameters:
-            downloads: The list of downloads to remove.
+            downloads: The GIDs or download objects to remove.
             force: Whether to force the removal or not.
             files: Whether to remove downloads files as well.
             clean: Whether to remove the aria2 control file as well.
@@ -462,7 +475,12 @@ class API:
 
         result: list[OperationResult] = []
 
-        for download in downloads:
+        for item in downloads:
+            try:
+                download = self.get_download(item) if isinstance(item, str) else item
+            except ClientException as error:
+                result.append(error)
+                continue
             if download.is_complete or download.is_removed or download.has_failed:
                 logger.debug(f"Try to remove download result {download.gid}")
                 try:
@@ -518,11 +536,11 @@ class API:
         """
         return all(self.remove(self.get_downloads(), force=force))
 
-    def pause(self, downloads: list[Download], force: bool = False) -> list[OperationResult]:  # noqa: FBT001,FBT002
+    def pause(self, downloads: Sequence[str | Download], force: bool = False) -> list[OperationResult]:  # noqa: FBT001,FBT002
         """Pause the given (active) downloads.
 
         Parameters:
-            downloads: The list of downloads to pause.
+            downloads: The GIDs or download objects to pause.
             force: Whether to pause immediately without contacting servers or not.
 
         Returns:
@@ -534,10 +552,11 @@ class API:
         result: list[OperationResult] = []
 
         for download in downloads:
+            gid = _get_gid(download)
             try:
-                pause_func(download.gid)
+                pause_func(gid)
             except ClientException as error:
-                logger.debug(f"Failed to pause download {download.gid}")
+                logger.debug(f"Failed to pause download {gid}")
                 logger.opt(exception=True).trace(error)
                 result.append(error)
             else:
@@ -557,11 +576,11 @@ class API:
         pause_func = self.client.force_pause_all if force else self.client.pause_all
         return pause_func() == "OK"
 
-    def resume(self, downloads: list[Download]) -> list[OperationResult]:
+    def resume(self, downloads: Sequence[str | Download]) -> list[OperationResult]:
         """Resume (unpause) the given downloads.
 
         Parameters:
-            downloads: The list of downloads to resume.
+            downloads: The GIDs or download objects to resume.
 
         Returns:
             Success or failure of the operation for each given download.
@@ -570,10 +589,11 @@ class API:
         result: list[OperationResult] = []
 
         for download in downloads:
+            gid = _get_gid(download)
             try:
-                self.client.unpause(download.gid)
+                self.client.unpause(gid)
             except ClientException as error:
-                logger.debug(f"Failed to resume download {download.gid}")
+                logger.debug(f"Failed to resume download {gid}")
                 logger.opt(exception=True).trace(error)
                 result.append(error)
             else:
@@ -608,17 +628,21 @@ class API:
         logger.warning("Deprecation warning: API method 'autopurge' is deprecated, use 'purge' instead.")
         return self.purge()
 
-    def get_options(self, downloads: list[Download]) -> list[Options]:
+    def get_options(self, downloads: Sequence[str | Download]) -> list[Options]:
         """Get options for each of the given downloads.
 
         Parameters:
-            downloads: The list of downloads to get the options of.
+            downloads: The GIDs or download objects to get options for.
 
         Returns:
             Options object for each given download.
         """
         # Note: batch/multicall candidate
-        return [Options(self, self.client.get_option(download.gid), download) for download in downloads]
+        options = []
+        for item in downloads:
+            download = self.get_download(item) if isinstance(item, str) else item
+            options.append(Options(self, self.client.get_option(download.gid), download))
+        return options
 
     def get_global_options(self) -> Options:
         """Get the global options.
@@ -628,13 +652,13 @@ class API:
         """
         return Options(self, self.client.get_global_option())
 
-    def set_options(self, options: OptionsType, downloads: list[Download]) -> list[bool]:
+    def set_options(self, options: OptionsType, downloads: Sequence[str | Download]) -> list[bool]:
         """Set options for specific downloads.
 
         Parameters:
             options: An instance of the [`Options`][aria2p.Options] class or a dictionary
                 containing aria2c options to create the download with.
-            downloads: The list of downloads to set the options for.
+            downloads: The GIDs or download objects to set options for.
 
         Returns:
             Success or failure of the operation for changing options for each given download.
@@ -642,7 +666,7 @@ class API:
         client_options = options.get_struct() if isinstance(options, Options) else options
 
         # Note: batch/multicall candidate
-        return [self.client.change_option(download.gid, client_options) == "OK" for download in downloads]
+        return [self.client.change_option(_get_gid(download), client_options) == "OK" for download in downloads]
 
     def set_global_options(self, options: OptionsType) -> bool:
         """Set global options.
@@ -668,7 +692,7 @@ class API:
 
     def remove_files(
         self,
-        downloads: list[Download],
+        downloads: Sequence[str | Download],
         force: bool = False,  # noqa: FBT001,FBT002
     ) -> list[bool]:
         """Remove downloaded files.
@@ -676,7 +700,7 @@ class API:
         Disk operations are only supported for localhost connections. For remote systems.
 
         Parameters:
-            downloads:  the list of downloads for which to remove files.
+            downloads: The GIDs or download objects whose files to remove.
             force: Whether to remove files even if download is not complete.
 
         Returns:
@@ -687,7 +711,8 @@ class API:
             return [False] * len(downloads)
 
         results = []
-        for download in downloads:
+        for item in downloads:
+            download = self.get_download(item) if isinstance(item, str) else item
             if download.is_complete or force:
                 for path in download.root_files_paths:
                     if path.is_dir():
@@ -712,7 +737,7 @@ class API:
 
     def move_files(
         self,
-        downloads: list[Download],
+        downloads: Sequence[str | Download],
         to_directory: str | Path,
         force: bool = False,  # noqa: FBT001,FBT002
     ) -> list[bool]:
@@ -721,7 +746,7 @@ class API:
         Disk operations are only supported for localhost connections.
 
         Parameters:
-            downloads:  the list of downloads for which to move files.
+            downloads: The GIDs or download objects whose files to move.
             to_directory: The target directory to move files to.
             force: Whether to move files even if download is not complete.
 
@@ -739,7 +764,8 @@ class API:
         to_directory.mkdir(parents=True, exist_ok=True)
 
         results = []
-        for download in downloads:
+        for item in downloads:
+            download = self.get_download(item) if isinstance(item, str) else item
             if download.is_complete or force:
                 for path in download.root_files_paths:
                     shutil.move(str(path), str(to_directory))
@@ -750,7 +776,7 @@ class API:
 
     def copy_files(
         self,
-        downloads: list[Download],
+        downloads: Sequence[str | Download],
         to_directory: str | Path,
         force: bool = False,  # noqa: FBT001,FBT002
     ) -> list[bool]:
@@ -759,7 +785,7 @@ class API:
         Disk operations are only supported for localhost connections.
 
         Parameters:
-            downloads:  the list of downloads for which to move files.
+            downloads: The GIDs or download objects whose files to copy.
             to_directory: The target directory to copy files into.
             force: Whether to move files even if download is not complete.
 
@@ -777,7 +803,8 @@ class API:
         to_directory.mkdir(parents=True, exist_ok=True)
 
         results = []
-        for download in downloads:
+        for item in downloads:
+            download = self.get_download(item) if isinstance(item, str) else item
             if download.is_complete or force:
                 for path in download.root_files_paths:
                     if path.is_dir():
