@@ -322,3 +322,16 @@ def test_show_debug_info(capsys: pytest.CaptureFixture) -> None:
 def test_cli_autoclear_commands(command: str, tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="very-small-download.txt"):
         assert main([f"-p{port}", command]) == 0
+
+
+def test_listen_missing_callbacks_file_reports_clean_error(capsys: pytest.CaptureFixture) -> None:
+    """Missing callbacks module must exit 1 with a clean error, not a traceback.
+
+    Parameters:
+        capsys: Pytest fixture to capture output.
+    """
+    assert listen(None, callbacks_module="/definitely/not/here_callbacks.py") == 1
+    captured = capsys.readouterr()
+    assert "Could not import module file" in captured.err
+    assert "Traceback" not in captured.err
+
