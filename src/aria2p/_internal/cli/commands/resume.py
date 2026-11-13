@@ -23,6 +23,8 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING
 
+from loguru import logger
+
 from aria2p._internal.client import ClientException
 
 if TYPE_CHECKING:
@@ -48,6 +50,8 @@ def resume(api: API, gids: list[str] | None = None, do_all: bool = False) -> int
     try:
         downloads = api.get_downloads(gids)
     except ClientException as error:
+        logger.error(f"Could not get downloads to resume: {error}")
+        logger.opt(exception=True).trace(error)
         print(str(error), file=sys.stderr)
         return 1
 

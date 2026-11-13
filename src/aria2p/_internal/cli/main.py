@@ -123,6 +123,8 @@ def main(args: list[str] | None = None) -> int:
     try:
         api.client.get_version()
     except requests.ConnectionError as error:
+        logger.error(f"Could not connect to aria2: {error}")
+        logger.opt(exception=True).trace(error)
         print(f"[ERROR] {error}", file=sys.stderr)
         print(file=sys.stderr)
         print("Please make sure that an instance of aria2c is running with RPC mode enabled,", file=sys.stderr)
@@ -138,5 +140,7 @@ def main(args: list[str] | None = None) -> int:
     try:
         return commands[subcommand](api, **kwargs)
     except ClientException as error:
+        logger.error(f"Command {subcommand!r} failed: {error}")
+        logger.opt(exception=True).trace(error)
         print(str(error), file=sys.stderr)
         return error.code

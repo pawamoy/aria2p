@@ -562,7 +562,7 @@ class _Interface:
                                 return True
                             except Exception as error:  # noqa: BLE001
                                 # TODO: display error in status bar
-                                logger.exception(error)
+                                logger.exception(f"Failed to process event {event}: {error}")
                             event = screen.get_event()
                             logger.debug(f"Got event {event}")
 
@@ -592,7 +592,7 @@ class _Interface:
                     logger.debug("Screen has resized")
                     self.post_resize()
         except Exception as error:  # noqa: BLE001
-            logger.exception(error)
+            logger.exception(f"Interface stopped after an unexpected error: {error}")
             return False
 
     def post_resize(self) -> None:
@@ -603,8 +603,10 @@ class _Interface:
             with wal_sequences.open("rb") as fd:
                 contents = fd.read()
                 sys.stdout.buffer.write(contents)
-        except Exception:  # noqa: BLE001,S110
-            pass
+        except Exception as error:  # noqa: BLE001
+            # Theme restoration is optional and must not interrupt a screen resize.
+            logger.debug(f"Could not re-apply pywal color theme from '{wal_sequences}': {error}")
+            logger.opt(exception=True).trace(error)
 
     def update_select_sort_rows(self) -> None:
         self.select_sort_rows = self.columns_order

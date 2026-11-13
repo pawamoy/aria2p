@@ -23,6 +23,8 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING
 
+from loguru import logger
+
 from aria2p._internal.client import ClientException
 
 if TYPE_CHECKING:
@@ -54,6 +56,8 @@ def pause(
     try:
         downloads = api.get_downloads(gids)
     except ClientException as error:
+        logger.error(f"Could not get downloads to pause: {error}")
+        logger.opt(exception=True).trace(error)
         print(str(error), file=sys.stderr)
         return 1
 

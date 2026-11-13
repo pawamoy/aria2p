@@ -53,10 +53,12 @@ def add(
     uris = uris or []
 
     if from_file:
-        logger.warning(
+        message = (
             "Deprecation warning: every URI that is a valid file-path "
-            "and is not a torrent or a metalink is now read as an input file.",
+            "and is not a torrent or a metalink is now read as an input file."
         )
+        logger.warning(message)
+        print(message, file=sys.stderr)
 
     new_downloads = []
 

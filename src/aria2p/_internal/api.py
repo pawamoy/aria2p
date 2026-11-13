@@ -453,10 +453,13 @@ class API:
             try:
                 uri = download.files[0].uris[0]["uri"]
             except IndexError:
+                logger.debug(f"Cannot retry download {download.gid}: no URI available")
                 continue
             try:
                 new_download_gid = self.add_uris([uri], download.options)
             except ClientException as error:
+                logger.error(f"Failed to retry download {download.gid}: {error}")
+                logger.opt(exception=True).trace(error)
                 result.append(error)
             else:
                 if not new_download_gid:
@@ -501,7 +504,8 @@ class API:
                 try:
                     self.client.remove_download_result(download.gid)
                 except ClientException as error:
-                    logger.exception(error)
+                    logger.error(f"Failed to remove download result {download.gid}: {error}")
+                    logger.opt(exception=True).trace(error)
                     result.append(error)
                 else:
                     logger.success(f"Removed download result {download.gid}")
@@ -511,7 +515,8 @@ class API:
                 try:
                     removed_gid = remove_func(download.gid)
                 except ClientException as error:
-                    logger.exception(error)
+                    logger.error(f"Failed to remove download {download.gid}: {error}")
+                    logger.opt(exception=True).trace(error)
                     result.append(error)
                 else:
                     logger.success(f"Removed download {download.gid}")
