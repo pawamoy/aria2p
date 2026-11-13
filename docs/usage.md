@@ -35,6 +35,30 @@ Sorting uses raw values, including when `-H` is enabled.
 Without sorting, downloads appear in daemon order: active, waiting, then stopped. Retrieval includes up to 1,000 waiting and 1,000 stopped downloads.
 Use `--limit` to restrict the result after filtering and sorting. A limit of zero prints no download rows.
 
+## Moving downloads to another directory
+
+Use [`Download.move_files()`][aria2p.Download.move_files] to move downloaded files to another directory.
+For an unfinished download, pass `force=True` to change its output directory and move its existing files:
+
+```python
+download = api.get_download(gid)
+download.move_files("/path/to/new-directory", force=True)
+```
+
+The operation pauses active downloads, moves their files and `.aria2` control file, then resumes them in the new directory.
+Downloads that were already paused remain paused.
+The destination directory is created if necessary.
+Existing destination files cause an error when moving unfinished downloads.
+
+Use [`API.move_files()`][aria2p.API.move_files] to move several downloads:
+
+```python
+api.move_files([first_gid, second_gid], "/path/to/new-directory", force=True)
+```
+
+Moving files requires a localhost connection and access to the same filesystem as the aria2 daemon.
+For completed downloads, `move_files()` moves the files without changing aria2's recorded output directory.
+
 ## Listening to notifications
 
 Since [version 0.3](changelog.md#030-2019-10-11), it is possible to listen to the server notifications

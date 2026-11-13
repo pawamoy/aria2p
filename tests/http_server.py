@@ -22,7 +22,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import StreamingResponse
 
 if TYPE_CHECKING:
@@ -60,4 +60,24 @@ async def get(size: str) -> StreamingResponse:
     return StreamingResponse(
         virtual_file(translate_size(size)),
         media_type="application/octet-stream",
+    )
+
+
+@app.get("/files/{size}")
+async def get_resumable_file(size: str, request: Request) -> StreamingResponse:
+    """Serve a file with a known length and byte ranges for resume tests."""
+    length = translate_size(size)
+    start, end = 0, length - 1
+    status = 200
+    headers = {"Accept-Ranges": "bytes"}
+    if byte_range := request.headers.get("range"):
+        first, last = byte_range.removeprefix("bytes=").split("-", 1)
+        start = int(first)
+        if last:
+            end = min(int(last), end)
+        status = 206
+        headers["Content-Range"] = f"bytes {start}-{end}/{length}"
+    headers["Content-Length"] = str(end - start + 1)
+    return StreamingResponse(
+        virtual_file(end - start + 1), status_code=status, headers=headers, media_type="application/octet-stream"
     )

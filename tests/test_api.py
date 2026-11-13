@@ -394,6 +394,172 @@ def test_move_files_method(tmp_path_factory: pytest.TempPathFactory, port: int) 
         tmp_dir.rmdir()
 
 
+@pytest.mark.parametrize("paused", [False, True])
+@pytest.mark.parametrize("use_gid", [False, True])
+def test_move_unfinished_download(server: Aria2Server, isolated_http_server: str, paused: bool, use_gid: bool) -> None:
+    # Start a local download slowly enough to move it before completion.
+    download = server.api.add_uris(
+        [f"{isolated_http_server}/files/4m"], {"max-download-limit": "1m", "piece-length": "1m"}
+    )
+    deadline = time.monotonic() + 10
+    while download.live.completed_length < 1024 * 1024:
+        assert not download.has_failed, download.error_message
+        assert time.monotonic() < deadline, "Download did not start"
+        time.sleep(0.05)
+    if paused:
+        download.pause()
+        while not download.live.is_paused:
+            assert time.monotonic() < deadline, "Download did not pause"
+            time.sleep(0.05)
+
+    source = download.files[0].path
+    control_file = download.control_file_path
+    # Cache the root paths to check that the move invalidates them too.
+    assert download.root_files_paths == [source]
+    destination = server.tmp_dir / "destination"
+
+    if use_gid:
+        assert server.api.move_files([download.gid], str(destination), force=True) == [True]
+        download.update()
+    else:
+        assert download.move_files(destination, force=True)
+
+    # Both aria2 and the download object must use the new directory.
+    assert download.dir == destination
+    assert download.files[0].path == destination / source.name
+    assert download.root_files_paths == [destination / source.name]
+    assert download.options.dir == str(destination)
+    assert not source.exists()
+    assert not control_file.exists()
+    assert (destination / control_file.name).exists()
+    assert download.is_paused == paused
+
+    # Finish in the new location and check that no data is left behind.
+    if paused:
+        download.resume()
+    server.api.set_options({"max-download-limit": "0"}, [download])
+    deadline = time.monotonic() + 10
+    while not download.live.is_complete:
+        assert not download.has_failed, download.error_message
+        assert time.monotonic() < deadline, "Download did not finish after the move"
+        time.sleep(0.05)
+
+    assert (destination / source.name).read_bytes() == b"1" * (4 * 1024 * 1024)
+    assert not source.exists()
+
+
+def test_move_unfinished_download_conflict(server: Aria2Server) -> None:
+    # A destination conflict must leave the source and existing target intact.
+    download = server.api.add_uris(["http://localhost:8779/64k"], {"pause": "true", "out": "download.txt"})
+    source = download.files[0].path
+    source.write_text("partial download", encoding="utf-8")
+    destination = server.tmp_dir / "destination"
+    destination.mkdir()
+    target = destination / source.name
+    target.write_text("existing file", encoding="utf-8")
+
+    with pytest.raises(FileExistsError):
+        download.move_files(destination, force=True)
+
+    assert source.read_text(encoding="utf-8") == "partial download"
+    assert target.read_text(encoding="utf-8") == "existing file"
+    assert download.dir == server.tmp_dir
+    assert download.is_paused
+
+
+def test_move_unfinished_download_requires_force(server: Aria2Server) -> None:
+    download = server.api.add_uris(["http://localhost:8779/64k"], {"pause": "true", "out": "download.txt"})
+    source = download.files[0].path
+    source.write_text("partial download", encoding="utf-8")
+
+    assert not download.move_files(server.tmp_dir / "destination")
+
+    assert source.read_text(encoding="utf-8") == "partial download"
+    assert download.dir == server.tmp_dir
+    assert download.is_paused
+
+
+def test_move_unfinished_download_rolls_back(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) -> None:
+    # Reject the directory change after both the data and control file have moved.
+    download = server.api.add_uris(["http://localhost:8779/64k"], {"pause": "true", "out": "download.txt"})
+    source = download.files[0].path
+    source.write_text("partial download", encoding="utf-8")
+    control_file = download.control_file_path
+    control_file.write_bytes(b"resume data")
+    destination = server.tmp_dir / "destination"
+
+    def reject_directory_change(gid: str, options: dict) -> str:
+        assert gid == download.gid
+        assert options == {"dir": str(destination)}
+        assert not source.exists()
+        assert not control_file.exists()
+        raise ClientException(1, "Directory change rejected")
+
+    monkeypatch.setattr(server.api.client, "change_option", reject_directory_change)
+
+    with pytest.raises(ClientException, match="Directory change rejected"):
+        download.move_files(destination, force=True)
+
+    # Restore both files and retain the original directory and paused state.
+    assert source.read_text(encoding="utf-8") == "partial download"
+    assert control_file.read_bytes() == b"resume data"
+    assert list(destination.iterdir()) == []
+    assert download.dir == server.tmp_dir
+    assert download.is_paused
+
+
+def test_move_unstarted_download(server: Aria2Server) -> None:
+    # A queued download has no files yet, but its output directory can still change.
+    download = server.api.add_uris(["http://localhost:8779/64k"], {"pause": "true"})
+    destination = server.tmp_dir / "destination"
+
+    assert download.move_files(destination, force=True)
+
+    assert download.dir == destination
+    assert download.options.dir == str(destination)
+    assert download.is_paused
+    assert list(destination.iterdir()) == []
+
+
+def test_move_unfinished_download_to_same_directory(server: Aria2Server) -> None:
+    download = server.api.add_uris(["http://localhost:8779/64k"], {"pause": "true", "out": "download.txt"})
+    source = download.files[0].path
+    source.write_text("partial download", encoding="utf-8")
+
+    assert download.move_files(server.tmp_dir, force=True)
+
+    assert source.read_text(encoding="utf-8") == "partial download"
+    assert download.is_paused
+
+
+def test_move_paused_torrent_files(server: Aria2Server) -> None:
+    # The torrent contains two four-byte files, one inside a subdirectory.
+    torrent_path = server.tmp_dir / "two-files.torrent"
+    torrent_path.write_bytes(
+        b"d4:infod5:filesld6:lengthi4e4:pathl7:one.txteed6:lengthi4e4:pathl6:nested7:two.txteee4:name6:bundle12:piece lengthi16384e6:pieces20:00000000000000000000ee"
+    )
+    download = server.api.add_torrent(torrent_path, options={"pause": "true"})
+    for file in download.files:
+        file.path.parent.mkdir(parents=True, exist_ok=True)
+        file.path.write_bytes(b"data")
+    source = server.tmp_dir / "bundle"
+    control_file = download.control_file_path
+    control_file.write_bytes(b"resume data")
+    destination = server.tmp_dir / "destination"
+
+    assert download.move_files(destination, force=True)
+
+    # Move the whole torrent directory and preserve both files and resume data.
+    assert (destination / "bundle" / "one.txt").read_bytes() == b"data"
+    assert (destination / "bundle" / "nested" / "two.txt").read_bytes() == b"data"
+    assert (destination / control_file.name).read_bytes() == b"resume data"
+    assert not source.exists()
+    assert not control_file.exists()
+    assert download.dir == destination
+    assert download.root_files_paths == [destination / "bundle"]
+    assert download.is_paused
+
+
 def test_listen_to_notifications(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         server.api.listen_to_notifications(threaded=True, timeout=1)

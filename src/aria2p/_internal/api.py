@@ -26,6 +26,7 @@ from __future__ import annotations
 import functools
 import shutil
 import threading
+import time
 from base64 import b64encode
 from ipaddress import ip_address
 from pathlib import Path
@@ -765,14 +766,25 @@ class API:
         """Move downloaded files to another directory.
 
         Disk operations are only supported for localhost connections.
+        With `force=True`, active downloads are paused while their files and aria2
+        control file are moved. Their output directory is changed before resuming.
+        Downloads that were already paused remain paused. Existing destination
+        files are not overwritten when moving an unfinished download.
 
         Parameters:
             downloads: The GIDs or download objects whose files to move.
             to_directory: The target directory to move files to.
-            force: Whether to move files even if download is not complete.
+            force: Whether to move unfinished downloads and change their output directory.
 
         Returns:
             Success or failure of the operation for each given download.
+
+        Raises:
+            TimeoutError: If an active download does not pause within ten seconds.
+            FileExistsError: If an unfinished download would overwrite existing files.
+            ValueError: If the destination is inside a directory being moved.
+            OSError: If moving files fails.
+            ClientException: If updating the download in aria2 fails.
         """
         if not self._is_localhost():
             logger.warning("Disk operations are not supported for remote systems.")
@@ -788,12 +800,71 @@ class API:
         for item in downloads:
             download = self.get_download(item) if isinstance(item, str) else item
             if download.is_complete or force:
-                for path in download.root_files_paths:
-                    shutil.move(str(path), str(to_directory))
+                if force and download.status in {"active", "waiting", "paused"}:
+                    self._move_incomplete_download(download, to_directory.resolve())
+                else:
+                    for path in download.root_files_paths:
+                        shutil.move(str(path), str(to_directory))
                 results.append(True)
             else:
                 results.append(False)
         return results
+
+    def _move_incomplete_download(self, download: Download, to_directory: Path) -> None:
+        """Move an unfinished download while aria2 has closed its files."""
+        download.update()
+        if download.dir.resolve() == to_directory:
+            return
+
+        resume = download.status in {"active", "waiting"}
+        if resume:
+            download.pause()
+            deadline = time.monotonic() + 10
+            # The pause RPC returns before aria2 closes files and saves resume data.
+            while download.live.status in {"active", "waiting"}:
+                if time.monotonic() >= deadline:
+                    raise TimeoutError(f"Download {download.gid} did not pause")
+                time.sleep(0.05)
+
+        moved: list[tuple[Path, Path]] = []
+        try:
+            options: dict[str, str | list[str]] = {"dir": str(to_directory)}
+            if download.bittorrent and not download.is_metadata:
+                # aria2 only updates torrent file paths when index-out is supplied with dir.
+                options["index-out"] = [
+                    f"{file.index}={file.path.relative_to(download.dir)}" for file in download.files
+                ]
+            paths = [path for path in download.root_files_paths if path.exists()]
+            if download.control_file_path.exists():
+                paths.append(download.control_file_path)
+
+            for path in paths:
+                target = to_directory / path.name
+                if target.exists() or target.is_symlink():
+                    raise FileExistsError(f"Destination already exists: {target}")
+                if to_directory.is_relative_to(path.resolve()):
+                    raise ValueError(f"Destination is inside the download: {to_directory}")
+
+            try:
+                for path in paths:
+                    target = to_directory / path.name
+                    shutil.move(str(path), str(target))
+                    moved.append((path, target))
+                if download.status == "paused":
+                    self.client.change_option(download.gid, options)
+            except Exception:
+                # Keep aria2 paused if rollback fails, so it cannot write to missing files.
+                try:
+                    for source, target in reversed(moved):
+                        shutil.move(str(target), str(source))
+                except Exception:
+                    resume = False
+                    raise
+                raise
+        finally:
+            if resume and download.status == "paused":
+                download.resume()
+            download.update()
 
     def copy_files(
         self,

@@ -321,6 +321,19 @@ def server(tmp_path: Path, port: int) -> Iterator[Aria2Server]:
         yield server
 
 
+@pytest.fixture
+def isolated_http_server() -> Iterator[str]:
+    """Run the HTTP test server on its own port to avoid other test sessions."""
+    http_port = reserve_port()
+    process = spawn_and_wait_server(http_port)
+    try:
+        yield f"http://localhost:{http_port}"
+    finally:
+        process.kill()
+        process.wait()
+        release_port(http_port)
+
+
 @pytest.fixture(scope="session", autouse=True)
 def _setup() -> None:
     ports_file.unlink(missing_ok=True)

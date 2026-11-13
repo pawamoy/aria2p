@@ -264,6 +264,7 @@ class Download:  # noqa: PLW1641
         self._struct = self.api.client.tell_status(self.gid)
 
         self._files = []
+        self._root_files_paths = []
         self._name = ""
         self._bittorrent = None
         self._followed_by = None
@@ -1019,9 +1020,13 @@ class Download:  # noqa: PLW1641
     def move_files(self, to_directory: str | Path, force: bool = False) -> bool:  # noqa: FBT001,FBT002
         """Move downloaded files to another directory.
 
+        With `force=True`, update aria2's output directory for unfinished downloads
+        and move their control file too. Active downloads resume after the move;
+        paused downloads remain paused. This requires a localhost connection.
+
         Parameters:
             to_directory: The target directory to move files to.
-            force: Whether to move files even if download is not complete.
+            force: Whether to move unfinished downloads and change their output directory.
 
         Returns:
             Success or failure of the operation.
