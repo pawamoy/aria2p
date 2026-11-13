@@ -155,8 +155,14 @@ class TestDownloadClass:
     def test_connections(self) -> None:
         assert self.download.connections == 44
 
-    def test_dir(self) -> None:
-        assert self.download.dir == Path("/home/pawamoy/Downloads/torrents/tmp")
+    @pytest.mark.parametrize("path_type", [str, Path])
+    def test_dir(self, path_type: type[str | Path]) -> None:
+        # Download paths have the same return type for either input representation.
+        directory = Path("/home/pawamoy/Downloads/torrents/tmp")
+        download = Download(API(), {"dir": path_type(directory)})
+
+        assert download.dir == directory
+        assert isinstance(download.dir, Path)
 
     def test_download_speed(self) -> None:
         assert self.download.download_speed == 745_509
@@ -430,8 +436,14 @@ class TestFileClass:
         assert self.file.length_string() == "2.00 MiB"
         assert self.file.length_string(human_readable=False) == "2097152 B"
 
-    def test_path(self) -> None:
-        assert self.file.path == Path("/some/file/path.txt")
+    @pytest.mark.parametrize("path_type", [str, Path])
+    def test_path(self, path_type: type[str | Path]) -> None:
+        # File paths have the same return type for either input representation.
+        path = Path("/some/file/path.txt")
+        file = File({"path": path_type(path)})
+
+        assert file.path == path
+        assert isinstance(file.path, Path)
 
     def test_selected(self) -> None:
         assert self.file.selected is True

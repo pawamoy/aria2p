@@ -20,6 +20,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from unittest.mock import Mock, call
 
@@ -86,6 +87,7 @@ def api_and_rpc(monkeypatch: pytest.MonkeyPatch) -> tuple[API, Mock]:
         ("dir", ["/downloads"]),
         ("header", [1]),
         ("header", ("Accept: */*",)),
+        ("user-agent", Path("aria2p")),
     ],
 )
 def test_invalid_values_leave_remote_and_local_options_unchanged(
@@ -128,6 +130,7 @@ def test_invalid_values_leave_remote_and_local_options_unchanged(
         ("log", "", ""),
         ("http-passwd", "", ""),
         ("dir", "/path/on/remote/server", "/path/on/remote/server"),
+        ("dir", Path("/path/on/remote/server"), "/path/on/remote/server"),
         ("header", ["Accept: */*", "User-Agent: aria2p"], ["Accept: */*", "User-Agent: aria2p"]),
         ("header", [], []),
     ],
@@ -269,10 +272,13 @@ def test_invalid_creation_options_are_rejected_before_rpc_or_file_access(
     rpc.assert_not_called()
 
 
-def test_creation_options_allow_pause_and_piece_length(api_and_rpc: tuple[API, Mock]) -> None:
+@pytest.mark.parametrize("path_type", [str, Path])
+def test_creation_options_allow_pause_and_piece_length(
+    api_and_rpc: tuple[API, Mock], path_type: type[str | Path]
+) -> None:
     api, rpc = api_and_rpc
     rpc.side_effect = ["0123456789abcdef", {"gid": "0123456789abcdef"}]
-    options = {"pause": True, "piece-length": "1M", "out": "download.iso"}
+    options = {"pause": True, "piece-length": "1M", "out": path_type("download.iso")}
 
     download = api.add_uris(["http://example.org/file"], options=options)
 
@@ -282,6 +288,7 @@ def test_creation_options_allow_pause_and_piece_length(api_and_rpc: tuple[API, M
         params=[["http://example.org/file"], {"pause": "true", "piece-length": "1M", "out": "download.iso"}, None],
     )
     assert options["pause"] is True
+    assert isinstance(options["out"], path_type)
 
 
 def test_size_and_float_properties_return_python_numbers(api_and_rpc: tuple[API, Mock]) -> None:
@@ -326,16 +333,23 @@ def test_properties_send_dashed_option_names(
     assert getattr(options, property_name) is True
 
 
-def test_validated_options_with_daemon(server: Aria2Server) -> None:
+def test_validated_options_with_daemon(server: Aria2Server, tmp_path: Path) -> None:
     # Create a paused download so no external network connection is needed.
-    download = server.api.add_uris(["http://localhost:8779/1024"], options={"pause": True, "out": "file"})
+    download = server.api.add_uris(
+        ["http://localhost:8779/1024"], options={"pause": True, "out": Path("file"), "dir": tmp_path}
+    )
     options = download.options
 
+    assert download.dir == tmp_path
+    assert download.files[0].path == tmp_path / "file"
+
+    options.out = Path("renamed")
     assert options.set("max-download-limit", "20K")
     options.check_integrity = True
     options.header = ["Accept: */*", "User-Agent: aria2p"]
 
     remote_options = server.api.get_options([download])[0]
+    assert remote_options.out == "renamed"
     assert remote_options.max_download_limit == 20 * 1024
     assert remote_options.check_integrity is True
     assert "Accept: */*" in remote_options.header

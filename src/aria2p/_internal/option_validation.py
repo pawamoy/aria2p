@@ -31,6 +31,7 @@ from __future__ import annotations
 import math
 import re
 from ipaddress import ip_address
+from pathlib import Path
 from typing import TYPE_CHECKING
 from urllib.parse import urlsplit
 
@@ -281,6 +282,43 @@ _SIZE_OPTIONS = frozenset(
 )
 
 
+_PATH_OPTIONS = {
+    "dir",
+    "input-file",
+    "log",
+    "netrc-path",
+    "out",
+    "server-stat-of",
+    "server-stat-if",
+    "ca-certificate",
+    "certificate",
+    "private-key",
+    "load-cookies",
+    "save-cookies",
+    "dht-file-path",
+    "dht-file-path6",
+    "torrent-file",
+    "metalink-file",
+    "rpc-certificate",
+    "rpc-private-key",
+    "conf-path",
+    "on-bt-download-complete",
+    "on-download-complete",
+    "on-download-error",
+    "on-download-pause",
+    "on-download-start",
+    "on-download-stop",
+    "save-session",
+}
+
+
+def _normalize_options(options: dict) -> dict:
+    """Copy options and convert Path values for filesystem options to strings."""
+    return {
+        key: str(value) if key in _PATH_OPTIONS and isinstance(value, Path) else value for key, value in options.items()
+    }
+
+
 def _size(value: str) -> int:
     """Parse aria2's binary K and M size suffixes."""
     match = re.fullmatch(r"([0-9]+)([KMkm]?)", value)
@@ -357,7 +395,8 @@ def _validate_options(options: dict, scope: Literal["initial", "global", "downlo
     """
     allowed = {"initial": _INITIAL_OPTIONS, "global": _GLOBAL_OPTIONS, "download": _DOWNLOAD_OPTIONS}[scope]
     result: dict[str, _RPCValue] = {}
-    for key, value in options.items():
+    # Normalize paths before checking value types; scope restrictions still apply.
+    for key, value in _normalize_options(options).items():
         if not isinstance(key, str) or key not in allowed:
             raise ValueError(f"Unknown or unavailable option {key!r} for {scope} options")
         if isinstance(value, list):

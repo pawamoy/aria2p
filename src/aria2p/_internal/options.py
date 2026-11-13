@@ -26,11 +26,12 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import TYPE_CHECKING
 
-from aria2p._internal.option_validation import _SIZE_OPTIONS, _size, _validate_options
+from aria2p._internal.option_validation import _SIZE_OPTIONS, _normalize_options, _size, _validate_options
 from aria2p._internal.utils import _bool_or_value, _bool_to_str
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+    from pathlib import Path
 
     from aria2p._internal.api import API
     from aria2p._internal.downloads import Download
@@ -53,6 +54,8 @@ class Options:
     this scope before contacting aria2. Invalid options raise `ValueError`.
     Startup options can be read but cannot be changed through RPC. Download
     creation options such as `pause` must be passed to the API's `add_*` methods.
+
+    Path options accept strings and `pathlib.Path` objects. Their values are stored and returned as strings.
     """
 
     def __init__(self, api: API, struct: dict, download: Download | None = None):
@@ -70,7 +73,7 @@ class Options:
         """A reference to the download object for which these options apply.
 
         If none, it means these are global options."""
-        self._struct = struct or {}
+        self._struct = _normalize_options(struct or {})
 
     @property
     def are_global(self) -> bool:
@@ -106,14 +109,15 @@ class Options:
             return class_(value)
         return value
 
-    def set(self, key: str, value: str | float | bool | list[str]) -> bool:  # noqa: FBT001
+    def set(self, key: str, value: str | Path | float | bool | list[str]) -> bool:  # noqa: FBT001
         """Set the value of an option given its name.
 
         Parameters:
             key: The aria2 option name, using dashes (example: "max-download-limit").
             value: A string, number, or boolean. `header` and `index-out` also
                 accept lists of strings. Booleans become `"true"` or `"false"`
-                and numbers become strings for RPC.
+                and numbers become strings for RPC. Filesystem options also accept
+                `pathlib.Path` objects, which become strings.
 
         Returns:
             True if the value was successfully set, False otherwise.
@@ -144,7 +148,7 @@ class Options:
         return self.get("dir")  # ty:ignore[invalid-explicit-return]
 
     @dir.setter  # noqa: A003
-    def dir(self, value: str) -> None:
+    def dir(self, value: str | Path) -> None:
         self.set("dir", value)
 
     @property
@@ -165,7 +169,7 @@ class Options:
         return self.get("input-file")  # ty:ignore[invalid-explicit-return]
 
     @input_file.setter
-    def input_file(self, value: str) -> None:
+    def input_file(self, value: str | Path) -> None:
         self.set("input-file", value)
 
     @property
@@ -183,7 +187,7 @@ class Options:
         return self.get("log")  # ty:ignore[invalid-explicit-return]
 
     @log.setter
-    def log(self, value: str) -> None:
+    def log(self, value: str | Path) -> None:
         self.set("log", value)
 
     @property
@@ -472,7 +476,7 @@ class Options:
         return self.get("netrc-path")  # ty:ignore[invalid-explicit-return]
 
     @netrc_path.setter
-    def netrc_path(self, value: str) -> None:
+    def netrc_path(self, value: str | Path) -> None:
         self.set("netrc-path", value)
 
     @property
@@ -542,7 +546,7 @@ class Options:
         return self.get("out")  # ty:ignore[invalid-explicit-return]
 
     @out.setter
-    def out(self, value: str) -> None:
+    def out(self, value: str | Path) -> None:
         self.set("out", value)
 
     @property
@@ -629,7 +633,7 @@ class Options:
         return self.get("server-stat-of")  # ty:ignore[invalid-explicit-return]
 
     @server_stat_of.setter
-    def server_stat_of(self, value: str) -> None:
+    def server_stat_of(self, value: str | Path) -> None:
         self.set("server-stat-of", value)
 
     @property
@@ -647,7 +651,7 @@ class Options:
         return self.get("server-stat-if")  # ty:ignore[invalid-explicit-return]
 
     @server_stat_if.setter
-    def server_stat_if(self, value: str) -> None:
+    def server_stat_if(self, value: str | Path) -> None:
         self.set("server-stat-if", value)
 
     @property
@@ -786,7 +790,7 @@ class Options:
         return self.get("ca-certificate")  # ty:ignore[invalid-explicit-return]
 
     @ca_certificate.setter
-    def ca_certificate(self, value: str) -> None:
+    def ca_certificate(self, value: str | Path) -> None:
         self.set("ca-certificate", value)
 
     @property
@@ -816,7 +820,7 @@ class Options:
         return self.get("certificate")  # ty:ignore[invalid-explicit-return]
 
     @certificate.setter
-    def certificate(self, value: str) -> None:
+    def certificate(self, value: str | Path) -> None:
         self.set("certificate", value)
 
     @property
@@ -1036,7 +1040,7 @@ class Options:
         return self.get("private-key")  # ty:ignore[invalid-explicit-return]
 
     @private_key.setter
-    def private_key(self, value: str) -> None:
+    def private_key(self, value: str | Path) -> None:
         self.set("private-key", value)
 
     @property
@@ -1130,7 +1134,7 @@ class Options:
         return self.get("load-cookies")  # ty:ignore[invalid-explicit-return]
 
     @load_cookies.setter
-    def load_cookies(self, value: str) -> None:
+    def load_cookies(self, value: str | Path) -> None:
         self.set("load-cookies", value)
 
     @property
@@ -1148,7 +1152,7 @@ class Options:
         return self.get("save-cookies")  # ty:ignore[invalid-explicit-return]
 
     @save_cookies.setter
-    def save_cookies(self, value: str) -> None:
+    def save_cookies(self, value: str | Path) -> None:
         self.set("save-cookies", value)
 
     @property
@@ -1853,7 +1857,7 @@ class Options:
         return self.get("dht-file-path")  # ty:ignore[invalid-explicit-return]
 
     @dht_file_path.setter
-    def dht_file_path(self, value: str) -> None:
+    def dht_file_path(self, value: str | Path) -> None:
         self.set("dht-file-path", value)
 
     @property
@@ -1870,7 +1874,7 @@ class Options:
         return self.get("dht-file-path6")  # ty:ignore[invalid-explicit-return]
 
     @dht_file_path6.setter
-    def dht_file_path6(self, value: str) -> None:
+    def dht_file_path6(self, value: str | Path) -> None:
         self.set("dht-file-path6", value)
 
     @property
@@ -2153,7 +2157,7 @@ class Options:
         return self.get("torrent-file")  # ty:ignore[invalid-explicit-return]
 
     @torrent_file.setter
-    def torrent_file(self, value: str) -> None:
+    def torrent_file(self, value: str | Path) -> None:
         self.set("torrent-file", value)
 
     # Metalink Specific Options
@@ -2211,7 +2215,7 @@ class Options:
         return self.get("metalink-file")  # ty:ignore[invalid-explicit-return]
 
     @metalink_file.setter
-    def metalink_file(self, value: str) -> None:
+    def metalink_file(self, value: str | Path) -> None:
         self.set("metalink-file", value)
 
     @property
@@ -2412,7 +2416,7 @@ class Options:
         return self.get("rpc-certificate")  # ty:ignore[invalid-explicit-return]
 
     @rpc_certificate.setter
-    def rpc_certificate(self, value: str) -> None:
+    def rpc_certificate(self, value: str | Path) -> None:
         self.set("rpc-certificate", value)
 
     @property
@@ -2500,7 +2504,7 @@ class Options:
         return self.get("rpc-private-key")  # ty:ignore[invalid-explicit-return]
 
     @rpc_private_key.setter
-    def rpc_private_key(self, value: str) -> None:
+    def rpc_private_key(self, value: str | Path) -> None:
         self.set("rpc-private-key", value)
 
     @property
@@ -2737,7 +2741,7 @@ class Options:
         return self.get("conf-path")  # ty:ignore[invalid-explicit-return]
 
     @conf_path.setter
-    def conf_path(self, value: str) -> None:
+    def conf_path(self, value: str | Path) -> None:
         self.set("conf-path", value)
 
     @property
@@ -3254,7 +3258,7 @@ class Options:
         return self.get("on-bt-download-complete")  # ty:ignore[invalid-explicit-return]
 
     @on_bt_download_complete.setter
-    def on_bt_download_complete(self, value: str) -> None:
+    def on_bt_download_complete(self, value: str | Path) -> None:
         self.set("on-bt-download-complete", value)
 
     @property
@@ -3272,7 +3276,7 @@ class Options:
         return self.get("on-download-complete")  # ty:ignore[invalid-explicit-return]
 
     @on_download_complete.setter
-    def on_download_complete(self, value: str) -> None:
+    def on_download_complete(self, value: str | Path) -> None:
         self.set("on-download-complete", value)
 
     @property
@@ -3290,7 +3294,7 @@ class Options:
         return self.get("on-download-error")  # ty:ignore[invalid-explicit-return]
 
     @on_download_error.setter
-    def on_download_error(self, value: str) -> None:
+    def on_download_error(self, value: str | Path) -> None:
         self.set("on-download-error", value)
 
     @property
@@ -3307,7 +3311,7 @@ class Options:
         return self.get("on-download-pause")  # ty:ignore[invalid-explicit-return]
 
     @on_download_pause.setter
-    def on_download_pause(self, value: str) -> None:
+    def on_download_pause(self, value: str | Path) -> None:
         self.set("on-download-pause", value)
 
     @property
@@ -3324,7 +3328,7 @@ class Options:
         return self.get("on-download-start")  # ty:ignore[invalid-explicit-return]
 
     @on_download_start.setter
-    def on_download_start(self, value: str) -> None:
+    def on_download_start(self, value: str | Path) -> None:
         self.set("on-download-start", value)
 
     @property
@@ -3343,7 +3347,7 @@ class Options:
         return self.get("on-download-stop")  # ty:ignore[invalid-explicit-return]
 
     @on_download_stop.setter
-    def on_download_stop(self, value: str) -> None:
+    def on_download_stop(self, value: str | Path) -> None:
         self.set("on-download-stop", value)
 
     @property
@@ -3635,7 +3639,7 @@ class Options:
         return self.get("save-session")  # ty:ignore[invalid-explicit-return]
 
     @save_session.setter
-    def save_session(self, value: str) -> None:
+    def save_session(self, value: str | Path) -> None:
         self.set("save-session", value)
 
     @property

@@ -20,9 +20,88 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from aria2p import API, Download, Options
+
+
+@pytest.mark.parametrize("path_type", [str, Path])
+def test_paths_in_initial_options(tmp_path: Path, path_type: type[str | Path]) -> None:
+    # Options expose string values even when initialized with Path objects.
+    directory = path_type(tmp_path / "downloads")
+    struct = {"dir": directory, "max-concurrent-downloads": "5"}
+    options = Options(API(), struct)
+
+    assert options.dir == str(directory)
+    assert options.get("dir") == str(directory)
+    assert options.get_struct() == {"dir": str(directory), "max-concurrent-downloads": "5"}
+    assert struct["dir"] == directory
+
+
+@pytest.mark.parametrize("path_type", [str, Path])
+@pytest.mark.parametrize(
+    "name",
+    [
+        "dir",
+        "input_file",
+        "log",
+        "netrc_path",
+        "out",
+        "server_stat_of",
+        "server_stat_if",
+        "ca_certificate",
+        "certificate",
+        "private_key",
+        "load_cookies",
+        "save_cookies",
+        "dht_file_path",
+        "dht_file_path6",
+        "torrent_file",
+        "metalink_file",
+        "rpc_certificate",
+        "rpc_private_key",
+        "conf_path",
+        "on_bt_download_complete",
+        "on_download_complete",
+        "on_download_error",
+        "on_download_pause",
+        "on_download_start",
+        "on_download_stop",
+        "save_session",
+    ],
+)
+def test_path_option_setters(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, path_type: type[str | Path], name: str
+) -> None:
+    # Record RPC changes while keeping validation in Options.set active.
+    api = API()
+    transmitted_options = []
+
+    def set_global_options(options: dict) -> bool:
+        transmitted_options.append(options)
+        return True
+
+    monkeypatch.setattr(api, "set_global_options", set_global_options)
+    monkeypatch.setattr(api, "set_options", lambda options, downloads: [set_global_options(options)])
+    download = Download(api, {}) if name == "out" else None
+    options = Options(api, {}, download)
+    value = path_type(tmp_path / "some file")
+
+    # Startup paths remain readable but cannot be changed through RPC.
+    if name not in {"dir", "out", "log", "server_stat_of", "save_cookies", "save_session"}:
+        with pytest.raises(ValueError, match=name.replace("_", "-")):
+            setattr(options, name, value)
+
+        assert options.get_struct() == {}
+        assert transmitted_options == []
+        return
+
+    setattr(options, name, value)
+
+    assert getattr(options, name) == str(value)
+    assert transmitted_options == [{name.replace("_", "-"): str(value)}]
 
 
 # Test general methods

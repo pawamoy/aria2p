@@ -43,12 +43,52 @@ def test_add_magnet_method(server: Aria2Server) -> None:
     assert server.api.add_magnet(BUNSENLABS_MAGNET)
 
 
-def test_add_metalink_method(server: Aria2Server) -> None:
-    assert server.api.add_metalink(DEBIAN_METALINK)
+@pytest.mark.parametrize("path_type", [str, Path])
+def test_add_metalink_method(server: Aria2Server, path_type: type[str | Path]) -> None:
+    assert server.api.add_metalink(path_type(DEBIAN_METALINK))
 
 
-def test_add_torrent_method(server: Aria2Server) -> None:
-    assert server.api.add_torrent(BUNSENLABS_TORRENT)
+@pytest.mark.parametrize("path_type", [str, Path])
+def test_add_torrent_method(server: Aria2Server, path_type: type[str | Path]) -> None:
+    assert server.api.add_torrent(path_type(BUNSENLABS_TORRENT))
+
+
+@pytest.mark.parametrize("path_type", [str, Path])
+@pytest.mark.parametrize("source", [BUNSENLABS_TORRENT, DEBIAN_METALINK, INPUT_FILES[0]])
+def test_add_file(server: Aria2Server, source: Path, path_type: type[str | Path]) -> None:
+    # Let the API identify a local torrent, metalink, or input file.
+    downloads = server.api.add(path_type(source), options={"pause": "true"})
+
+    assert downloads
+    assert all(isinstance(download, Download) for download in downloads)
+
+
+@pytest.mark.parametrize("path_type", [str, Path])
+def test_add_missing_file(server: Aria2Server, tmp_path: Path, path_type: type[str | Path]) -> None:
+    # Missing paths follow the same URI fallback for both input types.
+    with pytest.raises(ClientException, match="No URI to download"):
+        server.api.add(path_type(tmp_path / "missing.torrent"))
+
+
+@pytest.mark.parametrize("path_type", [str, Path])
+@pytest.mark.parametrize("operation", ["copy_files", "move_files"])
+@pytest.mark.parametrize("use_download", [False, True])
+def test_file_operation_paths(tmp_path: Path, path_type: type[str | Path], operation: str, use_download: bool) -> None:
+    # Use a completed local download to check both API and Download entry points.
+    source = tmp_path / "file.txt"
+    source.write_text("download contents", encoding="utf-8")
+    api = API()
+    download = Download(api, {"status": "complete", "dir": str(tmp_path), "files": [{"path": str(source)}]})
+    destination = path_type(tmp_path / "destination")
+
+    if use_download:
+        result = getattr(download, operation)(destination)
+    else:
+        result = getattr(api, operation)([download], destination)[0]
+
+    assert result is True
+    assert (Path(destination) / source.name).read_text(encoding="utf-8") == "download contents"
+    assert source.exists() == (operation == "copy_files")
 
 
 def test_add_uris_method(server: Aria2Server) -> None:
@@ -603,16 +643,17 @@ def test_listen_to_notifications_no_thread(tmp_path: Path, port: int) -> None:
         server.api.stop_listening()
 
 
-def test_parse_input_file() -> None:
+@pytest.mark.parametrize("path_type", [str, Path])
+def test_parse_input_file(path_type: type[str | Path]) -> None:
     api = API()
 
-    downloads = api.parse_input_file(INPUT_FILES[0])
+    downloads = api.parse_input_file(path_type(INPUT_FILES[0]))
     assert len(downloads) == 2
 
-    downloads = api.parse_input_file(INPUT_FILES[1])
+    downloads = api.parse_input_file(path_type(INPUT_FILES[1]))
     assert len(downloads) == 1
 
-    downloads = api.parse_input_file(INPUT_FILES[2])
+    downloads = api.parse_input_file(path_type(INPUT_FILES[2]))
     assert len(downloads) == 0
 
 

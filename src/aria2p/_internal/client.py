@@ -30,6 +30,7 @@ import requests
 import websocket
 from loguru import logger
 
+from aria2p._internal.option_validation import _normalize_options
 from aria2p._internal.utils import _SignalHandler
 
 if TYPE_CHECKING:
@@ -87,9 +88,9 @@ NOTIFICATION_TYPES = [
 ]
 """List of notification types sent by the remote process."""
 
-CallsType = list[tuple[str, list[str], str | int]]
+CallsType = list[tuple[str, list[Any], str | int]]
 """Type for batch_call method: a list of tuples composed of method name, parameters and ID."""
-Multicalls2Type = list[tuple[str, list[str]]]
+Multicalls2Type = list[tuple[str, list[Any]]]
 """Type for multicall2 method: a list of tuples composed of method name and parameters."""
 CallReturnType = dict | list | str | int
 """Type for the return value of a JSON-RPC call."""
@@ -564,6 +565,8 @@ class Client:
             >>> c.read()
             '{"id":"qwer","jsonrpc":"2.0","result":"0000000000000001"}'
         """
+        if options is not None:
+            options = _normalize_options(options)
         return self.call(self.ADD_URI, params=[uris, options, position])  # ty:ignore[invalid-explicit-return]
 
     def add_torrent(
@@ -628,6 +631,8 @@ class Client:
             >>> c.read()
             '{"id":"asdf","jsonrpc":"2.0","result":"0000000000000001"}'
         """
+        if options is not None:
+            options = _normalize_options(options)
         return self.call(self.ADD_TORRENT, [torrent, uris, options, position])  # ty:ignore[invalid-explicit-return]
 
     def add_metalink(
@@ -685,6 +690,8 @@ class Client:
             >>> c.read()
             '{"id":"qwer","jsonrpc":"2.0","result":["0000000000000001"]}'
         """
+        if options is not None:
+            options = _normalize_options(options)
         return self.call(self.ADD_METALINK, [metalink, options, position])  # ty:ignore[invalid-explicit-return]
 
     def remove(self, gid: str) -> str:
@@ -1440,7 +1447,7 @@ class Client:
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'OK'}
         """
-        return self.call(self.CHANGE_OPTION, [gid, options])  # ty:ignore[invalid-explicit-return]
+        return self.call(self.CHANGE_OPTION, [gid, _normalize_options(options)])  # ty:ignore[invalid-explicit-return]
 
     def get_global_option(self) -> dict:
         """Return the global options.
@@ -1493,7 +1500,7 @@ class Client:
         Returns:
             `"OK"` for success.
         """
-        return self.call(self.CHANGE_GLOBAL_OPTION, [options])  # ty:ignore[invalid-explicit-return]
+        return self.call(self.CHANGE_GLOBAL_OPTION, [_normalize_options(options)])  # ty:ignore[invalid-explicit-return]
 
     def get_global_stat(self) -> dict:
         """Return global statistics such as the overall download and upload speeds.

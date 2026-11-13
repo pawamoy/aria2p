@@ -102,7 +102,7 @@ class API:
 
     def add(
         self,
-        uri: str,
+        uri: str | Path,
         options: OptionsType | None = None,
         position: int | None = None,
     ) -> list[Download]:
@@ -120,6 +120,7 @@ class API:
         Returns:
             The created downloads.
         """
+        uri = str(uri)
         new_downloads = []
         path = Path(uri)
 

@@ -27,7 +27,7 @@ import threading
 import time
 from base64 import b64encode
 from copy import deepcopy
-from typing import TYPE_CHECKING
+from pathlib import Path
 
 import pytest
 import requests
@@ -38,11 +38,36 @@ from aria2p._internal.client import JSONRPC_CODES, JSONRPC_PARSER_ERROR, Notific
 from tests import BUNSENLABS_MAGNET, BUNSENLABS_TORRENT, CONFIGS_DIR, DEBIAN_METALINK, SESSIONS_DIR, XUBUNTU_MIRRORS
 from tests.conftest import Aria2Server
 
-if TYPE_CHECKING:
-    from pathlib import Path
-
 
 class TestParameters:
+    @pytest.mark.parametrize("path_type", [str, Path])
+    @pytest.mark.parametrize(
+        ("method", "args"),
+        [
+            ("add_uri", [["https://example.com/file.txt"]]),
+            ("add_torrent", ["base64-torrent", []]),
+            ("add_metalink", ["base64-metalink"]),
+            ("change_option", ["0000000000000001"]),
+            ("change_global_option", []),
+        ],
+    )
+    @responses.activate
+    def test_paths_in_options(self, tmp_path: Path, path_type: type[str | Path], method: str, args: list) -> None:
+        # Echo the transmitted parameters so the assertions check the JSON sent to aria2.
+        client = Client()
+        responses.add_callback(responses.POST, client.server, callback=self.call_params_callback)
+        options = {"dir": path_type(tmp_path / "downloads"), "out": path_type(Path("file.txt"))}
+
+        result = getattr(client, method)(*args, options=options)
+
+        assert result == [*args, {"dir": str(tmp_path / "downloads"), "out": "file.txt"}]
+        assert options == {"dir": path_type(tmp_path / "downloads"), "out": path_type(Path("file.txt"))}
+
+    def test_payload_rejects_unsupported_values(self) -> None:
+        # Path support must preserve errors for unrelated non-JSON values.
+        with pytest.raises(TypeError, match="not JSON serializable"):
+            Client.get_payload(Client.ADD_URI, [object()])
+
     # callback that return params of a single call as result
     @staticmethod
     def call_params_callback(request: requests.PreparedRequest) -> tuple[int, dict, str]:
