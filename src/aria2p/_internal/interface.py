@@ -864,7 +864,7 @@ class _Interface:
                 logger.debug(f"Moving side focus up: {self.side_focused}")
                 self.refresh = True
 
-        elif event.key_code in _Keys.MOVE_DOWN:
+        elif event.key_code in _Keys.MOVE_DOWN:  # noqa: SIM102
             if self.side_focused < len(self.remove_ask_rows) - 1:
                 self.side_focused += 1
                 logger.debug(f"Moving side focus down: {self.side_focused}")
@@ -887,7 +887,7 @@ class _Interface:
                 self.side_focused -= 1
                 self.refresh = True
 
-        elif event.key_code in _Keys.MOVE_DOWN:
+        elif event.key_code in _Keys.MOVE_DOWN:  # noqa: SIM102
             if self.side_focused < len(self.select_sort_rows) - 1:
                 self.side_focused += 1
                 self.refresh = True

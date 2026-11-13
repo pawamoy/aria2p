@@ -679,7 +679,9 @@ class API:
         Returns:
             Success or failure of the operation for changing options for each given download.
         """
-        client_options = _validate_options(options.get_struct() if isinstance(options, Options) else options, "download")
+        client_options = _validate_options(
+            options.get_struct() if isinstance(options, Options) else options, "download"
+        )
 
         # Note: batch/multicall candidate
         return [self.client.change_option(_get_gid(download), client_options) == "OK" for download in downloads]

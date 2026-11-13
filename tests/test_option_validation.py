@@ -20,7 +20,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from unittest.mock import Mock, call
 
 import pytest
@@ -88,7 +88,9 @@ def api_and_rpc(monkeypatch: pytest.MonkeyPatch) -> tuple[API, Mock]:
         ("header", ("Accept: */*",)),
     ],
 )
-def test_invalid_values_leave_remote_and_local_options_unchanged(api_and_rpc: tuple[API, Mock], name: str, value) -> None:  # noqa: ANN001
+def test_invalid_values_leave_remote_and_local_options_unchanged(
+    api_and_rpc: tuple[API, Mock], name: str, value: Any
+) -> None:
     api, rpc = api_and_rpc
     options = Options(api, {"split": "5"})
 
@@ -130,7 +132,9 @@ def test_invalid_values_leave_remote_and_local_options_unchanged(api_and_rpc: tu
         ("header", [], []),
     ],
 )
-def test_valid_values_are_serialized_for_rpc(api_and_rpc: tuple[API, Mock], name: str, value, expected) -> None:  # noqa: ANN001
+def test_valid_values_are_serialized_for_rpc(
+    api_and_rpc: tuple[API, Mock], name: str, value: Any, expected: Any
+) -> None:
     api, rpc = api_and_rpc
     options = Options(api, {})
 
@@ -153,11 +157,28 @@ def test_download_only_options_cannot_change_global_defaults(api_and_rpc: tuple[
 @pytest.mark.parametrize(
     "name",
     [
-        "bt-max-open-files", "download-result", "keep-unfinished-download-result", "log", "log-level",
-        "max-concurrent-downloads", "max-download-result", "max-overall-download-limit", "max-overall-upload-limit",
-        "optimize-concurrent-downloads", "save-cookies", "save-session", "server-stat-of",
-        "dry-run", "metalink-base-uri", "parameterized-uri", "pause", "piece-length", "rpc-save-upload-metadata",
-        "enable-rpc", "rpc-listen-port", "input-file",
+        "bt-max-open-files",
+        "download-result",
+        "keep-unfinished-download-result",
+        "log",
+        "log-level",
+        "max-concurrent-downloads",
+        "max-download-result",
+        "max-overall-download-limit",
+        "max-overall-upload-limit",
+        "optimize-concurrent-downloads",
+        "save-cookies",
+        "save-session",
+        "server-stat-of",
+        "dry-run",
+        "metalink-base-uri",
+        "parameterized-uri",
+        "pause",
+        "piece-length",
+        "rpc-save-upload-metadata",
+        "enable-rpc",
+        "rpc-listen-port",
+        "input-file",
     ],
 )
 def test_unavailable_download_options_are_rejected(api_and_rpc: tuple[API, Mock], name: str) -> None:
@@ -237,7 +258,9 @@ def test_options_objects_are_validated_and_input_is_preserved(api_and_rpc: tuple
 
 
 @pytest.mark.parametrize("method", ["add_magnet", "add_uris", "add_torrent", "add_metalink"])
-def test_invalid_creation_options_are_rejected_before_rpc_or_file_access(api_and_rpc: tuple[API, Mock], method: str) -> None:
+def test_invalid_creation_options_are_rejected_before_rpc_or_file_access(
+    api_and_rpc: tuple[API, Mock], method: str
+) -> None:
     api, rpc = api_and_rpc
 
     with pytest.raises(ValueError, match="max-concurrent-downloads"):
@@ -254,7 +277,10 @@ def test_creation_options_allow_pause_and_piece_length(api_and_rpc: tuple[API, M
     download = api.add_uris(["http://example.org/file"], options=options)
 
     assert download.gid == "0123456789abcdef"
-    assert rpc.call_args_list[0] == call(Client.ADD_URI, params=[["http://example.org/file"], {"pause": "true", "piece-length": "1M", "out": "download.iso"}, None])
+    assert rpc.call_args_list[0] == call(
+        Client.ADD_URI,
+        params=[["http://example.org/file"], {"pause": "true", "piece-length": "1M", "out": "download.iso"}, None],
+    )
     assert options["pause"] is True
 
 
@@ -288,7 +314,9 @@ def test_rpc_failure_leaves_local_values_unchanged(api_and_rpc: tuple[API, Mock]
         ("keep_unfinished_download_result", "keep-unfinished-download-result"),
     ],
 )
-def test_properties_send_dashed_option_names(api_and_rpc: tuple[API, Mock], property_name: str, option_name: str) -> None:
+def test_properties_send_dashed_option_names(
+    api_and_rpc: tuple[API, Mock], property_name: str, option_name: str
+) -> None:
     api, rpc = api_and_rpc
     options = Options(api, {})
 

@@ -93,7 +93,7 @@ class TestParameters:
         # copy params and insert secret
         expected_params = deepcopy(params)
         for param in expected_params[0]:
-            param["params"].insert(0, f"token:{secret}")  # ty:ignore[unresolved-attribute]
+            param["params"].insert(0, f"token:{secret}")  # ty:ignore[missing-union-attribute]
 
         # call function and assert result
         resp = client.call(client.MULTICALL, params, insert_secret=True)
@@ -216,7 +216,7 @@ class TestParameters:
             ],
         ]
         for param in expected_params[0]:
-            param["params"].insert(0, f"token:{secret}")  # ty:ignore[unresolved-attribute]
+            param["params"].insert(0, f"token:{secret}")  # ty:ignore[missing-union-attribute]
 
         # call function and assert result
         resp = client.multicall2(calls, insert_secret=True)
@@ -235,7 +235,7 @@ class TestClientExceptionClass:
         )
         with pytest.raises(ClientException, match=r"Custom message") as e:  # noqa: PT012
             client.call("aria2.method")
-            assert e.code == 1  # ty:ignore[unresolved-attribute]
+            assert e.code == 1  # ty:ignore[missing-attribute]
 
     @responses.activate
     def test_call_raises_known_error(self) -> None:
@@ -251,7 +251,7 @@ class TestClientExceptionClass:
             match=rf"{JSONRPC_CODES[JSONRPC_PARSER_ERROR]}\nCustom message",
         ) as e:
             client.call("aria2.method")
-            assert e.code == JSONRPC_PARSER_ERROR  # ty:ignore[unresolved-attribute]
+            assert e.code == JSONRPC_PARSER_ERROR  # ty:ignore[missing-attribute]
 
 
 class TestClientClass:

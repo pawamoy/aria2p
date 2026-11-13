@@ -141,7 +141,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dir")  # ty:ignore[invalid-return-type]
+        return self.get("dir")  # ty:ignore[invalid-explicit-return]
 
     @dir.setter  # noqa: A003
     def dir(self, value: str) -> None:
@@ -162,7 +162,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("input-file")  # ty:ignore[invalid-return-type]
+        return self.get("input-file")  # ty:ignore[invalid-explicit-return]
 
     @input_file.setter
     def input_file(self, value: str) -> None:
@@ -180,7 +180,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("log")  # ty:ignore[invalid-return-type]
+        return self.get("log")  # ty:ignore[invalid-explicit-return]
 
     @log.setter
     def log(self, value: str) -> None:
@@ -197,7 +197,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-concurrent-downloads", int)  # ty:ignore[invalid-return-type]
+        return self.get("max-concurrent-downloads", int)  # ty:ignore[invalid-explicit-return]
 
     @max_concurrent_downloads.setter
     def max_concurrent_downloads(self, value: int) -> None:
@@ -218,7 +218,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("check-integrity", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("check-integrity", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @check_integrity.setter
     def check_integrity(self, value: bool) -> None:
@@ -236,7 +236,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("continue", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("continue", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @continue_downloads.setter
     def continue_downloads(self, value: bool) -> None:
@@ -271,7 +271,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("all-proxy")  # ty:ignore[invalid-return-type]
+        return self.get("all-proxy")  # ty:ignore[invalid-explicit-return]
 
     @all_proxy.setter
     def all_proxy(self, value: str) -> None:
@@ -286,7 +286,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("all-proxy-passwd")  # ty:ignore[invalid-return-type]
+        return self.get("all-proxy-passwd")  # ty:ignore[invalid-explicit-return]
 
     @all_proxy_passwd.setter
     def all_proxy_passwd(self, value: str) -> None:
@@ -301,7 +301,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("all-proxy-user")  # ty:ignore[invalid-return-type]
+        return self.get("all-proxy-user")  # ty:ignore[invalid-explicit-return]
 
     @all_proxy_user.setter
     def all_proxy_user(self, value: str) -> None:
@@ -320,7 +320,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("checksum")  # ty:ignore[invalid-return-type]
+        return self.get("checksum")  # ty:ignore[invalid-explicit-return]
 
     @checksum.setter
     def checksum(self, value: str) -> None:
@@ -338,7 +338,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("connect-timeout", int)  # ty:ignore[invalid-return-type]
+        return self.get("connect-timeout", int)  # ty:ignore[invalid-explicit-return]
 
     @connect_timeout.setter
     def connect_timeout(self, value: int) -> None:
@@ -356,7 +356,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("dry-run", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("dry-run", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @dry_run.setter
     def dry_run(self, value: bool) -> None:
@@ -374,7 +374,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("lowest-speed-limit", int)  # ty:ignore[invalid-return-type]
+        return self.get("lowest-speed-limit", int)  # ty:ignore[invalid-explicit-return]
 
     @lowest_speed_limit.setter
     def lowest_speed_limit(self, value: int) -> None:
@@ -391,7 +391,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-connection-per-server", int)  # ty:ignore[invalid-return-type]
+        return self.get("max-connection-per-server", int)  # ty:ignore[invalid-explicit-return]
 
     @max_connection_per_server.setter
     def max_connection_per_server(self, value: int) -> None:
@@ -412,7 +412,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-file-not-found", int)  # ty:ignore[invalid-return-type]
+        return self.get("max-file-not-found", int)  # ty:ignore[invalid-explicit-return]
 
     @max_file_not_found.setter
     def max_file_not_found(self, value: int) -> None:
@@ -429,7 +429,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-tries", int)  # ty:ignore[invalid-return-type]
+        return self.get("max-tries", int)  # ty:ignore[invalid-explicit-return]
 
     @max_tries.setter
     def max_tries(self, value: int) -> None:
@@ -449,7 +449,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("min-split-size", int)  # ty:ignore[invalid-return-type]
+        return self.get("min-split-size", int)  # ty:ignore[invalid-explicit-return]
 
     @min_split_size.setter
     def min_split_size(self, value: int) -> None:
@@ -469,7 +469,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("netrc-path")  # ty:ignore[invalid-return-type]
+        return self.get("netrc-path")  # ty:ignore[invalid-explicit-return]
 
     @netrc_path.setter
     def netrc_path(self, value: str) -> None:
@@ -491,7 +491,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("no-netrc", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("no-netrc", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @no_netrc.setter
     def no_netrc(self, value: bool) -> None:
@@ -512,7 +512,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("no-proxy")  # ty:ignore[invalid-return-type]
+        return self.get("no-proxy")  # ty:ignore[invalid-explicit-return]
 
     @no_proxy.setter
     def no_proxy(self, value: str) -> None:
@@ -539,7 +539,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("out")  # ty:ignore[invalid-return-type]
+        return self.get("out")  # ty:ignore[invalid-explicit-return]
 
     @out.setter
     def out(self, value: str) -> None:
@@ -556,7 +556,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("proxy-method")  # ty:ignore[invalid-return-type]
+        return self.get("proxy-method")  # ty:ignore[invalid-explicit-return]
 
     @proxy_method.setter
     def proxy_method(self, value: str) -> None:
@@ -574,7 +574,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("remote-time", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("remote-time", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @remote_time.setter
     def remote_time(self, value: bool) -> None:
@@ -591,7 +591,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("reuse-uri", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("reuse-uri", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @reuse_uri.setter
     def reuse_uri(self, value: bool) -> None:
@@ -608,7 +608,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("retry-wait", int)  # ty:ignore[invalid-return-type]
+        return self.get("retry-wait", int)  # ty:ignore[invalid-explicit-return]
 
     @retry_wait.setter
     def retry_wait(self, value: int) -> None:
@@ -626,7 +626,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("server-stat-of")  # ty:ignore[invalid-return-type]
+        return self.get("server-stat-of")  # ty:ignore[invalid-explicit-return]
 
     @server_stat_of.setter
     def server_stat_of(self, value: str) -> None:
@@ -644,7 +644,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("server-stat-if")  # ty:ignore[invalid-return-type]
+        return self.get("server-stat-if")  # ty:ignore[invalid-explicit-return]
 
     @server_stat_if.setter
     def server_stat_if(self, value: str) -> None:
@@ -662,7 +662,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("server-stat-timeout", int)  # ty:ignore[invalid-return-type]
+        return self.get("server-stat-timeout", int)  # ty:ignore[invalid-explicit-return]
 
     @server_stat_timeout.setter
     def server_stat_timeout(self, value: int) -> None:
@@ -687,7 +687,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("split", int)  # ty:ignore[invalid-return-type]
+        return self.get("split", int)  # ty:ignore[invalid-explicit-return]
 
     @split.setter
     def split(self, value: int) -> None:
@@ -714,7 +714,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("stream-piece-selector")  # ty:ignore[invalid-return-type]
+        return self.get("stream-piece-selector")  # ty:ignore[invalid-explicit-return]
 
     @stream_piece_selector.setter
     def stream_piece_selector(self, value: str) -> None:
@@ -731,7 +731,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("timeout", int)  # ty:ignore[invalid-return-type]
+        return self.get("timeout", int)  # ty:ignore[invalid-explicit-return]
 
     @timeout.setter
     def timeout(self, value: int) -> None:
@@ -755,7 +755,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("uri-selector")  # ty:ignore[invalid-return-type]
+        return self.get("uri-selector")  # ty:ignore[invalid-explicit-return]
 
     @uri_selector.setter
     def uri_selector(self, value: str) -> None:
@@ -783,7 +783,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ca-certificate")  # ty:ignore[invalid-return-type]
+        return self.get("ca-certificate")  # ty:ignore[invalid-explicit-return]
 
     @ca_certificate.setter
     def ca_certificate(self, value: str) -> None:
@@ -813,7 +813,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("certificate")  # ty:ignore[invalid-return-type]
+        return self.get("certificate")  # ty:ignore[invalid-explicit-return]
 
     @certificate.setter
     def certificate(self, value: str) -> None:
@@ -830,7 +830,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("check-certificate", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("check-certificate", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @check_certificate.setter
     def check_certificate(self, value: bool) -> None:
@@ -852,7 +852,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("http-accept-gzip", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("http-accept-gzip", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @http_accept_gzip.setter
     def http_accept_gzip(self, value: bool) -> None:
@@ -871,7 +871,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("http-auth-challenge", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("http-auth-challenge", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @http_auth_challenge.setter
     def http_auth_challenge(self, value: bool) -> None:
@@ -889,7 +889,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("http-no-cache", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("http-no-cache", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @http_no_cache.setter
     def http_no_cache(self, value: bool) -> None:
@@ -904,7 +904,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("http-user")  # ty:ignore[invalid-return-type]
+        return self.get("http-user")  # ty:ignore[invalid-explicit-return]
 
     @http_user.setter
     def http_user(self, value: str) -> None:
@@ -919,7 +919,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("http-passwd")  # ty:ignore[invalid-return-type]
+        return self.get("http-passwd")  # ty:ignore[invalid-explicit-return]
 
     @http_passwd.setter
     def http_passwd(self, value: str) -> None:
@@ -937,7 +937,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("http-proxy")  # ty:ignore[invalid-return-type]
+        return self.get("http-proxy")  # ty:ignore[invalid-explicit-return]
 
     @http_proxy.setter
     def http_proxy(self, value: str) -> None:
@@ -952,7 +952,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("http-proxy-passwd")  # ty:ignore[invalid-return-type]
+        return self.get("http-proxy-passwd")  # ty:ignore[invalid-explicit-return]
 
     @http_proxy_passwd.setter
     def http_proxy_passwd(self, value: str) -> None:
@@ -967,7 +967,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("http-proxy-user")  # ty:ignore[invalid-return-type]
+        return self.get("http-proxy-user")  # ty:ignore[invalid-explicit-return]
 
     @http_proxy_user.setter
     def http_proxy_user(self, value: str) -> None:
@@ -985,7 +985,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("https-proxy")  # ty:ignore[invalid-return-type]
+        return self.get("https-proxy")  # ty:ignore[invalid-explicit-return]
 
     @https_proxy.setter
     def https_proxy(self, value: str) -> None:
@@ -1000,7 +1000,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("https-proxy-passwd")  # ty:ignore[invalid-return-type]
+        return self.get("https-proxy-passwd")  # ty:ignore[invalid-explicit-return]
 
     @https_proxy_passwd.setter
     def https_proxy_passwd(self, value: str) -> None:
@@ -1015,7 +1015,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("https-proxy-user")  # ty:ignore[invalid-return-type]
+        return self.get("https-proxy-user")  # ty:ignore[invalid-explicit-return]
 
     @https_proxy_user.setter
     def https_proxy_user(self, value: str) -> None:
@@ -1033,7 +1033,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("private-key")  # ty:ignore[invalid-return-type]
+        return self.get("private-key")  # ty:ignore[invalid-explicit-return]
 
     @private_key.setter
     def private_key(self, value: str) -> None:
@@ -1051,7 +1051,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("referer")  # ty:ignore[invalid-return-type]
+        return self.get("referer")  # ty:ignore[invalid-explicit-return]
 
     @referer.setter
     def referer(self, value: str) -> None:
@@ -1068,7 +1068,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-http-keep-alive", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-http-keep-alive", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @enable_http_keep_alive.setter
     def enable_http_keep_alive(self, value: bool) -> None:
@@ -1088,7 +1088,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-http-pipelining", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-http-pipelining", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @enable_http_pipelining.setter
     def enable_http_pipelining(self, value: bool) -> None:
@@ -1107,7 +1107,7 @@ class Options:
         Returns:
             The header string or list of header strings.
         """
-        return self.get("header")  # ty:ignore[invalid-return-type]
+        return self.get("header")  # ty:ignore[invalid-explicit-return]
 
     @header.setter
     def header(self, value: str | list[str]) -> None:
@@ -1127,7 +1127,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("load-cookies")  # ty:ignore[invalid-return-type]
+        return self.get("load-cookies")  # ty:ignore[invalid-explicit-return]
 
     @load_cookies.setter
     def load_cookies(self, value: str) -> None:
@@ -1145,7 +1145,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("save-cookies")  # ty:ignore[invalid-return-type]
+        return self.get("save-cookies")  # ty:ignore[invalid-explicit-return]
 
     @save_cookies.setter
     def save_cookies(self, value: str) -> None:
@@ -1162,7 +1162,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("use-head", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("use-head", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @use_head.setter
     def use_head(self, value: bool) -> None:
@@ -1179,7 +1179,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("user-agent")  # ty:ignore[invalid-return-type]
+        return self.get("user-agent")  # ty:ignore[invalid-explicit-return]
 
     @user_agent.setter
     def user_agent(self, value: str) -> None:
@@ -1197,7 +1197,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ftp-user")  # ty:ignore[invalid-return-type]
+        return self.get("ftp-user")  # ty:ignore[invalid-explicit-return]
 
     @ftp_user.setter
     def ftp_user(self, value: str) -> None:
@@ -1216,7 +1216,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ftp-passwd")  # ty:ignore[invalid-return-type]
+        return self.get("ftp-passwd")  # ty:ignore[invalid-explicit-return]
 
     @ftp_passwd.setter
     def ftp_passwd(self, value: str) -> None:
@@ -1236,7 +1236,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("ftp-pasv", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("ftp-pasv", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @ftp_pasv.setter
     def ftp_pasv(self, value: bool) -> None:
@@ -1254,7 +1254,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ftp-proxy")  # ty:ignore[invalid-return-type]
+        return self.get("ftp-proxy")  # ty:ignore[invalid-explicit-return]
 
     @ftp_proxy.setter
     def ftp_proxy(self, value: str) -> None:
@@ -1269,7 +1269,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ftp-proxy-passwd")  # ty:ignore[invalid-return-type]
+        return self.get("ftp-proxy-passwd")  # ty:ignore[invalid-explicit-return]
 
     @ftp_proxy_passwd.setter
     def ftp_proxy_passwd(self, value: str) -> None:
@@ -1284,7 +1284,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ftp-proxy-user")  # ty:ignore[invalid-return-type]
+        return self.get("ftp-proxy-user")  # ty:ignore[invalid-explicit-return]
 
     @ftp_proxy_user.setter
     def ftp_proxy_user(self, value: str) -> None:
@@ -1304,7 +1304,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ftp-type")  # ty:ignore[invalid-return-type]
+        return self.get("ftp-type")  # ty:ignore[invalid-explicit-return]
 
     @ftp_type.setter
     def ftp_type(self, value: str) -> None:
@@ -1321,7 +1321,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("ftp-reuse-connection", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("ftp-reuse-connection", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @ftp_reuse_connection.setter
     def ftp_reuse_connection(self, value: bool) -> None:
@@ -1340,7 +1340,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("ssh-host-key-md")  # ty:ignore[invalid-return-type]
+        return self.get("ssh-host-key-md")  # ty:ignore[invalid-explicit-return]
 
     @ssh_host_key_md.setter
     def ssh_host_key_md(self, value: str) -> None:
@@ -1365,7 +1365,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("select-file")  # ty:ignore[invalid-return-type]
+        return self.get("select-file")  # ty:ignore[invalid-explicit-return]
 
     @select_file.setter
     def select_file(self, value: str) -> None:
@@ -1382,7 +1382,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("show-files", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("show-files", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @show_files.setter
     def show_files(self, value: bool) -> None:
@@ -1403,7 +1403,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-detach-seed-only", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-detach-seed-only", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @bt_detach_seed_only.setter
     def bt_detach_seed_only(self, value: bool) -> None:
@@ -1421,7 +1421,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-enable-hook-after-hash-check", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-enable-hook-after-hash-check", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @bt_enable_hook_after_hash_check.setter
     def bt_enable_hook_after_hash_check(self, value: bool) -> None:
@@ -1439,7 +1439,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-enable-lpd", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-enable-lpd", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @bt_enable_lpd.setter
     def bt_enable_lpd(self, value: bool) -> None:
@@ -1457,7 +1457,7 @@ class Options:
         Returns:
             list of str
         """
-        return self.get("bt-exclude-tracker")  # ty:ignore[invalid-return-type]
+        return self.get("bt-exclude-tracker")  # ty:ignore[invalid-explicit-return]
 
     @bt_exclude_tracker.setter
     def bt_exclude_tracker(self, value: list[str]) -> None:
@@ -1476,7 +1476,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("bt-external-ip")  # ty:ignore[invalid-return-type]
+        return self.get("bt-external-ip")  # ty:ignore[invalid-explicit-return]
 
     @bt_external_ip.setter
     def bt_external_ip(self, value: str) -> None:
@@ -1495,7 +1495,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-force-encryption", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-force-encryption", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @bt_force_encryption.setter
     def bt_force_encryption(self, value: bool) -> None:
@@ -1514,7 +1514,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-hash-check-seed", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-hash-check-seed", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @bt_hash_check_seed.setter
     def bt_hash_check_seed(self, value: bool) -> None:
@@ -1532,7 +1532,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("bt-lpd-interface")  # ty:ignore[invalid-return-type]
+        return self.get("bt-lpd-interface")  # ty:ignore[invalid-explicit-return]
 
     @bt_lpd_interface.setter
     def bt_lpd_interface(self, value: str) -> None:
@@ -1549,7 +1549,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-max-open-files", int)  # ty:ignore[invalid-return-type]
+        return self.get("bt-max-open-files", int)  # ty:ignore[invalid-explicit-return]
 
     @bt_max_open_files.setter
     def bt_max_open_files(self, value: int) -> None:
@@ -1566,7 +1566,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-max-peers", int)  # ty:ignore[invalid-return-type]
+        return self.get("bt-max-peers", int)  # ty:ignore[invalid-explicit-return]
 
     @bt_max_peers.setter
     def bt_max_peers(self, value: int) -> None:
@@ -1584,7 +1584,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-metadata-only", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-metadata-only", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @bt_metadata_only.setter
     def bt_metadata_only(self, value: bool) -> None:
@@ -1602,7 +1602,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("bt-min-crypto-level")  # ty:ignore[invalid-return-type]
+        return self.get("bt-min-crypto-level")  # ty:ignore[invalid-explicit-return]
 
     @bt_min_crypto_level.setter
     def bt_min_crypto_level(self, value: str) -> None:
@@ -1623,7 +1623,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("bt-prioritize-piece")  # ty:ignore[invalid-return-type]
+        return self.get("bt-prioritize-piece")  # ty:ignore[invalid-explicit-return]
 
     @bt_prioritize_piece.setter
     def bt_prioritize_piece(self, value: str) -> None:
@@ -1641,7 +1641,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-remove-unselected-file", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-remove-unselected-file", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @bt_remove_unselected_file.setter
     def bt_remove_unselected_file(self, value: bool) -> None:
@@ -1659,7 +1659,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-require-crypto", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-require-crypto", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @bt_require_crypto.setter
     def bt_require_crypto(self, value: bool) -> None:
@@ -1678,7 +1678,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-request-peer-speed-limit", int)  # ty:ignore[invalid-return-type]
+        return self.get("bt-request-peer-speed-limit", int)  # ty:ignore[invalid-explicit-return]
 
     @bt_request_peer_speed_limit.setter
     def bt_request_peer_speed_limit(self, value: int) -> None:
@@ -1697,7 +1697,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-save-metadata", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-save-metadata", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @bt_save_metadata.setter
     def bt_save_metadata(self, value: bool) -> None:
@@ -1714,7 +1714,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt-seed-unverified", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-seed-unverified", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @bt_seed_unverified.setter
     def bt_seed_unverified(self, value: bool) -> None:
@@ -1731,7 +1731,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-stop-timeout", int)  # ty:ignore[invalid-return-type]
+        return self.get("bt-stop-timeout", int)  # ty:ignore[invalid-explicit-return]
 
     @bt_stop_timeout.setter
     def bt_stop_timeout(self, value: int) -> None:
@@ -1749,7 +1749,7 @@ class Options:
         Returns:
             list of str
         """
-        return self.get("bt-tracker")  # ty:ignore[invalid-return-type]
+        return self.get("bt-tracker")  # ty:ignore[invalid-explicit-return]
 
     @bt_tracker.setter
     def bt_tracker(self, value: list[str]) -> None:
@@ -1767,7 +1767,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-tracker-connect-timeout", int)  # ty:ignore[invalid-return-type]
+        return self.get("bt-tracker-connect-timeout", int)  # ty:ignore[invalid-explicit-return]
 
     @bt_tracker_connect_timeout.setter
     def bt_tracker_connect_timeout(self, value: int) -> None:
@@ -1786,7 +1786,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-tracker-interval", int)  # ty:ignore[invalid-return-type]
+        return self.get("bt-tracker-interval", int)  # ty:ignore[invalid-explicit-return]
 
     @bt_tracker_interval.setter
     def bt_tracker_interval(self, value: int) -> None:
@@ -1803,7 +1803,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("bt-tracker-timeout", int)  # ty:ignore[invalid-return-type]
+        return self.get("bt-tracker-timeout", int)  # ty:ignore[invalid-explicit-return]
 
     @bt_tracker_timeout.setter
     def bt_tracker_timeout(self, value: int) -> None:
@@ -1818,7 +1818,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dht-entry-point")  # ty:ignore[invalid-return-type]
+        return self.get("dht-entry-point")  # ty:ignore[invalid-explicit-return]
 
     @dht_entry_point.setter
     def dht_entry_point(self, value: str) -> None:
@@ -1833,7 +1833,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dht-entry-point6")  # ty:ignore[invalid-return-type]
+        return self.get("dht-entry-point6")  # ty:ignore[invalid-explicit-return]
 
     @dht_entry_point6.setter
     def dht_entry_point6(self, value: str) -> None:
@@ -1850,7 +1850,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dht-file-path")  # ty:ignore[invalid-return-type]
+        return self.get("dht-file-path")  # ty:ignore[invalid-explicit-return]
 
     @dht_file_path.setter
     def dht_file_path(self, value: str) -> None:
@@ -1867,7 +1867,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dht-file-path6")  # ty:ignore[invalid-return-type]
+        return self.get("dht-file-path6")  # ty:ignore[invalid-explicit-return]
 
     @dht_file_path6.setter
     def dht_file_path6(self, value: str) -> None:
@@ -1884,7 +1884,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dht-listen-addr6")  # ty:ignore[invalid-return-type]
+        return self.get("dht-listen-addr6")  # ty:ignore[invalid-explicit-return]
 
     @dht_listen_addr6.setter
     def dht_listen_addr6(self, value: str) -> None:
@@ -1905,7 +1905,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dht-listen-port")  # ty:ignore[invalid-return-type]
+        return self.get("dht-listen-port")  # ty:ignore[invalid-explicit-return]
 
     @dht_listen_port.setter
     def dht_listen_port(self, value: str) -> None:
@@ -1922,7 +1922,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("dht-message-timeout", int)  # ty:ignore[invalid-return-type]
+        return self.get("dht-message-timeout", int)  # ty:ignore[invalid-explicit-return]
 
     @dht_message_timeout.setter
     def dht_message_timeout(self, value: int) -> None:
@@ -1940,7 +1940,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-dht", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-dht", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @enable_dht.setter
     def enable_dht(self, value: bool) -> None:
@@ -1958,7 +1958,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-dht6", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-dht6", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @enable_dht6.setter
     def enable_dht6(self, value: bool) -> None:
@@ -1976,7 +1976,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-peer-exchange", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-peer-exchange", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @enable_peer_exchange.setter
     def enable_peer_exchange(self, value: bool) -> None:
@@ -1996,7 +1996,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("follow-torrent")  # ty:ignore[invalid-return-type]
+        return self.get("follow-torrent")  # ty:ignore[invalid-explicit-return]
 
     @follow_torrent.setter
     def follow_torrent(self, value: str) -> None:
@@ -2015,7 +2015,7 @@ class Options:
         Returns:
             The index/path string or list of index/path strings.
         """
-        return self.get("index-out")  # ty:ignore[invalid-return-type]
+        return self.get("index-out")  # ty:ignore[invalid-explicit-return]
 
     @index_out.setter
     def index_out(self, value: str | list[str]) -> None:
@@ -2036,7 +2036,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("listen-port")  # ty:ignore[invalid-return-type]
+        return self.get("listen-port")  # ty:ignore[invalid-explicit-return]
 
     @listen_port.setter
     def listen_port(self, value: str) -> None:
@@ -2054,7 +2054,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-overall-upload-limit", int)  # ty:ignore[invalid-return-type]
+        return self.get("max-overall-upload-limit", int)  # ty:ignore[invalid-explicit-return]
 
     @max_overall_upload_limit.setter
     def max_overall_upload_limit(self, value: int) -> None:
@@ -2072,7 +2072,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-upload-limit", int)  # ty:ignore[invalid-return-type]
+        return self.get("max-upload-limit", int)  # ty:ignore[invalid-explicit-return]
 
     @max_upload_limit.setter
     def max_upload_limit(self, value: int) -> None:
@@ -2093,7 +2093,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("peer-id-prefix")  # ty:ignore[invalid-return-type]
+        return self.get("peer-id-prefix")  # ty:ignore[invalid-explicit-return]
 
     @peer_id_prefix.setter
     def peer_id_prefix(self, value: str) -> None:
@@ -2113,7 +2113,7 @@ class Options:
         Returns:
             float
         """
-        return self.get("seed-ratio", float)  # ty:ignore[invalid-return-type]
+        return self.get("seed-ratio", float)  # ty:ignore[invalid-explicit-return]
 
     @seed_ratio.setter
     def seed_ratio(self, value: float) -> None:
@@ -2133,7 +2133,7 @@ class Options:
         Returns:
             float
         """
-        return self.get("seed-time", float)  # ty:ignore[invalid-return-type]
+        return self.get("seed-time", float)  # ty:ignore[invalid-explicit-return]
 
     @seed_time.setter
     def seed_time(self, value: float) -> None:
@@ -2150,7 +2150,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("torrent-file")  # ty:ignore[invalid-return-type]
+        return self.get("torrent-file")  # ty:ignore[invalid-explicit-return]
 
     @torrent_file.setter
     def torrent_file(self, value: str) -> None:
@@ -2172,7 +2172,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("follow-metalink")  # ty:ignore[invalid-return-type]
+        return self.get("follow-metalink")  # ty:ignore[invalid-explicit-return]
 
     @follow_metalink.setter
     def follow_metalink(self, value: str) -> None:
@@ -2190,7 +2190,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("metalink-base-uri")  # ty:ignore[invalid-return-type]
+        return self.get("metalink-base-uri")  # ty:ignore[invalid-explicit-return]
 
     @metalink_base_uri.setter
     def metalink_base_uri(self, value: str) -> None:
@@ -2208,7 +2208,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("metalink-file")  # ty:ignore[invalid-return-type]
+        return self.get("metalink-file")  # ty:ignore[invalid-explicit-return]
 
     @metalink_file.setter
     def metalink_file(self, value: str) -> None:
@@ -2223,7 +2223,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("metalink-language")  # ty:ignore[invalid-return-type]
+        return self.get("metalink-language")  # ty:ignore[invalid-explicit-return]
 
     @metalink_language.setter
     def metalink_language(self, value: str) -> None:
@@ -2240,7 +2240,7 @@ class Options:
         Returns:
             list of str
         """
-        return self.get("metalink-location")  # ty:ignore[invalid-return-type]
+        return self.get("metalink-location")  # ty:ignore[invalid-explicit-return]
 
     @metalink_location.setter
     def metalink_location(self, value: list[str]) -> None:
@@ -2255,7 +2255,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("metalink-os")  # ty:ignore[invalid-return-type]
+        return self.get("metalink-os")  # ty:ignore[invalid-explicit-return]
 
     @metalink_os.setter
     def metalink_os(self, value: str) -> None:
@@ -2270,7 +2270,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("metalink-version")  # ty:ignore[invalid-return-type]
+        return self.get("metalink-version")  # ty:ignore[invalid-explicit-return]
 
     @metalink_version.setter
     def metalink_version(self, value: str) -> None:
@@ -2287,7 +2287,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("metalink-preferred-protocol")  # ty:ignore[invalid-return-type]
+        return self.get("metalink-preferred-protocol")  # ty:ignore[invalid-explicit-return]
 
     @metalink_preferred_protocol.setter
     def metalink_preferred_protocol(self, value: str) -> None:
@@ -2304,7 +2304,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("metalink-enable-unique-protocol", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("metalink-enable-unique-protocol", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @metalink_enable_unique_protocol.setter
     def metalink_enable_unique_protocol(self, value: bool) -> None:
@@ -2323,7 +2323,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-rpc", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-rpc", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @enable_rpc.setter
     def enable_rpc(self, value: bool) -> None:
@@ -2340,7 +2340,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("pause", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("pause", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @pause.setter
     def pause(self, value: bool) -> None:
@@ -2360,7 +2360,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("pause-metadata", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("pause-metadata", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @pause_metadata.setter
     def pause_metadata(self, value: bool) -> None:
@@ -2377,7 +2377,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-allow-origin-all", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("rpc-allow-origin-all", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @rpc_allow_origin_all.setter
     def rpc_allow_origin_all(self, value: bool) -> None:
@@ -2409,7 +2409,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-certificate")  # ty:ignore[invalid-return-type]
+        return self.get("rpc-certificate")  # ty:ignore[invalid-explicit-return]
 
     @rpc_certificate.setter
     def rpc_certificate(self, value: str) -> None:
@@ -2426,7 +2426,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-listen-all", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("rpc-listen-all", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @rpc_listen_all.setter
     def rpc_listen_all(self, value: bool) -> None:
@@ -2443,7 +2443,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("rpc-listen-port", int)  # ty:ignore[invalid-return-type]
+        return self.get("rpc-listen-port", int)  # ty:ignore[invalid-explicit-return]
 
     @rpc_listen_port.setter
     def rpc_listen_port(self, value: int) -> None:
@@ -2460,7 +2460,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-max-request-size")  # ty:ignore[invalid-return-type]
+        return self.get("rpc-max-request-size")  # ty:ignore[invalid-explicit-return]
 
     @rpc_max_request_size.setter
     def rpc_max_request_size(self, value: str) -> None:
@@ -2479,7 +2479,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-passwd")  # ty:ignore[invalid-return-type]
+        return self.get("rpc-passwd")  # ty:ignore[invalid-explicit-return]
 
     @rpc_passwd.setter
     def rpc_passwd(self, value: str) -> None:
@@ -2497,7 +2497,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-private-key")  # ty:ignore[invalid-return-type]
+        return self.get("rpc-private-key")  # ty:ignore[invalid-explicit-return]
 
     @rpc_private_key.setter
     def rpc_private_key(self, value: str) -> None:
@@ -2516,7 +2516,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-save-upload-metadata", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("rpc-save-upload-metadata", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @rpc_save_upload_metadata.setter
     def rpc_save_upload_metadata(self, value: bool) -> None:
@@ -2533,7 +2533,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-secret")  # ty:ignore[invalid-return-type]
+        return self.get("rpc-secret")  # ty:ignore[invalid-explicit-return]
 
     @rpc_secret.setter
     def rpc_secret(self, value: str) -> None:
@@ -2551,7 +2551,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("rpc-secure", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("rpc-secure", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @rpc_secure.setter
     def rpc_secure(self, value: bool) -> None:
@@ -2570,7 +2570,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("rpc-user")  # ty:ignore[invalid-return-type]
+        return self.get("rpc-user")  # ty:ignore[invalid-explicit-return]
 
     @rpc_user.setter
     def rpc_user(self, value: str) -> None:
@@ -2588,7 +2588,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("allow-overwrite", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("allow-overwrite", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @allow_overwrite.setter
     def allow_overwrite(self, value: bool) -> None:
@@ -2605,7 +2605,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("allow-piece-length-change", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("allow-piece-length-change", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @allow_piece_length_change.setter
     def allow_piece_length_change(self, value: bool) -> None:
@@ -2625,7 +2625,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("always-resume", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("always-resume", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @always_resume.setter
     def always_resume(self, value: bool) -> None:
@@ -2642,7 +2642,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("async-dns", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("async-dns", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @async_dns.setter
     def async_dns(self, value: bool) -> None:
@@ -2662,7 +2662,7 @@ class Options:
         Returns:
             list of str
         """
-        return self.get("async-dns-server")  # ty:ignore[invalid-return-type]
+        return self.get("async-dns-server")  # ty:ignore[invalid-explicit-return]
 
     @async_dns_server.setter
     def async_dns_server(self, value: list[str]) -> None:
@@ -2680,7 +2680,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("auto-file-renaming", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("auto-file-renaming", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @auto_file_renaming.setter
     def auto_file_renaming(self, value: bool) -> None:
@@ -2696,7 +2696,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("auto-save-interval", int)  # ty:ignore[invalid-return-type]
+        return self.get("auto-save-interval", int)  # ty:ignore[invalid-explicit-return]
 
     @auto_save_interval.setter
     def auto_save_interval(self, value: int) -> None:
@@ -2717,7 +2717,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("conditional-get", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("conditional-get", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @conditional_get.setter
     def conditional_get(self, value: bool) -> None:
@@ -2734,7 +2734,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("conf-path")  # ty:ignore[invalid-return-type]
+        return self.get("conf-path")  # ty:ignore[invalid-explicit-return]
 
     @conf_path.setter
     def conf_path(self, value: str) -> None:
@@ -2751,7 +2751,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("console-log-level")  # ty:ignore[invalid-return-type]
+        return self.get("console-log-level")  # ty:ignore[invalid-explicit-return]
 
     @console_log_level.setter
     def console_log_level(self, value: str) -> None:
@@ -2769,7 +2769,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("daemon", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("daemon", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @daemon.setter
     def daemon(self, value: bool) -> None:
@@ -2791,7 +2791,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("deferred-input", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("deferred-input", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @deferred_input.setter
     def deferred_input(self, value: bool) -> None:
@@ -2808,7 +2808,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("disable-ipv6", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("disable-ipv6", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @disable_ipv6.setter
     def disable_ipv6(self, value: bool) -> None:
@@ -2829,7 +2829,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("disk-cache", int)  # ty:ignore[invalid-return-type]
+        return self.get("disk-cache", int)  # ty:ignore[invalid-explicit-return]
 
     @disk_cache.setter
     def disk_cache(self, value: int) -> None:
@@ -2849,7 +2849,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("download-result")  # ty:ignore[invalid-return-type]
+        return self.get("download-result")  # ty:ignore[invalid-explicit-return]
 
     @download_result.setter
     def download_result(self, value: str) -> None:
@@ -2869,7 +2869,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("dscp")  # ty:ignore[invalid-return-type]
+        return self.get("dscp")  # ty:ignore[invalid-explicit-return]
 
     @dscp.setter
     def dscp(self, value: str) -> None:
@@ -2896,7 +2896,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("rlimit-nofile", int)  # ty:ignore[invalid-return-type]
+        return self.get("rlimit-nofile", int)  # ty:ignore[invalid-explicit-return]
 
     @rlimit_nofile.setter
     def rlimit_nofile(self, value: int) -> None:
@@ -2913,7 +2913,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-color", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-color", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @enable_color.setter
     def enable_color(self, value: bool) -> None:
@@ -2930,7 +2930,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("enable-mmap", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("enable-mmap", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @enable_mmap.setter
     def enable_mmap(self, value: bool) -> None:
@@ -2948,7 +2948,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("event-poll")  # ty:ignore[invalid-return-type]
+        return self.get("event-poll")  # ty:ignore[invalid-explicit-return]
 
     @event_poll.setter
     def event_poll(self, value: str) -> None:
@@ -2987,7 +2987,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("file-allocation")  # ty:ignore[invalid-return-type]
+        return self.get("file-allocation")  # ty:ignore[invalid-explicit-return]
 
     @file_allocation.setter
     def file_allocation(self, value: str) -> None:
@@ -3005,7 +3005,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("force-save", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("force-save", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @force_save.setter
     def force_save(self, value: bool) -> None:
@@ -3022,7 +3022,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("save-not-found", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("save-not-found", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @save_not_found.setter
     def save_not_found(self, value: bool) -> None:
@@ -3043,7 +3043,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("gid")  # ty:ignore[invalid-return-type]
+        return self.get("gid")  # ty:ignore[invalid-explicit-return]
 
     @gid.setter
     def gid(self, value: str) -> None:
@@ -3061,7 +3061,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("hash-check-only", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("hash-check-only", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @hash_check_only.setter
     def hash_check_only(self, value: bool) -> None:
@@ -3078,7 +3078,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("human-readable", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("human-readable", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @human_readable.setter
     def human_readable(self, value: bool) -> None:
@@ -3100,7 +3100,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("interface")  # ty:ignore[invalid-return-type]
+        return self.get("interface")  # ty:ignore[invalid-explicit-return]
 
     @interface.setter
     def interface(self, value: str) -> None:
@@ -3119,7 +3119,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("keep-unfinished-download-result", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("keep-unfinished-download-result", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @keep_unfinished_download_result.setter
     def keep_unfinished_download_result(self, value: bool) -> None:
@@ -3141,7 +3141,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-download-result", int)  # ty:ignore[invalid-return-type]
+        return self.get("max-download-result", int)  # ty:ignore[invalid-explicit-return]
 
     @max_download_result.setter
     def max_download_result(self, value: int) -> None:
@@ -3160,7 +3160,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-mmap-limit", int)  # ty:ignore[invalid-return-type]
+        return self.get("max-mmap-limit", int)  # ty:ignore[invalid-explicit-return]
 
     @max_mmap_limit.setter
     def max_mmap_limit(self, value: int) -> None:
@@ -3179,7 +3179,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-resume-failure-tries", int)  # ty:ignore[invalid-return-type]
+        return self.get("max-resume-failure-tries", int)  # ty:ignore[invalid-explicit-return]
 
     @max_resume_failure_tries.setter
     def max_resume_failure_tries(self, value: int) -> None:
@@ -3196,7 +3196,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("min-tls-version")  # ty:ignore[invalid-return-type]
+        return self.get("min-tls-version")  # ty:ignore[invalid-explicit-return]
 
     @min_tls_version.setter
     def min_tls_version(self, value: str) -> None:
@@ -3215,7 +3215,7 @@ class Options:
         Returns:
             list of str
         """
-        return self.get("multiple-interface")  # ty:ignore[invalid-return-type]
+        return self.get("multiple-interface")  # ty:ignore[invalid-explicit-return]
 
     @multiple_interface.setter
     def multiple_interface(self, value: list[str]) -> None:
@@ -3232,7 +3232,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("log-level")  # ty:ignore[invalid-return-type]
+        return self.get("log-level")  # ty:ignore[invalid-explicit-return]
 
     @log_level.setter
     def log_level(self, value: str) -> None:
@@ -3251,7 +3251,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-bt-download-complete")  # ty:ignore[invalid-return-type]
+        return self.get("on-bt-download-complete")  # ty:ignore[invalid-explicit-return]
 
     @on_bt_download_complete.setter
     def on_bt_download_complete(self, value: str) -> None:
@@ -3269,7 +3269,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-download-complete")  # ty:ignore[invalid-return-type]
+        return self.get("on-download-complete")  # ty:ignore[invalid-explicit-return]
 
     @on_download_complete.setter
     def on_download_complete(self, value: str) -> None:
@@ -3287,7 +3287,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-download-error")  # ty:ignore[invalid-return-type]
+        return self.get("on-download-error")  # ty:ignore[invalid-explicit-return]
 
     @on_download_error.setter
     def on_download_error(self, value: str) -> None:
@@ -3304,7 +3304,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-download-pause")  # ty:ignore[invalid-return-type]
+        return self.get("on-download-pause")  # ty:ignore[invalid-explicit-return]
 
     @on_download_pause.setter
     def on_download_pause(self, value: str) -> None:
@@ -3321,7 +3321,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-download-start")  # ty:ignore[invalid-return-type]
+        return self.get("on-download-start")  # ty:ignore[invalid-explicit-return]
 
     @on_download_start.setter
     def on_download_start(self, value: str) -> None:
@@ -3340,7 +3340,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("on-download-stop")  # ty:ignore[invalid-return-type]
+        return self.get("on-download-stop")  # ty:ignore[invalid-explicit-return]
 
     @on_download_stop.setter
     def on_download_stop(self, value: str) -> None:
@@ -3362,7 +3362,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("optimize-concurrent-downloads")  # ty:ignore[invalid-return-type]
+        return self.get("optimize-concurrent-downloads")  # ty:ignore[invalid-explicit-return]
 
     @optimize_concurrent_downloads.setter
     def optimize_concurrent_downloads(self, value: str) -> None:
@@ -3384,7 +3384,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("piece-length")  # ty:ignore[invalid-return-type]
+        return self.get("piece-length")  # ty:ignore[invalid-explicit-return]
 
     @piece_length.setter
     def piece_length(self, value: str) -> None:
@@ -3401,7 +3401,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("show-console-readout", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("show-console-readout", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @show_console_readout.setter
     def show_console_readout(self, value: bool) -> None:
@@ -3418,7 +3418,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("stderr", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("stderr", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @stderr.setter
     def stderr(self, value: bool) -> None:
@@ -3435,7 +3435,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("summary-interval", int)  # ty:ignore[invalid-return-type]
+        return self.get("summary-interval", int)  # ty:ignore[invalid-explicit-return]
 
     @summary_interval.setter
     def summary_interval(self, value: int) -> None:
@@ -3453,7 +3453,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("force-sequential", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("force-sequential", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @force_sequential.setter
     def force_sequential(self, value: bool) -> None:
@@ -3471,7 +3471,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-overall-download-limit", int)  # ty:ignore[invalid-return-type]
+        return self.get("max-overall-download-limit", int)  # ty:ignore[invalid-explicit-return]
 
     @max_overall_download_limit.setter
     def max_overall_download_limit(self, value: int) -> None:
@@ -3489,7 +3489,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("max-download-limit", int)  # ty:ignore[invalid-return-type]
+        return self.get("max-download-limit", int)  # ty:ignore[invalid-explicit-return]
 
     @max_download_limit.setter
     def max_download_limit(self, value: int) -> None:
@@ -3504,7 +3504,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("no-conf", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("no-conf", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @no_conf.setter
     def no_conf(self, value: bool) -> None:
@@ -3521,7 +3521,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("no-file-allocation-limit", int)  # ty:ignore[invalid-return-type]
+        return self.get("no-file-allocation-limit", int)  # ty:ignore[invalid-explicit-return]
 
     @no_file_allocation_limit.setter
     def no_file_allocation_limit(self, value: int) -> None:
@@ -3540,7 +3540,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("parameterized-uri", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("parameterized-uri", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @parameterized_uri.setter
     def parameterized_uri(self, value: bool) -> None:
@@ -3557,7 +3557,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("quiet", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("quiet", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @quiet.setter
     def quiet(self, value: bool) -> None:
@@ -3574,7 +3574,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("realtime-chunk-checksum", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("realtime-chunk-checksum", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @realtime_chunk_checksum.setter
     def realtime_chunk_checksum(self, value: bool) -> None:
@@ -3592,7 +3592,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("remove-control-file", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("remove-control-file", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @remove_control_file.setter
     def remove_control_file(self, value: bool) -> None:
@@ -3632,7 +3632,7 @@ class Options:
         Returns:
             str
         """
-        return self.get("save-session")  # ty:ignore[invalid-return-type]
+        return self.get("save-session")  # ty:ignore[invalid-explicit-return]
 
     @save_session.setter
     def save_session(self, value: str) -> None:
@@ -3649,7 +3649,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("save-session-interval", int)  # ty:ignore[invalid-return-type]
+        return self.get("save-session-interval", int)  # ty:ignore[invalid-explicit-return]
 
     @save_session_interval.setter
     def save_session_interval(self, value: int) -> None:
@@ -3667,7 +3667,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("socket-recv-buffer-size", int)  # ty:ignore[invalid-return-type]
+        return self.get("socket-recv-buffer-size", int)  # ty:ignore[invalid-explicit-return]
 
     @socket_recv_buffer_size.setter
     def socket_recv_buffer_size(self, value: int) -> None:
@@ -3684,7 +3684,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("stop", int)  # ty:ignore[invalid-return-type]
+        return self.get("stop", int)  # ty:ignore[invalid-explicit-return]
 
     @stop.setter
     def stop(self, value: int) -> None:
@@ -3702,7 +3702,7 @@ class Options:
         Returns:
             int
         """
-        return self.get("stop-with-process", int)  # ty:ignore[invalid-return-type]
+        return self.get("stop-with-process", int)  # ty:ignore[invalid-explicit-return]
 
     @stop_with_process.setter
     def stop_with_process(self, value: int) -> None:
@@ -3719,7 +3719,7 @@ class Options:
         Returns:
             bool
         """
-        return self.get("truncate-console-readout", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("truncate-console-readout", _bool_or_value)  # ty:ignore[invalid-explicit-return]
 
     @truncate_console_readout.setter
     def truncate_console_readout(self, value: bool) -> None:

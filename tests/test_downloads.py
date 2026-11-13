@@ -20,7 +20,7 @@
 
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 from pathlib import Path
 
 import pytest
@@ -49,7 +49,7 @@ class TestBitTorrentClass:
         assert self.bittorrent.comment == ""
 
     def test_creation_date_property(self) -> None:
-        assert self.bittorrent.creation_date == datetime.datetime.fromtimestamp(10, tz=datetime.UTC)
+        assert self.bittorrent.creation_date == dt.datetime.fromtimestamp(10, tz=dt.UTC)
 
     def test_mode_property(self) -> None:
         assert self.bittorrent.mode == "single"
@@ -172,9 +172,9 @@ class TestDownloadClass:
         assert self.download.error_message is None
 
     def test_eta(self) -> None:
-        assert isinstance(self.download.eta, datetime.timedelta)
+        assert isinstance(self.download.eta, dt.timedelta)
         self.download._struct["downloadSpeed"] = "0"
-        assert self.download.eta == datetime.timedelta.max
+        assert self.download.eta == dt.timedelta.max
 
     def test_eta_string(self) -> None:
         assert self.download.eta_string() == "3m28s"
@@ -294,7 +294,7 @@ class TestDownloadClass:
             witness.append(0)
             self.download._options = True  # ty:ignore[invalid-assignment]
 
-        self.download.update_options = mocked  # ty:ignore[invalid-assignment]
+        self.download.update_options = mocked
         assert self.download.options is True
         assert witness == [0]
         assert self.download.options is True

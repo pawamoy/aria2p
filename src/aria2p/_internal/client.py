@@ -564,7 +564,7 @@ class Client:
             >>> c.read()
             '{"id":"qwer","jsonrpc":"2.0","result":"0000000000000001"}'
         """
-        return self.call(self.ADD_URI, params=[uris, options, position])  # ty:ignore[invalid-return-type]
+        return self.call(self.ADD_URI, params=[uris, options, position])  # ty:ignore[invalid-explicit-return]
 
     def add_torrent(
         self,
@@ -628,7 +628,7 @@ class Client:
             >>> c.read()
             '{"id":"asdf","jsonrpc":"2.0","result":"0000000000000001"}'
         """
-        return self.call(self.ADD_TORRENT, [torrent, uris, options, position])  # ty:ignore[invalid-return-type]
+        return self.call(self.ADD_TORRENT, [torrent, uris, options, position])  # ty:ignore[invalid-explicit-return]
 
     def add_metalink(
         self,
@@ -685,7 +685,7 @@ class Client:
             >>> c.read()
             '{"id":"qwer","jsonrpc":"2.0","result":["0000000000000001"]}'
         """
-        return self.call(self.ADD_METALINK, [metalink, options, position])  # ty:ignore[invalid-return-type]
+        return self.call(self.ADD_METALINK, [metalink, options, position])  # ty:ignore[invalid-explicit-return]
 
     def remove(self, gid: str) -> str:
         """Remove a download.
@@ -722,7 +722,7 @@ class Client:
             >>> c.read()
             '{"id":"qwer","jsonrpc":"2.0","result":"0000000000000001"}'
         """
-        return self.call(self.REMOVE, [gid])  # ty:ignore[invalid-return-type]
+        return self.call(self.REMOVE, [gid])  # ty:ignore[invalid-explicit-return]
 
     def force_remove(self, gid: str) -> str:
         """Force remove a download.
@@ -742,7 +742,7 @@ class Client:
         Returns:
             The GID of the removed download.
         """
-        return self.call(self.FORCE_REMOVE, [gid])  # ty:ignore[invalid-return-type]
+        return self.call(self.FORCE_REMOVE, [gid])  # ty:ignore[invalid-explicit-return]
 
     def pause(self, gid: str) -> str:
         """Pause a download.
@@ -763,7 +763,7 @@ class Client:
         Returns:
             The GID of the paused download.
         """
-        return self.call(self.PAUSE, [gid])  # ty:ignore[invalid-return-type]
+        return self.call(self.PAUSE, [gid])  # ty:ignore[invalid-explicit-return]
 
     def pause_all(self) -> str:
         """Pause all active/waiting downloads.
@@ -777,7 +777,7 @@ class Client:
         Returns:
             `"OK"`.
         """
-        return self.call(self.PAUSE_ALL)  # ty:ignore[invalid-return-type]
+        return self.call(self.PAUSE_ALL)  # ty:ignore[invalid-explicit-return]
 
     def force_pause(self, gid: str) -> str:
         """Force pause a download.
@@ -797,7 +797,7 @@ class Client:
         Returns:
             The GID of the paused download.
         """
-        return self.call(self.FORCE_PAUSE, [gid])  # ty:ignore[invalid-return-type]
+        return self.call(self.FORCE_PAUSE, [gid])  # ty:ignore[invalid-explicit-return]
 
     def force_pause_all(self) -> str:
         """Force pause all active/waiting downloads.
@@ -811,7 +811,7 @@ class Client:
         Returns:
             `"OK"`.
         """
-        return self.call(self.FORCE_PAUSE_ALL)  # ty:ignore[invalid-return-type]
+        return self.call(self.FORCE_PAUSE_ALL)  # ty:ignore[invalid-explicit-return]
 
     def unpause(self, gid: str) -> str:
         """Resume a download.
@@ -829,7 +829,7 @@ class Client:
         Returns:
             The GID of the resumed download.
         """
-        return self.call(self.UNPAUSE, [gid])  # ty:ignore[invalid-return-type]
+        return self.call(self.UNPAUSE, [gid])  # ty:ignore[invalid-explicit-return]
 
     def unpause_all(self) -> str:
         """Resume all downloads.
@@ -843,7 +843,7 @@ class Client:
         Returns:
             `"OK"`.
         """
-        return self.call(self.UNPAUSE_ALL)  # ty:ignore[invalid-return-type]
+        return self.call(self.UNPAUSE_ALL)  # ty:ignore[invalid-explicit-return]
 
     def tell_status(self, gid: str, keys: list[str] | None = None) -> dict:
         """Tell status of a download.
@@ -974,7 +974,7 @@ class Client:
                          u'gid': u'0000000000000001',
                          u'totalLength': u'34896138'}}
         """
-        return self.call(self.TELL_STATUS, [gid, keys])  # ty:ignore[invalid-return-type]
+        return self.call(self.TELL_STATUS, [gid, keys])  # ty:ignore[invalid-explicit-return]
 
     def get_uris(self, gid: str) -> dict:
         """Return URIs used in a download.
@@ -1015,7 +1015,7 @@ class Client:
              u'result': [{u'status': u'used',
                           u'uri': u'http://example.org/file'}]}
         """
-        return self.call(self.GET_URIS, [gid])  # ty:ignore[invalid-return-type]
+        return self.call(self.GET_URIS, [gid])  # ty:ignore[invalid-explicit-return]
 
     def get_files(self, gid: str) -> dict:
         """Return file list of a download.
@@ -1073,7 +1073,7 @@ class Client:
                           u'uris': [{u'status': u'used',
                                      u'uri': u'http://example.org/file'}]}]}
         """
-        return self.call(self.GET_FILES, [gid])  # ty:ignore[invalid-return-type]
+        return self.call(self.GET_FILES, [gid])  # ty:ignore[invalid-explicit-return]
 
     def get_peers(self, gid: str) -> dict:
         """Return peers list of a download.
@@ -1139,7 +1139,7 @@ class Client:
                           u'seeder': u'false',
                           u'uploadSpeed': u'6890'}]}
         """
-        return self.call(self.GET_PEERS, [gid])  # ty:ignore[invalid-return-type]
+        return self.call(self.GET_PEERS, [gid])  # ty:ignore[invalid-explicit-return]
 
     def get_servers(self, gid: str) -> dict:
         """Return servers currently connected for a download.
@@ -1186,7 +1186,7 @@ class Client:
                                         u'downloadSpeed': u'10467',
                                         u'uri': u'http://example.org/file'}]}]}
         """
-        return self.call(self.GET_SERVERS, [gid])  # ty:ignore[invalid-return-type]
+        return self.call(self.GET_SERVERS, [gid])  # ty:ignore[invalid-explicit-return]
 
     def tell_active(self, keys: list[str] | None = None) -> list[dict]:
         """Return the list of active downloads.
@@ -1201,7 +1201,7 @@ class Client:
         Returns:
             An array of the same structs as returned by the [`tell_status()`][aria2p.Client.tell_status] method.
         """
-        return self.call(self.TELL_ACTIVE, [keys])  # ty:ignore[invalid-return-type]
+        return self.call(self.TELL_ACTIVE, [keys])  # ty:ignore[invalid-explicit-return]
 
     def tell_waiting(self, offset: int, num: int, keys: list[str] | None = None) -> list[dict]:
         """Return the list of waiting downloads.
@@ -1225,7 +1225,7 @@ class Client:
         Returns:
             An array of the same structs as returned by [`tell_status()`][aria2p.Client.tell_status] method.
         """
-        return self.call(self.TELL_WAITING, [offset, num, keys])  # ty:ignore[invalid-return-type]
+        return self.call(self.TELL_WAITING, [offset, num, keys])  # ty:ignore[invalid-explicit-return]
 
     def tell_stopped(self, offset: int, num: int, keys: list[str] | None = None) -> list[dict]:
         """Return the list of stopped downloads.
@@ -1245,7 +1245,7 @@ class Client:
         Returns:
             An array of the same structs as returned by the [`tell_status()`][aria2p.Client.tell_status] method.
         """
-        return self.call(self.TELL_STOPPED, [offset, num, keys])  # ty:ignore[invalid-return-type]
+        return self.call(self.TELL_STOPPED, [offset, num, keys])  # ty:ignore[invalid-explicit-return]
 
     def change_position(self, gid: str, pos: int, how: str) -> int:
         """Change position of a download.
@@ -1293,7 +1293,7 @@ class Client:
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': 0}
         """
-        return self.call(self.CHANGE_POSITION, [gid, pos, how])  # ty:ignore[invalid-return-type]
+        return self.call(self.CHANGE_POSITION, [gid, pos, how])  # ty:ignore[invalid-explicit-return]
 
     def change_uri(
         self,
@@ -1346,7 +1346,7 @@ class Client:
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': [0, 1]}
         """
-        return self.call(self.CHANGE_URI, [gid, file_index, del_uris, add_uris, position])  # ty:ignore[invalid-return-type]
+        return self.call(self.CHANGE_URI, [gid, file_index, del_uris, add_uris, position])  # ty:ignore[invalid-explicit-return]
 
     def get_option(self, gid: str) -> dict:
         """Return options of a download.
@@ -1388,7 +1388,7 @@ class Client:
                          u'async-dns': u'true',
              ...
         """
-        return self.call(self.GET_OPTION, [gid])  # ty:ignore[invalid-return-type]
+        return self.call(self.GET_OPTION, [gid])  # ty:ignore[invalid-explicit-return]
 
     def change_option(self, gid: str, options: dict) -> str:
         """Change a download options dynamically.
@@ -1440,7 +1440,7 @@ class Client:
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'OK'}
         """
-        return self.call(self.CHANGE_OPTION, [gid, options])  # ty:ignore[invalid-return-type]
+        return self.call(self.CHANGE_OPTION, [gid, options])  # ty:ignore[invalid-explicit-return]
 
     def get_global_option(self) -> dict:
         """Return the global options.
@@ -1458,7 +1458,7 @@ class Client:
             The global options. The response is a struct. Its keys are the names of options.
             Values are strings.
         """
-        return self.call(self.GET_GLOBAL_OPTION)  # ty:ignore[invalid-return-type]
+        return self.call(self.GET_GLOBAL_OPTION)  # ty:ignore[invalid-explicit-return]
 
     def change_global_option(self, options: dict) -> str:
         """Change the global options dynamically.
@@ -1493,7 +1493,7 @@ class Client:
         Returns:
             `"OK"` for success.
         """
-        return self.call(self.CHANGE_GLOBAL_OPTION, [options])  # ty:ignore[invalid-return-type]
+        return self.call(self.CHANGE_GLOBAL_OPTION, [options])  # ty:ignore[invalid-explicit-return]
 
     def get_global_stat(self) -> dict:
         """Return global statistics such as the overall download and upload speeds.
@@ -1532,7 +1532,7 @@ class Client:
                          u'numWaiting': u'0',
                          u'uploadSpeed': u'0'}}
         """
-        return self.call(self.GET_GLOBAL_STAT)  # ty:ignore[invalid-return-type]
+        return self.call(self.GET_GLOBAL_STAT)  # ty:ignore[invalid-explicit-return]
 
     def purge_download_result(self) -> str:
         """Purge completed/error/removed downloads from memory.
@@ -1544,7 +1544,7 @@ class Client:
         Returns:
             `"OK"`.
         """
-        return self.call(self.PURGE_DOWNLOAD_RESULT)  # ty:ignore[invalid-return-type]
+        return self.call(self.PURGE_DOWNLOAD_RESULT)  # ty:ignore[invalid-explicit-return]
 
     def remove_download_result(self, gid: str) -> str:
         """Remove a completed/error/removed download from memory.
@@ -1578,7 +1578,7 @@ class Client:
             >>> pprint(json.loads(c.read()))
             {u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'OK'}
         """
-        return self.call(self.REMOVE_DOWNLOAD_RESULT, [gid])  # ty:ignore[invalid-return-type]
+        return self.call(self.REMOVE_DOWNLOAD_RESULT, [gid])  # ty:ignore[invalid-explicit-return]
 
     def get_version(self) -> str:
         """Return aria2 version and the list of enabled features.
@@ -1615,7 +1615,7 @@ class Client:
                                               u'XML-RPC'],
                          u'version': u'1.11.0'}}
         """
-        return self.call(self.GET_VERSION)  # ty:ignore[invalid-return-type]
+        return self.call(self.GET_VERSION)  # ty:ignore[invalid-explicit-return]
 
     def get_session_info(self) -> dict:
         """Return session information.
@@ -1641,7 +1641,7 @@ class Client:
              u'jsonrpc': u'2.0',
              u'result': {u'sessionId': u'cd6a3bc6a1de28eb5bfa181e5f6b916d44af31a9'}}
         """
-        return self.call(self.GET_SESSION_INFO)  # ty:ignore[invalid-return-type]
+        return self.call(self.GET_SESSION_INFO)  # ty:ignore[invalid-explicit-return]
 
     def shutdown(self) -> str:
         """Shutdown aria2.
@@ -1653,7 +1653,7 @@ class Client:
         Returns:
             `"OK"`.
         """
-        return self.call(self.SHUTDOWN)  # ty:ignore[invalid-return-type]
+        return self.call(self.SHUTDOWN)  # ty:ignore[invalid-explicit-return]
 
     def force_shutdown(self) -> str:
         """Force shutdown aria2.
@@ -1668,7 +1668,7 @@ class Client:
         Returns:
             `"OK"`.
         """
-        return self.call(self.FORCE_SHUTDOWN)  # ty:ignore[invalid-return-type]
+        return self.call(self.FORCE_SHUTDOWN)  # ty:ignore[invalid-explicit-return]
 
     def save_session(self) -> str:
         """Save the current session to a file.
@@ -1683,7 +1683,7 @@ class Client:
         Returns:
             `"OK"` if it succeeds.
         """
-        return self.call(self.SAVE_SESSION)  # ty:ignore[invalid-return-type]
+        return self.call(self.SAVE_SESSION)  # ty:ignore[invalid-explicit-return]
 
     # system
     def multicall(self, methods: list[dict]) -> list[CallReturnType]:
@@ -1759,7 +1759,7 @@ class Client:
             [{u'id': u'qwer', u'jsonrpc': u'2.0', u'result': u'0000000000000001'},
              {u'id': u'asdf', u'jsonrpc': u'2.0', u'result': u'd2703803b52216d1'}]
         """
-        return self.call(self.MULTICALL, [methods])  # ty:ignore[invalid-return-type]
+        return self.call(self.MULTICALL, [methods])  # ty:ignore[invalid-explicit-return]
 
     def list_methods(self) -> list[str]:
         """Return the available RPC methods.
@@ -1791,7 +1791,7 @@ class Client:
                          u'aria2.addTorrent',
              ...
         """
-        return self.call(self.LIST_METHODS)  # ty:ignore[invalid-return-type]
+        return self.call(self.LIST_METHODS)  # ty:ignore[invalid-explicit-return]
 
     def list_notifications(self) -> list[str]:
         """Return all the available RPC notifications.
@@ -1823,7 +1823,7 @@ class Client:
                          u'aria2.onDownloadPause',
              ...
         """
-        return self.call(self.LIST_NOTIFICATIONS)  # ty:ignore[invalid-return-type]
+        return self.call(self.LIST_NOTIFICATIONS)  # ty:ignore[invalid-explicit-return]
 
     # notifications
     def listen_to_notifications(  # noqa: PLR0917

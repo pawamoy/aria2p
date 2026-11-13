@@ -68,7 +68,7 @@ def listen(
         print(f"aria2p: Could not import module file {callbacks_module}", file=sys.stderr)
         return 1
 
-    spec.loader.exec_module(callbacks)  # ty:ignore[unresolved-attribute]
+    spec.loader.exec_module(callbacks)  # ty:ignore[missing-union-attribute]
 
     callbacks_kwargs = {}
     for callback_name in (

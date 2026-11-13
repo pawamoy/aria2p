@@ -249,7 +249,7 @@ def test_move_focus(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) 
 
 def test_show_help(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) -> None:
     interface = run_interface(monkeypatch, server.api, events=[Event.f1, Event.pass_tick, Event.enter])
-    assert interface.screen.print_at_calls[-1]["args"][0].startswith("Press any key to return.")  # ty:ignore[unresolved-attribute]
+    assert interface.screen.print_at_calls[-1]["args"][0].startswith("Press any key to return.")  # ty:ignore[missing-attribute]
 
 
 def test_horizontal_scrolling(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) -> None:

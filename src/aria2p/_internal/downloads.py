@@ -364,7 +364,7 @@ class Download:  # noqa: PLW1641
         """
         if not self._options:
             self.update_options()
-        return self._options  # ty:ignore[invalid-return-type]
+        return self._options  # ty:ignore[invalid-explicit-return]
 
     @options.setter
     def options(self, value: Options) -> None:
