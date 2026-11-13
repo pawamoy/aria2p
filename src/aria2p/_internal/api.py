@@ -37,6 +37,7 @@ from requests.exceptions import ConnectionError  # noqa: A004
 
 from aria2p._internal.client import Client, ClientException
 from aria2p._internal.downloads import Download
+from aria2p._internal.option_validation import _validate_options
 from aria2p._internal.options import Options
 from aria2p._internal.stats import Stats
 
@@ -156,13 +157,16 @@ class API:
                 containing aria2c options to create the download with.
             position: The position where to insert the new download in the queue. Start at 0 (top).
 
+        Raises:
+            ValueError: An option name or value is invalid, or the option is unavailable for this operation.
+
         Returns:
             The newly created download object.
         """
         if options is None:
             options = {}
 
-        client_options = options.get_struct() if isinstance(options, Options) else options
+        client_options = _validate_options(options.get_struct() if isinstance(options, Options) else options, "initial")
 
         gid = self.client.add_uri([magnet_uri], client_options, position)
 
@@ -184,6 +188,9 @@ class API:
                 containing aria2c options to create the download with.
             position: The position where to insert the new download in the queue. Start at 0 (top).
 
+        Raises:
+            ValueError: An option name or value is invalid, or the option is unavailable for this operation.
+
         Returns:
             The newly created download object.
         """
@@ -193,7 +200,7 @@ class API:
         if options is None:
             options = {}
 
-        client_options = options.get_struct() if isinstance(options, Options) else options
+        client_options = _validate_options(options.get_struct() if isinstance(options, Options) else options, "initial")
 
         with Path(torrent_file_path).open("rb") as stream:
             torrent_contents = stream.read()
@@ -221,13 +228,16 @@ class API:
                 containing aria2c options to create the download with.
             position: The position where to insert the new download in the queue. Start at 0 (top).
 
+        Raises:
+            ValueError: An option name or value is invalid, or the option is unavailable for this operation.
+
         Returns:
             The newly created download objects.
         """
         if options is None:
             options = {}
 
-        client_options = options.get_struct() if isinstance(options, Options) else options
+        client_options = _validate_options(options.get_struct() if isinstance(options, Options) else options, "initial")
 
         with Path(metalink_file_path).open("rb") as stream:
             metalink_contents = stream.read()
@@ -251,6 +261,9 @@ class API:
                 containing aria2c options to create the download with.
             position: The position where to insert the new download in the queue. Start at 0 (top).
 
+        Raises:
+            ValueError: An option name or value is invalid, or the option is unavailable for this operation.
+
         Returns:
             The newly created download object.
 
@@ -258,7 +271,7 @@ class API:
         if options is None:
             options = {}
 
-        client_options = options.get_struct() if isinstance(options, Options) else options
+        client_options = _validate_options(options.get_struct() if isinstance(options, Options) else options, "initial")
 
         gid = self.client.add_uri(uris, client_options, position)
 
@@ -660,10 +673,13 @@ class API:
                 containing aria2c options to create the download with.
             downloads: The GIDs or download objects to set options for.
 
+        Raises:
+            ValueError: An option name or value is invalid, or the option is unavailable for this operation.
+
         Returns:
             Success or failure of the operation for changing options for each given download.
         """
-        client_options = options.get_struct() if isinstance(options, Options) else options
+        client_options = _validate_options(options.get_struct() if isinstance(options, Options) else options, "download")
 
         # Note: batch/multicall candidate
         return [self.client.change_option(_get_gid(download), client_options) == "OK" for download in downloads]
@@ -675,10 +691,13 @@ class API:
             options: An instance of the [`Options`][aria2p.Options] class or a dictionary
                 containing aria2c options to create the download with.
 
+        Raises:
+            ValueError: An option name or value is invalid, or the option is unavailable for this operation.
+
         Returns:
             Success or failure of the operation for changing global options.
         """
-        client_options = options.get_struct() if isinstance(options, Options) else options
+        client_options = _validate_options(options.get_struct() if isinstance(options, Options) else options, "global")
 
         return self.client.change_global_option(client_options) == "OK"
 

@@ -26,6 +26,7 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import TYPE_CHECKING
 
+from aria2p._internal.option_validation import _SIZE_OPTIONS, _size, _validate_options
 from aria2p._internal.utils import _bool_or_value, _bool_to_str
 
 if TYPE_CHECKING:
@@ -34,7 +35,7 @@ if TYPE_CHECKING:
     from aria2p._internal.api import API
     from aria2p._internal.downloads import Download
 
-OptionType = str | int | bool | float | None
+OptionType = str | int | bool | float | list[str] | None
 """Union of types for option values."""
 
 
@@ -47,6 +48,11 @@ class Options:
     The options are available with the same names, using underscores instead of dashes, except for "continue"
     (which is a Python reserved keyword) which is here called "continue_downloads". For example,
     "max-concurrent-downloads" is used like `options.max_concurrent_downloads = 5`.
+
+    Setters validate names, values, and whether the option can be changed for
+    this scope before contacting aria2. Invalid options raise `ValueError`.
+    Startup options can be read but cannot be changed through RPC. Download
+    creation options such as `pause` must be passed to the API's `add_*` methods.
     """
 
     def __init__(self, api: API, struct: dict, download: Download | None = None):
@@ -95,6 +101,8 @@ class Options:
         """
         value = self._struct.get(item)
         if class_ is not None and value is not None:
+            if class_ is int and item in _SIZE_OPTIONS and isinstance(value, str):
+                return _size(value)
             return class_(value)
         return value
 
@@ -102,14 +110,19 @@ class Options:
         """Set the value of an option given its name.
 
         Parameters:
-            key: The name of the option (example: "input-file").
-            value: The value to set.
+            key: The aria2 option name, using dashes (example: "max-download-limit").
+            value: A string, number, or boolean. `header` and `index-out` also
+                accept lists of strings. Booleans become `"true"` or `"false"`
+                and numbers become strings for RPC.
 
         Returns:
             True if the value was successfully set, False otherwise.
+
+        Raises:
+            ValueError: The name or value is invalid, or the option cannot be
+                changed in this object's global or download scope.
         """
-        if not isinstance(value, str):
-            value = str(value)
+        value = _validate_options({key: value}, "global" if self.are_global else "download")[key]
         if self.download:
             success = self.api.set_options({key: value}, [self.download])[0]
         else:
@@ -1082,7 +1095,7 @@ class Options:
         self.set("enable-http-pipelining", _bool_to_str(value))
 
     @property
-    def header(self) -> str:
+    def header(self) -> str | list[str]:
         """Return the `header` option value.
 
         Append HEADER to HTTP request header.
@@ -1092,12 +1105,12 @@ class Options:
             $ aria2c --header="X-A: b78" --header="X-B: 9J1" "http://host/file"
 
         Returns:
-            str
+            The header string or list of header strings.
         """
         return self.get("header")  # ty:ignore[invalid-return-type]
 
     @header.setter
-    def header(self, value: str) -> None:
+    def header(self, value: str | list[str]) -> None:
         self.set("header", value)
 
     @property
@@ -1408,11 +1421,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("bt_enable_hook_after_hash_check", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("bt-enable-hook-after-hash-check", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @bt_enable_hook_after_hash_check.setter
     def bt_enable_hook_after_hash_check(self, value: bool) -> None:
-        self.set("bt_enable_hook_after_hash_check", _bool_to_str(value))
+        self.set("bt-enable-hook-after-hash-check", _bool_to_str(value))
 
     @property
     def bt_enable_lpd(self) -> bool:
@@ -1990,7 +2003,7 @@ class Options:
         self.set("follow-torrent", value)
 
     @property
-    def index_out(self) -> str:
+    def index_out(self) -> str | list[str]:
         """Return the `index-out` option value.
 
         Set file path for file with index=INDEX (`<INDEX>=<PATH>`).
@@ -2000,12 +2013,12 @@ class Options:
         names of BitTorrent downloads.
 
         Returns:
-            str
+            The index/path string or list of index/path strings.
         """
         return self.get("index-out")  # ty:ignore[invalid-return-type]
 
     @index_out.setter
-    def index_out(self, value: str) -> None:
+    def index_out(self, value: str | list[str]) -> None:
         self.set("index-out", value)
 
     @property
@@ -2100,7 +2113,7 @@ class Options:
         Returns:
             float
         """
-        return self.get("seed-ratio")  # ty:ignore[invalid-return-type]
+        return self.get("seed-ratio", float)  # ty:ignore[invalid-return-type]
 
     @seed_ratio.setter
     def seed_ratio(self, value: float) -> None:
@@ -2120,7 +2133,7 @@ class Options:
         Returns:
             float
         """
-        return self.get("seed-time")  # ty:ignore[invalid-return-type]
+        return self.get("seed-time", float)  # ty:ignore[invalid-return-type]
 
     @seed_time.setter
     def seed_time(self, value: float) -> None:
@@ -2291,11 +2304,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("metalink_enable_unique_protocol", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("metalink-enable-unique-protocol", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @metalink_enable_unique_protocol.setter
     def metalink_enable_unique_protocol(self, value: bool) -> None:
-        self.set("metalink_enable_unique_protocol", _bool_to_str(value))
+        self.set("metalink-enable-unique-protocol", _bool_to_str(value))
 
     # RPC Options
     @property
@@ -3106,11 +3119,11 @@ class Options:
         Returns:
             bool
         """
-        return self.get("keep_unfinished_download_result", _bool_or_value)  # ty:ignore[invalid-return-type]
+        return self.get("keep-unfinished-download-result", _bool_or_value)  # ty:ignore[invalid-return-type]
 
     @keep_unfinished_download_result.setter
     def keep_unfinished_download_result(self, value: bool) -> None:
-        self.set("keep_unfinished_download_result", _bool_to_str(value))
+        self.set("keep-unfinished-download-result", _bool_to_str(value))
 
     @property
     def max_download_result(self) -> int:
