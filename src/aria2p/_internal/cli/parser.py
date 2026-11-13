@@ -193,7 +193,41 @@ def get_parser() -> argparse.ArgumentParser:
     pause_parser = subparser("pause", "Pause downloads.", aliases=["stop"])
     remove_parser = subparser("remove", "Remove downloads.", aliases=["rm", "del", "delete"])
     resume_parser = subparser("resume", "Resume downloads.", aliases=["start"])
-    subparser("show", "Show the download progression.")
+    # YORE: Bump 2: Remove line.
+    subparser("show", "Show the download progression (deprecated; use 'list -l -H' instead).")
+    list_parser = subparser("list", "List downloads by GID or shell-style name patterns.")
+    list_parser.add_argument(
+        "patterns",
+        nargs="*",
+        help="Exact GIDs or case-sensitive shell-style name patterns. Quote patterns to prevent shell expansion.",
+    )
+    list_formats = list_parser.add_mutually_exclusive_group()
+    list_formats.add_argument(
+        "-l",
+        "--long",
+        dest="output_format",
+        action="store_const",
+        const="long",
+        help="Print a table with download details (same as --format=long).",
+    )
+    list_formats.add_argument(
+        "-f",
+        "--format",
+        dest="output_format",
+        help="Output format: name (default), gid, long, or a Python format string. Fields: gid, status, progress, total_length, completed_length, download_speed, upload_speed, eta, name.",
+    )
+    list_parser.set_defaults(output_format="name")
+    list_parser.add_argument(
+        "-s",
+        "--sort",
+        help="Sort by comma-separated format fields, with a '-' prefix for descending order (e.g. --sort=-progress,name). Default: daemon order.",
+    )
+    list_parser.add_argument(
+        "--limit", type=int, help="Maximum number of downloads to print after filtering and sorting (zero or greater)."
+    )
+    list_parser.add_argument(
+        "-H", "--human-readable", action="store_true", help="Use human-readable units for sizes, speeds, and ETA."
+    )
     subparser("top", "Launch the top-like interactive interface.")
     listen_parser = subparser("listen", "Listen to notifications.")
 

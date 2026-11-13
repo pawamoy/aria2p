@@ -481,6 +481,8 @@ optional arguments:
 
 ### `show`
 
+Deprecated and scheduled for removal in version 2. Use `aria2p list -l -H` for the same table output.
+
 ```
 usage: aria2p show [-h]
 

@@ -18,8 +18,11 @@
 
 # Command to show downloads.
 
+# YORE: Bump 2: Remove file.
+
 from __future__ import annotations
 
+import warnings
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
@@ -29,12 +32,19 @@ if TYPE_CHECKING:
 def show(api: API) -> int:
     """Show subcommand.
 
+    Deprecated. Use [`list_downloads`][aria2p.list_downloads] with `output_format="long"` and `human_readable=True` instead.
+
     Parameters:
         api: The API instance to use.
 
     Returns:
         int: Always 0.
     """
+    warnings.warn(
+        "The 'show' command is deprecated and will be removed in version 2. Use 'list -l -H' instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     downloads = api.get_downloads()
 
     def print_line(*args: Any) -> None:

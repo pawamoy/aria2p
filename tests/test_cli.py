@@ -37,6 +37,8 @@ from aria2p._internal.cli.commands.pause import pause
 from aria2p._internal.cli.commands.purge import purge
 from aria2p._internal.cli.commands.remove import remove
 from aria2p._internal.cli.commands.resume import resume
+
+# YORE: Bump 2: Remove line.
 from aria2p._internal.cli.commands.show import show
 from aria2p._internal.cli.main import main
 from aria2p._internal.cli.parser import get_parser
@@ -118,8 +120,11 @@ def test_no_interface_deps_print_error(
     assert "aria2p[tui]" in line
 
 
+# YORE: Bump 2: Remove block.
 def test_main_show_subcommand(server: Aria2Server, capsys: pytest.CaptureFixture) -> None:
-    main(["-p", str(server.port), "show"])
+    with pytest.warns(DeprecationWarning, match="'show'.*'list -l -H'"):
+        assert main(["-p", str(server.port), "show"]) == 0
+
     first_line = first_out_line(capsys)
     for word in ("GID", "STATUS", "PROGRESS", "DOWN_SPEED", "UP_SPEED", "ETA", "NAME"):
         assert word in first_line
@@ -130,9 +135,12 @@ def test_errors_and_print_message(server: Aria2Server, capsys: pytest.CaptureFix
     assert capsys.readouterr().err == "Invalid GID invalid gid\n"
 
 
+# YORE: Bump 2: Remove block.
 def test_show_subcommand(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
     with Aria2Server(tmp_path, port, session="1-dl-paused.txt") as server:
-        assert show(server.api) == 0
+        with pytest.warns(DeprecationWarning, match="'show'.*'list -l -H'"):
+            assert show(server.api) == 0
+
         assert len(capsys.readouterr().out.rstrip("\n").split("\n")) == 2
 
 

@@ -32,11 +32,14 @@ from aria2p._internal.cli.commands.add_magnet import add_magnets
 from aria2p._internal.cli.commands.add_metalink import add_metalinks
 from aria2p._internal.cli.commands.add_torrent import add_torrents
 from aria2p._internal.cli.commands.call import call
+from aria2p._internal.cli.commands.list import list_downloads
 from aria2p._internal.cli.commands.listen import listen
 from aria2p._internal.cli.commands.pause import pause
 from aria2p._internal.cli.commands.purge import purge
 from aria2p._internal.cli.commands.remove import remove
 from aria2p._internal.cli.commands.resume import resume
+
+# YORE: Bump 2: Remove line.
 from aria2p._internal.cli.commands.show import show
 from aria2p._internal.cli.commands.top import top
 from aria2p._internal.cli.parser import check_args, get_parser
@@ -45,7 +48,9 @@ from aria2p._internal.logger import enable_logger
 
 commands = {
     None: top,  # default command
+    # YORE: Bump 2: Remove line.
     "show": show,
+    "list": list_downloads,
     "top": top,
     "call": call,
     "add": add,

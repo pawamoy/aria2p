@@ -3,6 +3,38 @@
 Extensive usage instructions will be added later, when the application is more stable.
 You can also refer to the README / Overview.
 
+## Listing downloads
+
+Use `aria2p list` to print one download name per line. The `aria2p show` command is deprecated and will be removed in version 2. Use `aria2p list -l -H` for the same table output with human-readable units.
+
+```bash
+aria2p list
+aria2p list 0000000000000001
+aria2p list '*.iso' '*.zip'
+aria2p list -l -H
+aria2p list --sort=-progress,name --limit 10
+aria2p list --format '{gid} {status} {name}'
+```
+
+Selection arguments match exact GIDs or case-sensitive shell-style name patterns. A download appears once if any argument matches.
+Quote patterns to prevent your shell from expanding them. Without selection arguments, all retrieved downloads are included.
+
+Use `-l` or `--long` for a table with GID, status, progress, download speed, upload speed, ETA, and name.
+Use `-f` or `--format` with `name`, `gid`, `long`, or a custom Python format string.
+Custom formats accept these fields: `gid`, `status`, `progress`, `total_length`, `completed_length`, `download_speed`, `upload_speed`, `eta`, and `name`.
+Progress is a number from 0 to 100. For a percentage, use `{progress:.2f}%`.
+Literal text and standard Python format specifications are supported; backslash escapes are printed literally.
+
+By default, sizes use bytes, speeds use bytes per second, and ETA uses seconds. An unknown ETA is `-`.
+Use `-H` or `--human-readable` to format sizes, speeds, and ETA with units.
+These fields become strings, so numeric format specifications for them require omitting `-H`.
+
+Use `-s` or `--sort` with one or more comma-separated field names. Earlier fields take priority.
+Prefix a field with `-` for descending order, using `--sort=-progress,name` when the value starts with `-`.
+Sorting uses raw values, including when `-H` is enabled.
+Without sorting, downloads appear in daemon order: active, waiting, then stopped. Retrieval includes up to 1,000 waiting and 1,000 stopped downloads.
+Use `--limit` to restrict the result after filtering and sorting. A limit of zero prints no download rows.
+
 ## Listening to notifications
 
 Since [version 0.3](changelog.md#030-2019-10-11), it is possible to listen to the server notifications
