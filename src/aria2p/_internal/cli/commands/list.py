@@ -77,6 +77,8 @@ def list_downloads(
     api: API,
     patterns: list[str] | None = None,
     *,
+    search_patterns: list[str] | None = None,
+    filters: dict[str, object] | None = None,
     output_format: str = "name",
     sort: str | None = None,
     limit: int | None = None,
@@ -84,26 +86,32 @@ def list_downloads(
 ) -> int:
     """Print downloads selected by exact GIDs or case-sensitive shell-style name patterns.
 
+    Search patterns are case-insensitive regular expressions combined with OR.
+    Use `(?-i:...)` within a search pattern for case-sensitive matching.
+    Every field filter must also match. Search criteria narrow the positional selection.
+
     Parameters:
         api: The API instance to use.
         patterns: Select downloads matching any pattern. Omit to select all downloads.
+        search_patterns: Case-insensitive regular expressions to narrow the name selection. Any expression can match.
+        filters: Exact values to match against local scalar Download properties. All fields must match.
         output_format: Use `name`, `gid`, `long`, or a Python format string with download fields.
         sort: Comma-separated field names, each optionally prefixed with `-` for descending order.
         limit: Maximum number of downloads to print after filtering and sorting. Zero prints no downloads.
         human_readable: Format sizes, speeds, and ETA with human-readable units. Otherwise use bytes, bytes per second, and seconds.
 
     Returns:
-        Zero on success, or one for invalid formatting, sorting, or limits.
+        Zero on success, or one for invalid search criteria, formatting, sorting, or limits.
     """
     template = _FORMATS.get(output_format, output_format)
     sort_fields = sort.split(",") if sort is not None else []
     try:
         _validate_options(template, sort_fields, limit)
+        downloads = api.search(search_patterns, filters=filters)
     except ValueError as error:
         print(f"aria2p: list: {error}", file=sys.stderr)
         return 1
 
-    downloads = api.get_downloads()
     if patterns:
         downloads = [
             download

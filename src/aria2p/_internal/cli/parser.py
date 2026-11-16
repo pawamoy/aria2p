@@ -37,6 +37,7 @@ from typing import Any
 
 from aria2p._internal import debug
 from aria2p._internal.client import DEFAULT_HOST, DEFAULT_PATH, DEFAULT_PORT, DEFAULT_TIMEOUT
+from aria2p._internal.search import _compile_search_pattern, _validate_search_field
 
 
 def check_args(parser: argparse.ArgumentParser, opts: argparse.Namespace) -> None:  # (complex)
@@ -59,11 +60,24 @@ def check_args(parser: argparse.ArgumentParser, opts: argparse.Namespace) -> Non
         "start",
     )
 
+    if opts.subcommand in (*gid_commands, "list"):
+        # Keep field filters as a dictionary for API.search, while argparse collects
+        # repeated --filter options as pairs.
+        filter_pairs = opts.filters or []
+        opts.filters = dict(filter_pairs)
+        if len(opts.filters) != len(filter_pairs):
+            subparsers[opts.subcommand].error("each filter field can only be specified once")
+
     if opts.subcommand in gid_commands:
-        if not opts.do_all and not opts.gids:
-            subparsers[opts.subcommand].error("the following arguments are required: gids or --all")
+        has_search = bool(opts.patterns or opts.filters)
+        if not opts.do_all and not opts.gids and not has_search:
+            subparsers[opts.subcommand].error(
+                "the following arguments are required: gids, --all, --pattern or --filter"
+            )
         elif opts.do_all and opts.gids:
             subparsers[opts.subcommand].error("argument -a/--all: not allowed with arguments gids")
+        elif opts.do_all and has_search:
+            subparsers[opts.subcommand].error("argument -a/--all: not allowed with search options")
     elif opts.subcommand:
         if opts.subcommand in {"add", "add-magnet", "add-magnets"} and not opts.uris and not opts.from_file:
             subparsers[opts.subcommand].error("the following arguments are required: uris")
@@ -96,6 +110,27 @@ def parse_options_string(options_string: str | None = None) -> dict:
             )
         options[opt.strip()] = val.strip()
     return options
+
+
+def _parse_filter(value: str) -> tuple[str, str]:
+    """Parse and validate a field=value search filter."""
+    field, separator, expected = value.partition("=")
+    if not separator:
+        raise argparse.ArgumentTypeError("Filters must follow this format: field=value")
+    try:
+        _validate_search_field(field)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(str(error)) from error
+    return field, expected
+
+
+def _parse_pattern(value: str) -> str:
+    """Validate regular expressions before any connection or action."""
+    try:
+        _compile_search_pattern(value)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(str(error)) from error
+    return value
 
 
 class _DebugInfo(argparse.Action):
@@ -254,6 +289,23 @@ def get_parser() -> argparse.ArgumentParser:
             dest="position",
             type=int,
             help="Position at which to add the new download(s) in the queue. Starts at 0 (top).",
+        )
+
+    for search_parser in (pause_parser, resume_parser, remove_parser, list_parser):
+        search_parser.add_argument(
+            "--pattern",
+            dest="search_patterns" if search_parser is list_parser else "patterns",
+            action="append",
+            type=_parse_pattern,
+            help="Search download names with a case-insensitive regular expression. Use (?-i:...) for case-sensitive matching. Repeat to match any pattern (OR).",
+        )
+        search_parser.add_argument(
+            "--filter",
+            dest="filters",
+            action="append",
+            type=_parse_filter,
+            metavar="FIELD=VALUE",
+            help="Match a Download property exactly (snake_case). Repeat for different fields; all must match.",
         )
 
     # ========= CALL PARSER ========= #

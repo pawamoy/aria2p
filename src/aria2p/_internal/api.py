@@ -42,6 +42,7 @@ from aria2p._internal.downloads import Download
 from aria2p._internal.engine import Engine, _detect_engine
 from aria2p._internal.option_validation import _validate_options
 from aria2p._internal.options import Options
+from aria2p._internal.search import _compile_search_pattern, _matches_filter, _validate_search_field
 from aria2p._internal.stats import Stats
 
 if TYPE_CHECKING:
@@ -349,48 +350,49 @@ class API:
 
         return self.get_download(gid)
 
-    def search(self, patterns: list[str]) -> list[Download]:
-        """Not implemented.
+    def search(
+        self,
+        patterns: list[str] | None = None,
+        *,
+        filters: dict[str, object] | None = None,
+        downloads: Sequence[Download] | None = None,
+    ) -> list[Download]:
+        """Select downloads by name patterns and exact field values.
 
-        Search and return [`Download`][aria2p.Download] objects based on multiple patterns.
+        Patterns search the download name with case-insensitive regular expressions.
+        Use `(?-i:...)` for case-sensitive matching within a pattern.
+        Patterns are combined with OR. Every field filter must also match.
+        Without name patterns, only field filters restrict the results.
+        With no criteria, return all downloads in their original order.
 
         Parameters:
-            patterns: The patterns used to filter the download list.
+            patterns: Case-insensitive regular expressions for names. Any expression in the list can match.
+            filters: Exact values for local scalar Download properties, such as status,
+                total_length, dir, or is_torrent. Use Python property names in snake_case.
+                String values also match the property's string representation; boolean
+                strings accept true and false without regard to case.
+            downloads: Downloads to search. If None, retrieve all current downloads.
 
         Raises:
-            NotImplementedError: This method is not implemented yet.
+            ValueError: If a regular expression is invalid or a filter field is unsupported.
+
+        Returns:
+            The matching downloads, ready to pass to an API action such as pause or resume.
         """
-        # gid
-        # status
-        # totalLength
-        # completedLength
-        # uploadLength
-        # bitfield
-        # downloadSpeed
-        # uploadSpeed
-        # infoHash
-        # numSeeders
-        # seeder
-        # pieceLength
-        # numPieces
-        # connections
-        # errorCode
-        # errorMessage
-        # followedBy
-        # following
-        # belongsTo
-        # dir
-        # files
-        # bittorrent
-        #        announceList
-        #        comment
-        #        creationDate
-        #        mode
-        #        info
-        #               name
-        # verifiedLength
-        # verifyIntegrityPending
-        raise NotImplementedError
+        filters = filters or {}
+        for field in filters:
+            _validate_search_field(field)
+        expressions = [_compile_search_pattern(pattern) for pattern in patterns or []]
+
+        if downloads is None:
+            downloads = self.get_downloads()
+
+        return [
+            download
+            for download in downloads
+            if (not expressions or any(expression.search(download.name) for expression in expressions))
+            and all(_matches_filter(download, field, expected) for field, expected in filters.items())
+        ]
 
     def get_download(self, gid: str) -> Download:
         """Get a [`Download`][aria2p.Download] object thanks to its GID.

@@ -150,6 +150,80 @@ aria2p add-torrent --options 'select-file=1,3-5' example.torrent
 aria2 can restart an active download when you change its selection.
 It can also download parts of adjacent files that share torrent pieces with selected files.
 
+## Selecting downloads
+
+Use search options with `list`, `pause`, `resume`, or `remove` to select downloads before applying the command:
+
+```bash
+aria2p pause --filter status=waiting
+aria2p resume --pattern "forest sounds"
+aria2p resume --pattern '\.iso$'
+aria2p list --pattern linux --filter status=paused
+```
+
+`--pattern` searches download names with a Python regular expression. Matching is case-insensitive by default. Wrap an expression in `(?-i:...)` to make it case-sensitive. For example, `(?-i:Linux)` matches `Linux` but does not match `linux`. See [Python's regex flags](https://docs.python.org/3/library/re.html#re-syntax) for other inline flags.
+
+```bash
+aria2p list --pattern '(?-i:Linux)'
+aria2p list --pattern 'forest sounds\.flac'
+```
+
+Escape regex metacharacters to match them literally, as with `\.` in the second example. Quote patterns to prevent your shell from interpreting them.
+
+Search criteria combine as follows:
+
+- Repeated `--pattern` values use **OR**. Matching any one name pattern is enough.
+- All `--filter` values use **AND**. A download must match every field filter as well as the name selection.
+- Without name patterns, only the field filters restrict the results.
+
+For example:
+
+```bash
+aria2p list --pattern linux --pattern '\.iso$' --filter status=paused --filter is_torrent=false
+```
+
+This selects paused, non-torrent downloads whose names contain `linux` **OR** end with `.iso`:
+
+```text
+(contains "linux" OR matches '\.iso$') AND status=paused AND is_torrent=false
+```
+
+Filters use `field=value` with Python `Download` property names in snake_case. Values match exactly; `total_length=1024` matches a size in bytes. Boolean values accept `true` and `false` without regard to case. Each field can appear only once. Use `--pattern` for more flexible name matching.
+
+These local scalar fields support filtering:
+
+- Identity and location: `gid`, `name`, `dir`, `info_hash`, `following_id`, `belongs_to_id`.
+- Status: `status`, `is_active`, `is_waiting`, `is_paused`, `has_failed`, `is_complete`, `is_removed`, `is_metadata`, `is_torrent`.
+- Transfer: `total_length`, `completed_length`, `upload_length`, `download_speed`, `upload_speed`, `progress`, `eta`, `connections`.
+- Torrent and verification: `bitfield`, `num_seeders`, `seeder`, `piece_length`, `num_pieces`, `verified_length`, `verify_integrity_pending`.
+- Errors: `error_code`, `error_message`.
+
+Some fields, such as `num_seeders`, are unavailable for non-torrent downloads. These downloads do not match filters on those fields.
+
+Search options also work with command aliases, such as `stop`, `start`, and `rm`. When you supply GIDs, search options narrow that selection. Search options cannot be combined with `--all`. If no downloads match, the command succeeds without changing any downloads.
+
+With `list`, search options narrow the positional GID or shell-style pattern selection before sorting and limiting the results:
+
+```bash
+aria2p list '*.iso' --filter status=paused --sort=name --limit 10
+aria2p list --pattern '\.iso$' --filter is_torrent=false -l -H
+```
+
+### Through the Python API
+
+[`API.search`][aria2p.API.search] returns download objects that you can pass directly to an API action:
+
+```python
+import aria2p
+
+api = aria2p.API()
+api.pause(api.search(filters={"status": "waiting"}))
+api.resume(api.search(["forest sounds"]))
+api.resume(api.search([r"\.iso$"]))
+```
+
+API filters accept typed Python values, such as `{"total_length": 1024}` or `{"is_torrent": False}`. They also accept the string values used by the CLI. To search an existing selection without fetching downloads, pass `downloads=selection`. An empty selection returns no matches. Without criteria, `api.search()` returns all current downloads.
+
 ## Listening to notifications
 
 Since [version 0.3](changelog.md#030-2019-10-11), it is possible to listen to the server notifications

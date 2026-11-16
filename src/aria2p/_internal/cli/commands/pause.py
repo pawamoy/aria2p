@@ -36,6 +36,9 @@ def pause(
     gids: list[str] | None = None,
     do_all: bool = False,  # noqa: FBT001,FBT002
     force: bool = False,  # noqa: FBT001,FBT002
+    *,
+    patterns: list[str] | None = None,
+    filters: dict[str, object] | None = None,
 ) -> int:
     """Pause subcommand.
 
@@ -44,6 +47,8 @@ def pause(
         gids: The GIDs of the downloads to pause.
         do_all: Pause all downloads if True.
         force: Force pause or not (see API.pause).
+        patterns: Case-insensitive regular expressions to search download names.
+        filters: Exact values to match against Download properties.
 
     Returns:
         int: 0 if all success, 1 if one failure.
@@ -54,8 +59,8 @@ def pause(
         return 1
 
     try:
-        downloads = api.get_downloads(gids)
-    except ClientException as error:
+        downloads = api.search(patterns, filters=filters, downloads=api.get_downloads(gids) if gids else None)
+    except (ClientException, ValueError) as error:
         logger.error(f"Could not get downloads to pause: {error}")
         logger.opt(exception=True).trace(error)
         print(str(error), file=sys.stderr)

@@ -31,13 +31,22 @@ if TYPE_CHECKING:
     from aria2p._internal.api import API
 
 
-def resume(api: API, gids: list[str] | None = None, do_all: bool = False) -> int:  # noqa: FBT001,FBT002
+def resume(
+    api: API,
+    gids: list[str] | None = None,
+    do_all: bool = False,  # noqa: FBT001,FBT002
+    *,
+    patterns: list[str] | None = None,
+    filters: dict[str, object] | None = None,
+) -> int:
     """Resume subcommand.
 
     Parameters:
         api: The API instance to use.
         gids: The GIDs of the downloads to resume.
         do_all: Pause all downloads if True.
+        patterns: Case-insensitive regular expressions to search download names.
+        filters: Exact values to match against Download properties.
 
     Returns:
         int: 0 if all success, 1 if one failure.
@@ -48,8 +57,8 @@ def resume(api: API, gids: list[str] | None = None, do_all: bool = False) -> int
         return 1
 
     try:
-        downloads = api.get_downloads(gids)
-    except ClientException as error:
+        downloads = api.search(patterns, filters=filters, downloads=api.get_downloads(gids) if gids else None)
+    except (ClientException, ValueError) as error:
         logger.error(f"Could not get downloads to resume: {error}")
         logger.opt(exception=True).trace(error)
         print(str(error), file=sys.stderr)

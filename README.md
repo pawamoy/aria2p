@@ -146,7 +146,8 @@ Commands:
     remove (rm, del, delete)
                         Remove downloads.
     resume (start)      Resume downloads.
-    show                Show the download progression.
+    show                Show the download progression (deprecated; use 'list -l -H' instead).
+    list                List downloads by GID or shell-style name patterns.
     top                 Launch the top-like interactive interface.
     listen              Listen to notifications.
 
@@ -165,6 +166,7 @@ Commands:
 - [`autopurge`](#autopurge)
 - [`call`](#call)
 - [`listen`](#listen)
+- [`list`](#list)
 - [`pause`](#pause)
 - [`remove`](#remove)
 - [`resume`](#resume)
@@ -481,6 +483,21 @@ optional arguments:
 
 ---
 
+### `list`
+
+Use `aria2p list` to print download names. Supply exact GIDs or quoted shell-style name patterns to select downloads:
+
+```bash
+aria2p list '*.iso'
+aria2p list -l -H
+aria2p list --pattern linux --filter status=paused
+aria2p list --pattern '\.iso$' --sort=name --limit 10
+```
+
+Use `--pattern` for case-insensitive Python regular expressions and `--filter FIELD=VALUE` for exact field matches. Use `(?-i:...)` within a regex for case-sensitive matching. Repeated patterns use OR; every field filter must also match. Search options narrow the positional selection before sorting and limiting the results. See [Selecting downloads](docs/usage.md#selecting-downloads) for supported fields and examples.
+
+---
+
 ### `show`
 
 Deprecated and scheduled for removal in version 2. Use `aria2p list -l -H` for the same table output.
@@ -488,7 +505,7 @@ Deprecated and scheduled for removal in version 2. Use `aria2p list -l -H` for t
 ```
 usage: aria2p show [-h]
 
-Show the download progression.
+Show the download progression (deprecated; use 'list -l -H' instead).
 
 optional arguments:
   -h, --help  Show this help message and exit.

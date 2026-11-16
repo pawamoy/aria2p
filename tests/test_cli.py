@@ -110,7 +110,7 @@ def test_parser_error_when_gids_and_all_option(capsys: pytest.CaptureFixture) ->
         assert e.value.code == 2
     lines = err_lines(capsys)
     assert lines[0].startswith("usage: aria2p pause")
-    assert lines[1].endswith("-a/--all: not allowed with arguments gids")
+    assert any(line.endswith("-a/--all: not allowed with arguments gids") for line in lines)
 
 
 def test_parser_error_when_no_gid_and_no_all_option(capsys: pytest.CaptureFixture) -> None:
@@ -120,7 +120,9 @@ def test_parser_error_when_no_gid_and_no_all_option(capsys: pytest.CaptureFixtur
             assert e.value.code == 2
         lines = err_lines(capsys)
         assert lines[0].startswith("usage: aria2p " + command)
-        assert lines[1].endswith("the following arguments are required: gids or --all")
+        assert any(
+            line.endswith("the following arguments are required: gids, --all, --pattern or --filter") for line in lines
+        )
 
     for command, aliases in [
         ("pause", ["stop"]),
@@ -352,3 +354,109 @@ def test_show_debug_info(capsys: pytest.CaptureFixture) -> None:
 def test_cli_autoclear_commands(command: str, tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="very-small-download.txt"):
         assert main([f"-p{port}", command]) == 0
+
+
+@pytest.mark.parametrize("command", ["pause", "stop", "resume", "start", "remove", "rm", "del", "delete", "list"])
+@pytest.mark.parametrize(
+    ("arguments", "message"),
+    [
+        (["--filter", "status"], "Filters must follow this format"),
+        (["--filter", "statuz=paused"], "Unknown search field"),
+        (["--filter", "live=value"], "Unknown search field"),
+        (["--pattern", "["], "Invalid regular expression"),
+        (["--filter", "status=paused", "--filter", "status=active"], "each filter field can only be specified once"),
+    ],
+)
+def test_cli_rejects_invalid_search_before_connecting(
+    command: str, arguments: list[str], message: str, capsys: pytest.CaptureFixture
+) -> None:
+    with pytest.raises(SystemExit) as error:
+        main([command, *arguments])
+
+    assert error.value.code == 2
+    assert message in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("command", ["pause", "resume", "remove", "stop", "start", "delete"])
+@pytest.mark.parametrize("selector", [["--pattern", "linux"], ["--pattern", "iso$"], ["--filter", "status=waiting"]])
+def test_cli_rejects_all_with_search(command: str, selector: list[str], capsys: pytest.CaptureFixture) -> None:
+    with pytest.raises(SystemExit) as error:
+        main([command, "--all", *selector])
+
+    assert error.value.code == 2
+    assert "not allowed with search options" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("command", ["resume", "start", "remove", "rm", "del", "delete"])
+@pytest.mark.parametrize("selector", [["--pattern", "5m"], ["--pattern", "^5m$"], ["--filter", "gid=0000000000000001"]])
+def test_cli_actions_only_affect_search_matches(tmp_path: Path, port: int, command: str, selector: list[str]) -> None:
+    # Both downloads start paused, so the selector must choose which one to change.
+    with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
+        assert main(["-p", str(port), command, *selector]) == 0
+
+        downloads = {download.gid: download for download in server.api.get_downloads()}
+        assert downloads["0000000000000002"].status == "paused"
+        if command in {"resume", "start"}:
+            assert downloads["0000000000000001"].status != "paused"
+        else:
+            assert "0000000000000001" not in downloads
+
+
+@pytest.mark.parametrize("command", ["pause", "stop"])
+def test_cli_pause_with_field_filter(tmp_path: Path, port: int, command: str) -> None:
+    with Aria2Server(tmp_path, port, session="one-active-one-paused.txt") as server:
+        assert main(["-p", str(port), command, "--filter", "status=active"]) == 0
+
+        assert all(download.status == "paused" for download in server.api.get_downloads())
+
+
+@pytest.mark.parametrize("command", ["pause", "resume", "remove"])
+def test_cli_action_with_no_search_matches(tmp_path: Path, port: int, command: str) -> None:
+    with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
+        assert main(["-p", str(port), command, "--pattern", "no such download"]) == 0
+
+        # An empty search must leave every download unchanged.
+        downloads = server.api.get_downloads()
+        assert len(downloads) == 2
+        assert all(download.status == "paused" for download in downloads)
+
+
+def test_cli_search_narrows_explicit_gids(tmp_path: Path, port: int) -> None:
+    with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
+        assert main(["-p", str(port), "remove", "0000000000000001", "--pattern", "6m"]) == 0
+
+        assert len(server.api.get_downloads()) == 2
+
+
+def test_cli_list_combines_search_criteria(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
+    with Aria2Server(tmp_path, port, session="2-dls-paused.txt"):
+        result = main(
+            [
+                "-p",
+                str(port),
+                "list",
+                "-f",
+                "gid",
+                "--pattern",
+                "6",
+                "--pattern",
+                "^5m$",
+                "--filter",
+                "status=paused",
+                "--filter",
+                "total_length=0",
+            ]
+        )
+
+    output = capsys.readouterr().out
+    assert result == 0
+    assert "0000000000000001" in output
+    assert "0000000000000002" in output
+
+
+def test_cli_filter_value_can_contain_equals() -> None:
+    parser = get_parser()
+
+    options = parser.parse_args(["list", "--filter", "name=file=1.iso"])
+
+    assert options.filters == [("name", "file=1.iso")]

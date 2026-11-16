@@ -97,9 +97,33 @@ def test_list_selects_gids_and_patterns(capsys: pytest.CaptureFixture, patterns:
     assert capsys.readouterr().out.splitlines() == names
 
 
+@pytest.mark.parametrize(
+    ("options", "names"),
+    [
+        (["--pattern", "a.zip"], ["alpha.zip"]),
+        (["--pattern", "Zebra", "--pattern", "alpha"], ["Zebra.iso", "alpha.zip"]),
+        (["--pattern", "ZEBRA"], ["Zebra.iso"]),
+        (["--pattern", "(?-i:ZEBRA)"], []),
+        (["--pattern", r"(?-i:Zebra)\.ISO$"], ["Zebra.iso"]),
+        (["--pattern", r"\.iso$"], ["Zebra.iso", "beta.iso"]),
+        (["--pattern", r"^alpha", "--pattern", r"^beta"], ["alpha.zip", "beta.iso"]),
+        (["--filter", "status=paused", "--filter", "is_torrent=false"], ["alpha.zip", "beta.iso"]),
+        (["*.iso", "--filter", "status=paused"], ["beta.iso"]),
+        (["0000000000000001", "--pattern", "beta"], []),
+        (["--pattern", "alpha", "--pattern", r"\.iso$", "--filter", "status=paused"], ["alpha.zip", "beta.iso"]),
+    ],
+)
+@pytest.mark.usefixtures("listed_downloads")
+def test_list_search_narrows_selection(capsys: pytest.CaptureFixture, options: list[str], names: list[str]) -> None:
+    # Any regex can match, within the positional selection and field filters.
+    assert main(["list", *options]) == 0
+
+    assert capsys.readouterr().out.splitlines() == names
+
+
 @pytest.mark.usefixtures("listed_downloads")
 def test_list_filters_then_sorts_then_limits(capsys: pytest.CaptureFixture) -> None:
-    assert main(["list", "*.iso", "--sort=-progress,name", "--limit", "1"]) == 0
+    assert main(["list", "*.iso", "--filter", "status=paused", "--sort=-progress,name", "--limit", "1"]) == 0
 
     assert capsys.readouterr().out == "beta.iso\n"
 
@@ -244,6 +268,39 @@ def test_list_python_api(capsys: pytest.CaptureFixture) -> None:
     assert list_downloads(API(), ["*.zip"]) == 0
 
     assert capsys.readouterr().out == "alpha.zip\n"
+
+
+@pytest.mark.usefixtures("listed_downloads")
+def test_list_python_api_search(capsys: pytest.CaptureFixture) -> None:
+    # Typed filters and name searches narrow the existing shell-style selection.
+    result = list_downloads(
+        API(),
+        ["*.iso"],
+        search_patterns=["a", r"\.iso$"],
+        filters={"is_paused": True},
+    )
+
+    assert result == 0
+    assert capsys.readouterr().out == "beta.iso\n"
+
+
+@pytest.mark.parametrize("criteria", [{"search_patterns": ["["]}, {"filters": {"unknown": "value"}}])
+def test_list_python_api_rejects_invalid_search(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture,
+    criteria: dict,
+) -> None:
+    # Validation must finish before fetching downloads, including for Python callers.
+    def unexpected_fetch(_self: API) -> list[Download]:
+        pytest.fail("Invalid search criteria must not fetch downloads")
+
+    monkeypatch.setattr(API, "get_downloads", unexpected_fetch)
+
+    assert list_downloads(API(), **criteria) == 1
+
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "aria2p: list:" in captured.err
 
 
 # YORE: Bump 2: Remove block.
