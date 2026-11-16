@@ -33,6 +33,8 @@ from aria2p._internal.client import ClientException
 from aria2p._internal.utils import _bool_or_value, _human_readable_bytes, _human_readable_timedelta
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from aria2p._internal.api import API
     from aria2p._internal.options import Options
 
@@ -1024,6 +1026,38 @@ class Download:  # noqa: PLW1641
             Success or failure of the operation.
         """
         return self.api.client.remove_download_result(self.gid) == "OK"
+
+    def select_files(self, indexes: Sequence[int]) -> bool:
+        """Select the files to download, replacing the previous selection.
+
+        Use the one-based indexes from [`files`][aria2p.Download.files].
+        Torrent metadata must be available before files can be selected.
+        aria2 may also download parts of adjacent files that share torrent pieces.
+        An active download may restart when aria2 applies the selection.
+
+        Parameters:
+            indexes: The indexes of the files to download. Select at least one file.
+
+        Returns:
+            Whether aria2 accepted the selection. On success, refresh this download's data.
+
+        Raises:
+            ValueError: If the selection is empty or contains an invalid file index.
+            ClientException: If aria2 rejects the selection.
+        """
+        if not indexes:
+            raise ValueError("Select at least one file")
+
+        available = {file.index for file in self.files if not file.is_metadata}
+        if any(type(index) is not int or index not in available for index in indexes):
+            raise ValueError("File indexes must be integers from this download's file list")
+
+        selection = ",".join(str(index) for index in sorted(set(indexes)))
+        if not self.api.set_options({"select-file": selection}, [self])[0]:
+            return False
+
+        self.update()
+        return True
 
     def move_files(self, to_directory: str | Path, force: bool = False) -> bool:  # noqa: FBT001,FBT002
         """Move downloaded files to another directory.

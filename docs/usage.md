@@ -102,6 +102,35 @@ api.move_files([first_gid, second_gid], "/path/to/new-directory", force=True)
 Moving files requires a localhost connection and access to the same filesystem as the aria2 daemon.
 For completed downloads, `move_files()` moves the files without changing aria2's recorded output directory.
 
+## Selecting files in a torrent
+
+With Python, use the indexes from [`Download.files`][aria2p.Download.files]:
+
+```python
+import aria2p
+
+api = aria2p.API()
+download = api.add_torrent("example.torrent", options={"pause": "true"})
+for file in download.files:
+    print(file.index, file.path, file.selected)
+
+download.select_files([1, 3])
+download.resume()
+```
+
+[`Download.select_files`][aria2p.Download.select_files] replaces the previous selection and refreshes the download's data after success.
+Indexes start at 1.
+To select every file again, pass all indexes from `download.files`.
+
+When adding a torrent through the command line, pass the aria2 `select-file` option:
+
+```bash
+aria2p add-torrent --options 'select-file=1,3-5' example.torrent
+```
+
+aria2 can restart an active download when you change its selection.
+It can also download parts of adjacent files that share torrent pieces with selected files.
+
 ## Listening to notifications
 
 Since [version 0.3](changelog.md#030-2019-10-11), it is possible to listen to the server notifications

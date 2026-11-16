@@ -292,3 +292,17 @@ def isolated_http_server() -> Iterator[str]:
     finally:
         process.kill()
         process.wait(timeout=5)
+
+
+@pytest.fixture
+def multi_file_torrent(tmp_path: Path) -> Path:
+    """Create a torrent with three files for selection tests without external downloads."""
+    torrent = tmp_path / "selection.torrent"
+    torrent.write_bytes(
+        b"d4:infod5:filesl"
+        b"d6:lengthi4e4:pathl9:first.txtee"
+        b"d6:lengthi4e4:pathl10:second.txtee"
+        b"d6:lengthi4e4:pathl9:third.txtee"
+        b"e4:name5:files12:piece lengthi16384e6:pieces20:xxxxxxxxxxxxxxxxxxxxee",
+    )
+    return torrent

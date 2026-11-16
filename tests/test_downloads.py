@@ -194,6 +194,28 @@ class TestDownloadClass:
         self.download._struct["files"] = []
         assert len(self.download.files) == 2
 
+    @pytest.mark.parametrize("indexes", [[], [0], [-1], [3], [1, 3], [True], [1.0], ["1"]])
+    def test_select_files_rejects_invalid_indexes(self, indexes: list[int]) -> None:
+        # This download has only files 1 and 2; invalid selections must not reach aria2.
+        with pytest.raises(ValueError, match=r"Select at least one file|File indexes must be integers"):
+            self.download.select_files(indexes)
+
+        assert all(file.selected for file in self.download.files)
+
+    def test_select_files_failure_preserves_selection(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        # A rejected option change must leave the current file selection untouched.
+        monkeypatch.setattr(self.download.api, "set_options", lambda options, downloads: [False])
+
+        assert not self.download.select_files([2])
+
+        assert all(file.selected for file in self.download.files)
+
+    def test_select_files_metadata(self) -> None:
+        download = Download(API(), {"files": [{"index": "1", "path": "[METADATA]example"}]})
+
+        with pytest.raises(ValueError, match="File indexes must be integers"):
+            download.select_files([1])
+
     def test_followed_by(self, server: Aria2Server) -> None:
         self.download.api = server.api
         assert self.download.followed_by == []
@@ -401,6 +423,26 @@ class TestDownloadClass:
         assert self.download.is_torrent
         del self.download._struct["bittorrent"]
         assert not self.download.is_torrent
+
+
+def test_select_files_replaces_selection(server: Aria2Server, multi_file_torrent: Path) -> None:
+    # Pause the torrent so selection can be tested without downloading external data.
+    download = server.api.add_torrent(multi_file_torrent, options={"pause": "true"})
+    assert [file.index for file in download.files if file.selected] == [1, 2, 3]
+
+    # Duplicate indexes and input order must not change the selected files.
+    assert download.select_files([3, 1, 3])
+
+    assert [file.index for file in download.files if file.selected] == [1, 3]
+    assert download.options.select_file == "1,3"
+    assert download.is_paused
+
+    # A new selection replaces the previous one, and all files can be selected again.
+    assert download.select_files([2])
+    assert [file.index for file in download.files if file.selected] == [2]
+
+    assert download.select_files([1, 2, 3])
+    assert all(file.selected for file in download.files)
 
 
 class TestFileClass:
