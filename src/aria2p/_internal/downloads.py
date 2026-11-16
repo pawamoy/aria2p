@@ -287,6 +287,7 @@ class Download:  # noqa: PLW1641
         """Return the name of the download.
 
         Name is the name of the file if single-file, first file's directory name if multi-file.
+        The GID is returned while file metadata is unavailable.
 
         Returns:
             The download name.
@@ -294,6 +295,10 @@ class Download:  # noqa: PLW1641
         if not self._name:
             if self.bittorrent and self.bittorrent.info:
                 self._name = self.bittorrent.info["name"]
+            elif not self.files:
+                # aria2-next can expose a magnet before its file metadata exists.
+                # Do not cache the fallback: a later update can supply the name.
+                return self.gid
             elif self.files[0].is_metadata:
                 self._name = str(self.files[0].path)
             else:
@@ -311,6 +316,9 @@ class Download:  # noqa: PLW1641
     @property
     def control_file_path(self) -> Path:
         """Return the path to the aria2 control file for this download.
+
+        This conventional path applies when `api.engine.capabilities.control_files`
+        is true. aria2-next stores resume state separately and does not use it.
 
         Returns:
             The control file path.

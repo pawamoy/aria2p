@@ -51,7 +51,7 @@ class Options:
     "max-concurrent-downloads" is used like `options.max_concurrent_downloads = 5`.
 
     Setters validate names, values, and whether the option can be changed for
-    this scope before contacting aria2. Invalid options raise `ValueError`.
+    this scope before changing daemon state. Invalid options raise `ValueError`.
     Startup options can be read but cannot be changed through RPC. Download
     creation options such as `pause` must be passed to the API's `add_*` methods.
 
@@ -103,6 +103,8 @@ class Options:
             The option value.
         """
         value = self._struct.get(item)
+        if value is None and item in {"bt-force-encryption", "bt-require-crypto"} and "bt-encryption" in self._struct:
+            value = "true" if self._struct["bt-encryption"] == "required" else "false"
         if class_ is not None and value is not None:
             if class_ is int and item in _SIZE_OPTIONS and isinstance(value, str):
                 return _size(value)
@@ -132,7 +134,17 @@ class Options:
         else:
             success = self.api.set_global_options({key: value})
         if success:
-            self._struct[key] = value
+            if (
+                key in {"bt-force-encryption", "bt-require-crypto", "bt-encryption"}
+                and self.api.engine.name == "aria2-next"
+            ):
+                # These aria2 aliases share one native encryption policy.
+                policy = value if key == "bt-encryption" else ("required" if value == "true" else "preferred")
+                self._struct["bt-encryption"] = policy
+                self._struct.pop("bt-force-encryption", None)
+                self._struct.pop("bt-require-crypto", None)
+            else:
+                self._struct[key] = value
         return success
 
     # Basic Options

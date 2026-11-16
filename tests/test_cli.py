@@ -20,6 +20,7 @@
 
 from __future__ import annotations
 
+import re
 import threading
 import time
 from typing import TYPE_CHECKING
@@ -132,7 +133,7 @@ def test_main_show_subcommand(server: Aria2Server, capsys: pytest.CaptureFixture
 
 def test_errors_and_print_message(server: Aria2Server, capsys: pytest.CaptureFixture) -> None:
     assert main(["-p", str(server.port), "call", "tellstatus", "-P", "invalid gid"]) > 0
-    assert capsys.readouterr().err == "Invalid GID invalid gid\n"
+    assert "invalid gid" in capsys.readouterr().err
 
 
 # YORE: Bump 2: Remove block.
@@ -170,30 +171,32 @@ def test_add_torrent_subcommand(server: Aria2Server) -> None:
 
 
 def test_add_metalink_subcommand(server: Aria2Server) -> None:
-    assert add_metalinks(server.api, [TESTS_DATA_DIR / "debian.metalink"]) == 0
+    assert add_metalinks(server.api, [TESTS_DATA_DIR / "download.meta4"]) == 0
 
 
 def test_pause_subcommand(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
     with Aria2Server(tmp_path, port, session="1-dl.txt") as server:
-        retcode = pause(server.api, ["0000000000000001"])
-    if "cannot be paused now" in capsys.readouterr().err:
-        pytest.xfail("Cannot pause download (sporadic error)")
-    assert retcode == 0
+        download = server.wait_for_download(status="active")
+
+        assert pause(server.api, [download.gid]) == 0
+
+        server.wait_for_download(download.gid, status="paused")
+    assert not capsys.readouterr().err
 
 
 def test_pause_subcommand_already_paused(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         assert pause(server.api, ["0000000000000001", "0000000000000002"]) == 1
-        assert (
-            capsys.readouterr().err
-            == "GID#0000000000000001 cannot be paused now\nGID#0000000000000002 cannot be paused now\n"
+        assert re.fullmatch(
+            r"GID[# ]0000000000000001 cannot be paused now\nGID[# ]0000000000000002 cannot be paused now\n",
+            capsys.readouterr().err,
         )
 
 
 def test_pause_subcommand_one_paused(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
     with Aria2Server(tmp_path, port, session="one-active-one-paused.txt") as server:
         assert pause(server.api, ["0000000000000001", "0000000000000002"]) == 1
-        assert "GID#0000000000000002 cannot be paused now" in capsys.readouterr().err
+        assert re.fullmatch(r"GID[# ]0000000000000002 cannot be paused now\n", capsys.readouterr().err)
 
 
 def test_pause_all_subcommand(server: Aria2Server) -> None:
@@ -213,19 +216,16 @@ def test_resume_subcommand(tmp_path: Path, port: int) -> None:
 def test_resume_subcommand_already_unpaused(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
     with Aria2Server(tmp_path, port, session="2-dls.txt") as server:
         assert resume(server.api, ["0000000000000001", "0000000000000002"]) == 1
-        assert (
-            capsys.readouterr().err
-            == "GID#0000000000000001 cannot be unpaused now\nGID#0000000000000002 cannot be unpaused now\n"
+        assert re.fullmatch(
+            r"GID[# ]0000000000000001 cannot be unpaused now\nGID[# ]0000000000000002 cannot be unpaused now\n",
+            capsys.readouterr().err,
         )
 
 
 def test_resume_subcommand_one_unpaused(tmp_path: Path, port: int, capsys: pytest.CaptureFixture) -> None:
     with Aria2Server(tmp_path, port, session="one-active-one-paused.txt") as server:
         assert resume(server.api, ["0000000000000001", "0000000000000002"]) == 1
-        err = capsys.readouterr().err
-        if "is not found" in err:
-            pytest.xfail("Download cannot be found (sporadic error)")
-        assert err == "GID#0000000000000001 cannot be unpaused now\n"
+        assert re.fullmatch(r"GID[# ]0000000000000001 cannot be unpaused now\n", capsys.readouterr().err)
 
 
 def test_resume_all_subcommand(server: Aria2Server) -> None:

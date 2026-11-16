@@ -16,7 +16,22 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-"""Tests suite for `aria2p`."""
+"""Tests suite for `aria2p`.
+
+CI runs the test suite against both aria2 and [aria2-next](https://github.com/AnInsomniacy/aria2-next).
+aria2-next support starts at version 3.1.0. Local tests use aria2-next by default.
+
+To test both daemons locally, install aria2 and/or aria2-next with your package manager and run:
+
+```bash
+ARIA2_ENGINE=aria2 make test
+ARIA2_ENGINE=aria2-next make test
+```
+
+The tests use `aria2c` or `aria2-next` from your `PATH`.
+
+Set `ARIA2` or `ARIA2_NEXT` to use an executable from another location.
+"""
 
 from __future__ import annotations
 
@@ -30,7 +45,7 @@ SESSIONS_DIR = TESTS_DATA_DIR / "sessions"
 
 BUNSENLABS_TORRENT = TESTS_DATA_DIR / "bunsenlabs-helium-4.iso.torrent"
 BUNSENLABS_MAGNET = "magnet:?xt=urn:btih:7fb1b254fdbdd8863d686c7fa61b3b0b671551b1&dn=bl-Helium-4-amd64.iso"
-DEBIAN_METALINK = TESTS_DATA_DIR / "debian.metalink"
+DEBIAN_METALINK = TESTS_DATA_DIR / "download.meta4"
 XUBUNTU_MIRRORS = [
     "http://ubuntutym2.u-toyama.ac.jp/xubuntu/18.04/release/xubuntu-18.04.1-desktop-amd64.iso",
     "http://ftp.free.fr/mirrors/ftp.xubuntu.com/releases/18.04/release/xubuntu-18.04.1-desktop-amd64.iso",

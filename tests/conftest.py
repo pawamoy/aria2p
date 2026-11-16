@@ -20,25 +20,31 @@
 
 from __future__ import annotations
 
-import json
 import os
-import random
+import socket
 import subprocess
 import sys
 import time
-from contextlib import suppress
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-import psutil
 import pytest
 import requests
 
-from aria2p import API, Client, enable_logger
+from aria2p import API, Client, Download, enable_logger
 from tests import CONFIGS_DIR, SESSIONS_DIR
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Callable, Iterator
+
+
+def wait_for(condition: Callable[[], bool], timeout: float = 10) -> None:
+    """Wait for an asynchronous operation to finish, failing if it takes too long."""
+    deadline = time.monotonic() + timeout
+    while not condition():
+        if time.monotonic() >= deadline:
+            raise TimeoutError(f"Condition was not met within {timeout} seconds: {condition}")
+        time.sleep(0.05)
 
 
 @pytest.fixture(autouse=True)
@@ -78,42 +84,36 @@ def spawn_and_wait_server(port: int = 8779) -> subprocess.Popen:
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
-    while True:
+    deadline = time.monotonic() + 10
+    while time.monotonic() < deadline:
+        if process.poll() is not None:
+            raise RuntimeError(f"HTTP server exited with code {process.returncode}")
         try:
-            requests.get(f"http://localhost:{port}/1024")  # noqa: S113
-        except:  # noqa: E722
-            time.sleep(0.1)
+            response = requests.get(f"http://localhost:{port}/1024", timeout=1)
+            response.raise_for_status()
+        except requests.RequestException:
+            time.sleep(0.05)
         else:
-            break
-    return process
+            return process
 
-
-@pytest.fixture(scope="session", autouse=True)
-def http_server(tmp_path_factory: pytest.TempPathFactory, worker_id: str) -> Iterator:
-    if worker_id == "master":
-        # single worker: just run the HTTP server
-        process = spawn_and_wait_server()
-        yield process
-        process.kill()
-        process.wait()
-        return
-
-    # get the temp directory shared by all workers
-    root_tmp_dir = tmp_path_factory.getbasetemp().parent
-
-    # try to get a lock
-    lock = root_tmp_dir / "lock"
-    try:
-        lock.mkdir(exist_ok=False)
-    except FileExistsError:
-        yield  # failed, don't run the HTTP server
-        return
-
-    # got the lock, run the HTTP server
-    process = spawn_and_wait_server()
-    yield process
     process.kill()
-    process.wait()
+    process.wait(timeout=5)
+    raise TimeoutError("HTTP server did not become ready within 10 seconds")
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    if hasattr(config, "workerinput") or config.option.collectonly:
+        return
+
+    # The controller starts the server before workers and keeps it alive until
+    # every worker has finished. A worker's session fixture ends too early.
+    process = spawn_and_wait_server()
+
+    def stop_http_server() -> None:
+        process.kill()
+        process.wait(timeout=5)
+
+    config.add_cleanup(stop_http_server)
 
 
 class Aria2Server:
@@ -130,32 +130,42 @@ class Aria2Server:
         Parameters:
             tmp_dir: Temporary download directory.
             port: Server port.
-            config: aria2c configuration file.
-            session: aria2c session file.
+            config: Daemon configuration file.
+            session: Daemon session file.
             secret: Server secret.
         """
         self.tmp_dir = tmp_dir
         self.port = port
 
-        # create the command used to launch an aria2c process
+        engine = os.environ.get("ARIA2_ENGINE", "aria2-next")
+        if engine == "aria2":
+            executable = os.environ.get("ARIA2", "aria2c")
+        elif engine == "aria2-next":
+            executable = os.environ.get("ARIA2_NEXT", "aria2-next")
+        else:
+            raise ValueError(f"Unsupported ARIA2_ENGINE: {engine!r}; expected 'aria2' or 'aria2-next'")
+
         command = [
-            "aria2c",
+            executable,
             f"--dir={self.tmp_dir}",
             "--file-allocation=none",
             "--quiet",
             "--enable-rpc=true",
             f"--rpc-listen-port={self.port}",
         ]
+        if engine == "aria2-next":
+            # aria2-next persists engine state; aria2 does not support this option.
+            # Isolate that state so later tests cannot restore earlier downloads.
+            command.append(f"--state-dir={self.tmp_dir / '.aria2-next'}")
         if config:
             command.append(f"--conf-path={config}")
         else:
-            # command.append("--no-conf")
             config = CONFIGS_DIR / "default.conf"
             command.append(f"--conf-path={config}")
         if session:
             if isinstance(session, list):
                 session_path = self.tmp_dir / "_session.txt"
-                with open(session_path, "w") as stream:  # noqa: PTH123
+                with open(session_path, "w", encoding="utf8") as stream:  # noqa: PTH123
                     stream.write("\n".join(session))
                 command.append(f"--input-file={session_path}")
             else:
@@ -183,10 +193,13 @@ class Aria2Server:
         self.destroy(force=True)
 
     def reach(self, retries: int = 5) -> bool:
+        startup_client = Client(port=self.port, secret=self.client.secret, timeout=0.2)
         while retries:
+            if self.process is not None and self.process.poll() is not None:
+                return False
             try:
-                self.client.list_methods()
-            except requests.ConnectionError:
+                startup_client.list_methods()
+            except requests.RequestException:
                 time.sleep(0.1)
                 retries -= 1
             else:
@@ -196,33 +209,34 @@ class Aria2Server:
         return True
 
     def start(self) -> None:
-        # Make sure we kill any remaining aria2c process using the same port.
-        for proc in psutil.process_iter():
-            try:
-                cmdline = proc.cmdline()
-                if "aria2c" in cmdline and f"--rpc-listen-port={self.port}" in cmdline:
-                    proc.kill()
-                    proc.wait()
-                    break
-            except psutil.NoSuchProcess:
-                pass
-
-        # Make sure we start the new process.
-        while True:
-            self.process = subprocess.Popen(self.command)  # noqa: S603
-            if self.reach(retries=10):
-                break
+        # Keep startup failures available after the process has been cleaned up.
+        log_path = Path("tests") / "logs" / f"aria2-{self.port}.log"
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        with log_path.open("wb") as output:
+            self.process = subprocess.Popen(self.command, stdout=output, stderr=subprocess.STDOUT)  # noqa: S603
+        if not self.reach(retries=100):
             self.kill()
+            raise RuntimeError(f"aria2 did not become ready:\n{log_path.read_text(encoding='utf-8')}")
 
     def wait(self) -> None:
         if self.process:
-            while True:
-                try:
-                    self.process.wait()
-                except subprocess.TimeoutExpired:
-                    pass
-                else:
-                    break
+            try:
+                self.process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                self.process.kill()
+                self.process.wait(timeout=5)
+
+    def wait_for_download(self, gid: str = "0000000000000001", status: str = "complete") -> Download:
+        """Return a download after its requested state has been reached."""
+        download = self.api.get_download(gid)
+
+        def reached_status() -> bool:
+            download.update()
+            assert not download.has_failed, f"Download {gid} failed: {download.error_message}"
+            return download.status == status
+
+        wait_for(reached_status)
+        return download
 
     def terminate(self) -> None:
         if self.process:
@@ -252,67 +266,12 @@ class Aria2Server:
         self.rmdir()
 
 
-ports_file = Path(".ports.json")
-lock_dir = Path(".lockdir")
-
-
-def get_lock() -> None:
-    while True:
-        try:
-            lock_dir.mkdir(exist_ok=False)
-        except FileExistsError:
-            time.sleep(0.025)
-        else:
-            break
-
-
-def release_lock() -> None:
-    with suppress(FileNotFoundError):
-        lock_dir.rmdir()
-
-
-def get_random_port() -> int:
-    return random.randint(15000, 16000)  # noqa: S311
-
-
-def get_current_ports() -> list[int]:
-    try:
-        return json.loads(ports_file.read_text())
-    except FileNotFoundError:
-        return []
-
-
-def set_current_ports(ports: list[int]) -> None:
-    ports_file.write_text(json.dumps(ports))
-
-
-def reserve_port() -> int:
-    get_lock()
-
-    ports = get_current_ports()
-    port_number = get_random_port()
-    while port_number in ports:
-        port_number = get_random_port()
-    ports.append(port_number)
-    set_current_ports(ports)
-
-    release_lock()
-    return port_number
-
-
-def release_port(port_number: int) -> None:
-    get_lock()
-    ports = get_current_ports()
-    ports.remove(port_number)
-    set_current_ports(ports)
-    release_lock()
-
-
 @pytest.fixture
-def port() -> Iterator[int]:
-    port_number = reserve_port()
-    yield port_number
-    release_port(port_number)
+def port() -> int:
+    # Let the operating system choose an unused RPC port for this test.
+    with socket.socket() as listener:
+        listener.bind(("localhost", 0))
+        return listener.getsockname()[1]
 
 
 @pytest.fixture
@@ -324,17 +283,12 @@ def server(tmp_path: Path, port: int) -> Iterator[Aria2Server]:
 @pytest.fixture
 def isolated_http_server() -> Iterator[str]:
     """Run the HTTP test server on its own port to avoid other test sessions."""
-    http_port = reserve_port()
+    with socket.socket() as listener:
+        listener.bind(("localhost", 0))
+        http_port = listener.getsockname()[1]
     process = spawn_and_wait_server(http_port)
     try:
         yield f"http://localhost:{http_port}"
     finally:
         process.kill()
-        process.wait()
-        release_port(http_port)
-
-
-@pytest.fixture(scope="session", autouse=True)
-def _setup() -> None:
-    ports_file.unlink(missing_ok=True)
-    release_lock()
+        process.wait(timeout=5)

@@ -28,12 +28,13 @@ from typing import TYPE_CHECKING
 
 import griffe
 import pytest
+import requests
 from mkdocstrings import Inventory
 
 import aria2p
 from aria2p import API, Client, ClientException, Download
 from tests import BUNSENLABS_MAGNET, BUNSENLABS_TORRENT, CONFIGS_DIR, DEBIAN_METALINK, INPUT_FILES, XUBUNTU_MIRRORS
-from tests.conftest import Aria2Server
+from tests.conftest import Aria2Server, wait_for
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -66,7 +67,7 @@ def test_add_file(server: Aria2Server, source: Path, path_type: type[str | Path]
 @pytest.mark.parametrize("path_type", [str, Path])
 def test_add_missing_file(server: Aria2Server, tmp_path: Path, path_type: type[str | Path]) -> None:
     # Missing paths follow the same URI fallback for both input types.
-    with pytest.raises(ClientException, match="No URI to download"):
+    with pytest.raises(ClientException, match=r"No URI to download|Unsupported URI"):
         server.api.add(path_type(tmp_path / "missing.torrent"))
 
 
@@ -180,34 +181,18 @@ def test_move_up_method(tmp_path: Path, port: int) -> None:
 
 def test_pause_method(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="big-download.txt") as server:
-        time.sleep(0.1)
-        downloads = server.api.get_downloads()
-        if downloads[0].has_failed:
-            pytest.xfail("Failed to establish connection (sporadic error)")
-        assert server.api.pause([downloads[0]])
-        assert downloads[0].live.status == "paused"
+        download = server.wait_for_download(status="active")
+
+        assert server.api.pause([download]) == [True]
+        server.wait_for_download(status="paused")
 
 
 def test_pause_all_method(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="3-dls.txt") as server:
         assert server.api.pause_all()
-        # The following code block is commented out because we cannot ensure
-        # that the downloads will be paused in sufficient time.
-        # aria2c returns "OK" immediately, and only then proceeds to pause the downloads
-        # (with potential additional steps like contacting trackers).
-        # Therefore we simply check the the call goes well.
 
-        # for _ in range(5):
-        #     time.sleep(1)
-        #     downloads = server.api.get_downloads()
-        #     try:
-        #         assert all([d.is_paused for d in downloads])
-        #     except AssertionError:
-        #         pass
-        #     else:
-        #         break
-        # else:
-        #     raise AssertionError
+        # The RPC response acknowledges the request before pausing finishes.
+        wait_for(lambda: all(download.is_paused for download in server.api.get_downloads()))
 
 
 def test_autopurge_method(tmp_path: Path, port: int) -> None:
@@ -218,21 +203,16 @@ def test_autopurge_method(tmp_path: Path, port: int) -> None:
 def test_remove_method(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="3-dls.txt") as server:
         downloads = server.api.get_downloads()
-        if not all(server.api.remove(downloads)):
-            pytest.xfail("Sporadic failures")
-        downloads = server.api.get_downloads()
-        assert not downloads
+        assert server.api.remove(downloads) == [True] * len(downloads)
+
+        wait_for(lambda: not server.api.get_downloads())
 
 
 def test_remove_files_method(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="very-small-download.txt") as server:
-        time.sleep(1)
-        download = server.api.get_downloads()[0]
-        while not download.live.is_complete:
-            if download.has_failed:
-                pytest.xfail("Failed to establish connection (sporadic error)")
-            time.sleep(0.1)
-        assert server.api.remove([download], files=True)
+        download = server.wait_for_download()
+
+        assert server.api.remove([download], files=True) == [True]
         for file in download.root_files_paths:
             assert not file.exists()
 
@@ -240,10 +220,28 @@ def test_remove_files_method(tmp_path: Path, port: int) -> None:
 def test_remove_files_not_complete(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         downloads = server.api.get_downloads()
-        assert server.api.remove(downloads, files=True)
+
+        # Paused downloads do not necessarily have files yet. Create partial
+        # payloads so the assertion checks that removal preserves existing data.
         for download in downloads:
             for file in download.root_files_paths:
-                assert file.exists()
+                file.parent.mkdir(parents=True, exist_ok=True)
+                file.write_bytes(b"partial download")
+
+        assert server.api.remove_files(downloads) == [False] * len(downloads)
+
+        for download in downloads:
+            for file in download.root_files_paths:
+                assert file.read_bytes() == b"partial download"
+
+
+def test_remove_incomplete_downloads_with_files(tmp_path: Path, port: int) -> None:
+    with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
+        downloads = server.api.get_downloads()
+
+        assert server.api.remove(downloads, files=True) == [True] * len(downloads)
+
+        wait_for(lambda: not server.api.get_downloads())
 
 
 def test_remove_files_tree(server: Aria2Server) -> None:
@@ -315,33 +313,26 @@ def test_disk_operations_for_local_hosts(
 
 def test_remove_all_method(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="3-dls.txt") as server:
-        if not server.api.remove_all():
-            pytest.xfail("Sporadic failures")
-        downloads = server.api.get_downloads()
-        assert not downloads
+        assert server.api.remove_all()
+
+        wait_for(lambda: not server.api.get_downloads())
 
 
 def test_resume_method(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         downloads = server.api.get_downloads()
-        assert server.api.resume(downloads)
-        downloads = server.api.get_downloads()
-        active = [d.is_active for d in downloads]
-        if not all(active):
-            pytest.xfail("Not all downloads were resumed (sporadic error)")
-        assert all(active)
+        assert server.api.resume(downloads) == [True] * len(downloads)
+
+        for download in downloads:
+            server.wait_for_download(download.gid, status="active")
 
 
 def test_resume_all_method(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
-        time.sleep(0.1)
         assert server.api.resume_all()
-        time.sleep(0.1)
-        downloads = server.api.get_downloads()
-        for download in downloads:
-            if download.has_failed:
-                pytest.xfail("Failed to establish connection (sporadic error)")
-        assert all(d.is_active for d in downloads)
+
+        for gid in ("0000000000000001", "0000000000000002"):
+            server.wait_for_download(gid, status="active")
 
 
 def test_set_global_options_method(tmp_path: Path, port: int) -> None:
@@ -353,30 +344,21 @@ def test_set_global_options_method(tmp_path: Path, port: int) -> None:
 
 def test_set_options_method(tmp_path: Path, port: int) -> None:
     with Aria2Server(tmp_path, port, session="max-dl-limit-10000.txt") as server:
-        downloads = server.api.get_downloads()
-        try:
-            assert server.api.set_options({"max-download-limit": "20000"}, downloads)[0]
-        except ClientException:
-            pytest.xfail("Cannot change option for some reason")
-        try:
-            options = server.api.get_options(downloads)[0]
-        except ClientException:
-            pytest.xfail("Cannot change option for some reason")
+        download = server.wait_for_download(status="active")
+
+        assert server.api.set_options({"max-download-limit": "20000"}, [download]) == [True]
+
+        options = server.api.get_options([download])[0]
         assert options.max_download_limit == 20000
 
 
-# @pytest.mark.flaky(reruns=5)
 def test_copy_files_method(tmp_path_factory: pytest.TempPathFactory, port: int) -> None:
     with Aria2Server(tmp_path_factory.mktemp("copy_files"), port, session="very-small-download.txt") as server:
         # initialize temp dir to copy to
         tmp_dir = tmp_path_factory.mktemp("copy_files")
 
         # wait until download is finished
-        download = server.api.get_downloads()[0]
-        while not download.live.is_complete:
-            if download.has_failed:
-                pytest.xfail("Failed to establish connection (sporadic error)")
-            time.sleep(0.2)
+        download = server.wait_for_download()
 
         # actual method run
         server.api.copy_files([download], tmp_dir)
@@ -388,9 +370,9 @@ def test_copy_files_method(tmp_path_factory: pytest.TempPathFactory, port: int) 
         assert source.exists()
         assert target.exists()
 
-        with open(source) as stream:  # noqa: PTH123
+        with open(source, encoding="utf8") as stream:  # noqa: PTH123
             source_contents = stream.read()
-        with open(target) as stream:  # noqa: PTH123
+        with open(target, encoding="utf8") as stream:  # noqa: PTH123
             target_contents = stream.read()
         assert source_contents == target_contents
 
@@ -405,15 +387,11 @@ def test_move_files_method(tmp_path_factory: pytest.TempPathFactory, port: int) 
         tmp_dir = tmp_path_factory.mktemp("move_files")
 
         # wait until download is finished
-        download = server.api.get_downloads()[0]
-        while not download.live.is_complete:
-            if download.has_failed:
-                pytest.xfail("Failed to establish connection (sporadic error)")
-            time.sleep(0.2)
+        download = server.wait_for_download()
 
         # read source contents before move
         source = download.files[0].path
-        with open(source) as stream:  # noqa: PTH123
+        with open(source, encoding="utf8") as stream:  # noqa: PTH123
             source_contents = stream.read()
 
         # actual method run
@@ -425,7 +403,7 @@ def test_move_files_method(tmp_path_factory: pytest.TempPathFactory, port: int) 
         assert not source.exists()
         assert target.exists()
 
-        with target.open() as stream:
+        with target.open(encoding="utf8") as stream:
             target_contents = stream.read()
         assert source_contents == target_contents
 
@@ -438,9 +416,10 @@ def test_move_files_method(tmp_path_factory: pytest.TempPathFactory, port: int) 
 @pytest.mark.parametrize("use_gid", [False, True])
 def test_move_unfinished_download(server: Aria2Server, isolated_http_server: str, paused: bool, use_gid: bool) -> None:
     # Start a local download slowly enough to move it before completion.
-    download = server.api.add_uris(
-        [f"{isolated_http_server}/files/4m"], {"max-download-limit": "1m", "piece-length": "1m"}
-    )
+    options = {"max-download-limit": "1m"}
+    if server.api.engine.capabilities.control_files:
+        options["piece-length"] = "1m"
+    download = server.api.add_uris([f"{isolated_http_server}/files/4m"], options)
     deadline = time.monotonic() + 10
     while download.live.completed_length < 1024 * 1024:
         assert not download.has_failed, download.error_message
@@ -471,7 +450,8 @@ def test_move_unfinished_download(server: Aria2Server, isolated_http_server: str
     assert download.options.dir == str(destination)
     assert not source.exists()
     assert not control_file.exists()
-    assert (destination / control_file.name).exists()
+    if server.api.engine.capabilities.control_files:
+        assert (destination / control_file.name).exists()
     assert download.is_paused == paused
 
     # Finish in the new location and check that no data is left behind.
@@ -520,6 +500,9 @@ def test_move_unfinished_download_requires_force(server: Aria2Server) -> None:
 
 
 def test_move_unfinished_download_rolls_back(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) -> None:
+    if server.api.engine.capabilities.move_download:
+        pytest.skip("aria2-next owns rollback inside its native move RPC")
+
     # Reject the directory change after both the data and control file have moved.
     download = server.api.add_uris(["http://localhost:8779/64k"], {"pause": "true", "out": "download.txt"})
     source = download.files[0].path
@@ -584,15 +567,29 @@ def test_move_paused_torrent_files(server: Aria2Server) -> None:
         file.path.write_bytes(b"data")
     source = server.tmp_dir / "bundle"
     control_file = download.control_file_path
-    control_file.write_bytes(b"resume data")
+    if server.api.engine.capabilities.control_files:
+        control_file.write_bytes(b"resume data")
     destination = server.tmp_dir / "destination"
 
-    assert download.move_files(destination, force=True)
+    try:
+        assert download.move_files(destination, force=True)
+    except requests.ConnectionError:
+        # aria2-next 3.1.0 can crash inside its native paused-torrent move.
+        # Record only that daemon failure, without hiding a live-server error.
+        assert server.process is not None
+        if (
+            server.api.engine.name == "aria2-next"
+            and server.api.engine.version == "3.1.0"
+            and server.process.wait(timeout=5) != 0
+        ):
+            pytest.xfail("aria2-next 3.1.0 crashes when moving an unfinished paused torrent")
+        raise
 
     # Move the whole torrent directory and preserve both files and resume data.
     assert (destination / "bundle" / "one.txt").read_bytes() == b"data"
     assert (destination / "bundle" / "nested" / "two.txt").read_bytes() == b"data"
-    assert (destination / control_file.name).read_bytes() == b"resume data"
+    if server.api.engine.capabilities.control_files:
+        assert (destination / control_file.name).read_bytes() == b"resume data"
     assert not source.exists()
     assert not control_file.exists()
     assert download.dir == destination

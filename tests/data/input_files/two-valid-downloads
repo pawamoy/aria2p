@@ -4,4 +4,4 @@ magnet:?xt=urn:btih:RX46NCATYQRS3MCQNSEXVZGCCDNKTASQ
 
   # Download 2.
 magnet:?xt=urn:btih:CVVWTODEHPIRQSNF3DZBELQT7O3BXUCB
-  max-resume-failure-tries=10
+  max-tries=10

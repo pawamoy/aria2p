@@ -35,8 +35,12 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 from urllib.parse import urlsplit
 
+from aria2p._internal.engine import _NEXT_UNSUPPORTED_OPTIONS
+
 if TYPE_CHECKING:
     from typing import Literal
+
+    from aria2p._internal.engine import Engine
 
 # Values are strings on the wire, except for repeatable header and index-out values.
 _RPCValue = str | list[str]
@@ -327,9 +331,13 @@ def _size(value: str) -> int:
     return int(match[1]) * {"": 1, "K": 1024, "M": 1024**2}[match[2].upper()]
 
 
-def _validate_value(key: str, value: str) -> None:
+def _validate_value(key: str, value: str, engine: Engine | None = None) -> None:
     """Check a serialized scalar value against the option's rules."""
-    if key in _BOOLEAN_OPTIONS:
+    is_next = engine is not None and engine.name == "aria2-next"
+    if key == "bt-encryption":
+        if value not in {"preferred", "required", "disabled"}:
+            raise ValueError("expected preferred, required, or disabled")
+    elif key in _BOOLEAN_OPTIONS:
         if value not in {"true", "false"}:
             raise ValueError("expected true or false")
     elif key in _CHOICES:
@@ -337,10 +345,24 @@ def _validate_value(key: str, value: str) -> None:
             raise ValueError(f"expected one of {', '.join(_CHOICES[key])}")
     elif key in _INTEGER_RANGES:
         lower, upper = _INTEGER_RANGES[key]
+        if engine is None and key == "max-connection-per-server":
+            upper = 256
+        if is_next:
+            lower, upper = {
+                "bt-max-peers": (0, 65535),
+                "max-concurrent-downloads": (1, 1000),
+                "max-connection-per-server": (1, 256),
+                "max-download-result": (0, 2**31 - 1),
+                "max-file-not-found": (0, 2**31 - 1),
+                "max-tries": (0, 2**31 - 1),
+                "split": (1, 256),
+            }.get(key, (lower, upper))
         if re.fullmatch(r"[0-9]+", value) is None or not lower <= int(value) <= upper:
             raise ValueError(f"expected an integer between {lower} and {upper}")
     elif key in _SIZE_OPTIONS:
         lower, upper = (1024**2, 1024**3) if key in {"min-split-size", "piece-length"} else (0, 2**63 - 1)
+        if (is_next or engine is None) and key == "min-split-size":
+            lower = 16 * 1024
         if not lower <= _size(value) <= upper:
             raise ValueError(f"expected a size between {lower} and {upper} bytes")
     elif key in {"seed-ratio", "seed-time"}:
@@ -379,26 +401,36 @@ def _validate_value(key: str, value: str) -> None:
         ip_address(value)
     elif key in {"all-proxy", "http-proxy", "https-proxy", "ftp-proxy"} and value:
         proxy = urlsplit(value if "://" in value else f"http://{value}")
-        if proxy.scheme != "http" or not proxy.hostname or any(char.isspace() for char in value):
+        schemes = {"http", "socks5", "socks5h"} if (is_next or engine is None) and key == "all-proxy" else {"http"}
+        if proxy.scheme not in schemes or not proxy.hostname or any(char.isspace() for char in value):
             raise ValueError("expected an HTTP proxy URL")
         # Accessing port also checks its syntax and range.
         if proxy.port == 0:
             raise ValueError("expected a positive proxy port")
 
 
-def _validate_options(options: dict, scope: Literal["initial", "global", "download"]) -> dict[str, _RPCValue]:
+def _validate_options(
+    options: dict, scope: Literal["initial", "global", "download"], *, engine: Engine | None = None
+) -> dict[str, _RPCValue]:
     """Return validated RPC values without changing the caller's dictionary.
 
     Raise ValueError for unknown names, options unavailable in the requested
     scope, unsupported Python types, or invalid values. Validate the entire
-    dictionary before the caller sends any RPC requests.
+    dictionary before the caller sends option changes to the daemon.
     """
     allowed = {"initial": _INITIAL_OPTIONS, "global": _GLOBAL_OPTIONS, "download": _DOWNLOAD_OPTIONS}[scope]
+    is_next = engine is not None and engine.name == "aria2-next"
+    # Before discovery, accept the union of both engines' value ranges and
+    # names. The API then validates the same values against the actual engine.
+    if is_next or engine is None:
+        allowed = allowed | {"bt-encryption"}
     result: dict[str, _RPCValue] = {}
     # Normalize paths before checking value types; scope restrictions still apply.
     for key, value in _normalize_options(options).items():
         if not isinstance(key, str) or key not in allowed:
             raise ValueError(f"Unknown or unavailable option {key!r} for {scope} options")
+        if is_next and (key in _NEXT_UNSUPPORTED_OPTIONS or (key == "bt-external-ip" and scope != "global")):
+            raise ValueError(f"Option {key!r} is unsupported by aria2-next for {scope} options")
         if isinstance(value, list):
             if key not in {"header", "index-out"} or any(not isinstance(item, str) for item in value):
                 raise ValueError(f"Invalid value for option {key!r}: only header and index-out accept lists of strings")
@@ -407,11 +439,11 @@ def _validate_options(options: dict, scope: Literal["initial", "global", "downlo
         try:
             if isinstance(value, list):
                 for item in value:
-                    _validate_value(key, item)
+                    _validate_value(key, item, engine)
                 result[key] = value.copy()
             else:
                 serialized = str(value).lower() if isinstance(value, bool) else str(value)
-                _validate_value(key, serialized)
+                _validate_value(key, serialized, engine)
                 result[key] = serialized
         except ValueError:
             # Do not echo values: options can contain credentials.

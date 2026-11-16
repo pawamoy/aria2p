@@ -264,7 +264,7 @@ def load_configuration() -> dict[str, Any]:
     else:
         # Write initial configuration file if it does not exist
         config_file_path.parent.mkdir(parents=True, exist_ok=True)
-        with config_file_path.open("w") as fd:
+        with config_file_path.open("w", encoding="utf8") as fd:
             fd.write(textwrap.dedent(default_config).lstrip("\n"))
     return config_dict
 
@@ -278,4 +278,4 @@ def _read_lines(path: str | Path) -> list[str]:
     Returns:
         The list of lines.
     """
-    return Path(path).read_text().splitlines()
+    return Path(path).read_text(encoding="utf8").splitlines()

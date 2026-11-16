@@ -76,7 +76,7 @@ def test_deprecation_warning_is_printed_independently_of_logging(
 
     # A file sink and its level must not control the user-facing warning.
     if log_level is not None:
-        logs = log_path.read_text()
+        logs = log_path.read_text(encoding="utf8")
         assert (warning in logs) == (log_level == "WARNING")
         if log_level == "WARNING":
             assert "WARNING" in logs
@@ -92,7 +92,7 @@ def test_connection_failure_is_logged_and_printed(
     exit_code = main(["show"])
 
     captured = capsys.readouterr()
-    logs = log_file.read_text()
+    logs = log_file.read_text(encoding="utf8")
     assert exit_code == 2
     assert captured.out == ""
     assert "[ERROR] connection refused" in captured.err
@@ -115,7 +115,7 @@ def test_command_failure_is_logged_and_printed(
     assert exit_code == 1
     assert captured.out == ""
     assert captured.err == "Invalid GID\n"
-    assert "Command 'call' failed: Invalid GID" in log_file.read_text()
+    assert "Command 'call' failed: Invalid GID" in log_file.read_text(encoding="utf8")
 
 
 @pytest.mark.parametrize("command", [add_magnets, add_torrents, add_metalinks])
@@ -130,7 +130,7 @@ def test_unreadable_input_file_is_logged_and_printed(
     exit_code = command(API(), from_file=str(missing_file))
 
     captured = capsys.readouterr()
-    logs = log_file.read_text()
+    logs = log_file.read_text(encoding="utf8")
     assert exit_code == 1
     assert captured.out == ""
     assert captured.err == f"Cannot open file: {missing_file}\n"
@@ -154,7 +154,7 @@ def test_download_lookup_failure_is_logged_and_printed(
     assert exit_code == 1
     assert captured.out == ""
     assert captured.err == "Invalid GID\n"
-    assert f"Could not get downloads to {operation}: Invalid GID" in log_file.read_text()
+    assert f"Could not get downloads to {operation}: Invalid GID" in log_file.read_text(encoding="utf8")
 
 
 def test_theme_failure_is_logged_without_interrupting_resize(
@@ -169,7 +169,7 @@ def test_theme_failure_is_logged_without_interrupting_resize(
     _Interface().post_resize()
 
     captured = capsys.readouterr()
-    logs = log_file.read_text()
+    logs = log_file.read_text(encoding="utf8")
     assert captured.out == captured.err == ""
     assert "Could not re-apply pywal color theme" in logs
     assert str(tmp_path / ".cache" / "wal" / "sequences") in logs
@@ -182,7 +182,7 @@ def test_retry_without_uri_is_logged(log_file: Path) -> None:
     results = API().retry_downloads([download])
 
     assert results == []
-    assert f"Cannot retry download {download.gid}: no URI available" in log_file.read_text()
+    assert f"Cannot retry download {download.gid}: no URI available" in log_file.read_text(encoding="utf8")
 
 
 def test_failed_retry_is_logged(log_file: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -197,4 +197,4 @@ def test_failed_retry_is_logged(log_file: Path, monkeypatch: pytest.MonkeyPatch)
     results = API().retry_downloads([download])
 
     assert results == [error]
-    assert f"Failed to retry download {download.gid}: Could not add URI" in log_file.read_text()
+    assert f"Failed to retry download {download.gid}: Could not add URI" in log_file.read_text(encoding="utf8")

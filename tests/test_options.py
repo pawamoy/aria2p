@@ -24,7 +24,13 @@ from pathlib import Path
 
 import pytest
 
-from aria2p import API, Download, Options
+from aria2p import API, Client, Download, Options
+
+
+@pytest.fixture(autouse=True)
+def aria2_engine(monkeypatch: pytest.MonkeyPatch) -> None:
+    # These property tests replace RPC writes and use aria2's option catalog.
+    monkeypatch.setattr(Client, "get_version", lambda self: {"version": "1.37.0"})
 
 
 @pytest.mark.parametrize("path_type", [str, Path])

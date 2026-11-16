@@ -35,6 +35,7 @@ if TYPE_CHECKING:
 @pytest.fixture
 def api_and_rpc(monkeypatch: pytest.MonkeyPatch) -> tuple[API, Mock]:
     client = Client()
+    monkeypatch.setattr(client, "get_version", lambda: {"version": "1.37.0"})
     rpc = Mock(return_value="OK")
     monkeypatch.setattr(client, "call", rpc)
 

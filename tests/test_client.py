@@ -36,7 +36,7 @@ from responses import mock as responses
 from aria2p import Client, ClientException
 from aria2p._internal.client import JSONRPC_CODES, JSONRPC_PARSER_ERROR, Notification
 from tests import BUNSENLABS_MAGNET, BUNSENLABS_TORRENT, CONFIGS_DIR, DEBIAN_METALINK, SESSIONS_DIR, XUBUNTU_MIRRORS
-from tests.conftest import Aria2Server
+from tests.conftest import Aria2Server, wait_for
 
 
 class TestParameters:
@@ -312,11 +312,7 @@ class TestClientClass:
 
     def test_option_methods(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="max-dl-limit-10000.txt") as server:
-            time.sleep(0.1)
-            try:
-                gid = server.client.tell_active(keys=["gid"])[0]["gid"]
-            except IndexError:
-                pytest.xfail("Failed to establish connection (sporadic error)")
+            gid = server.wait_for_download(status="active").gid
             max_download_limit = server.client.get_option(gid=gid)["max-download-limit"]
             assert max_download_limit == "10000"
 
@@ -343,12 +339,10 @@ class TestClientClass:
 
     def test_force_pause_method(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="big-download.txt") as server:
-            time.sleep(0.1)
-            try:
-                gid = server.client.tell_active(keys=["gid"])[0]["gid"]
-            except IndexError:
-                pytest.xfail("Failed to establish connection (sporadic error)")
+            gid = server.wait_for_download(status="active").gid
+
             assert server.client.force_pause(gid) == gid
+            server.wait_for_download(gid, status="paused")
 
     def test_force_pause_all_method(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="2-dls.txt") as server:
@@ -356,46 +350,43 @@ class TestClientClass:
 
     def test_force_remove_method(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="big-download.txt") as server:
-            try:
-                gid = server.client.tell_active(keys=["gid"])[0]["gid"]
-            except IndexError:
-                pytest.xfail("Failed to establish connection (sporadic error)")
+            gid = server.wait_for_download(status="active").gid
+
             assert server.client.force_remove(gid)
+            server.wait_for_download(gid, status="removed")
             assert server.client.tell_status(gid, keys=["status"])["status"] == "removed"
 
     def test_force_shutdown_method(self, server: Aria2Server) -> None:
-        assert server.client.force_shutdown() == "OK"
-        with pytest.raises(requests.ConnectionError):  # noqa: PT012
-            for _retry in range(10):
-                server.client.list_methods()
-                time.sleep(1)
+        engine = server.api.engine
+        try:
+            assert server.client.force_shutdown() == "OK"
+        except requests.ConnectionError:
+            # aria2-next 3.1 can stop before delivering its shutdown response.
+            # The Client keeps that transport error; still verify process exit.
+            assert engine.name == "aria2-next"
+
+        assert server.process is not None
+        assert server.process.wait(timeout=10) == 0
 
     def test_get_files_method(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="1-dl.txt") as server:
-            active = server.client.tell_active(keys=["gid"])
-            if not active:
-                pytest.xfail("Index error (sporadic error)")
-            assert len(server.client.get_files(active[0]["gid"])) == 1
+            gid = server.wait_for_download(status="active").gid
+
+            assert len(server.client.get_files(gid)) == 1
 
     def test_get_global_stat_method(self, server: Aria2Server) -> None:
         assert server.client.get_global_stat()
 
     def test_get_peers_method(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="max-dl-limit-10000.txt") as server:
-            time.sleep(0.1)
-            try:
-                gid = server.client.tell_active(keys=["gid"])[0]["gid"]
-            except IndexError:
-                pytest.xfail("Failed to establish connection (sporadic error)")
+            gid = server.wait_for_download(status="active").gid
+
             assert not server.client.get_peers(gid)
 
     def test_get_servers_method(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="max-dl-limit-10000.txt") as server:
-            time.sleep(0.1)
-            try:
-                gid = server.client.tell_active(keys=["gid"])[0]["gid"]
-            except IndexError:
-                pytest.xfail("Failed to establish connection (sporadic error)")
+            gid = server.wait_for_download(status="active").gid
+
             assert server.client.get_servers(gid)
 
     def test_get_session_info_method(self, server: Aria2Server) -> None:
@@ -428,12 +419,10 @@ class TestClientClass:
 
     def test_pause_method(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="1-dl.txt") as server:
-            time.sleep(0.1)
-            try:
-                gid = server.client.tell_active(keys=["gid"])[0]["gid"]
-            except IndexError:
-                pytest.xfail("Failed to establish connection (sporadic error)")
+            gid = server.wait_for_download(status="active").gid
+
             assert server.client.pause(gid) == gid
+            server.wait_for_download(gid, status="paused")
 
     def test_pause_all_method(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="2-dls.txt") as server:
@@ -444,24 +433,20 @@ class TestClientClass:
 
     def test_remove_method(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="1-dl.txt") as server:
-            time.sleep(0.1)
-            try:
-                gid = server.client.tell_active(keys=["gid"])[0]["gid"]
-            except IndexError:
-                pytest.xfail("Failed to establish connection (sporadic error)")
+            gid = server.wait_for_download(status="active").gid
+
             assert server.client.remove(gid)
+            server.wait_for_download(gid, status="removed")
             assert server.client.tell_status(gid, keys=["status"])["status"] == "removed"
 
     def test_remove_download_result_method(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="1-dl.txt") as server:
-            time.sleep(0.1)
-            try:
-                gid = server.client.tell_active(keys=["gid"])[0]["gid"]
-            except IndexError:
-                pytest.xfail("Failed to establish connection (sporadic error)")
+            gid = server.wait_for_download(status="active").gid
+
             server.client.remove(gid)
+            server.wait_for_download(gid, status="removed")
             assert server.client.remove_download_result(gid) == "OK"
-            assert len(server.client.tell_stopped(0, 1)) == 0
+            wait_for(lambda: not server.client.tell_stopped(0, 1))
 
     def test_save_session_method(self, tmp_path: Path, port: int) -> None:
         session_input = SESSIONS_DIR / "1-dl.txt"
@@ -469,25 +454,28 @@ class TestClientClass:
             session_output = server.tmp_dir / "_session.txt"
             server.client.change_global_option({"save-session": str(session_output)})
             assert server.client.save_session() == "OK"
-            with open(session_input) as stream:  # noqa: PTH123
+            with open(session_input, encoding="utf8") as stream:  # noqa: PTH123
                 input_contents = stream.read()
-            with open(session_output) as stream:  # noqa: PTH123
+            with open(session_output, encoding="utf8") as stream:  # noqa: PTH123
                 output_contents = stream.read()
             for line in input_contents.split("\n"):
                 assert line in output_contents
 
     def test_shutdown_method(self, server: Aria2Server) -> None:
-        assert server.client.shutdown() == "OK"
-        with pytest.raises(requests.ConnectionError):  # noqa: PT012
-            for _retry in range(10):
-                server.client.list_methods()
-                time.sleep(1)
+        engine = server.api.engine
+        try:
+            assert server.client.shutdown() == "OK"
+        except requests.ConnectionError:
+            # Preserve the raw error when the daemon exits before replying.
+            assert engine.name == "aria2-next"
+
+        assert server.process is not None
+        assert server.process.wait(timeout=10) == 0
 
     def test_tell_active_method(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="big-download.txt") as server:
-            time.sleep(0.1)
-            if server.api.get_download("0000000000000001").has_failed:
-                pytest.xfail("Failed to establish connection (sporadic error)")
+            server.wait_for_download(status="active")
+
             assert len(server.client.tell_active(keys=["gid"])) > 0
 
     def test_tell_status_method(self, tmp_path: Path, port: int) -> None:
@@ -497,11 +485,8 @@ class TestClientClass:
 
     def test_tell_stopped_method(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="very-small-download.txt") as server:
-            download = server.api.get_download("0000000000000001")
-            while not download.live.is_complete:
-                if download.has_failed:
-                    pytest.xfail("Failed to establish connection (sporadic error)")
-                time.sleep(0.1)
+            server.wait_for_download()
+
             assert len(server.client.tell_stopped(0, 1, keys=["gid"])) > 0
 
     def test_tell_waiting_method(self, tmp_path: Path, port: int) -> None:

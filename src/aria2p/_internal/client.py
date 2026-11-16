@@ -35,6 +35,7 @@ from aria2p._internal.utils import _SignalHandler
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+    from pathlib import Path
 
 DEFAULT_ID = -1
 """Default ID for JSON-RPC calls. It is used when no ID is provided by the user."""
@@ -194,6 +195,8 @@ class Client:
     """Method name for the `change_position` method."""
     CHANGE_URI = "aria2.changeUri"
     """Method name for the `change_uri` method."""
+    MOVE_DOWNLOAD = "aria2.moveDownload"
+    """Method name for the aria2-next `move_download` method."""
     GET_OPTION = "aria2.getOption"
     """Method name for the `get_option` method."""
     CHANGE_OPTION = "aria2.changeOption"
@@ -247,6 +250,7 @@ class Client:
         TELL_STOPPED,
         CHANGE_POSITION,
         CHANGE_URI,
+        MOVE_DOWNLOAD,
         GET_OPTION,
         CHANGE_OPTION,
         GET_GLOBAL_OPTION,
@@ -263,7 +267,10 @@ class Client:
         LIST_METHODS,
         LIST_NOTIFICATIONS,
     ]
-    """List of method names offered by the remote process."""
+    """RPC method names with explicit client wrappers.
+
+    Engine support can differ; aria2-next provides `aria2.moveDownload`.
+    """
 
     def __init__(
         self,
@@ -1587,7 +1594,24 @@ class Client:
         """
         return self.call(self.REMOVE_DOWNLOAD_RESULT, [gid])  # ty:ignore[invalid-explicit-return]
 
-    def get_version(self) -> str:
+    def move_download(self, gid: str, directory: str | Path) -> str:
+        """Move an unfinished download through aria2-next's native RPC.
+
+        aria2-next 3.1 or later provides this method. It pauses active downloads,
+        moves their files and resume state, and restores their previous state.
+        Call this method alone: it cannot run inside `system.multicall`.
+        aria2 reports a method-not-found error.
+
+        Parameters:
+            gid: The download GID.
+            directory: The destination directory on the daemon's filesystem.
+
+        Returns:
+            `OK` after the move completes.
+        """
+        return self.call(self.MOVE_DOWNLOAD, [gid, str(directory)])  # ty:ignore[invalid-explicit-return]
+
+    def get_version(self) -> dict:
         """Return aria2 version and the list of enabled features.
 
         Original signature:

@@ -32,18 +32,21 @@ from ipaddress import ip_address
 from pathlib import Path
 from typing import TYPE_CHECKING, TextIO
 from urllib.parse import urlsplit
+from xml.etree import ElementTree as ET
 
 from loguru import logger
 from requests.exceptions import ConnectionError  # noqa: A004
 
 from aria2p._internal.client import Client, ClientException
 from aria2p._internal.downloads import Download
+from aria2p._internal.engine import Engine, _detect_engine
 from aria2p._internal.option_validation import _validate_options
 from aria2p._internal.options import Options
 from aria2p._internal.stats import Stats
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator, Sequence
+    from typing import Literal
 
 
 OptionsType = Options | dict
@@ -82,9 +85,67 @@ class API:
         """A JSON-RPC client."""
         self.listener: threading.Thread | None = None
         """A thread listening to aria2 notifications."""
+        self._engine: Engine | None = None
+        self._engine_connection: tuple[str, str] | None = None
 
     def __repr__(self) -> str:
         return f"API({self.client!r})"
+
+    @property
+    def engine(self) -> Engine:
+        """Return the connected engine's identity and capabilities.
+
+        Detection calls `getVersion` on first access and caches the result for
+        the client's endpoint and secret. Constructing an API does not connect.
+        Call `check_engine()` after replacing the daemon at the same endpoint.
+        aria2-next releases before 3.1.0 raise `ValueError`.
+        """
+        connection = (self.client.server, self.client.secret)
+        if self._engine is None or connection != self._engine_connection:
+            return self.check_engine()
+        return self._engine
+
+    def check_engine(self) -> Engine:
+        """Refresh the connected engine's identity and capabilities.
+
+        Call this method after restarting or replacing the daemon at the same
+        endpoint. Detection calls `getVersion` immediately. If detection fails,
+        the cache stays empty and the next `engine` access retries detection.
+
+        Raises:
+            ValueError: The daemon reports an unsupported engine or version.
+
+        Returns:
+            The newly detected engine.
+        """
+        # A replacement daemon must not inherit stale capabilities if discovery fails.
+        self._engine = None
+        self._engine_connection = None
+        connection = (self.client.server, self.client.secret)
+        engine = _detect_engine(self.client.get_version())
+        self._engine = engine
+        self._engine_connection = connection
+        return engine
+
+    def _prepare_options(self, options: OptionsType, scope: Literal["initial", "global", "download"]) -> dict:
+        """Validate options for the connected engine and prepare RPC values."""
+        # Reject engine-independent errors before performing engine discovery.
+        values = _validate_options(options.get_struct() if isinstance(options, Options) else options, scope)
+        values = _validate_options(values, scope, engine=self.engine)
+        if self.engine.name == "aria2-next":
+            if "bt-encryption" in values and any(
+                name in values for name in ("bt-force-encryption", "bt-require-crypto")
+            ):
+                raise ValueError("Do not combine bt-encryption with bt-force-encryption or bt-require-crypto")
+            # changeOption replaces each repeated value in aria2-next 3.1.
+            # Submit repeatable options together, using its newline encoding.
+            for name in ("header", "index-out"):
+                if isinstance(values.get(name), list):
+                    values[name] = "\n".join(values[name])
+            encryption = [values.pop(name) for name in ("bt-force-encryption", "bt-require-crypto") if name in values]
+            if encryption:
+                values["bt-encryption"] = "required" if "true" in encryption else "preferred"
+        return values
 
     def _is_localhost(self) -> bool:
         """Check if the remote client is running on localhost.
@@ -134,7 +195,7 @@ class API:
         if path_exists:
             if path.suffix == ".torrent":
                 new_downloads.append(self.add_torrent(path, options=options, position=position))
-            elif path.suffix == ".metalink":
+            elif path.suffix in {".metalink", ".meta4"}:
                 new_downloads.extend(self.add_metalink(path, options=options, position=position))
             else:
                 for uris, download_options in self.parse_input_file(path):
@@ -168,7 +229,7 @@ class API:
         if options is None:
             options = {}
 
-        client_options = _validate_options(options.get_struct() if isinstance(options, Options) else options, "initial")
+        client_options = self._prepare_options(options, "initial")
 
         gid = self.client.add_uri([magnet_uri], client_options, position)
 
@@ -202,7 +263,7 @@ class API:
         if options is None:
             options = {}
 
-        client_options = _validate_options(options.get_struct() if isinstance(options, Options) else options, "initial")
+        client_options = self._prepare_options(options, "initial")
 
         with Path(torrent_file_path).open("rb") as stream:
             torrent_contents = stream.read()
@@ -239,10 +300,16 @@ class API:
         if options is None:
             options = {}
 
-        client_options = _validate_options(options.get_struct() if isinstance(options, Options) else options, "initial")
+        client_options = self._prepare_options(options, "initial")
 
         with Path(metalink_file_path).open("rb") as stream:
             metalink_contents = stream.read()
+
+        if not self.engine.capabilities.metalink3:
+            root = ET.fromstring(metalink_contents)  # noqa: S314
+            if root.tag == "{http://www.metalinker.org/}metalink" or root.get("version") == "3.0":
+                raise ValueError("Metalink 3 is unsupported by aria2-next; use Metalink 4")
+
         encoded_contents = b64encode(metalink_contents).decode("utf8")
 
         gids = self.client.add_metalink(encoded_contents, client_options, position)
@@ -273,7 +340,10 @@ class API:
         if options is None:
             options = {}
 
-        client_options = _validate_options(options.get_struct() if isinstance(options, Options) else options, "initial")
+        client_options = self._prepare_options(options, "initial")
+
+        if not self.engine.capabilities.ftp and any(urlsplit(uri).scheme.lower() == "ftp" for uri in uris):
+            raise ValueError("FTP downloads are unsupported by aria2-next")
 
         gid = self.client.add_uri(uris, client_options, position)
 
@@ -479,6 +549,8 @@ class API:
     ) -> list[OperationResult]:
         """Remove the given downloads from the list.
 
+        Result cleanup waits for active downloads to stop, using the client's timeout.
+
         Parameters:
             downloads: The GIDs or download objects to remove.
             force: Whether to force the removal or not.
@@ -522,7 +594,7 @@ class API:
                     logger.success(f"Removed download {download.gid}")
                     result.append(True)
                     try:  # (nested try)
-                        self.client.remove_download_result(download.gid)
+                        self._remove_download_result(download.gid)
                     except ClientException as error:
                         logger.debug(f"Failed to remove download result {download.gid}")
                         logger.opt(exception=True).trace(error)
@@ -531,12 +603,12 @@ class API:
                             f"Removed download GID#{removed_gid} is different than download GID#{download.gid}",
                         )
                         try:
-                            self.client.remove_download_result(removed_gid)
+                            self._remove_download_result(removed_gid)
                         except ClientException as error:
                             logger.debug(f"Failed to remove download result {removed_gid}")
                             logger.opt(exception=True).trace(error)
 
-            if clean:
+            if clean and self.engine.capabilities.control_files and self._is_localhost():
                 download.control_file_path.unlink(missing_ok=True)
                 logger.debug(f"Removed control file {download.control_file_path}")
 
@@ -544,6 +616,27 @@ class API:
                 self.remove_files([download], force=True)
 
         return result
+
+    def _remove_download_result(self, gid: str) -> None:
+        """Wait for an accepted removal to finish before purging its result."""
+        # The remove RPC acknowledges the request before the task has stopped.
+        # Purging immediately can fail and leave a removed task in the list.
+        deadline = time.monotonic() + self.client.timeout
+        while True:
+            try:
+                self.client.remove_download_result(gid)
+            except ClientException:
+                status = self.client.tell_status(gid, keys=["status"])["status"]
+                if status in {"removed", "complete", "error"}:
+                    # The task may have stopped between the failed purge and
+                    # the status response. Purge once more in its final state.
+                    self.client.remove_download_result(gid)
+                    return
+                if time.monotonic() >= deadline:
+                    raise
+                time.sleep(0.05)
+            else:
+                return
 
     def remove_all(self, force: bool = False) -> bool:  # noqa: FBT001,FBT002
         """Remove all downloads from the list.
@@ -686,9 +779,7 @@ class API:
         Returns:
             Success or failure of the operation for changing options for each given download.
         """
-        client_options = _validate_options(
-            options.get_struct() if isinstance(options, Options) else options, "download"
-        )
+        client_options = self._prepare_options(options, "download")
 
         # Note: batch/multicall candidate
         return [self.client.change_option(_get_gid(download), client_options) == "OK" for download in downloads]
@@ -706,7 +797,7 @@ class API:
         Returns:
             Success or failure of the operation for changing global options.
         """
-        client_options = _validate_options(options.get_struct() if isinstance(options, Options) else options, "global")
+        client_options = self._prepare_options(options, "global")
 
         return self.client.change_global_option(client_options) == "OK"
 
@@ -777,6 +868,9 @@ class API:
         Downloads that were already paused remain paused. Existing destination
         files are not overwritten when moving an unfinished download.
 
+        aria2-next moves unfinished downloads through its native RPC instead of
+        manipulating resume files.
+
         Parameters:
             downloads: The GIDs or download objects whose files to move.
             to_directory: The target directory to move files to.
@@ -820,6 +914,25 @@ class API:
         """Move an unfinished download while aria2 has closed its files."""
         download.update()
         if download.dir.resolve() == to_directory:
+            return
+
+        if self.engine.capabilities.move_download:
+            if download.is_paused and all(file.path == Path() for file in download.files):
+                # No file name has been resolved yet, so there is nothing to
+                # relocate. Set the directory used when the download starts.
+                self.client.change_option(download.gid, {"dir": str(to_directory)})
+                download.update()
+                return
+            # Resume data belongs to aria2-next's state directory. Its native
+            # move RPC relocates files and updates that state as one operation.
+            for path in download.root_files_paths:
+                target = to_directory / path.name
+                if target.exists() or target.is_symlink():
+                    raise FileExistsError(f"Destination already exists: {target}")
+                if to_directory.is_relative_to(path.resolve()):
+                    raise ValueError(f"Destination is inside the download: {to_directory}")
+            self.client.move_download(download.gid, str(to_directory))
+            download.update()
             return
 
         resume = download.status in {"active", "waiting"}

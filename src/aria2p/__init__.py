@@ -67,6 +67,7 @@ from aria2p._internal.client import (
     Notification,
 )
 from aria2p._internal.downloads import BitTorrent, Download, File
+from aria2p._internal.engine import Engine, EngineCapabilities
 from aria2p._internal.logger import enable_logger
 from aria2p._internal.options import Options, OptionType
 from aria2p._internal.stats import Stats
@@ -97,6 +98,8 @@ __all__ = [
     "Client",
     "ClientException",
     "Download",
+    "Engine",
+    "EngineCapabilities",
     "File",
     "InputFileContentsType",
     "Multicalls2Type",

@@ -266,6 +266,12 @@ class TestDownloadClass:
     def test_name(self) -> None:
         assert self.download.name == "dl"
 
+    def test_name_without_file_metadata(self) -> None:
+        # A newly added magnet can be visible before it has a file list.
+        download = Download(API(), {"gid": "0000000000000001", "files": []})
+
+        assert download.name == download.gid
+
     def test_name_bittorrent(self) -> None:
         # TODO
         pass

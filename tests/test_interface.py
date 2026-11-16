@@ -20,14 +20,10 @@
 
 from __future__ import annotations
 
-import os
-import sys
-import time
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import pyperclip
-import pytest
 from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import Screen
 
@@ -36,6 +32,8 @@ from tests import TESTS_DATA_DIR
 from tests.conftest import Aria2Server
 
 if TYPE_CHECKING:
+    import pytest
+
     from aria2p._internal.api import API
 
 tui._Interface.frames = 20  # reduce tests time
@@ -271,7 +269,7 @@ def test_log_exception(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatc
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         interface = get_interface(monkeypatch, server.api, events=[Event.exc(LookupError("some message"))])
         assert not interface.run()
-    with Path("tests", "logs", "test_interface", "test_log_exception.log").open() as log_file:
+    with Path("tests", "logs", "test_interface", "test_log_exception.log").open(encoding="utf8") as log_file:
         lines = log_file.readlines()
     first_line = ""
     for line in lines:
@@ -320,7 +318,11 @@ def test_vertical_scrolling(tmp_path: Path, port: int, monkeypatch: pytest.Monke
 
 
 def test_follow_focused(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) -> None:
-    with Aria2Server(tmp_path, port, session="3-magnets.txt") as server:
+    with Aria2Server(tmp_path, port) as server:
+        # Keep three distinct GIDs available while the interface reverses its sort.
+        for size in (1, 2, 3):
+            server.api.add_uris([f"http://localhost:8779/{size}m"], options={"pause": "true"})
+
         interface = run_interface(
             monkeypatch,
             server.api,
@@ -328,15 +330,12 @@ def test_follow_focused(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPat
         )
     assert interface.sort == 0
     assert interface.focused == 2
+    assert interface.data[interface.focused] == interface.follow
 
 
 def test_remove_ask(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) -> None:
     with Aria2Server(tmp_path, port, session="very-small-download.txt") as server:
-        download = server.api.get_downloads()[0]
-        while not download.live.is_complete:
-            if download.has_failed:
-                pytest.xfail("Failed to establish connection (sporadic error)")
-            time.sleep(0.1)
+        download = server.wait_for_download()
         assert download.root_files_paths[0].exists()
         interface = run_interface(
             monkeypatch,
@@ -369,10 +368,8 @@ def test_toggle_resume_pause(tmp_path: Path, port: int, monkeypatch: pytest.Monk
             ],
         )
 
-        time.sleep(1)
+        server.wait_for_download(interface.data[0].gid, status="paused")
         interface.data[0].update()
-    if interface.data[0].has_failed:
-        pytest.xfail("Failed to establish connection (sporadic error)")
     assert interface.data[0].is_paused
 
 
@@ -413,11 +410,7 @@ def test_remember_last_remove(tmp_path: Path, port: int, monkeypatch: pytest.Mon
 
 def test_autoclear(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) -> None:
     with Aria2Server(tmp_path, port, session="very-small-download.txt") as server:
-        download = server.api.get_downloads()[0]
-        while not download.live.is_complete:
-            if download.has_failed:
-                pytest.xfail("Failed to establish connection (sporadic error)")
-            time.sleep(0.1)
+        server.wait_for_download()
         interface = run_interface(monkeypatch, server.api, events=[Event.pass_frame, Event.hit("c"), Event.pass_tick])
     assert not interface.data
 
@@ -466,7 +459,7 @@ def test_click_out_bounds(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) 
         server.api,
         events=[Event.pass_frame, MouseEvent(x=1000, y=0, buttons=MouseEvent.LEFT_CLICK)],
     )
-    with Path("tests", "logs", "test_interface", "test_click_out_bounds.log").open() as log_file:
+    with Path("tests", "logs", "test_interface", "test_click_out_bounds.log").open(encoding="utf8") as log_file:
         lines = log_file.readlines()
     error_line = None
     for line in lines:
@@ -477,10 +470,6 @@ def test_click_out_bounds(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) 
     assert "clicked outside of boundaries" in error_line
 
 
-@pytest.mark.skipif(
-    sys.platform != "win32" and "CI" in os.environ,
-    reason="Can't get pyperclip to work on Linux or MacOS in CI",
-)
 def test_add_downloads_uris(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) -> None:
     clipboard_selection_downloads = ""
     primary_selection_downloads = ""
@@ -493,11 +482,13 @@ def test_add_downloads_uris(server: Aria2Server, monkeypatch: pytest.MonkeyPatch
     magnet2 = "magnet:?xt=urn:btih:VLYICEBJDQQ64SUGREZHD4IAD2FVCJCS"
     primary_selection_downloads += f"{uri2}\n{magnet2}"
 
-    # clipboard selection
-    pyperclip.copy(clipboard_selection_downloads)
-
-    # primary selection
-    pyperclip.copy(primary_selection_downloads, primary=True)  # ty:ignore[unknown-argument]
+    # Each test supplies its own clipboard input while downloads use the real
+    # daemon. System clipboards are shared by parallel workers and desktop apps.
+    monkeypatch.setattr(
+        pyperclip,
+        "paste",
+        lambda primary=False: primary_selection_downloads if primary else clipboard_selection_downloads,
+    )
 
     interface = run_interface(
         monkeypatch,
@@ -514,28 +505,21 @@ def test_add_downloads_uris(server: Aria2Server, monkeypatch: pytest.MonkeyPatch
             Event.pass_tick_and_a_half,
         ],
     )
-    # clear clipboards
-    pyperclip.copy("")
-    pyperclip.copy("", primary=True)  # ty:ignore[unknown-argument]
     assert len(interface.data) == 2
 
 
-@pytest.mark.skipif(
-    sys.platform != "win32" and "CI" in os.environ,
-    reason="Can't get pyperclip to work on Linux or MacOS in CI",
-)
 def test_add_downloads_torrents_and_metalinks(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) -> None:
     torrent_file = TESTS_DATA_DIR / "bunsenlabs-helium-4.iso.torrent"
-    metalink_file = TESTS_DATA_DIR / "debian.metalink"
+    metalink_file = TESTS_DATA_DIR / "download.meta4"
 
     clipboard_selection_download = f"{torrent_file.absolute()}"
     primary_selection_download = f"{metalink_file.absolute()}"
 
-    # clipboard selection
-    pyperclip.copy(clipboard_selection_download)
-
-    # primary selection
-    pyperclip.copy(primary_selection_download, primary=True)  # ty:ignore[unknown-argument]
+    monkeypatch.setattr(
+        pyperclip,
+        "paste",
+        lambda primary=False: primary_selection_download if primary else clipboard_selection_download,
+    )
 
     interface = run_interface(
         monkeypatch,
@@ -553,8 +537,4 @@ def test_add_downloads_torrents_and_metalinks(server: Aria2Server, monkeypatch: 
             Event.pass_tick_and_a_half,
         ],
     )
-    pyperclip.copy("")
-    pyperclip.copy("", primary=True)  # ty:ignore[unknown-argument]
-    if len(interface.data) != 2:
-        pytest.xfail("Empty data (sporadic error)")
     assert len(interface.data) == 2

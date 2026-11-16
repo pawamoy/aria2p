@@ -3,6 +3,48 @@
 Extensive usage instructions will be added later, when the application is more stable.
 You can also refer to the README / Overview.
 
+## Supported engines
+
+aria2p supports aria2 and aria2-next 3.1.0 or later through the same Python API and CLI. Create an [`API`][aria2p.API] with the daemon's RPC address:
+
+```python
+from aria2p import API, Client
+
+api = API(Client(host="http://localhost", port=6800))
+print(api.engine.name, api.engine.version)
+print(api.engine.capabilities.move_download)
+```
+
+[`API.engine`][aria2p.API.engine] calls `aria2.getVersion` on first access and caches the result for the client's endpoint and secret.
+
+After restarting or replacing the daemon at the same address, call [`API.check_engine()`][aria2p.API.check_engine] to update the cached engine and capabilities:
+
+```python
+engine = api.check_engine()
+print(engine.name, engine.version)
+```
+
+`check_engine()` connects immediately and returns the detected engine. If detection fails, the cache stays empty; the next `api.engine` access retries detection.
+
+Summary of differences between aria2 and aria2-next:
+
+| Capability | aria2 | aria2-next 3.1+ |
+| --- | --- | --- |
+| `ftp` | Yes | No |
+| `metalink3` | Yes | No |
+| `control_files` | Adjacent `.aria2` files | Separate engine state |
+| `move_download` | No native move RPC | Native move RPC |
+
+In particular, the native `move_download` means you can move files on the distant server. With aria2, this API method only works if the daemon and client run on the same host.
+
+For more information, see [Compatibility](https://github.com/AnInsomniacy/aria2-next#compatibility) and [RPC extensions](https://github.com/AnInsomniacy/aria2-next/blob/main/docs/rpc-extensions.md) in aria2-next's documentation.
+
+The high-level API rejects known unsupported options with `ValueError` instead of silently discarding them.
+
+For example, aria2-next cannot honor `piece-length`, `max-resume-failure-tries`, or `always-resume`. Its connection and split limits also differ from aria2's limits. The `bt-require-crypto` and `bt-force-encryption` options map to aria2-next's `bt-encryption` policy. Do not combine these aliases with an explicit `bt-encryption` value in one update.
+
+[`Client`][aria2p.Client] remains a low-level RPC interface and passes daemon errors to the caller. Its explicitly defined `move_download()` method requires aria2-next. Use `Client.call()` to send other engine extensions directly.
+
 ## Listing downloads
 
 Use `aria2p list` to print one download name per line. The `aria2p show` command is deprecated and will be removed in version 2. Use `aria2p list -l -H` for the same table output with human-readable units.
@@ -45,7 +87,8 @@ download = api.get_download(gid)
 download.move_files("/path/to/new-directory", force=True)
 ```
 
-The operation pauses active downloads, moves their files and `.aria2` control file, then resumes them in the new directory.
+With aria2, the operation pauses active downloads, moves their files and `.aria2` control file, then resumes them in the new directory. With aria2-next, the operation uses its native move RPC to update files and engine state together. For a paused download without a resolved filename, it changes the output directory before the download starts.
+
 Downloads that were already paused remain paused.
 The destination directory is created if necessary.
 Existing destination files cause an error when moving unfinished downloads.

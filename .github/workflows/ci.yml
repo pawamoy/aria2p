@@ -94,6 +94,9 @@ jobs:
     - quality
     strategy:
       matrix:
+        engine:
+        - aria2
+        - aria2-next
         os:
         - ubuntu-latest
         - macos-latest
@@ -114,21 +117,21 @@ jobs:
           resolution: lowest-direct
 
     runs-on: ${{ matrix.os }}
-    continue-on-error: true
-
+    env:
+      ARIA2_ENGINE: ${{ matrix.engine }}
     steps:
     - name: Install aria2 on Ubuntu
-      if: ${{ matrix.os == 'ubuntu-latest' }}
+      if: ${{ matrix.engine == 'aria2' && matrix.os == 'ubuntu-latest' }}
       run: sudo apt-get install aria2
 
     - name: Install aria2 on Windows
-      if: ${{ matrix.os == 'windows-latest' }}
+      if: ${{ matrix.engine == 'aria2' && matrix.os == 'windows-latest' }}
       uses: crazy-max/ghaction-chocolatey@dfdcf5bba9c0a16358a21c13a06ec5c89024b3ac # v4.1.0
       with:
         args: install aria2
 
     - name: Install aria2 on MacOS
-      if: ${{ matrix.os == 'macos-latest' }}
+      if: ${{ matrix.engine == 'aria2' && matrix.os == 'macos-latest' }}
       run: brew install aria2
 
     - name: Checkout
@@ -150,6 +153,10 @@ jobs:
       env:
         UV_RESOLUTION: ${{ matrix.resolution }}
       run: make setup
+
+    - name: Install aria2-next
+      if: ${{ matrix.engine == 'aria2-next' }}
+      run: uv run --no-sync python scripts/install_aria2_next.py
 
     - name: Download objects inventory
       uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
