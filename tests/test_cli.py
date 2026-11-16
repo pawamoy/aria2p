@@ -20,12 +20,14 @@
 
 from __future__ import annotations
 
+import json
 import re
 import threading
 import time
 from typing import TYPE_CHECKING
 
 import pytest
+from responses import mock as responses
 
 from aria2p._internal import debug
 from aria2p._internal.cli.commands import top
@@ -80,6 +82,26 @@ def test_show_help(capsys: pytest.CaptureFixture) -> None:
 
 def test_main_returns_2_when_no_remote_running(port: int) -> None:
     assert main([f"--port={port}"]) == 2
+
+
+@pytest.mark.parametrize(
+    ("options", "expected_path"),
+    [
+        ([], "/jsonrpc"),
+        (["--path", "/custom/rpc"], "/custom/rpc"),
+        (["--path", "/"], "/"),
+        (["--path", ""], "/"),
+    ],
+)
+@responses.activate
+def test_main_uses_rpc_path(options: list[str], expected_path: str, capsys: pytest.CaptureFixture) -> None:
+    # Both the startup connection check and the command must reach the configured endpoint.
+    responses.add(responses.POST, f"http://localhost:6800{expected_path}", json={"result": {"version": "1.0"}})
+
+    exit_code = main([*options, "call", "getversion"])
+
+    assert exit_code == 0
+    assert json.loads(capsys.readouterr().out) == {"version": "1.0"}
 
 
 def test_parser_error_when_gids_and_all_option(capsys: pytest.CaptureFixture) -> None:

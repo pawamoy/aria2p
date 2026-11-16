@@ -44,6 +44,7 @@ from aria2p._internal.cli.parser import check_args, get_parser, parse_options_st
 from aria2p._internal.client import (
     DEFAULT_HOST,
     DEFAULT_ID,
+    DEFAULT_PATH,
     DEFAULT_PORT,
     DEFAULT_TIMEOUT,
     JSONRPC_CODES,
@@ -77,6 +78,7 @@ __all__ = [
     "API",
     "DEFAULT_HOST",
     "DEFAULT_ID",
+    "DEFAULT_PATH",
     "DEFAULT_PORT",
     "DEFAULT_TIMEOUT",
     "JSONRPC_CODES",

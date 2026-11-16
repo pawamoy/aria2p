@@ -39,6 +39,45 @@ from tests import BUNSENLABS_MAGNET, BUNSENLABS_TORRENT, CONFIGS_DIR, DEBIAN_MET
 from tests.conftest import Aria2Server, wait_for
 
 
+class TestServerAddresses:
+    def test_default_path_preserves_positional_arguments(self) -> None:
+        # Existing callers can still pass the host, port, secret, and timeout positionally.
+        client = Client("http://localhost/", 7100, "", 10)
+
+        assert client.server == "http://localhost:7100/jsonrpc"
+        assert client.ws_server == "ws://localhost:7100/jsonrpc"
+        assert client.timeout == 10
+
+    @pytest.mark.parametrize(("scheme", "ws_scheme"), [("http", "ws"), ("https", "wss")])
+    @pytest.mark.parametrize(
+        ("path", "expected_path"),
+        [
+            ("/jsonrpc", "/jsonrpc"),
+            ("/custom/rpc", "/custom/rpc"),
+            ("custom/rpc", "/custom/rpc"),
+            ("/custom/rpc/", "/custom/rpc/"),
+            ("/", "/"),
+            ("", "/"),
+        ],
+    )
+    def test_custom_path(self, scheme: str, ws_scheme: str, path: str, expected_path: str) -> None:
+        # HTTP calls and notifications must use the same path, including behind a proxy.
+        client = Client(host=f"{scheme}://example.com/", port=7100, path=path)
+
+        assert client.server == f"{scheme}://example.com:7100{expected_path}"
+        assert client.ws_server == f"{ws_scheme}://example.com:7100{expected_path}"
+        assert str(client) == client.server
+
+    @responses.activate
+    def test_call_uses_custom_path(self) -> None:
+        client = Client(path="/custom/rpc")
+        responses.add(responses.POST, "http://localhost:6800/custom/rpc", json={"result": {"version": "1.0"}})
+
+        result = client.get_version()
+
+        assert result == {"version": "1.0"}
+
+
 class TestParameters:
     @pytest.mark.parametrize("path_type", [str, Path])
     @pytest.mark.parametrize(

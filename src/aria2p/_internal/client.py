@@ -43,6 +43,8 @@ DEFAULT_HOST = "http://localhost"
 """Default host for the remote process."""
 DEFAULT_PORT = 6800
 """Default port for the remote process."""
+DEFAULT_PATH = "/jsonrpc"
+"""Default JSON-RPC path for the remote process."""
 DEFAULT_TIMEOUT: float = 60.0
 """Default timeout for requests towards the remote process, in seconds."""
 
@@ -278,6 +280,7 @@ class Client:
         port: int = DEFAULT_PORT,
         secret: str = "",
         timeout: float = DEFAULT_TIMEOUT,
+        path: str = DEFAULT_PATH,
     ) -> None:
         """Initialize the object.
 
@@ -286,6 +289,7 @@ class Client:
             port: The remote process port.
             secret: The secret token.
             timeout: The timeout to use for requests towards the remote server.
+            path: The JSON-RPC path, with or without a leading slash. Use an empty string or `/` for the server root.
         """
         host = host.rstrip("/")
 
@@ -300,6 +304,8 @@ class Client:
         """The secret token."""
         self.timeout = timeout
         """The timeout to use for requests towards the remote server."""
+        self.path = f"/{path.lstrip('/')}"
+        """The JSON-RPC path, including a leading slash, used for HTTP requests and WebSocket notifications."""
         self.listening = False
         """Whether the client is listening to notifications from the remote process or not."""
 
@@ -316,7 +322,7 @@ class Client:
         Returns:
             The server address.
         """
-        return f"{self.host}:{self.port}/jsonrpc"
+        return f"{self.host}:{self.port}{self.path}"
 
     @property
     def ws_server(self) -> str:
@@ -325,7 +331,7 @@ class Client:
         Returns:
             The WebSocket server address.
         """
-        return f"ws{self.host[4:]}:{self.port}/jsonrpc"
+        return f"ws{self.host[4:]}:{self.port}{self.path}"
 
     def call(
         self,

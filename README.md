@@ -117,6 +117,8 @@ Global options:
                         the -h/--help option.
   -p PORT, --port PORT  Port to use to connect to the remote server.
   -H HOST, --host HOST  Host address for the remote server.
+  --path PATH          JSON-RPC path for the remote server. Use / for the
+                        server root. Default: /jsonrpc.
   -s SECRET, --secret SECRET
                         Secret token to use to connect to the remote server.
   -L {TRACE,DEBUG,INFO,SUCCESS,WARNING,ERROR,CRITICAL}, --log-level {TRACE,DEBUG,INFO,SUCCESS,WARNING,ERROR,CRITICAL}

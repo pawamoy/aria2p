@@ -36,7 +36,7 @@ import sys
 from typing import Any
 
 from aria2p._internal import debug
-from aria2p._internal.client import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_TIMEOUT
+from aria2p._internal.client import DEFAULT_HOST, DEFAULT_PATH, DEFAULT_PORT, DEFAULT_TIMEOUT
 
 
 def check_args(parser: argparse.ArgumentParser, opts: argparse.Namespace) -> None:  # (complex)
@@ -139,6 +139,11 @@ def get_parser() -> argparse.ArgumentParser:
         dest="host",
         default=DEFAULT_HOST,
         help="Host address for the remote server.",
+    )
+    global_options.add_argument(
+        "--path",
+        default=DEFAULT_PATH,
+        help=f"JSON-RPC path for the remote server. Use / for the server root. Default: {DEFAULT_PATH}.",
     )
     global_options.add_argument(
         "-s",

@@ -3,6 +3,25 @@
 Extensive usage instructions will be added later, when the application is more stable.
 You can also refer to the README / Overview.
 
+## Custom JSON-RPC path
+
+By default, aria2p connects to `/jsonrpc`. If a reverse proxy exposes a different path, set the global `--path` option before the command:
+
+```bash
+aria2p --host https://example.com --port 443 --path /custom/rpc list
+```
+
+When you use the Python library, pass `path` to `Client`:
+
+```python
+import aria2p
+
+client = aria2p.Client(host="https://example.com", port=443, path="/custom/rpc")
+aria2 = aria2p.API(client)
+```
+
+The path applies to HTTP requests and WebSocket notifications. A leading slash is optional. Use `/` or an empty string to connect to the server root.
+
 ## Supported engines
 
 aria2p supports aria2 and aria2-next 3.1.0 or later through the same Python API and CLI. Create an [`API`][aria2p.API] with the daemon's RPC address:

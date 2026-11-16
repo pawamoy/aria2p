@@ -113,6 +113,7 @@ def main(args: list[str] | None = None) -> int:
             port=kwargs.pop("port"),
             secret=kwargs.pop("secret"),
             timeout=kwargs.pop("client_timeout"),
+            path=kwargs.pop("path"),
         ),
     )
 
