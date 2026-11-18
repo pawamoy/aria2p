@@ -1900,8 +1900,9 @@ class Client:
         logger.debug(f"{log_prefix}: opening WebSocket with timeout={timeout}")
         try:
             socket = websocket.create_connection(ws_server, timeout=timeout)
-        except (ConnectionRefusedError, ConnectionResetError):
-            logger.error(f"{log_prefix}: connection refused. Is the server running?")
+        except (ConnectionRefusedError, ConnectionResetError, TimeoutError, websocket.WebSocketTimeoutException):
+            logger.error(f"{log_prefix}: connection failed. Is the server running?")
+            self.listening = False
             return
 
         callbacks = {
@@ -1919,7 +1920,7 @@ class Client:
             logger.debug(f"{log_prefix}: waiting for data over WebSocket")
             try:
                 message = socket.recv()
-            except websocket.WebSocketConnectionClosedException:
+            except (websocket.WebSocketConnectionClosedException, ConnectionResetError):
                 logger.error(f"{log_prefix}: connection to server was closed. Is the server running?")
                 break
             except websocket.WebSocketTimeoutException:
@@ -1942,8 +1943,8 @@ class Client:
 
         if stopped:
             logger.debug(f"{log_prefix}: stopped listening after receiving a signal")
-            self.listening = False
 
+        self.listening = False
         logger.debug(f"{log_prefix}: closing WebSocket")
         socket.close()
 

@@ -21,7 +21,6 @@
 from __future__ import annotations
 
 import json
-import os
 import signal
 import threading
 import time
@@ -29,8 +28,10 @@ from base64 import b64encode
 from copy import deepcopy
 from pathlib import Path
 from typing import TYPE_CHECKING
+from unittest.mock import Mock
 
 import pytest
+import websocket
 from responses import mock as responses
 
 from aria2p import Client, ClientException
@@ -540,6 +541,31 @@ class TestClientClass:
         client = Client(port=7035)
         client.listen_to_notifications(timeout=1)
 
+    @pytest.mark.parametrize("error_type", [TimeoutError, websocket.WebSocketTimeoutException])
+    def test_listen_to_notifications_connection_timeout(
+        self, monkeypatch: pytest.MonkeyPatch, error_type: type[Exception]
+    ) -> None:
+        # Windows can report a timeout rather than a refused connection.
+        connect = Mock(side_effect=error_type("Connection timed out"))
+        monkeypatch.setattr(websocket, "create_connection", connect)
+        client = Client()
+
+        client.listen_to_notifications(timeout=1, handle_signals=False)
+
+        assert not client.listening
+
+    def test_listen_to_notifications_connection_reset(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        # A daemon killed during notification listening can reset the socket.
+        socket = Mock()
+        socket.recv.side_effect = ConnectionResetError("Connection reset")
+        monkeypatch.setattr(websocket, "create_connection", Mock(return_value=socket))
+        client = Client()
+
+        client.listen_to_notifications(timeout=1, handle_signals=False)
+
+        assert not client.listening
+        socket.close.assert_called_once_with()
+
     def test_listen_to_notifications_no_callbacks(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
 
@@ -586,7 +612,9 @@ class TestClientClass:
 
             def thread_target() -> None:
                 time.sleep(2)
-                os.kill(os.getpid(), signal.SIGTERM)
+                # raise_signal invokes Python's handler on Windows too; os.kill
+                # with SIGTERM would terminate the entire test worker there.
+                signal.raise_signal(signal.SIGTERM)
 
             thread = threading.Thread(target=thread_target)
             thread.start()

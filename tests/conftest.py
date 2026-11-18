@@ -20,7 +20,9 @@
 
 from __future__ import annotations
 
+import hashlib
 import os
+import re
 import socket
 import subprocess
 import sys
@@ -48,14 +50,18 @@ def wait_for(condition: Callable[[], bool], timeout: float = 10) -> None:
 
 
 @pytest.fixture(autouse=True)
-def tests_logs(request: pytest.FixtureRequest) -> None:
+def tests_logs(request: pytest.FixtureRequest) -> Path:
     # put logs in tests/logs
     log_path = Path("tests") / "logs"
 
     # tidy logs in subdirectories based on test module and class names
     module = request.module
     class_ = request.cls
-    name = request.node.name + ".log"
+    # Parameter values can contain invalid Windows filename characters. Keep a
+    # bounded name and a unique suffix for names that sanitize to the same text.
+    safe_name = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", request.node.name)
+    suffix = hashlib.sha256(request.node.nodeid.encode()).hexdigest()[:12]
+    name = f"{safe_name[:150]}-{suffix}.log"
 
     if module:
         log_path /= module.__name__.replace("tests.", "")
@@ -69,6 +75,7 @@ def tests_logs(request: pytest.FixtureRequest) -> None:
     if log_path.exists():
         log_path.unlink()
     enable_logger(sink=str(log_path), level=os.environ.get("PYTEST_LOG_LEVEL", "TRACE"))
+    return log_path
 
 
 def spawn_and_wait_server(port: int = 8779) -> subprocess.Popen:
@@ -179,8 +186,8 @@ class Aria2Server:
         self.command = command
         self.process: subprocess.Popen | None = None
 
-        # create the client with port
-        self.client = Client(port=self.port, secret=secret, timeout=20)
+        # The test daemon listens on IPv4; avoid IPv6 localhost connection timeouts.
+        self.client = Client(host="http://127.0.0.1", port=self.port, secret=secret, timeout=20)
 
         # create the API instance
         self.api = API(self.client)

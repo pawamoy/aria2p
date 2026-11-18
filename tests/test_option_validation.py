@@ -131,7 +131,7 @@ def test_invalid_values_leave_remote_and_local_options_unchanged(
         ("log", "", ""),
         ("http-passwd", "", ""),
         ("dir", "/path/on/remote/server", "/path/on/remote/server"),
-        ("dir", Path("/path/on/remote/server"), "/path/on/remote/server"),
+        ("dir", Path("/path/on/remote/server"), str(Path("/path/on/remote/server"))),
         ("header", ["Accept: */*", "User-Agent: aria2p"], ["Accept: */*", "User-Agent: aria2p"]),
         ("header", [], []),
     ],

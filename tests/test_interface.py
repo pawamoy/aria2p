@@ -20,7 +20,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import pyperclip
@@ -32,6 +31,8 @@ from tests import TESTS_DATA_DIR
 from tests.conftest import Aria2Server
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     import pytest
 
     from aria2p._internal.api import API
@@ -265,11 +266,13 @@ def test_horizontal_scrolling(tmp_path: Path, port: int, monkeypatch: pytest.Mon
         )
 
 
-def test_log_exception(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_log_exception(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch, tests_logs: Path) -> None:
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         interface = get_interface(monkeypatch, server.api, events=[Event.exc(LookupError("some message"))])
         assert not interface.run()
-    with Path("tests", "logs", "test_interface", "test_log_exception.log").open(encoding="utf8") as log_file:
+
+    # Read the log path selected by the fixture, including its unique suffix.
+    with tests_logs.open(encoding="utf8") as log_file:
         lines = log_file.readlines()
     first_line = ""
     for line in lines:
@@ -453,13 +456,15 @@ def test_click_row(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) -
     assert interface.focused == 1
 
 
-def test_click_out_bounds(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_click_out_bounds(server: Aria2Server, monkeypatch: pytest.MonkeyPatch, tests_logs: Path) -> None:
     run_interface(
         monkeypatch,
         server.api,
         events=[Event.pass_frame, MouseEvent(x=1000, y=0, buttons=MouseEvent.LEFT_CLICK)],
     )
-    with Path("tests", "logs", "test_interface", "test_click_out_bounds.log").open(encoding="utf8") as log_file:
+
+    # Read the log path selected by the fixture, including its unique suffix.
+    with tests_logs.open(encoding="utf8") as log_file:
         lines = log_file.readlines()
     error_line = None
     for line in lines:

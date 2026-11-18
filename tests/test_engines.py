@@ -275,7 +275,7 @@ def test_low_level_move_method_is_explicit_and_preserves_rpc_errors(monkeypatch:
     with pytest.raises(ClientException, match="moveDownload"):
         client.move_download("0123456789abcdef", Path("/downloads"))
 
-    rpc.assert_called_once_with(Client.MOVE_DOWNLOAD, ["0123456789abcdef", "/downloads"])
+    rpc.assert_called_once_with(Client.MOVE_DOWNLOAD, ["0123456789abcdef", str(Path("/downloads"))])
 
 
 def test_invalid_option_names_do_not_require_a_running_daemon(monkeypatch: pytest.MonkeyPatch) -> None:

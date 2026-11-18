@@ -20,7 +20,7 @@
 
 from __future__ import annotations
 
-from pathlib import Path
+from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
 from unittest.mock import Mock
 
 import pytest
@@ -123,6 +123,20 @@ def test_search_field_filters(search_api: API, filters: dict[str, object], expec
 
     # Missing optional fields cannot satisfy a filter; typed values and CLI strings can.
     assert [download.gid for download in matches] == expected_gids
+
+
+@pytest.mark.parametrize("directory", [PurePosixPath("/downloads"), PureWindowsPath("/downloads")])
+def test_search_directory_strings_follow_path_semantics(directory: PurePath) -> None:
+    # CLI strings must match directory paths with either platform's separators.
+    download = Mock(spec=Download)
+    download.dir = directory
+    api = API()
+
+    matches = api.search(filters={"dir": "/downloads"}, downloads=[download])
+    missing = api.search(filters={"dir": "/other"}, downloads=[download])
+
+    assert matches == [download]
+    assert missing == []
 
 
 def test_search_combines_patterns_and_filters(search_api: API) -> None:
