@@ -405,7 +405,13 @@ def test_cli_actions_only_affect_search_matches(tmp_path: Path, port: int, comma
 @pytest.mark.parametrize("command", ["pause", "stop"])
 def test_cli_pause_with_field_filter(tmp_path: Path, port: int, command: str) -> None:
     with Aria2Server(tmp_path, port, session="one-active-one-paused.txt") as server:
+        # RPC readiness does not guarantee that the download matches the active filter yet.
+        download = server.wait_for_download(status="active")
+
         assert main(["-p", str(port), command, "--filter", "status=active"]) == 0
+
+        # The pause request returns before the daemon finishes pausing the download.
+        server.wait_for_download(download.gid, status="paused")
 
         assert all(download.status == "paused" for download in server.api.get_downloads())
 
