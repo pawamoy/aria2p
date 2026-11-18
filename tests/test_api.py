@@ -28,7 +28,6 @@ from typing import TYPE_CHECKING
 
 import griffe
 import pytest
-import requests
 from mkdocstrings import Inventory
 
 import aria2p
@@ -571,19 +570,7 @@ def test_move_paused_torrent_files(server: Aria2Server) -> None:
         control_file.write_bytes(b"resume data")
     destination = server.tmp_dir / "destination"
 
-    try:
-        assert download.move_files(destination, force=True)
-    except requests.ConnectionError:
-        # aria2-next 3.1.0 can crash inside its native paused-torrent move.
-        # Record only that daemon failure, without hiding a live-server error.
-        assert server.process is not None
-        if (
-            server.api.engine.name == "aria2-next"
-            and server.api.engine.version == "3.1.0"
-            and server.process.wait(timeout=5) != 0
-        ):
-            pytest.xfail("aria2-next 3.1.0 crashes when moving an unfinished paused torrent")
-        raise
+    assert download.move_files(destination, force=True)
 
     # Move the whole torrent directory and preserve both files and resume data.
     assert (destination / "bundle" / "one.txt").read_bytes() == b"data"

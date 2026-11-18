@@ -28,15 +28,18 @@ import time
 from base64 import b64encode
 from copy import deepcopy
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
-import requests
 from responses import mock as responses
 
 from aria2p import Client, ClientException
 from aria2p._internal.client import JSONRPC_CODES, JSONRPC_PARSER_ERROR, Notification
 from tests import BUNSENLABS_MAGNET, BUNSENLABS_TORRENT, CONFIGS_DIR, DEBIAN_METALINK, SESSIONS_DIR, XUBUNTU_MIRRORS
 from tests.conftest import Aria2Server, wait_for
+
+if TYPE_CHECKING:
+    import requests
 
 
 class TestServerAddresses:
@@ -396,13 +399,7 @@ class TestClientClass:
             assert server.client.tell_status(gid, keys=["status"])["status"] == "removed"
 
     def test_force_shutdown_method(self, server: Aria2Server) -> None:
-        engine = server.api.engine
-        try:
-            assert server.client.force_shutdown() == "OK"
-        except requests.ConnectionError:
-            # aria2-next 3.1 can stop before delivering its shutdown response.
-            # The Client keeps that transport error; still verify process exit.
-            assert engine.name == "aria2-next"
+        assert server.client.force_shutdown() == "OK"
 
         assert server.process is not None
         assert server.process.wait(timeout=10) == 0
@@ -501,12 +498,7 @@ class TestClientClass:
                 assert line in output_contents
 
     def test_shutdown_method(self, server: Aria2Server) -> None:
-        engine = server.api.engine
-        try:
-            assert server.client.shutdown() == "OK"
-        except requests.ConnectionError:
-            # Preserve the raw error when the daemon exits before replying.
-            assert engine.name == "aria2-next"
+        assert server.client.shutdown() == "OK"
 
         assert server.process is not None
         assert server.process.wait(timeout=10) == 0

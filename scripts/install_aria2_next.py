@@ -28,7 +28,7 @@ from pathlib import Path
 from urllib.request import urlopen
 
 # Keep the same daemon release across CI platforms, including Windows without Homebrew.
-VERSION = "3.1.0"
+VERSION = "3.1.1"
 RELEASE_URL = f"https://github.com/AnInsomniacy/aria2-next/releases/download/v{VERSION}"
 
 
