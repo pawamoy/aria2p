@@ -20,26 +20,22 @@
 
 from __future__ import annotations
 
-import hashlib
 import os
-import re
 import socket
 import subprocess
-import threading
+import sys
 import time
-from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
 import requests
-import uvicorn
 
 from aria2p import API, Client, Download, enable_logger
 from tests import CONFIGS_DIR, SESSIONS_DIR
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Generator, Iterator
+    from collections.abc import Callable, Iterator
 
 
 def wait_for(condition: Callable[[], bool], timeout: float = 10) -> None:
@@ -52,18 +48,14 @@ def wait_for(condition: Callable[[], bool], timeout: float = 10) -> None:
 
 
 @pytest.fixture(autouse=True)
-def tests_logs(request: pytest.FixtureRequest) -> Path:
+def tests_logs(request: pytest.FixtureRequest) -> None:
     # put logs in tests/logs
     log_path = Path("tests") / "logs"
 
     # tidy logs in subdirectories based on test module and class names
     module = request.module
     class_ = request.cls
-    # Parameter values can contain invalid Windows filename characters. Keep a
-    # bounded name and a unique suffix for names that sanitize to the same text.
-    safe_name = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", request.node.name)
-    suffix = hashlib.sha256(request.node.nodeid.encode()).hexdigest()[:12]
-    name = f"{safe_name[:150]}-{suffix}.log"
+    name = request.node.name + ".log"
 
     if module:
         log_path /= module.__name__.replace("tests.", "")
@@ -77,43 +69,36 @@ def tests_logs(request: pytest.FixtureRequest) -> Path:
     if log_path.exists():
         log_path.unlink()
     enable_logger(sink=str(log_path), level=os.environ.get("PYTEST_LOG_LEVEL", "TRACE"))
-    return log_path
 
 
-@contextmanager
-def serve_http(port: int = 8779) -> Generator[str, None, None]:
-    """Keep the HTTP fixture alive in its owning pytest process."""
-    config = uvicorn.Config(
-        "tests.http_server:app",
-        host="127.0.0.1",
-        port=port,
-        log_config=None,
-        access_log=False,
-        timeout_graceful_shutdown=1,
+def spawn_and_wait_server(port: int = 8779) -> subprocess.Popen:
+    process = subprocess.Popen(  # noqa: S603
+        [
+            sys.executable,
+            "-m",
+            "uvicorn",
+            "tests.http_server:app",
+            "--port",
+            str(port),
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
     )
-    server = uvicorn.Server(config)
-    # Running in a thread avoids subprocess lifetime and console-signal handling
-    # on Windows. Unexpected server errors are reported by pytest's thread hook.
-    thread = threading.Thread(target=server.run, name=f"http-fixture-{port}", daemon=True)
-    thread.start()
-    try:
-        deadline = time.monotonic() + 10
-        while not server.started:
-            if not thread.is_alive():
-                raise RuntimeError("HTTP server stopped before it became ready")
-            if time.monotonic() >= deadline:
-                raise TimeoutError("HTTP server did not become ready within 10 seconds")
+    deadline = time.monotonic() + 10
+    while time.monotonic() < deadline:
+        if process.poll() is not None:
+            raise RuntimeError(f"HTTP server exited with code {process.returncode}")
+        try:
+            response = requests.get(f"http://localhost:{port}/1024", timeout=1)
+            response.raise_for_status()
+        except requests.RequestException:
             time.sleep(0.05)
+        else:
+            return process
 
-        url = f"http://127.0.0.1:{port}"
-        response = requests.get(f"{url}/1024", timeout=1)
-        response.raise_for_status()
-        yield url
-    finally:
-        server.should_exit = True
-        thread.join(timeout=5)
-        if thread.is_alive():
-            raise RuntimeError("HTTP server did not stop within 5 seconds")
+    process.kill()
+    process.wait(timeout=5)
+    raise TimeoutError("HTTP server did not become ready within 10 seconds")
 
 
 def pytest_configure(config: pytest.Config) -> None:
@@ -122,9 +107,13 @@ def pytest_configure(config: pytest.Config) -> None:
 
     # The controller starts the server before workers and keeps it alive until
     # every worker has finished. A worker's session fixture ends too early.
-    servers = ExitStack()
-    config.add_cleanup(servers.close)
-    servers.enter_context(serve_http())
+    process = spawn_and_wait_server()
+
+    def stop_http_server() -> None:
+        process.kill()
+        process.wait(timeout=5)
+
+    config.add_cleanup(stop_http_server)
 
 
 class Aria2Server:
@@ -147,7 +136,6 @@ class Aria2Server:
         """
         self.tmp_dir = tmp_dir
         self.port = port
-        self.log_path = Path("tests") / "logs" / f"aria2-{self.port}.log"
 
         engine = os.environ.get("ARIA2_ENGINE", "aria2-next")
         if engine == "aria2":
@@ -162,9 +150,6 @@ class Aria2Server:
             f"--dir={self.tmp_dir}",
             "--file-allocation=none",
             "--quiet",
-            # Capture daemon diagnostics even when console output is suppressed.
-            "--log=-",
-            "--log-level=info",
             "--enable-rpc=true",
             f"--rpc-listen-port={self.port}",
         ]
@@ -194,8 +179,8 @@ class Aria2Server:
         self.command = command
         self.process: subprocess.Popen | None = None
 
-        # The test daemon listens on IPv4; avoid IPv6 localhost connection timeouts.
-        self.client = Client(host="http://127.0.0.1", port=self.port, secret=secret, timeout=20)
+        # create the client with port
+        self.client = Client(port=self.port, secret=secret, timeout=20)
 
         # create the API instance
         self.api = API(self.client)
@@ -208,7 +193,7 @@ class Aria2Server:
         self.destroy(force=True)
 
     def reach(self, retries: int = 5) -> bool:
-        startup_client = Client(host=self.client.host, port=self.port, secret=self.client.secret, timeout=0.2)
+        startup_client = Client(port=self.port, secret=self.client.secret, timeout=0.2)
         while retries:
             if self.process is not None and self.process.poll() is not None:
                 return False
@@ -225,14 +210,13 @@ class Aria2Server:
 
     def start(self) -> None:
         # Keep startup failures available after the process has been cleaned up.
-        self.log_path.parent.mkdir(parents=True, exist_ok=True)
-        with self.log_path.open("wb") as output:
+        log_path = Path("tests") / "logs" / f"aria2-{self.port}.log"
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        with log_path.open("wb") as output:
             self.process = subprocess.Popen(self.command, stdout=output, stderr=subprocess.STDOUT)  # noqa: S603
         if not self.reach(retries=100):
             self.kill()
-            raise RuntimeError(
-                f"aria2 did not become ready:\n{self.log_path.read_text(encoding='utf-8', errors='replace')}"
-            )
+            raise RuntimeError(f"aria2 did not become ready:\n{log_path.read_text(encoding='utf-8')}")
 
     def wait(self) -> None:
         if self.process:
@@ -242,9 +226,7 @@ class Aria2Server:
                 self.process.kill()
                 self.process.wait(timeout=5)
 
-    def wait_for_download(
-        self, gid: str = "0000000000000001", status: str = "complete", *, timeout: float = 10
-    ) -> Download:
+    def wait_for_download(self, gid: str = "0000000000000001", status: str = "complete") -> Download:
         """Return a download after its requested state has been reached."""
         download = self.api.get_download(gid)
 
@@ -253,18 +235,7 @@ class Aria2Server:
             assert not download.has_failed, f"Download {gid} failed: {download.error_message}"
             return download.status == status
 
-        try:
-            wait_for(reached_status, timeout=timeout)
-        except TimeoutError as error:
-            # Report the last poll without another RPC call that could hide the timeout.
-            daemon_output = self.log_path.read_text(encoding="utf-8", errors="replace")[-8192:]
-            raise TimeoutError(
-                f"Download {gid} did not reach {status!r} within {timeout} seconds.\n"
-                f"Last status: {download.status}; completed: {download.completed_length} bytes; "
-                f"total: {download.total_length} bytes; speed: {download.download_speed} bytes/s; "
-                f"error code: {download.error_code!r}; error message: {download.error_message!r}.\n"
-                f"Daemon output ({self.log_path}, last 8192 characters):\n{daemon_output or '(empty)'}"
-            ) from error
+        wait_for(reached_status)
         return download
 
     def terminate(self) -> None:
@@ -299,7 +270,7 @@ class Aria2Server:
 def port() -> int:
     # Let the operating system choose an unused RPC port for this test.
     with socket.socket() as listener:
-        listener.bind(("127.0.0.1", 0))
+        listener.bind(("localhost", 0))
         return listener.getsockname()[1]
 
 
@@ -313,10 +284,14 @@ def server(tmp_path: Path, port: int) -> Iterator[Aria2Server]:
 def isolated_http_server() -> Iterator[str]:
     """Run the HTTP test server on its own port to avoid other test sessions."""
     with socket.socket() as listener:
-        listener.bind(("127.0.0.1", 0))
+        listener.bind(("localhost", 0))
         http_port = listener.getsockname()[1]
-    with serve_http(http_port) as url:
-        yield url
+    process = spawn_and_wait_server(http_port)
+    try:
+        yield f"http://localhost:{http_port}"
+    finally:
+        process.kill()
+        process.wait(timeout=5)
 
 
 @pytest.fixture

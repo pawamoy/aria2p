@@ -21,7 +21,6 @@
 from __future__ import annotations
 
 import hashlib
-import os
 import stat
 from io import BytesIO
 from typing import TYPE_CHECKING
@@ -74,9 +73,7 @@ def test_install_supported_platform(
 
     assert executable.read_bytes() == content
     assert executable.name == ("aria2-next.exe" if system == "Windows" else "aria2-next")
-    # Windows chmod does not set POSIX executable permission bits.
-    if os.name != "nt":
-        assert executable.stat().st_mode & stat.S_IXUSR
+    assert executable.stat().st_mode & stat.S_IXUSR
     assert len(downloads) == 2
 
 

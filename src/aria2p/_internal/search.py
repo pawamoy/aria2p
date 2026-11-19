@@ -21,7 +21,6 @@
 from __future__ import annotations
 
 import re
-from pathlib import PurePath
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -90,8 +89,6 @@ def _matches_filter(download: Download, field: str, expected: object) -> bool:
         return False
 
     if isinstance(expected, str):
-        if isinstance(value, PurePath):
-            return value == type(value)(expected)
         if isinstance(value, bool):
             return str(value).lower() == expected.lower()
         return str(value) == expected

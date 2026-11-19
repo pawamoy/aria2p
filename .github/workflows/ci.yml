@@ -31,24 +31,14 @@ jobs:
   quality:
     strategy:
       matrix:
-        os:
-        - ubuntu-latest
-        - macos-latest
-        - windows-latest
         python-version:
         - "3.11"
+        - "3.12"
+        - "3.13"
+        - "3.14"
         - "3.15"
-        include:
-        - os: ubuntu-latest
-          python-version: "3.11"
-        - os: ubuntu-latest
-          python-version: "3.12"
-        - os: ubuntu-latest
-          python-version: "3.13"
-        - os: ubuntu-latest
-          python-version: "3.14"
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     continue-on-error: true
 
     steps:
@@ -83,7 +73,7 @@ jobs:
 
     - name: Store objects inventory for tests
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.13' }}
+      if: ${{ matrix.python-version == '3.13' }}
       with:
         name: objects.inv
         path: site/objects.inv
@@ -98,10 +88,6 @@ jobs:
         engine:
         - aria2
         - aria2-next
-        os:
-        - ubuntu-latest
-        - macos-latest
-        - windows-latest
         python-version:
         - "3.11"
         - "3.12"
@@ -111,29 +97,14 @@ jobs:
         resolution:
         - highest
         - lowest-direct
-        exclude:
-        - os: macos-latest
-          resolution: lowest-direct
-        - os: windows-latest
-          resolution: lowest-direct
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     env:
       ARIA2_ENGINE: ${{ matrix.engine }}
     steps:
     - name: Install aria2 on Ubuntu
-      if: ${{ matrix.engine == 'aria2' && matrix.os == 'ubuntu-latest' }}
+      if: ${{ matrix.engine == 'aria2' }}
       run: sudo apt-get install aria2
-
-    - name: Install aria2 on Windows
-      if: ${{ matrix.engine == 'aria2' && matrix.os == 'windows-latest' }}
-      uses: crazy-max/ghaction-chocolatey@dfdcf5bba9c0a16358a21c13a06ec5c89024b3ac # v4.1.0
-      with:
-        args: install aria2
-
-    - name: Install aria2 on MacOS
-      if: ${{ matrix.engine == 'aria2' && matrix.os == 'macos-latest' }}
-      run: brew install aria2
 
     - name: Checkout
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

@@ -470,7 +470,7 @@ def test_move_unfinished_download(server: Aria2Server, isolated_http_server: str
 
 def test_move_unfinished_download_conflict(server: Aria2Server) -> None:
     # A destination conflict must leave the source and existing target intact.
-    download = server.api.add_uris(["http://127.0.0.1:8779/64k"], {"pause": "true", "out": "download.txt"})
+    download = server.api.add_uris(["http://localhost:8779/64k"], {"pause": "true", "out": "download.txt"})
     source = download.files[0].path
     source.write_text("partial download", encoding="utf-8")
     destination = server.tmp_dir / "destination"
@@ -488,7 +488,7 @@ def test_move_unfinished_download_conflict(server: Aria2Server) -> None:
 
 
 def test_move_unfinished_download_requires_force(server: Aria2Server) -> None:
-    download = server.api.add_uris(["http://127.0.0.1:8779/64k"], {"pause": "true", "out": "download.txt"})
+    download = server.api.add_uris(["http://localhost:8779/64k"], {"pause": "true", "out": "download.txt"})
     source = download.files[0].path
     source.write_text("partial download", encoding="utf-8")
 
@@ -504,7 +504,7 @@ def test_move_unfinished_download_rolls_back(server: Aria2Server, monkeypatch: p
         pytest.skip("aria2-next owns rollback inside its native move RPC")
 
     # Reject the directory change after both the data and control file have moved.
-    download = server.api.add_uris(["http://127.0.0.1:8779/64k"], {"pause": "true", "out": "download.txt"})
+    download = server.api.add_uris(["http://localhost:8779/64k"], {"pause": "true", "out": "download.txt"})
     source = download.files[0].path
     source.write_text("partial download", encoding="utf-8")
     control_file = download.control_file_path
@@ -533,7 +533,7 @@ def test_move_unfinished_download_rolls_back(server: Aria2Server, monkeypatch: p
 
 def test_move_unstarted_download(server: Aria2Server) -> None:
     # A queued download has no files yet, but its output directory can still change.
-    download = server.api.add_uris(["http://127.0.0.1:8779/64k"], {"pause": "true"})
+    download = server.api.add_uris(["http://localhost:8779/64k"], {"pause": "true"})
     destination = server.tmp_dir / "destination"
 
     assert download.move_files(destination, force=True)
@@ -545,7 +545,7 @@ def test_move_unstarted_download(server: Aria2Server) -> None:
 
 
 def test_move_unfinished_download_to_same_directory(server: Aria2Server) -> None:
-    download = server.api.add_uris(["http://127.0.0.1:8779/64k"], {"pause": "true", "out": "download.txt"})
+    download = server.api.add_uris(["http://localhost:8779/64k"], {"pause": "true", "out": "download.txt"})
     source = download.files[0].path
     source.write_text("partial download", encoding="utf-8")
 

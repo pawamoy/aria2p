@@ -239,7 +239,7 @@ def test_metalink3_capability(server: Aria2Server) -> None:
 
 
 def test_remove_only_cleans_control_files_for_engines_that_use_them(server: Aria2Server) -> None:
-    download = server.api.add_uris(["http://127.0.0.1:8779/64k"], {"pause": True, "out": "file.txt"})
+    download = server.api.add_uris(["http://localhost:8779/64k"], {"pause": True, "out": "file.txt"})
     control_file = download.control_file_path
     control_file.write_bytes(b"existing adjacent file")
 
@@ -275,7 +275,7 @@ def test_low_level_move_method_is_explicit_and_preserves_rpc_errors(monkeypatch:
     with pytest.raises(ClientException, match="moveDownload"):
         client.move_download("0123456789abcdef", Path("/downloads"))
 
-    rpc.assert_called_once_with(Client.MOVE_DOWNLOAD, ["0123456789abcdef", str(Path("/downloads"))])
+    rpc.assert_called_once_with(Client.MOVE_DOWNLOAD, ["0123456789abcdef", "/downloads"])
 
 
 def test_invalid_option_names_do_not_require_a_running_daemon(monkeypatch: pytest.MonkeyPatch) -> None:

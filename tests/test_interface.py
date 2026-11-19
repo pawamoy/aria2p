@@ -20,6 +20,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import pyperclip
@@ -31,8 +32,6 @@ from tests import TESTS_DATA_DIR
 from tests.conftest import Aria2Server
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     import pytest
 
     from aria2p._internal.api import API
@@ -266,13 +265,11 @@ def test_horizontal_scrolling(tmp_path: Path, port: int, monkeypatch: pytest.Mon
         )
 
 
-def test_log_exception(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch, tests_logs: Path) -> None:
+def test_log_exception(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) -> None:
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         interface = get_interface(monkeypatch, server.api, events=[Event.exc(LookupError("some message"))])
         assert not interface.run()
-
-    # Read the log path selected by the fixture, including its unique suffix.
-    with tests_logs.open(encoding="utf8") as log_file:
+    with Path("tests", "logs", "test_interface", "test_log_exception.log").open(encoding="utf8") as log_file:
         lines = log_file.readlines()
     first_line = ""
     for line in lines:
@@ -324,7 +321,7 @@ def test_follow_focused(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPat
     with Aria2Server(tmp_path, port) as server:
         # Keep three distinct GIDs available while the interface reverses its sort.
         for size in (1, 2, 3):
-            server.api.add_uris([f"http://127.0.0.1:8779/{size}m"], options={"pause": "true"})
+            server.api.add_uris([f"http://localhost:8779/{size}m"], options={"pause": "true"})
 
         interface = run_interface(
             monkeypatch,
@@ -456,15 +453,13 @@ def test_click_row(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) -
     assert interface.focused == 1
 
 
-def test_click_out_bounds(server: Aria2Server, monkeypatch: pytest.MonkeyPatch, tests_logs: Path) -> None:
+def test_click_out_bounds(server: Aria2Server, monkeypatch: pytest.MonkeyPatch) -> None:
     run_interface(
         monkeypatch,
         server.api,
         events=[Event.pass_frame, MouseEvent(x=1000, y=0, buttons=MouseEvent.LEFT_CLICK)],
     )
-
-    # Read the log path selected by the fixture, including its unique suffix.
-    with tests_logs.open(encoding="utf8") as log_file:
+    with Path("tests", "logs", "test_interface", "test_click_out_bounds.log").open(encoding="utf8") as log_file:
         lines = log_file.readlines()
     error_line = None
     for line in lines:
@@ -479,11 +474,11 @@ def test_add_downloads_uris(server: Aria2Server, monkeypatch: pytest.MonkeyPatch
     clipboard_selection_downloads = ""
     primary_selection_downloads = ""
 
-    uri1 = "http://127.0.0.1:8779/1"
+    uri1 = "http://localhost:8779/1"
     magnet1 = "magnet:?xt=urn:btih:RX46NCATYQRS3MCQNSEXVZGCCDNKTASQ"
     clipboard_selection_downloads += f"{uri1}\n{magnet1}"
 
-    uri2 = "http://127.0.0.1:8779/2"
+    uri2 = "http://localhost:8779/2"
     magnet2 = "magnet:?xt=urn:btih:VLYICEBJDQQ64SUGREZHD4IAD2FVCJCS"
     primary_selection_downloads += f"{uri2}\n{magnet2}"
 

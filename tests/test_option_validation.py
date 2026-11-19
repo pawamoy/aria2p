@@ -131,7 +131,7 @@ def test_invalid_values_leave_remote_and_local_options_unchanged(
         ("log", "", ""),
         ("http-passwd", "", ""),
         ("dir", "/path/on/remote/server", "/path/on/remote/server"),
-        ("dir", Path("/path/on/remote/server"), str(Path("/path/on/remote/server"))),
+        ("dir", Path("/path/on/remote/server"), "/path/on/remote/server"),
         ("header", ["Accept: */*", "User-Agent: aria2p"], ["Accept: */*", "User-Agent: aria2p"]),
         ("header", [], []),
     ],
@@ -337,7 +337,7 @@ def test_properties_send_dashed_option_names(
 def test_validated_options_with_daemon(server: Aria2Server, tmp_path: Path) -> None:
     # Create a paused download so no external network connection is needed.
     download = server.api.add_uris(
-        ["http://127.0.0.1:8779/1024"], options={"pause": True, "out": Path("file"), "dir": tmp_path}
+        ["http://localhost:8779/1024"], options={"pause": True, "out": Path("file"), "dir": tmp_path}
     )
     options = download.options
 
