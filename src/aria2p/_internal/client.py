@@ -1900,7 +1900,8 @@ class Client:
         logger.debug(f"{log_prefix}: opening WebSocket with timeout={timeout}")
         try:
             socket = websocket.create_connection(ws_server, timeout=timeout)
-        except (ConnectionRefusedError, ConnectionResetError, TimeoutError, websocket.WebSocketTimeoutException):
+        except (ConnectionRefusedError, ConnectionResetError, BrokenPipeError, TimeoutError, websocket.WebSocketTimeoutException):
+            # The daemon can exit while websocket-client sends the handshake.
             logger.error(f"{log_prefix}: connection failed. Is the server running?")
             self.listening = False
             return

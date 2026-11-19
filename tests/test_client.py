@@ -541,12 +541,15 @@ class TestClientClass:
         client = Client(port=7035)
         client.listen_to_notifications(timeout=1)
 
-    @pytest.mark.parametrize("error_type", [TimeoutError, websocket.WebSocketTimeoutException])
-    def test_listen_to_notifications_connection_timeout(
+    @pytest.mark.parametrize(
+        "error_type",
+        [ConnectionRefusedError, ConnectionResetError, BrokenPipeError, TimeoutError, websocket.WebSocketTimeoutException],
+    )
+    def test_listen_to_notifications_connection_failure(
         self, monkeypatch: pytest.MonkeyPatch, error_type: type[Exception]
     ) -> None:
-        # Windows can report a timeout rather than a refused connection.
-        connect = Mock(side_effect=error_type("Connection timed out"))
+        # A daemon can refuse the connection, time out, or exit during the WebSocket handshake.
+        connect = Mock(side_effect=error_type("Connection failed"))
         monkeypatch.setattr(websocket, "create_connection", connect)
         client = Client()
 
