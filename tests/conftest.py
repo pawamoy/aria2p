@@ -229,7 +229,9 @@ class Aria2Server:
             self.process = subprocess.Popen(self.command, stdout=output, stderr=subprocess.STDOUT)  # noqa: S603
         if not self.reach(retries=100):
             self.kill()
-            raise RuntimeError(f"aria2 did not become ready:\n{self.log_path.read_text(encoding='utf-8', errors='replace')}")
+            raise RuntimeError(
+                f"aria2 did not become ready:\n{self.log_path.read_text(encoding='utf-8', errors='replace')}"
+            )
 
     def wait(self) -> None:
         if self.process:
@@ -239,7 +241,9 @@ class Aria2Server:
                 self.process.kill()
                 self.process.wait(timeout=5)
 
-    def wait_for_download(self, gid: str = "0000000000000001", status: str = "complete", *, timeout: float = 10) -> Download:
+    def wait_for_download(
+        self, gid: str = "0000000000000001", status: str = "complete", *, timeout: float = 10
+    ) -> Download:
         """Return a download after its requested state has been reached."""
         download = self.api.get_download(gid)
 

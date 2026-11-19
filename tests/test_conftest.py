@@ -31,7 +31,9 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-def test_download_timeout_reports_last_status_and_daemon_output(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_download_timeout_reports_last_status_and_daemon_output(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # The download starts while polling, but does not finish before the deadline.
     server = Aria2Server(tmp_path, port=6800)
     initial_status = {

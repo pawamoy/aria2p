@@ -543,7 +543,14 @@ class TestClientClass:
 
     @pytest.mark.parametrize(
         "error_type",
-        [ConnectionRefusedError, ConnectionResetError, BrokenPipeError, TimeoutError, websocket.WebSocketTimeoutException],
+        [
+            ConnectionRefusedError,
+            ConnectionResetError,
+            BrokenPipeError,
+            TimeoutError,
+            websocket.WebSocketTimeoutException,
+            websocket.WebSocketConnectionClosedException,
+        ],
     )
     def test_listen_to_notifications_connection_failure(
         self, monkeypatch: pytest.MonkeyPatch, error_type: type[Exception]

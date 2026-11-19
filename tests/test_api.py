@@ -28,6 +28,7 @@ from typing import TYPE_CHECKING
 
 import griffe
 import pytest
+import websocket
 from mkdocstrings import Inventory
 
 import aria2p
@@ -584,12 +585,28 @@ def test_move_paused_torrent_files(server: Aria2Server) -> None:
     assert download.is_paused
 
 
-def test_listen_to_notifications(tmp_path: Path, port: int) -> None:
+def test_listen_to_notifications(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPatch) -> None:
+    # Shut down an established connection; handshake failures have separate unit tests.
+    connected = threading.Event()
+    create_connection = websocket.create_connection
+
+    def connect(url: str, timeout: int) -> websocket.WebSocket:
+        socket = create_connection(url, timeout=timeout)
+        connected.set()
+        return socket
+
+    monkeypatch.setattr(websocket, "create_connection", connect)
+
     with Aria2Server(tmp_path, port, session="2-dls-paused.txt") as server:
         server.api.listen_to_notifications(threaded=True, timeout=1)
-    time.sleep(3)
+        assert connected.wait(timeout=5), "Notification WebSocket did not connect"
+
+    # Wait for the listener to handle the closed connection without a fixed sleep.
     assert server.api.listener
+    server.api.listener.join(timeout=5)
+
     assert not server.api.listener.is_alive()
+    assert not server.client.listening
 
 
 def test_listen_to_notifications_then_stop(port: int) -> None:
