@@ -85,6 +85,9 @@ def spawn_and_wait_server(port: int = 8779) -> subprocess.Popen:
             "-m",
             "uvicorn",
             "tests.http_server:app",
+            # Match download URLs to avoid IPv6 localhost connection delays.
+            "--host",
+            "127.0.0.1",
             "--port",
             str(port),
         ],
@@ -96,7 +99,7 @@ def spawn_and_wait_server(port: int = 8779) -> subprocess.Popen:
         if process.poll() is not None:
             raise RuntimeError(f"HTTP server exited with code {process.returncode}")
         try:
-            response = requests.get(f"http://localhost:{port}/1024", timeout=1)
+            response = requests.get(f"http://127.0.0.1:{port}/1024", timeout=1)
             response.raise_for_status()
         except requests.RequestException:
             time.sleep(0.05)
@@ -143,6 +146,7 @@ class Aria2Server:
         """
         self.tmp_dir = tmp_dir
         self.port = port
+        self.log_path = Path("tests") / "logs" / f"aria2-{self.port}.log"
 
         engine = os.environ.get("ARIA2_ENGINE", "aria2-next")
         if engine == "aria2":
@@ -157,6 +161,9 @@ class Aria2Server:
             f"--dir={self.tmp_dir}",
             "--file-allocation=none",
             "--quiet",
+            # Capture daemon diagnostics even when console output is suppressed.
+            "--log=-",
+            "--log-level=info",
             "--enable-rpc=true",
             f"--rpc-listen-port={self.port}",
         ]
@@ -200,7 +207,7 @@ class Aria2Server:
         self.destroy(force=True)
 
     def reach(self, retries: int = 5) -> bool:
-        startup_client = Client(port=self.port, secret=self.client.secret, timeout=0.2)
+        startup_client = Client(host=self.client.host, port=self.port, secret=self.client.secret, timeout=0.2)
         while retries:
             if self.process is not None and self.process.poll() is not None:
                 return False
@@ -217,13 +224,12 @@ class Aria2Server:
 
     def start(self) -> None:
         # Keep startup failures available after the process has been cleaned up.
-        log_path = Path("tests") / "logs" / f"aria2-{self.port}.log"
-        log_path.parent.mkdir(parents=True, exist_ok=True)
-        with log_path.open("wb") as output:
+        self.log_path.parent.mkdir(parents=True, exist_ok=True)
+        with self.log_path.open("wb") as output:
             self.process = subprocess.Popen(self.command, stdout=output, stderr=subprocess.STDOUT)  # noqa: S603
         if not self.reach(retries=100):
             self.kill()
-            raise RuntimeError(f"aria2 did not become ready:\n{log_path.read_text(encoding='utf-8')}")
+            raise RuntimeError(f"aria2 did not become ready:\n{self.log_path.read_text(encoding='utf-8', errors='replace')}")
 
     def wait(self) -> None:
         if self.process:
@@ -233,7 +239,7 @@ class Aria2Server:
                 self.process.kill()
                 self.process.wait(timeout=5)
 
-    def wait_for_download(self, gid: str = "0000000000000001", status: str = "complete") -> Download:
+    def wait_for_download(self, gid: str = "0000000000000001", status: str = "complete", *, timeout: float = 10) -> Download:
         """Return a download after its requested state has been reached."""
         download = self.api.get_download(gid)
 
@@ -242,7 +248,18 @@ class Aria2Server:
             assert not download.has_failed, f"Download {gid} failed: {download.error_message}"
             return download.status == status
 
-        wait_for(reached_status)
+        try:
+            wait_for(reached_status, timeout=timeout)
+        except TimeoutError as error:
+            # Report the last poll without another RPC call that could hide the timeout.
+            daemon_output = self.log_path.read_text(encoding="utf-8", errors="replace")[-8192:]
+            raise TimeoutError(
+                f"Download {gid} did not reach {status!r} within {timeout} seconds.\n"
+                f"Last status: {download.status}; completed: {download.completed_length} bytes; "
+                f"total: {download.total_length} bytes; speed: {download.download_speed} bytes/s; "
+                f"error code: {download.error_code!r}; error message: {download.error_message!r}.\n"
+                f"Daemon output ({self.log_path}, last 8192 characters):\n{daemon_output or '(empty)'}"
+            ) from error
         return download
 
     def terminate(self) -> None:
@@ -277,7 +294,7 @@ class Aria2Server:
 def port() -> int:
     # Let the operating system choose an unused RPC port for this test.
     with socket.socket() as listener:
-        listener.bind(("localhost", 0))
+        listener.bind(("127.0.0.1", 0))
         return listener.getsockname()[1]
 
 
@@ -291,11 +308,11 @@ def server(tmp_path: Path, port: int) -> Iterator[Aria2Server]:
 def isolated_http_server() -> Iterator[str]:
     """Run the HTTP test server on its own port to avoid other test sessions."""
     with socket.socket() as listener:
-        listener.bind(("localhost", 0))
+        listener.bind(("127.0.0.1", 0))
         http_port = listener.getsockname()[1]
     process = spawn_and_wait_server(http_port)
     try:
-        yield f"http://localhost:{http_port}"
+        yield f"http://127.0.0.1:{http_port}"
     finally:
         process.kill()
         process.wait(timeout=5)

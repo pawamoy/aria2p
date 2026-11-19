@@ -1,5 +1,5 @@
-http://localhost:8779/10m
+http://127.0.0.1:8779/10m
  gid=0000000000000001
-http://localhost:8779/10m
+http://127.0.0.1:8779/10m
  gid=0000000000000002
  pause=true

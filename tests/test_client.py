@@ -374,11 +374,11 @@ class TestClientClass:
     def test_change_uri_method(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="1-dl-2-uris.txt") as server:
             gid = server.client.tell_waiting(0, 1, keys=["gid"])[0]["gid"]
-            assert server.client.change_uri(gid, 1, ["http://localhost:8779/1024"], ["http://localhost:8779/1k"]) == [
+            assert server.client.change_uri(gid, 1, ["http://127.0.0.1:8779/1024"], ["http://127.0.0.1:8779/1k"]) == [
                 1,
                 1,
             ]
-            assert server.client.change_uri(gid, 1, ["http://localhost:8779/1k"], []) == [1, 0]
+            assert server.client.change_uri(gid, 1, ["http://127.0.0.1:8779/1k"], []) == [1, 0]
 
     def test_force_pause_method(self, tmp_path: Path, port: int) -> None:
         with Aria2Server(tmp_path, port, session="big-download.txt") as server:
@@ -433,8 +433,8 @@ class TestClientClass:
         with Aria2Server(tmp_path, port, session="1-dl-2-uris.txt") as server:
             gid = server.client.tell_waiting(0, 1, keys=["gid"])[0]["gid"]
             assert server.client.get_uris(gid) == [
-                {"status": "waiting", "uri": "http://localhost:8779/1024"},
-                {"status": "waiting", "uri": "http://localhost:8779/1k"},
+                {"status": "waiting", "uri": "http://127.0.0.1:8779/1024"},
+                {"status": "waiting", "uri": "http://127.0.0.1:8779/1k"},
             ]
 
     def test_get_version_method(self, server: Aria2Server) -> None:

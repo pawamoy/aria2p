@@ -2,6 +2,6 @@
 <metalink xmlns="urn:ietf:params:xml:ns:metalink">
   <file name="download.bin">
     <size>65536</size>
-    <url>http://localhost:8779/64k</url>
+    <url>http://127.0.0.1:8779/64k</url>
   </file>
 </metalink>

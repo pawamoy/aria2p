@@ -337,7 +337,7 @@ def test_properties_send_dashed_option_names(
 def test_validated_options_with_daemon(server: Aria2Server, tmp_path: Path) -> None:
     # Create a paused download so no external network connection is needed.
     download = server.api.add_uris(
-        ["http://localhost:8779/1024"], options={"pause": True, "out": Path("file"), "dir": tmp_path}
+        ["http://127.0.0.1:8779/1024"], options={"pause": True, "out": Path("file"), "dir": tmp_path}
     )
     options = download.options
 

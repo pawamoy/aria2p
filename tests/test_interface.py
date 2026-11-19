@@ -324,7 +324,7 @@ def test_follow_focused(tmp_path: Path, port: int, monkeypatch: pytest.MonkeyPat
     with Aria2Server(tmp_path, port) as server:
         # Keep three distinct GIDs available while the interface reverses its sort.
         for size in (1, 2, 3):
-            server.api.add_uris([f"http://localhost:8779/{size}m"], options={"pause": "true"})
+            server.api.add_uris([f"http://127.0.0.1:8779/{size}m"], options={"pause": "true"})
 
         interface = run_interface(
             monkeypatch,
@@ -479,11 +479,11 @@ def test_add_downloads_uris(server: Aria2Server, monkeypatch: pytest.MonkeyPatch
     clipboard_selection_downloads = ""
     primary_selection_downloads = ""
 
-    uri1 = "http://localhost:8779/1"
+    uri1 = "http://127.0.0.1:8779/1"
     magnet1 = "magnet:?xt=urn:btih:RX46NCATYQRS3MCQNSEXVZGCCDNKTASQ"
     clipboard_selection_downloads += f"{uri1}\n{magnet1}"
 
-    uri2 = "http://localhost:8779/2"
+    uri2 = "http://127.0.0.1:8779/2"
     magnet2 = "magnet:?xt=urn:btih:VLYICEBJDQQ64SUGREZHD4IAD2FVCJCS"
     primary_selection_downloads += f"{uri2}\n{magnet2}"
 
