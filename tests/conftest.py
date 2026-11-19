@@ -25,19 +25,21 @@ import os
 import re
 import socket
 import subprocess
-import sys
+import threading
 import time
+from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
 import requests
+import uvicorn
 
 from aria2p import API, Client, Download, enable_logger
 from tests import CONFIGS_DIR, SESSIONS_DIR
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterator
+    from collections.abc import Callable, Generator, Iterator
 
 
 def wait_for(condition: Callable[[], bool], timeout: float = 10) -> None:
@@ -78,37 +80,40 @@ def tests_logs(request: pytest.FixtureRequest) -> Path:
     return log_path
 
 
-def spawn_and_wait_server(port: int = 8779) -> subprocess.Popen:
-    process = subprocess.Popen(  # noqa: S603
-        [
-            sys.executable,
-            "-m",
-            "uvicorn",
-            "tests.http_server:app",
-            # Match download URLs to avoid IPv6 localhost connection delays.
-            "--host",
-            "127.0.0.1",
-            "--port",
-            str(port),
-        ],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+@contextmanager
+def serve_http(port: int = 8779) -> Generator[str, None, None]:
+    """Keep the HTTP fixture alive in its owning pytest process."""
+    config = uvicorn.Config(
+        "tests.http_server:app",
+        host="127.0.0.1",
+        port=port,
+        log_config=None,
+        access_log=False,
+        timeout_graceful_shutdown=1,
     )
-    deadline = time.monotonic() + 10
-    while time.monotonic() < deadline:
-        if process.poll() is not None:
-            raise RuntimeError(f"HTTP server exited with code {process.returncode}")
-        try:
-            response = requests.get(f"http://127.0.0.1:{port}/1024", timeout=1)
-            response.raise_for_status()
-        except requests.RequestException:
+    server = uvicorn.Server(config)
+    # Running in a thread avoids subprocess lifetime and console-signal handling
+    # on Windows. Unexpected server errors are reported by pytest's thread hook.
+    thread = threading.Thread(target=server.run, name=f"http-fixture-{port}", daemon=True)
+    thread.start()
+    try:
+        deadline = time.monotonic() + 10
+        while not server.started:
+            if not thread.is_alive():
+                raise RuntimeError("HTTP server stopped before it became ready")
+            if time.monotonic() >= deadline:
+                raise TimeoutError("HTTP server did not become ready within 10 seconds")
             time.sleep(0.05)
-        else:
-            return process
 
-    process.kill()
-    process.wait(timeout=5)
-    raise TimeoutError("HTTP server did not become ready within 10 seconds")
+        url = f"http://127.0.0.1:{port}"
+        response = requests.get(f"{url}/1024", timeout=1)
+        response.raise_for_status()
+        yield url
+    finally:
+        server.should_exit = True
+        thread.join(timeout=5)
+        if thread.is_alive():
+            raise RuntimeError("HTTP server did not stop within 5 seconds")
 
 
 def pytest_configure(config: pytest.Config) -> None:
@@ -117,13 +122,9 @@ def pytest_configure(config: pytest.Config) -> None:
 
     # The controller starts the server before workers and keeps it alive until
     # every worker has finished. A worker's session fixture ends too early.
-    process = spawn_and_wait_server()
-
-    def stop_http_server() -> None:
-        process.kill()
-        process.wait(timeout=5)
-
-    config.add_cleanup(stop_http_server)
+    servers = ExitStack()
+    config.add_cleanup(servers.close)
+    servers.enter_context(serve_http())
 
 
 class Aria2Server:
@@ -314,12 +315,8 @@ def isolated_http_server() -> Iterator[str]:
     with socket.socket() as listener:
         listener.bind(("127.0.0.1", 0))
         http_port = listener.getsockname()[1]
-    process = spawn_and_wait_server(http_port)
-    try:
-        yield f"http://127.0.0.1:{http_port}"
-    finally:
-        process.kill()
-        process.wait(timeout=5)
+    with serve_http(http_port) as url:
+        yield url
 
 
 @pytest.fixture

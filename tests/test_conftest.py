@@ -24,11 +24,33 @@ from typing import TYPE_CHECKING
 from unittest.mock import Mock
 
 import pytest
+import requests
 
-from tests.conftest import Aria2Server
+from tests.conftest import Aria2Server, serve_http
 
 if TYPE_CHECKING:
     from pathlib import Path
+
+
+def test_shared_http_server_survives_isolated_server_shutdown(port: int) -> None:
+    # Both servers must serve complete downloads while the isolated one is alive.
+    shared_url = "http://127.0.0.1:8779/100"
+    with serve_http(port) as isolated_url:
+        shared = requests.get(shared_url, timeout=1)
+        isolated = requests.get(f"{isolated_url}/100", timeout=1)
+
+        assert shared.status_code == 200
+        assert shared.content == b"1" * 100
+        assert isolated.status_code == 200
+        assert isolated.content == b"1" * 100
+
+    # Closing an isolated server must leave the shared fixture available.
+    shared = requests.get(shared_url, timeout=1)
+
+    assert shared.status_code == 200
+    assert shared.content == b"1" * 100
+    with pytest.raises(requests.ConnectionError):
+        requests.get(f"{isolated_url}/100", timeout=1)
 
 
 def test_download_timeout_reports_last_status_and_daemon_output(
