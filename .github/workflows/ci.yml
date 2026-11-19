@@ -93,6 +93,7 @@ jobs:
     needs:
     - quality
     strategy:
+      fail-fast: false
       matrix:
         engine:
         - aria2
